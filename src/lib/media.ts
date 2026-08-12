@@ -1,14 +1,18 @@
-/** Site assets and verified remote fallbacks. */
+/** Site assets and verified remote fallbacks (Cloudinary Home klasörü). */
+const CLOUD = "ulnb2wjo";
+
+function homeAsset(name: string) {
+  return `https://res.cloudinary.com/${CLOUD}/image/upload/Home/${name}`;
+}
+
 export const siteImages = {
+  /** Mevcut Cloudinary banner; Home/hero yüklenene kadar varsayılan */
   hero: "https://res.cloudinary.com/ulnb2wjo/image/upload/v1786551822/banner-1.png",
   headerLogo:
     "https://res.cloudinary.com/ulnb2wjo/image/upload/v1786552142/header-logo-no-bg.png",
-  about:
-    "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&q=80&auto=format",
-  ctaBanner:
-    "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&q=80&auto=format",
-  travel:
-    "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=80&auto=format",
+  about: homeAsset("about"),
+  ctaBanner: homeAsset("cta-banner"),
+  travel: homeAsset("seo-1"),
   country:
     "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=80&auto=format",
   article:
@@ -19,6 +23,5 @@ export const siteImages = {
     "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80&auto=format",
   conference:
     "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80&auto=format",
-  office:
-    "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80&auto=format",
+  office: homeAsset("seo-2"),
 } as const;

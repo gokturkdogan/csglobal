@@ -19,7 +19,7 @@ export function HomeHero({
   return (
     <section className="relative overflow-hidden border-b border-slate-200 bg-slate-900">
       <div className="absolute inset-0">
-        <HomeEditableImage field="heroImage" value={content.heroImage}>
+        <HomeEditableImage field="heroImage" value={content.heroImage} fullBleed label="Hero banner">
           <SiteImage
             src={edit?.content.heroImage ?? content.heroImage}
             alt=""
@@ -29,10 +29,16 @@ export function HomeHero({
             className="object-cover object-[center_30%] md:object-right"
           />
         </HomeEditableImage>
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/92 via-slate-900/75 to-slate-900/25" />
+        <div
+          className={`pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r ${
+            preview
+              ? "from-slate-900/70 via-slate-900/45 to-slate-900/15"
+              : "from-slate-900/85 via-slate-900/55 to-slate-900/20"
+          }`}
+        />
       </div>
 
-      <div className="relative mx-auto max-w-6xl px-4 py-20 md:px-8 md:py-28 lg:py-32">
+      <div className="relative z-[2] mx-auto max-w-6xl px-4 py-20 md:px-8 md:py-28 lg:py-32">
         <div className="max-w-2xl">
           <HomeEditableField
             field="heroBadge"
@@ -51,7 +57,7 @@ export function HomeHero({
           <HomeEditableField
             field="heroSubtitle"
             value={content.heroSubtitle}
-            className="mt-5 text-base leading-relaxed text-slate-300 md:text-lg"
+            className="mt-5 text-base leading-relaxed text-slate-200 md:text-lg"
             as="p"
             multiline
             label="Hero alt metin"
@@ -64,6 +70,7 @@ export function HomeHero({
                     field="heroCtaPrimary"
                     value={content.heroCtaPrimary}
                     label="Birincil buton"
+                    className="text-white"
                   />
                 </span>
                 <span className="rounded-md border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white">
@@ -71,6 +78,7 @@ export function HomeHero({
                     field="heroCtaSecondary"
                     value={content.heroCtaSecondary}
                     label="İkincil buton"
+                    className="text-white"
                   />
                 </span>
               </>

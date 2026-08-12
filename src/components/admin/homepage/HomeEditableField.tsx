@@ -1,8 +1,12 @@
 "use client";
 
 import type { HomepageContent } from "@/lib/homepage";
-import { EditableText, EditableImageOverlay } from "./EditableText";
+import { homepageImageSlots } from "@/lib/homepage-image-slots";
+import { EditableText } from "./EditableText";
+import { CloudinaryImagePicker } from "./CloudinaryImagePicker";
 import { useHomepageEdit } from "./HomepageEditContext";
+
+type HomepageImageField = "heroImage" | "aboutImage" | "ctaBannerImage";
 
 export function HomeEditableField({
   field,
@@ -42,21 +46,60 @@ export function HomeEditableImage({
   value,
   children,
   label,
+  fullBleed = false,
 }: {
-  field: "heroImage" | "aboutImage" | "ctaBannerImage";
+  field: HomepageImageField;
   value: string;
   children: React.ReactNode;
   label?: string;
+  /** Tam ekran arka plan görselleri (hero, CTA) — absolute inset-0 */
+  fullBleed?: boolean;
 }) {
   const edit = useHomepageEdit();
+  const slot = homepageImageSlots[field];
+
+  return (
+    <div className={fullBleed ? "absolute inset-0" : "relative"}>
+      {children}
+      {edit && (
+        <CloudinaryImagePicker
+          publicId={slot.publicId}
+          currentUrl={edit.content[field]}
+          onChange={(v) => edit.updateField(field, v)}
+          label={label ?? slot.label}
+          placement={fullBleed ? "top" : "bottom"}
+        />
+      )}
+    </div>
+  );
+}
+
+export function HomeEditableSeoBlockImage({
+  index,
+  value,
+  children,
+}: {
+  index: number;
+  value: string;
+  children: React.ReactNode;
+}) {
+  const edit = useHomepageEdit();
+  const slotKey = `seoBlock${index}` as "seoBlock0" | "seoBlock1" | "seoBlock2";
+  const slot = homepageImageSlots[slotKey];
+
+  if (!slot) {
+    return <>{children}</>;
+  }
+
   return (
     <div className="relative">
       {children}
       {edit && (
-        <EditableImageOverlay
-          value={edit.content[field]}
-          onChange={(v) => edit.updateField(field, v)}
-          label={label}
+        <CloudinaryImagePicker
+          publicId={slot.publicId}
+          currentUrl={value}
+          onChange={(url) => edit.updateSeoBlock(index, "image", url)}
+          label={slot.label}
         />
       )}
     </div>

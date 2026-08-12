@@ -24,7 +24,12 @@ export function HomeCtaBanner({
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0">
-        <HomeEditableImage field="ctaBannerImage" value={content.ctaBannerImage}>
+        <HomeEditableImage
+          field="ctaBannerImage"
+          value={content.ctaBannerImage}
+          fullBleed
+          label="Alt CTA banner"
+        >
           <SiteImage
             src={bannerImage}
             alt=""
@@ -33,10 +38,14 @@ export function HomeCtaBanner({
             className="object-cover"
           />
         </HomeEditableImage>
-        <div className="absolute inset-0 bg-csg-blue/90" />
+        <div
+          className={`pointer-events-none absolute inset-0 z-[1] ${
+            preview ? "bg-csg-blue/75" : "bg-csg-blue/85"
+          }`}
+        />
       </div>
 
-      <div className="relative mx-auto max-w-6xl px-4 py-16 text-center md:px-8 md:py-20">
+      <div className="relative z-[2] mx-auto max-w-6xl px-4 py-16 text-center md:px-8 md:py-20">
         <HomeEditableField
           field="ctaBannerTitle"
           value={content.ctaBannerTitle}

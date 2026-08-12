@@ -24,7 +24,7 @@ type HomepageEditContextValue = {
   updateSeoParagraph: (index: number, value: string) => void;
   updateSeoBlock: (
     index: number,
-    field: "title" | "content" | "linkLabel",
+    field: "title" | "content" | "linkLabel" | "image",
     value: string,
   ) => void;
   updateServiceArea: (
@@ -91,7 +91,7 @@ export function HomepageEditProvider({
   }, []);
 
   const updateSeoBlock = useCallback(
-    (index: number, field: "title" | "content" | "linkLabel", value: string) => {
+    (index: number, field: "title" | "content" | "linkLabel" | "image", value: string) => {
       setContent((prev) => ({
         ...prev,
         seoBlocks: prev.seoBlocks.map((block, i) =>

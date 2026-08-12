@@ -170,6 +170,10 @@ function resolveHeroImage(url: string | undefined): string {
   if (!trimmed) return siteImages.hero;
   if (trimmed.includes("/images/hero-banner")) return siteImages.hero;
   if (trimmed.includes("images.unsplash.com")) return siteImages.hero;
+  // Home/hero henüz yüklenmemiş olabilir — kırık URL yerine bilinen banner
+  if (/\/Home\/hero(\.[a-z]+)?$/i.test(trimmed) && !trimmed.includes("/v")) {
+    return siteImages.hero;
+  }
   const legacyIds = [
     "photo-1436491865332",
     "photo-1521737711862",

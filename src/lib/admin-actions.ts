@@ -132,6 +132,51 @@ export async function updateHomepageEditorAction(contentJson: string) {
   return { ok: true as const };
 }
 
+export async function listCloudinaryHomeImagesAction() {
+  await requireAdmin();
+  const { listCloudinaryFolder } = await import("@/lib/cloudinary");
+  const { HOMEPAGE_CLOUDINARY_FOLDER } = await import("@/lib/homepage-image-slots");
+  const resources = await listCloudinaryFolder(HOMEPAGE_CLOUDINARY_FOLDER);
+  return resources.map((r) => ({
+    publicId: r.public_id,
+    secureUrl: r.secure_url,
+    format: r.format,
+    width: r.width,
+    height: r.height,
+  }));
+}
+
+export async function uploadCloudinaryHomeImageAction(formData: FormData) {
+  await requireAdmin();
+
+  const publicId = formData.get("publicId") as string | null;
+  const file = formData.get("file") as File | null;
+
+  if (!publicId || !file) {
+    throw new Error("Dosya veya hedef eksik");
+  }
+
+  if (!publicId.startsWith("Home/")) {
+    throw new Error("Yalnızca Home klasörüne yükleme yapılabilir");
+  }
+
+  const maxBytes = 10 * 1024 * 1024;
+  if (file.size > maxBytes) {
+    throw new Error("Dosya 10MB sınırını aşıyor");
+  }
+
+  const allowed = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+  if (!allowed.includes(file.type)) {
+    throw new Error("Yalnızca JPEG, PNG, WebP veya GIF yüklenebilir");
+  }
+
+  const { uploadToCloudinary } = await import("@/lib/cloudinary");
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const result = await uploadToCloudinary(buffer, publicId, file.type);
+
+  return result;
+}
+
 export async function saveCountryAction(formData: FormData) {
   await requireAdmin();
   const id = formData.get("id") as string | null;

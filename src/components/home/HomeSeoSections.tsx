@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { HomepageContent } from "@/lib/homepage";
 import { SiteImage } from "@/components/ui/SiteImage";
-import { HomeEditableField } from "@/components/admin/homepage/HomeEditableField";
+import { HomeEditableField, HomeEditableSeoBlockImage } from "@/components/admin/homepage/HomeEditableField";
 import { useHomepageEdit } from "@/components/admin/homepage/HomepageEditContext";
 import { EditableText } from "@/components/admin/homepage/EditableText";
 
@@ -71,17 +71,19 @@ export function HomeSeoBlocks({ content }: { content: HomepageContent }) {
                 index % 2 === 1 ? "lg:[&>div:first-child]:order-2" : ""
               }`}
             >
-              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-slate-200 shadow-md">
-                {block.image && (
-                  <SiteImage
-                    src={block.image}
-                    alt={block.title}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                    className="object-cover"
-                  />
-                )}
-              </div>
+              <HomeEditableSeoBlockImage index={index} value={block.image ?? ""}>
+                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-slate-200 shadow-md">
+                  {block.image && (
+                    <SiteImage
+                      src={block.image}
+                      alt={block.title}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      className="object-cover"
+                    />
+                  )}
+                </div>
+              </HomeEditableSeoBlockImage>
               <div>
                 {edit ? (
                   <>
