@@ -16,6 +16,13 @@ export type HomeServiceArea = {
   description: string;
   href: string;
 };
+export type HomeFaqItem = {
+  id: string;
+  question: string;
+  answer: string;
+};
+
+export const HOMEPAGE_FAQ_MAX = 10;
 
 export type HomepageContent = {
   heroBadge: string;
@@ -50,6 +57,7 @@ export type HomepageContent = {
   serviceAreas: HomeServiceArea[];
   faqTitle: string;
   faqSubtitle: string;
+  faqs: HomeFaqItem[];
 };
 
 const defaultWhyUs: HomeWhyUsItem[] = [
@@ -156,6 +164,51 @@ const defaultServiceAreas: HomeServiceArea[] = [
   },
 ];
 
+const defaultFaqs: HomeFaqItem[] = [
+  {
+    id: "faq-1",
+    question: "Online başvuru yapabilir miyim?",
+    answer:
+      "Hayır. CSGLOBAL üzerinden online başvuru veya belge yükleme yapılmaz. Sürecinizi WhatsApp veya telefon ile uzman danışmanlarımızla yönetirsiniz.",
+  },
+  {
+    id: "faq-2",
+    question: "Hangi ülkeler için hizmet veriyorsunuz?",
+    answer:
+      "Sitemizdeki ülke listesi dinamik olarak güncellenir. Her ülkenin vize, oturum ve çalışma izni kategorileri farklı olabilir.",
+  },
+  {
+    id: "faq-3",
+    question: "Evrak listesi ve ücretler güncel mi?",
+    answer:
+      "Evrak, ücret ve süre bilgileri admin panelden yönetilir. Detay sayfalarında ülkeye özel kalemler listelenir.",
+  },
+  {
+    id: "faq-4",
+    question: "Schengen vizesi ile hangi ülkelere gidebilirim?",
+    answer:
+      "Geçerli Schengen vizesi ile Schengen bölgesindeki ülkelere seyahat edebilirsiniz. Vize türü ve süresi başvuru şartlarına bağlıdır.",
+  },
+  {
+    id: "faq-5",
+    question: "Danışmanlık ücreti nasıl belirlenir?",
+    answer:
+      "Danışmanlık kapsamı ülke ve hizmet türüne göre değişir. İletişim kanallarımızdan ücretsiz ön bilgi alabilirsiniz.",
+  },
+];
+
+function parseFaqs(raw: string | undefined): HomeFaqItem[] {
+  const parsed = parseJson<HomeFaqItem[]>(raw, defaultFaqs);
+  if (!Array.isArray(parsed)) return defaultFaqs;
+  return parsed
+    .slice(0, HOMEPAGE_FAQ_MAX)
+    .map((item, index) => ({
+      id: item.id?.trim() || `faq-${index + 1}`,
+      question: item.question ?? "",
+      answer: item.answer ?? "",
+    }));
+}
+
 function parseJson<T>(raw: string | undefined, fallback: T): T {
   if (!raw) return fallback;
   try {
@@ -239,6 +292,7 @@ export function buildHomepageContent(settings: SiteSettingsMap): HomepageContent
     faqSubtitle:
       settings.homeFaqSubtitle ||
       "Vize ve danışmanlık süreci hakkında en çok sorulan konular.",
+    faqs: parseFaqs(settings.homeFaqJson),
   };
 }
 
@@ -277,5 +331,6 @@ export function serializeHomepageToSettings(content: HomepageContent): Record<st
     homeServiceAreasJson: JSON.stringify(content.serviceAreas),
     homeFaqTitle: content.faqTitle,
     homeFaqSubtitle: content.faqSubtitle,
+    homeFaqJson: JSON.stringify(content.faqs.slice(0, HOMEPAGE_FAQ_MAX)),
   };
 }

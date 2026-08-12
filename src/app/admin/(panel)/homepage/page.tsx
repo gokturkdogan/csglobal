@@ -3,18 +3,32 @@ import { findFeaturedServices } from "@/lib/repositories/service.repository";
 import { findPublishedArticles } from "@/lib/repositories/article.repository";
 import { findHomepageFaqs } from "@/lib/repositories/faq.repository";
 import { getSiteSettings } from "@/lib/settings";
-import { buildHomepageContent } from "@/lib/homepage";
+import { buildHomepageContent, HOMEPAGE_FAQ_MAX } from "@/lib/homepage";
 import { HomepageVisualEditor } from "@/components/admin/homepage/HomepageVisualEditor";
 
 export default async function AdminHomepagePage() {
   const settings = await getSiteSettings();
-  const content = buildHomepageContent(settings);
+  let content = buildHomepageContent(settings);
 
-  const [countries, featured, articles, faqs] = await Promise.all([
+  // İlk kez: DB'deki genel SSS kayıtlarını düzenleyiciye taşı
+  if (!settings.homeFaqJson?.trim()) {
+    const dbFaqs = await findHomepageFaqs(HOMEPAGE_FAQ_MAX);
+    if (dbFaqs.length > 0) {
+      content = {
+        ...content,
+        faqs: dbFaqs.map((f) => ({
+          id: f.id,
+          question: f.question,
+          answer: f.answer,
+        })),
+      };
+    }
+  }
+
+  const [countries, featured, articles] = await Promise.all([
     findActiveCountries(),
     findFeaturedServices(),
     findPublishedArticles(3),
-    findHomepageFaqs(6),
   ]);
 
   const popular = countries.slice(0, 6);
@@ -43,7 +57,6 @@ export default async function AdminHomepagePage() {
         featuredItems,
         popularCountries: popular,
         articles,
-        faqs,
         settings,
       }}
     />

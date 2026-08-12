@@ -44,7 +44,6 @@ type PreviewData = {
     publishedAt: Date | null;
     articleCategory: { name: string };
   }>;
-  faqs: Array<{ id: string; question: string; answer: string }>;
   settings: SiteSettingsMap;
 };
 
@@ -77,7 +76,7 @@ export function HomepageLivePreview({
       <HomeSeoBlocks content={content} />
       <HomeProcess content={content} />
       <HomeCountriesSection content={content} countries={previewData.popularCountries} />
-      <HomeFaqPreview content={content} faqs={previewData.faqs} />
+      <HomeFaqPreview content={content} />
       <HomeArticlesSection content={content} articles={previewData.articles} />
       <HomeCtaBanner content={content} settings={previewData.settings} />
     </div>

@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import type { HomepageContent } from "@/lib/homepage";
+import { HOMEPAGE_FAQ_MAX } from "@/lib/homepage";
 
 type HomepageEditContextValue = {
   editing: boolean;
@@ -32,6 +33,9 @@ type HomepageEditContextValue = {
     field: "title" | "description",
     value: string,
   ) => void;
+  updateFaq: (index: number, field: "question" | "answer", value: string) => void;
+  addFaq: () => void;
+  removeFaq: (index: number) => void;
 };
 
 const HomepageEditContext = createContext<HomepageEditContextValue | null>(null);
@@ -114,6 +118,40 @@ export function HomepageEditProvider({
     [],
   );
 
+  const updateFaq = useCallback(
+    (index: number, field: "question" | "answer", value: string) => {
+      setContent((prev) => ({
+        ...prev,
+        faqs: prev.faqs.map((faq, i) => (i === index ? { ...faq, [field]: value } : faq)),
+      }));
+    },
+    [],
+  );
+
+  const addFaq = useCallback(() => {
+    setContent((prev) => {
+      if (prev.faqs.length >= HOMEPAGE_FAQ_MAX) return prev;
+      return {
+        ...prev,
+        faqs: [
+          ...prev.faqs,
+          {
+            id: crypto.randomUUID(),
+            question: "Yeni soru",
+            answer: "Cevabı buraya yazın.",
+          },
+        ],
+      };
+    });
+  }, []);
+
+  const removeFaq = useCallback((index: number) => {
+    setContent((prev) => ({
+      ...prev,
+      faqs: prev.faqs.filter((_, i) => i !== index),
+    }));
+  }, []);
+
   const value = useMemo(
     () => ({
       editing: true,
@@ -125,6 +163,9 @@ export function HomepageEditProvider({
       updateSeoParagraph,
       updateSeoBlock,
       updateServiceArea,
+      updateFaq,
+      addFaq,
+      removeFaq,
     }),
     [
       content,
@@ -135,6 +176,9 @@ export function HomepageEditProvider({
       updateSeoParagraph,
       updateSeoBlock,
       updateServiceArea,
+      updateFaq,
+      addFaq,
+      removeFaq,
     ],
   );
 

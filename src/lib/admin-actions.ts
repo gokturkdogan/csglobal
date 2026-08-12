@@ -85,6 +85,7 @@ const homepageKeys = [
   "homeServiceAreasJson",
   "homeFaqTitle",
   "homeFaqSubtitle",
+  "homeFaqJson",
 ] as const;
 
 export async function updateHomepageAction(formData: FormData) {

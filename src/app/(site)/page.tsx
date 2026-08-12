@@ -15,7 +15,7 @@ import { findFeaturedServices } from "@/lib/repositories/service.repository";
 import { findPublishedArticles } from "@/lib/repositories/article.repository";
 import { findHomepageFaqs } from "@/lib/repositories/faq.repository";
 import { getSiteSettings } from "@/lib/settings";
-import { buildHomepageContent } from "@/lib/homepage";
+import { buildHomepageContent, HOMEPAGE_FAQ_MAX } from "@/lib/homepage";
 import {
   buildEntityMetadata,
   buildFaqJsonLd,
@@ -37,14 +37,27 @@ export async function generateMetadata() {
 
 export default async function HomePage() {
   const settings = await getSiteSettings();
-  const content = buildHomepageContent(settings);
+  let content = buildHomepageContent(settings);
 
-  const [countries, featured, articles, faqs] = await Promise.all([
+  const [countries, featured, articles] = await Promise.all([
     findActiveCountries(),
     findFeaturedServices(),
     findPublishedArticles(3),
-    findHomepageFaqs(6),
   ]);
+
+  if (!settings.homeFaqJson?.trim()) {
+    const dbFaqs = await findHomepageFaqs(HOMEPAGE_FAQ_MAX);
+    if (dbFaqs.length > 0) {
+      content = {
+        ...content,
+        faqs: dbFaqs.map((f) => ({
+          id: f.id,
+          question: f.question,
+          answer: f.answer,
+        })),
+      };
+    }
+  }
 
   const popular = countries.slice(0, 6);
   const quickLinks = countries.slice(0, 5).map((c) => ({
@@ -64,7 +77,7 @@ export default async function HomePage() {
     heroImage: s.heroImage,
   }));
 
-  const faqJsonLd = buildFaqJsonLd(faqs);
+  const faqJsonLd = buildFaqJsonLd(content.faqs);
   const orgJsonLd = buildOrganizationJsonLd(settings);
 
   return (
@@ -91,7 +104,7 @@ export default async function HomePage() {
       <HomeSeoBlocks content={content} />
       <HomeProcess content={content} />
       <HomeCountriesSection content={content} countries={popular} />
-      <HomeFaqPreview content={content} faqs={faqs} />
+      <HomeFaqPreview content={content} />
       <HomeArticlesSection content={content} articles={articles} />
       <HomeCtaBanner content={content} settings={settings} />
     </>

@@ -37,7 +37,6 @@ type PreviewData = {
     publishedAt: Date | null;
     articleCategory: { name: string };
   }>;
-  faqs: Array<{ id: string; question: string; answer: string }>;
   settings: SiteSettingsMap;
 };
 
@@ -115,8 +114,8 @@ function HomepageEditorInner({
       </div>
 
       <p className="mt-4 text-sm text-slate-500">
-        Öne çıkan hizmetler, ülkeler ve SSS içerikleri ilgili menülerden yönetilir; burada yalnızca
-        anasayfa metinleri ve görselleri düzenlenir.
+        Öne çıkan hizmetler, ülkeler ve rehber yazıları ilgili menülerden yönetilir. SSS soruları
+        bu önizlemede düzenlenir; kaydettiğinizde anasayfaya yansır.
       </p>
 
       <div className="mt-8 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">

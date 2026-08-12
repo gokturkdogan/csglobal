@@ -42,6 +42,7 @@ export type SiteSettingsMap = {
   homeServiceAreasJson: string;
   homeFaqTitle: string;
   homeFaqSubtitle: string;
+  homeFaqJson: string;
 };
 
 export const defaultSiteSettings: SiteSettingsMap = {
@@ -90,6 +91,7 @@ export const defaultSiteSettings: SiteSettingsMap = {
   homeServiceAreasJson: "",
   homeFaqTitle: "",
   homeFaqSubtitle: "",
+  homeFaqJson: "",
 };
 
 export function buildWhatsAppUrl(number: string, message: string): string {
