@@ -28,7 +28,7 @@ export const siteImages = {
   office: homeAsset("seo-2"),
   /** Ülkeler sayfası hero */
   countriesHero:
-    "https://res.cloudinary.com/ulnb2wjo/image/upload/v1786556193/countries-hero.png",
+    "https://res.cloudinary.com/ulnb2wjo/image/upload/v1786556358/countries-hero.png",
   /** Ülke detay sayfası hero */
   countryDetailHero:
     "https://res.cloudinary.com/ulnb2wjo/image/upload/v1786557153/country-detail-banner.png",

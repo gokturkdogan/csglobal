@@ -5,12 +5,15 @@ import { Pool } from "pg";
 import {
   PrismaClient,
   AdminRole,
-  SectionType,
-  FeeType,
   SeoEntityType,
 } from "../src/generated/prisma/client";
+import {
+  wipeServicesAndCategories,
+  seedGlobalVisaCategories,
+} from "./lib/visa-structure-seed";
 
-// Image URLs — keep in sync with src/lib/media.ts
+const pool = new Pool({ connectionString: process.env.DATABASE_URL! });
+const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
 const IMG = {
   hero: "https://res.cloudinary.com/ulnb2wjo/image/upload/v1786551822/banner-1.png",
   about: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&q=80&auto=format",
@@ -21,119 +24,6 @@ const IMG = {
   conference: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80&auto=format",
   office: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80&auto=format",
 };
-
-const pool = new Pool({ connectionString: process.env.DATABASE_URL! });
-const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
-
-async function upsertCategory(
-  countryId: string,
-  data: {
-    slug: string;
-    name: string;
-    parentId?: string | null;
-    sortOrder?: number;
-    categoryType?: string;
-    shortDescription?: string;
-  },
-) {
-  const parentId = data.parentId ?? null;
-  const existing = await prisma.category.findFirst({
-    where: { countryId, parentId, slug: data.slug },
-  });
-  if (existing) {
-    return prisma.category.update({
-      where: { id: existing.id },
-      data: { name: data.name, isActive: true },
-    });
-  }
-  return prisma.category.create({
-    data: {
-      countryId,
-      parentId,
-      slug: data.slug,
-      name: data.name,
-      sortOrder: data.sortOrder ?? 0,
-      categoryType: data.categoryType,
-      shortDescription: data.shortDescription,
-      isActive: true,
-    },
-  });
-}
-
-async function createService(
-  countryId: string,
-  categoryId: string,
-  data: {
-    slug: string;
-    name: string;
-    shortDescription?: string;
-    processingTime?: string;
-    isFeatured?: boolean;
-    heroImage?: string;
-    sections?: Array<{ slug: string; title: string; content: string; type?: SectionType }>;
-    fees?: Array<{ name: string; amount: number; currency?: string; feeType?: FeeType }>;
-  },
-) {
-  const service = await prisma.service.upsert({
-    where: { countryId_slug: { countryId, slug: data.slug } },
-    create: {
-      countryId,
-      categoryId,
-      slug: data.slug,
-      name: data.name,
-      shortDescription: data.shortDescription,
-      processingTime: data.processingTime,
-      heroImage: data.heroImage,
-      isFeatured: data.isFeatured ?? false,
-      isActive: true,
-      requiresAppointment: true,
-    },
-    update: {
-      name: data.name,
-      categoryId,
-      heroImage: data.heroImage,
-      isFeatured: data.isFeatured ?? false,
-      processingTime: data.processingTime,
-      isActive: true,
-    },
-  });
-
-  if (data.sections) {
-    for (const [i, sec] of data.sections.entries()) {
-      await prisma.serviceSection.upsert({
-        where: { serviceId_slug: { serviceId: service.id, slug: sec.slug } },
-        create: {
-          serviceId: service.id,
-          slug: sec.slug,
-          title: sec.title,
-          content: sec.content,
-          sectionType: sec.type ?? SectionType.CUSTOM,
-          sortOrder: i,
-          isActive: true,
-        },
-        update: { title: sec.title, content: sec.content, sortOrder: i },
-      });
-    }
-  }
-
-  if (data.fees) {
-    await prisma.fee.deleteMany({ where: { serviceId: service.id } });
-    for (const fee of data.fees) {
-      await prisma.fee.create({
-        data: {
-          serviceId: service.id,
-          name: fee.name,
-          amount: fee.amount,
-          currency: fee.currency ?? "EUR",
-          feeType: fee.feeType ?? FeeType.CONSULAR,
-          isActive: true,
-        },
-      });
-    }
-  }
-
-  return service;
-}
 
 async function main() {
   const passwordHash = await bcrypt.hash("admin123", 12);
@@ -266,158 +156,6 @@ async function main() {
     update: {},
   });
 
-  const vizeler = await upsertCategory(germany.id, {
-    slug: "vizeler",
-    name: "Vizeler",
-    categoryType: "visa",
-    sortOrder: 1,
-  });
-  const oturma = await upsertCategory(germany.id, {
-    slug: "oturma-izni",
-    name: "Oturma İzni",
-    categoryType: "residence",
-    sortOrder: 2,
-  });
-  const calisma = await upsertCategory(germany.id, {
-    slug: "calisma-izni",
-    name: "Çalışma İzni",
-    categoryType: "work",
-    sortOrder: 3,
-  });
-  const vatandaslik = await upsertCategory(germany.id, {
-    slug: "vatandaslik",
-    name: "Vatandaşlık",
-    categoryType: "citizenship",
-    sortOrder: 4,
-  });
-
-  const turistik = await upsertCategory(germany.id, {
-    slug: "turistik-vize",
-    name: "Turistik Vize",
-    parentId: vizeler.id,
-    sortOrder: 1,
-  });
-  const ticari = await upsertCategory(germany.id, {
-    slug: "ticari-vize",
-    name: "Ticari Vize",
-    parentId: vizeler.id,
-    sortOrder: 2,
-  });
-  const transit = await upsertCategory(germany.id, {
-    slug: "transit-vize",
-    name: "Transit Vize",
-    parentId: vizeler.id,
-    sortOrder: 3,
-  });
-
-  const fuar = await upsertCategory(germany.id, {
-    slug: "fuar-vizesi",
-    name: "Fuar Vizesi",
-    parentId: ticari.id,
-    sortOrder: 1,
-  });
-  const isSeyahat = await upsertCategory(germany.id, {
-    slug: "is-seyahati-vizesi",
-    name: "İş Seyahati Vizesi",
-    parentId: ticari.id,
-    sortOrder: 2,
-  });
-
-  const turistikSvc = await createService(germany.id, turistik.id, {
-    slug: "turistik-vizesi",
-    name: "Almanya Turistik Vizesi",
-    shortDescription: "90 güne kadar turistik Schengen vizesi.",
-    processingTime: "Ortalama 15 iş günü",
-    isFeatured: true,
-    heroImage: IMG.travel,
-    sections: [
-      {
-        slug: "genel-bilgi",
-        title: "Genel Bilgi",
-        content: "Almanya turistik vize, kısa süreli Schengen seyahatleri için verilir.",
-        type: SectionType.GENERAL,
-      },
-      {
-        slug: "gerekli-evraklar",
-        title: "Gerekli Evraklar",
-        content: "Pasaport, form, sigorta ve mali belgeler gereklidir.",
-        type: SectionType.DOCUMENTS,
-      },
-    ],
-    fees: [
-      { name: "Konsolosluk harcı", amount: 90, feeType: FeeType.CONSULAR },
-      { name: "Başvuru merkezi", amount: 35, currency: "EUR", feeType: FeeType.APPLICATION_CENTER },
-    ],
-  });
-
-  const pasaport = await prisma.document.findUnique({ where: { slug: "pasaport" } });
-  const foto = await prisma.document.findUnique({ where: { slug: "biyometrik-fotograf" } });
-  const calisan = await prisma.applicantProfile.findUnique({ where: { slug: "calisan" } });
-  if (pasaport && foto) {
-    await prisma.serviceDocument.createMany({
-      data: [
-        { serviceId: turistikSvc.id, documentId: pasaport.id, isRequired: true, sortOrder: 0 },
-        { serviceId: turistikSvc.id, documentId: foto.id, isRequired: true, sortOrder: 1 },
-      ],
-      skipDuplicates: true,
-    });
-  }
-
-  await createService(germany.id, fuar.id, {
-    slug: "fuar-vizesi",
-    name: "Almanya Fuar Vizesi",
-    shortDescription: "Ticari fuar ve etkinlik ziyaretleri.",
-    processingTime: "10-15 iş günü",
-    isFeatured: true,
-    heroImage: IMG.conference,
-  });
-
-  await createService(germany.id, isSeyahat.id, {
-    slug: "is-seyahati-vizesi",
-    name: "Almanya İş Seyahati Vizesi",
-    processingTime: "10-15 iş günü",
-    isFeatured: true,
-    heroImage: IMG.travel,
-  });
-
-  await createService(germany.id, transit.id, {
-    slug: "transit-vizesi",
-    name: "Havalimanı Transit Vizesi",
-    isFeatured: true,
-  });
-
-  const aileOturum = await upsertCategory(germany.id, {
-    slug: "aile-birlesimi",
-    name: "Aile Birleşimi",
-    parentId: oturma.id,
-    sortOrder: 1,
-  });
-  await createService(germany.id, aileOturum.id, {
-    slug: "aile-birlesimi-oturumu",
-    name: "Aile Birleşimi Oturumu",
-    isFeatured: true,
-  });
-
-  const maviKart = await upsertCategory(germany.id, {
-    slug: "mavi-kart",
-    name: "Mavi Kart",
-    parentId: calisma.id,
-    sortOrder: 1,
-  });
-  await createService(germany.id, maviKart.id, {
-    slug: "mavi-kart",
-    name: "Almanya Mavi Kart",
-    isFeatured: true,
-    processingTime: "4-8 hafta",
-    heroImage: IMG.office,
-  });
-
-  await createService(germany.id, vatandaslik.id, {
-    slug: "almanya-vatandasligi",
-    name: "Almanya Vatandaşlığı",
-    isFeatured: true,
-  });
-
   await prisma.seoMetadata.upsert({
     where: { entityType_entityId: { entityType: SeoEntityType.COUNTRY, entityId: germany.id } },
     create: {
@@ -429,7 +167,6 @@ async function main() {
     update: {},
   });
 
-  // France - different structure: only Vizeler + Vatandaşlık
   const france = await prisma.country.upsert({
     where: { slug: "fransa" },
     create: {
@@ -446,38 +183,8 @@ async function main() {
     update: {},
   });
 
-  const frVizeler = await upsertCategory(france.id, {
-    slug: "vizeler",
-    name: "Vizeler",
-    categoryType: "visa",
-    sortOrder: 1,
-  });
-  const frVatandaslik = await upsertCategory(france.id, {
-    slug: "vatandaslik",
-    name: "Vatandaşlık",
-    categoryType: "citizenship",
-    sortOrder: 2,
-  });
-
-  const frTuristik = await upsertCategory(france.id, {
-    slug: "turistik-vize",
-    name: "Turistik Vize",
-    parentId: frVizeler.id,
-    sortOrder: 1,
-  });
-
-  await createService(france.id, frTuristik.id, {
-    slug: "fransa-turistik-vizesi",
-    name: "Fransa Turistik Vizesi",
-    processingTime: "7-20 iş günü",
-    isFeatured: true,
-    heroImage: IMG.france,
-  });
-
-  await createService(france.id, frVatandaslik.id, {
-    slug: "fransa-vatandasligi",
-    name: "Fransa Vatandaşlığı",
-  });
+  await wipeServicesAndCategories(prisma);
+  await seedGlobalVisaCategories(prisma);
 
   await prisma.article.upsert({
     where: { slug: "almanya-vize-rehberi" },
@@ -493,16 +200,6 @@ async function main() {
       publishedAt: new Date(),
     },
     update: {},
-  });
-
-  await prisma.faq.create({
-    data: {
-      serviceId: turistikSvc.id,
-      question: "Almanya turistik vize ne kadar sürede çıkar?",
-      answer: "Ortalama 15 iş günü; yoğun dönemlerde uzayabilir.",
-      isActive: true,
-      sortOrder: 0,
-    },
   });
 
   const homeFaqs = [
@@ -541,7 +238,7 @@ async function main() {
     await prisma.faq.create({ data: { ...f, isActive: true } });
   }
 
-  console.log("Seed tamamlandı: Almanya (tam ağaç) + Fransa (farklı yapı)");
+  console.log("Seed tamamlandı: Almanya + Fransa (global kategoriler, hizmetler boş)");
   console.log("Admin: admin@csglobal.com / admin123");
 }
 

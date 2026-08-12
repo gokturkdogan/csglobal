@@ -31,8 +31,8 @@ export default async function EditServicePage({ params }: Props) {
 
   const countries = await prisma.country.findMany({ orderBy: { name: "asc" } });
   const categories = await prisma.category.findMany({
-    orderBy: { name: "asc" },
-    select: { id: true, name: true, countryId: true },
+    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    select: { id: true, name: true },
   });
 
   return (

@@ -1,33 +1,15 @@
 import { notFound } from "next/navigation";
 import { ContactCTA } from "@/components/domain/ContactCTA";
 import { CountryPageHero } from "@/components/domain/CountryPageHero";
-import { CategoryLinkCard, ServiceCard } from "@/components/domain/ServiceCard";
+import { ServiceCard } from "@/components/domain/ServiceCard";
 import { MarkdownContent } from "@/components/MarkdownContent";
 import { findCountryBySlug } from "@/lib/repositories/country.repository";
-import { buildCategoryTree, type CategoryNode } from "@/lib/services/category-tree.service";
-import {
-  buildCategoryPath,
-} from "@/lib/services/path-resolver.service";
+import { findCategoriesWithCountryServices } from "@/lib/repositories/category.repository";
 import { buildEntityMetadata } from "@/lib/services/seo.service";
 import { getSiteSettings } from "@/lib/settings";
 import { SeoEntityType } from "@/generated/prisma/client";
 
 type Props = { params: Promise<{ countrySlug: string }> };
-
-function countTreeStats(nodes: CategoryNode[]): { services: number; categories: number } {
-  let services = 0;
-  let categories = 0;
-
-  for (const node of nodes) {
-    categories += 1;
-    services += node.services.length;
-    const childStats = countTreeStats(node.children);
-    services += childStats.services;
-    categories += childStats.categories;
-  }
-
-  return { services, categories };
-}
 
 export async function generateMetadata({ params }: Props) {
   const { countrySlug } = await params;
@@ -49,8 +31,8 @@ export default async function CountryPage({ params }: Props) {
   if (!country) notFound();
 
   const settings = await getSiteSettings();
-  const tree = await buildCategoryTree(country.id);
-  const { services: serviceCount, categories: categoryCount } = countTreeStats(tree);
+  const categoryRoots = await findCategoriesWithCountryServices(country.id);
+  const serviceCount = categoryRoots.reduce((n, cat) => n + cat.services.length, 0);
 
   return (
     <>
@@ -59,7 +41,7 @@ export default async function CountryPage({ params }: Props) {
         shortDescription={country.shortDescription}
         flag={country.flag}
         serviceCount={serviceCount}
-        categoryCount={categoryCount}
+        categoryCount={categoryRoots.length}
       />
 
       <div className="home-band-soft">
@@ -71,8 +53,32 @@ export default async function CountryPage({ params }: Props) {
           )}
 
           <div className={`space-y-12 ${country.description ? "mt-12" : ""}`}>
-            {tree.map((root) => (
-              <CategorySection key={root.id} node={root} countrySlug={countrySlug} />
+            {categoryRoots.map((category) => (
+              <section key={category.id}>
+                <h2 className="text-xl font-semibold text-slate-900">{category.name}</h2>
+                {category.shortDescription && (
+                  <p className="mt-2 text-sm text-slate-600">{category.shortDescription}</p>
+                )}
+
+                {category.services.length > 0 ? (
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                    {category.services.map((service) => (
+                      <ServiceCard
+                        key={service.id}
+                        name={service.name}
+                        slug={service.slug}
+                        countrySlug={countrySlug}
+                        shortDescription={service.shortDescription}
+                        processingTime={service.processingTime}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="mt-4 text-sm text-slate-500">
+                    Bu kategoride henüz hizmet eklenmemiş.
+                  </p>
+                )}
+              </section>
             ))}
           </div>
 
@@ -82,73 +88,5 @@ export default async function CountryPage({ params }: Props) {
         </div>
       </div>
     </>
-  );
-}
-
-function CategorySection({
-  node,
-  countrySlug,
-  depth = 0,
-}: {
-  node: CategoryNode;
-  countrySlug: string;
-  depth?: number;
-}) {
-  const hasDirectServices = node.services.length > 0;
-  const hasChildren = node.children.length > 0;
-
-  return (
-    <section>
-      <h2
-        className={`font-semibold text-slate-900 ${depth === 0 ? "text-xl" : "text-lg"}`}
-      >
-        {node.name}
-      </h2>
-      {node.shortDescription && (
-        <p className="mt-2 text-sm text-slate-600">{node.shortDescription}</p>
-      )}
-
-      {hasChildren && (
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {node.children.map((child) => {
-            const href = buildCategoryPath(countrySlug, child.slugPath);
-            const count = child.services.length + child.children.length;
-            return (
-              <CategoryLinkCard
-                key={child.id}
-                name={child.name}
-                href={href}
-                meta={`${count} alt öğe`}
-              />
-            );
-          })}
-        </div>
-      )}
-
-      {hasDirectServices && (
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          {node.services.map((s) => (
-            <ServiceCard
-              key={s.id}
-              name={s.name}
-              slug={s.slug}
-              countrySlug={countrySlug}
-              shortDescription={s.shortDescription}
-              processingTime={s.processingTime}
-            />
-          ))}
-        </div>
-      )}
-
-      {depth < 2 &&
-        node.children.map((child) => (
-          <div
-            key={child.id}
-            className="mt-8 border-l-0 border-slate-200 pl-0 md:border-l md:pl-6"
-          >
-            <CategorySection node={child} countrySlug={countrySlug} depth={depth + 1} />
-          </div>
-        ))}
-    </section>
   );
 }

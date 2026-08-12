@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { ContactCTA } from "@/components/domain/ContactCTA";
-import { CategoryLinkCard, ServiceCard } from "@/components/domain/ServiceCard";
+import { ServiceCard } from "@/components/domain/ServiceCard";
 import { DocumentList } from "@/components/domain/DocumentList";
 import { FeeTable } from "@/components/domain/FeeTable";
 import { FaqAccordion } from "@/components/domain/FaqAccordion";
@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: Props) {
   return buildEntityMetadata({
     entityType: SeoEntityType.CATEGORY,
     entityId: data.category.id,
-    path: buildCategoryPath(countrySlug, path),
+    path: buildCategoryPath(countrySlug, [data.category.slug]),
     fallbackTitle: data.category.name,
     fallbackDescription: data.category.shortDescription ?? undefined,
   });
@@ -218,13 +218,7 @@ export default async function CountryPathPage({ params }: Props) {
   const breadcrumbItems = [
     { label: "Anasayfa", href: "/" },
     { label: data.country.name, href: `/${countrySlug}` },
-    ...data.categories.map((c, i) => ({
-      label: c.name,
-      href:
-        i < data.categories.length - 1
-          ? buildCategoryPath(countrySlug, path.slice(0, i + 1))
-          : undefined,
-    })),
+    { label: data.category.name },
   ];
 
   return (
@@ -238,20 +232,7 @@ export default async function CountryPathPage({ params }: Props) {
         <p className="mt-3 text-slate-600">{data.category.shortDescription}</p>
       )}
 
-      {data.children.length > 0 && (
-        <div className="mt-10 grid gap-3 sm:grid-cols-2">
-          {data.children.map(({ category, childCount, serviceCount }) => (
-            <CategoryLinkCard
-              key={category.id}
-              name={category.name}
-              href={buildCategoryPath(countrySlug, [...path, category.slug])}
-              meta={`${childCount + serviceCount} öğe`}
-            />
-          ))}
-        </div>
-      )}
-
-      {data.services.length > 0 && (
+      {data.services.length > 0 ? (
         <div className="mt-10 grid gap-3 sm:grid-cols-2">
           {data.services.map((s) => (
             <ServiceCard
@@ -264,6 +245,10 @@ export default async function CountryPathPage({ params }: Props) {
             />
           ))}
         </div>
+      ) : (
+        <p className="mt-10 text-sm text-slate-500">
+          Bu kategoride {data.country.name} için henüz hizmet eklenmemiş.
+        </p>
       )}
 
       <div className="mt-12">

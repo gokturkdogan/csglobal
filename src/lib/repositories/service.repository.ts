@@ -32,6 +32,16 @@ export async function findServicesByCategory(categoryId: string) {
   });
 }
 
+export async function findServicesByCountryAndCategory(
+  countryId: string,
+  categoryId: string,
+) {
+  return prisma.service.findMany({
+    where: { countryId, categoryId, ...active },
+    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+  });
+}
+
 export async function findFeaturedServices(limit?: number) {
   return prisma.service.findMany({
     where: { isFeatured: true, ...active },

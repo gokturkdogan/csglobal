@@ -204,12 +204,8 @@ export async function saveCountryAction(formData: FormData) {
 export async function saveCategoryAction(formData: FormData) {
   await requireAdmin();
   const id = formData.get("id") as string | null;
-  const parentRaw = formData.get("parentId") as string;
-  const parentId = parentRaw && parentRaw !== "" ? parentRaw : null;
 
   const data = {
-    countryId: formData.get("countryId") as string,
-    parentId,
     name: formData.get("name") as string,
     slug: formData.get("slug") as string,
     categoryType: (formData.get("categoryType") as string) || null,

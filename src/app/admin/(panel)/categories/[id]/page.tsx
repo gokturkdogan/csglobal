@@ -5,7 +5,6 @@ import {
   AdminCheckbox,
   AdminField,
   AdminFormSection,
-  AdminSelect,
   AdminSubmitButton,
 } from "@/components/admin/AdminForm";
 import { AdminPageHeader } from "@/components/admin/AdminUi";
@@ -22,58 +21,21 @@ export default async function EditCategoryPage({ params }: Props) {
 
   if (!isNew && !category) notFound();
 
-  const countries = await prisma.country.findMany({
-    orderBy: { name: "asc" },
-    select: { id: true, name: true },
-  });
-
-  const allCategories = await prisma.category.findMany({
-    orderBy: { name: "asc" },
-    select: { id: true, name: true, countryId: true },
-  });
-
   return (
     <div className="space-y-6">
       <AdminPageHeader
         title={category ? `${category.name} Düzenle` : "Yeni Kategori"}
-        description="Kategori hiyerarşisi ve slug yapılandırması."
+        description="Global kategori — hizmetler ülkeye bağlanır, kategori tüm ülkelerde ortaktır."
       />
 
       <form action={saveCategoryAction} className="max-w-3xl space-y-6">
         {category && <input type="hidden" name="id" value={category.id} />}
 
-        <AdminFormSection title="Konum">
-          <AdminSelect
-            label="Ülke"
-            name="countryId"
-            required
-            defaultValue={category?.countryId ?? ""}
-          >
-            <option value="" disabled>Seçin</option>
-            {countries.map((c) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-          </AdminSelect>
-
-          <AdminSelect
-            label="Üst kategori"
-            name="parentId"
-            defaultValue={category?.parentId ?? ""}
-          >
-            <option value="">Yok (kök)</option>
-            {allCategories
-              .filter((c) => c.id !== category?.id)
-              .map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-          </AdminSelect>
-        </AdminFormSection>
-
         <AdminFormSection title="Bilgiler">
           <AdminField label="Ad" name="name" value={category?.name} required />
           <AdminField label="Slug" name="slug" value={category?.slug} required />
           <AdminField
-            label="Tip (visa, residence, work…)"
+            label="Tip (visa_tourist, visa_business…)"
             name="categoryType"
             value={category?.categoryType}
           />

@@ -15,7 +15,6 @@ export default async function AdminCountriesPage() {
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     include: {
       services: { where: { isActive: true }, select: { id: true } },
-      categories: { where: { isActive: true }, select: { id: true } },
     },
   });
 
@@ -32,7 +31,6 @@ export default async function AdminCountriesPage() {
           <th className="px-5 py-3">Ad</th>
           <th className="px-5 py-3">Slug</th>
           <th className="px-5 py-3">Durum</th>
-          <th className="px-5 py-3">Kategori</th>
           <th className="px-5 py-3">Hizmet</th>
           <th className="px-5 py-3 text-right">İşlem</th>
         </AdminTableHead>
@@ -44,7 +42,6 @@ export default async function AdminCountriesPage() {
               <td className="px-5 py-3.5">
                 <AdminStatusBadge active={c.isActive} />
               </td>
-              <td className="px-5 py-3.5 text-slate-600">{c.categories.length}</td>
               <td className="px-5 py-3.5 text-slate-600">{c.services.length}</td>
               <td className="px-5 py-3.5 text-right">
                 <AdminLink href={`/admin/countries/${c.id}`}>Düzenle</AdminLink>

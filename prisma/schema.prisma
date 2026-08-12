@@ -65,7 +65,6 @@ model Country {
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @updatedAt @map("updated_at")
 
-  categories           Category[]
   services             Service[]
   faqs                 Faq[]
   articles             Article[]
@@ -77,10 +76,8 @@ model Country {
 
 model Category {
   id               String   @id @default(cuid())
-  countryId        String   @map("country_id")
-  parentId         String?  @map("parent_id")
   name             String
-  slug             String
+  slug             String   @unique
   shortDescription String?  @map("short_description") @db.Text
   description      String?  @db.Text
   categoryType     String?  @map("category_type")
@@ -91,17 +88,11 @@ model Category {
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @updatedAt @map("updated_at")
 
-  country   Country    @relation(fields: [countryId], references: [id], onDelete: Restrict)
-  parent    Category?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: Restrict)
-  children  Category[] @relation("CategoryTree")
-  services  Service[]
-  faqs      Faq[]
-  articles  Article[]
+  services Service[]
+  faqs     Faq[]
+  articles Article[]
 
-  @@unique([countryId, parentId, slug])
-  @@index([countryId])
-  @@index([parentId])
-  @@index([countryId, isActive, sortOrder])
+  @@index([isActive, sortOrder])
   @@map("categories")
 }
 

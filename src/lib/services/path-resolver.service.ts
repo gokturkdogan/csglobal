@@ -1,13 +1,13 @@
 import { findCountryBySlug } from "@/lib/repositories/country.repository";
+import { findCategoryBySlug } from "@/lib/repositories/category.repository";
 import { findServiceByCountrySlug } from "@/lib/repositories/service.repository";
-import { getCategoryBranch, getCategoryChildrenWithServices } from "./category-tree.service";
 import { buildCategoryPath, buildServicePath } from "@/lib/paths";
 
 export { buildCategoryPath, buildServicePath };
 
 export type ResolvedPath =
   | { type: "service"; countrySlug: string; serviceSlug: string }
-  | { type: "category"; countrySlug: string; segments: string[] }
+  | { type: "category"; countrySlug: string; categorySlug: string }
   | { type: "not_found" };
 
 export async function resolveCountryPath(
@@ -27,23 +27,32 @@ export async function resolveCountryPath(
     return { type: "service", countrySlug, serviceSlug: lastSegment };
   }
 
-  const { leaf } = await getCategoryBranch(country.id, pathSegments);
-  if (leaf) {
-    return { type: "category", countrySlug, segments: pathSegments };
+  if (pathSegments.length === 1) {
+    const category = await findCategoryBySlug(pathSegments[0]);
+    if (category) {
+      return { type: "category", countrySlug, categorySlug: pathSegments[0] };
+    }
   }
 
   return { type: "not_found" };
 }
 
-export async function loadCategoryPageData(countrySlug: string, segments: string[]) {
+export async function loadCategoryPageData(
+  countrySlug: string,
+  pathSegments: string[],
+) {
+  if (pathSegments.length !== 1) return null;
+
   const country = await findCountryBySlug(countrySlug);
   if (!country) return null;
 
-  const { categories, leaf } = await getCategoryBranch(country.id, segments);
-  if (!leaf) return null;
+  const category = await findCategoryBySlug(pathSegments[0]);
+  if (!category) return null;
 
-  const { children, services } = await getCategoryChildrenWithServices(leaf.id);
-  if (children.length === 0 && services.length === 0) return null;
+  const { findServicesByCountryAndCategory } = await import(
+    "@/lib/repositories/service.repository"
+  );
+  const services = await findServicesByCountryAndCategory(country.id, category.id);
 
-  return { country, categories, category: leaf, children, services };
+  return { country, category, services };
 }

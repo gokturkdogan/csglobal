@@ -38,16 +38,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
       }));
 
-    const categoryRoutes = categories
-      .filter((c) => c.country.isActive)
-      .map((c) => {
-        // Simplified: single slug paths only for sitemap; full paths resolved on site
-        return {
-          url: `${base}${buildCategoryPath(c.country.slug, [c.slug])}`,
-          changeFrequency: "weekly" as const,
-          priority: 0.75,
-        };
-      });
+    const categoryRoutes = countries.flatMap((country) =>
+      categories.map((cat) => ({
+        url: `${base}${buildCategoryPath(country.slug, [cat.slug])}`,
+        changeFrequency: "weekly" as const,
+        priority: 0.75,
+      })),
+    );
 
     const articleRoutes = articles.map((a) => ({
       url: `${base}/rehber/${a.slug}`,
