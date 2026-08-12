@@ -52,7 +52,7 @@ export function HomeEditableImage({
   value: string;
   children: React.ReactNode;
   label?: string;
-  /** Tam ekran arka plan görselleri (hero, CTA) — absolute inset-0 */
+  /** Tam ekran arka plan görselleri (hero, CTA): absolute inset-0 */
   fullBleed?: boolean;
 }) {
   const edit = useHomepageEdit();

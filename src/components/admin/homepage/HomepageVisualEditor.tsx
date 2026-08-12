@@ -77,7 +77,7 @@ function HomepageEditorInner({
     <>
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Anasayfa — Görsel Düzenleyici</h1>
+          <h1 className="text-2xl font-semibold text-slate-900">Anasayfa: Görsel Düzenleyici</h1>
           <p className="mt-1 text-sm text-slate-600">
             WordPress benzeri önizleme; metinlere tıklayıp düzenleyin, görsellerde &quot;Görseli değiştir&quot;
             kullanın.
@@ -107,7 +107,7 @@ function HomepageEditorInner({
       <div className="-mx-4 md:-mx-6 lg:-mx-8">
         <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-sm">
           <div className="border-b border-slate-200 bg-white px-4 py-2 text-center text-xs text-slate-500">
-            Canlı önizleme — düzenlenebilir alanlar mavi çizgili kenarlıkla vurgulanır
+            Canlı önizleme: düzenlenebilir alanlar mavi çizgili kenarlıkla vurgulanır
           </div>
           <HomepageLivePreview initialContent={initialContent} previewData={previewData} />
         </div>

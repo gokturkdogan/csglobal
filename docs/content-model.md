@@ -19,7 +19,7 @@ Rendered from DB only:
 
 ## Service Page
 
-- Hero: name, short_description, CTA (WhatsApp / contact — no online apply)
+- Hero: name, short_description, CTA (WhatsApp / contact; no online apply)
 - Sticky sidebar: processing time, appointment flag, fee summary (min fee from `fees`)
 - Sections from `service_sections` ordered by `sort_order`
 - Documents grouped: general (`applicant_profile_id IS NULL`) + per profile

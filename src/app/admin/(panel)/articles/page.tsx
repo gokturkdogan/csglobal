@@ -37,7 +37,7 @@ export default async function AdminArticlesPage() {
             <tr key={a.id} className="hover:bg-slate-50/80">
               <td className="px-5 py-3.5 font-medium text-slate-900">{a.title}</td>
               <td className="px-5 py-3.5 text-slate-600">{a.articleCategory.name}</td>
-              <td className="px-5 py-3.5 text-slate-600">{a.country?.name ?? "—"}</td>
+              <td className="px-5 py-3.5 text-slate-600">{a.country?.name ?? "-"}</td>
               <td className="px-5 py-3.5">
                 <AdminStatusBadge
                   active={a.isPublished}

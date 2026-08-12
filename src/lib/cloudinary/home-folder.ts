@@ -1,4 +1,4 @@
-/** Anasayfa görselleri — Cloudinary Media Library > Home */
+/** Anasayfa görselleri: Cloudinary Media Library > Home */
 export const HOMEPAGE_CLOUDINARY_FOLDER = "Home";
 
 export function buildHomeImagePublicId(assetName: string): string {

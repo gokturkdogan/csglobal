@@ -57,7 +57,7 @@ export default async function EditArticlePage({ params }: Props) {
             name="countryId"
             defaultValue={article?.countryId ?? ""}
           >
-            <option value="">—</option>
+            <option value="">Seçiniz</option>
             {countries.map((c) => (
               <option key={c.id} value={c.id}>{c.name}</option>
             ))}

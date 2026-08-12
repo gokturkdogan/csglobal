@@ -2,11 +2,11 @@
 
 ## ER Overview
 
-- `countries` 1—N `categories` (tree via `parent_id`)
-- `countries` 1—N `services`
-- `categories` 1—N `services` (each service belongs to one category)
-- `services` 1—N `service_sections`, `fees`, `service_documents`, `faqs`
-- `documents` N—M `services` via `service_documents`
+- `countries` 1-N `categories` (tree via `parent_id`)
+- `countries` 1-N `services`
+- `categories` 1-N `services` (each service belongs to one category)
+- `services` 1-N `service_sections`, `fees`, `service_documents`, `faqs`
+- `documents` N-M `services` via `service_documents`
 - `applicant_profiles` linked on `service_documents`
 - `articles` optional FK to country, category, service; required `article_category_id`
 - `seo_metadata` polymorphic (`entity_type` + `entity_id`)

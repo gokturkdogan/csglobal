@@ -1,4 +1,4 @@
-/** Ülke listesi — https://www.eagvs.com/tum-ulkeler */
+/** Ülke listesi: https://www.eagvs.com/tum-ulkeler */
 export type EagvsCountrySeed = {
   name: string;
   slug: string;

@@ -22,7 +22,7 @@ export function AdminContactHeroImageField({
     <div className="block">
       <span className="text-sm font-medium text-slate-700">Hero görseli</span>
       <p className="mt-1 text-xs text-slate-500">
-        Cloudinary: <code className="text-csg-blue">{contactHeroImageSlot.publicId}</code> —
+        Cloudinary: <code className="text-csg-blue">{contactHeroImageSlot.publicId}</code>.
         yükleme mevcut görseli değiştirir.
       </p>
 
@@ -52,7 +52,7 @@ export function AdminContactHeroImageField({
       <input type="hidden" name={name} value={url} />
 
       <span className="mt-1.5 block text-xs text-slate-500">
-        PNG, JPG veya WebP — sabit 3.2:1 oranında kırpılır (hero görünümüyle uyumlu). Kaydet ile
+        PNG, JPG veya WebP; sabit 3.2:1 oranında kırpılır (hero görünümüyle uyumlu). Kaydet ile
         siteye uygulanır.
       </span>
     </div>

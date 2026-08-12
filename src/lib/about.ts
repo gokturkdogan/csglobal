@@ -6,7 +6,7 @@ import { optimizeCloudinaryDeliveryUrl } from "@/lib/media";
 export const aboutPageSeo = {
   title: "Hakkımızda",
   description:
-    "CSGLOBAL: vize, oturum ve göçmenlik süreçlerinde uzman danışmanlık. Vizyonumuz, misyonumuz ve neden binlerce danışanımız bizi tercih ediyor — şeffaf süreç, doğrudan uzman desteği.",
+    "CSGLOBAL: vize, oturum ve göçmenlik süreçlerinde uzman danışmanlık. Vizyonumuz, misyonumuz ve neden binlerce danışanımız bizi tercih ediyor: şeffaf süreç, doğrudan uzman desteği.",
 };
 
 export type AboutValueItem = {
@@ -85,7 +85,7 @@ const defaultStats: AboutStat[] = [
 const defaultCta = {
   title: "Sürecinizi birlikte planlayalım",
   subtitle:
-    "Hedef ülkeniz ve vize türünüz için ücretsiz ön değerlendirme — uzman danışmanımız size uygun yol haritasını çıkarır.",
+    "Hedef ülkeniz ve vize türünüz için ücretsiz ön değerlendirme. Uzman danışmanımız size uygun yol haritasını çıkarır.",
 };
 
 const defaultValuesItems: AboutValueItem[] = [
@@ -114,14 +114,14 @@ export const defaultAboutPageEditable: AboutPageEditable = {
   heroBadge: "Kurumsal kimlik",
   heroTitle: "Hakkımızda",
   heroSubtitle:
-    "CSGLOBAL, vize ve göçmenlik danışmanlığında güvenilir, şeffaf ve insan odaklı bir yol haritası sunar. Online başvuru veya belge yükleme yok — doğrudan uzman ekibimizle ilerlersiniz.",
+    "CSGLOBAL, vize ve göçmenlik danışmanlığında güvenilir, şeffaf ve insan odaklı bir yol haritası sunar. Online başvuru veya belge yükleme yok; doğrudan uzman ekibimizle ilerlersiniz.",
   heroImage: "",
   whoWeAreTitle: "Biz Kimiz?",
   whoWeAreLead:
     "Türkiye merkezli bir vize ve göçmenlik danışmanlık markası olarak, bireyler ve kurumlar için uluslararası hareketlilik süreçlerini sadeleştiriyoruz.",
   whoWeAreParagraphs: [
     "CSGLOBAL, yılların deneyimi ve güncel mevzuat takibiyle Schengen, ABD, İngiltere ve daha birçok ülke için vize, oturum ve çalışma izni süreçlerinde profesyonel rehberlik sunar.",
-    "Her danışanımızın profili farklıdır; bu yüzden standart paketler yerine kişiye ve hedef ülkeye özel strateji geliştiririz. Sürecin her adımında ne yapmanız gerektiğini açıkça söyleriz — gizli maliyet veya belirsiz vaat yok.",
+    "Her danışanımızın profili farklıdır; bu yüzden standart paketler yerine kişiye ve hedef ülkeye özel strateji geliştiririz. Sürecin her adımında ne yapmanız gerektiğini açıkça söyleriz; gizli maliyet veya belirsiz vaat yok.",
     "Web sitemizdeki ülke rehberleri, güncel prosedürler ve uzman yorumlarıyla bilgiyi şeffaf paylaşırız; danışmanlık ise WhatsApp ve telefon üzerinden doğrudan uzmanlarımızla devam eder.",
   ],
   whoWeAreImage: "",

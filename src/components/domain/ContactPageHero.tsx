@@ -10,7 +10,7 @@ type Props = {
 
 export function ContactPageHero({ heroImage, title = "İletişim", subtitle }: Props) {
   const defaultSubtitle =
-    "Vize, oturum ve göçmenlik süreçleriniz için doğrudan uzman ekibimize ulaşın. Online başvuru veya belge yükleme yok — WhatsApp veya telefon ile hızlı destek.";
+    "Vize, oturum ve göçmenlik süreçleriniz için doğrudan uzman ekibimize ulaşın. Online başvuru veya belge yükleme yok. WhatsApp veya telefon ile hızlı destek.";
 
   return (
     <section className="relative overflow-hidden border-b border-slate-200 bg-slate-900">

@@ -69,7 +69,7 @@ async function main() {
     {
       key: "homeAboutText",
       value:
-        "CSGLOBAL, vize ve göçmenlik süreçlerinde kurumsal danışmanlık sunar. Her ülkenin kategori yapısı admin panelden yönetilir; evrak, ücret ve süre bilgileri şeffaf şekilde paylaşılır. Online başvuru yok — uzman ekibimizle doğrudan iletişim kurarsınız.",
+        "CSGLOBAL, vize ve göçmenlik süreçlerinde kurumsal danışmanlık sunar. Her ülkenin kategori yapısı admin panelden yönetilir; evrak, ücret ve süre bilgileri şeffaf şekilde paylaşılır. Online başvuru yok; uzman ekibimizle doğrudan iletişim kurarsınız.",
     },
   ];
   for (const s of homepageSettings) {

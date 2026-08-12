@@ -51,11 +51,11 @@ export const siteImages = {
   countryDetailHero: optimizeCloudinaryDeliveryUrl(
     "https://res.cloudinary.com/ulnb2wjo/image/upload/v1786557153/country-detail-banner.png",
   ),
-  /** İletişim sayfası hero — Cloudinary Heros/contact-hero */
+  /** İletişim sayfası hero: Cloudinary Heros/contact-hero */
   contactHero: optimizeCloudinaryDeliveryUrl(
     `https://res.cloudinary.com/${CLOUD}/image/upload/Heros/contact-hero`,
   ),
-  /** Hakkımızda hero — Heros/about-hero */
+  /** Hakkımızda hero: Heros/about-hero */
   aboutHero: optimizeCloudinaryDeliveryUrl(
     `https://res.cloudinary.com/${CLOUD}/image/upload/Heros/about-hero`,
   ),

@@ -21,7 +21,7 @@ export async function findCountryBySlug(slug: string) {
   });
 }
 
-/** Ülke detay sayfası — ülkeye özel SSS dahil */
+/** Ülke detay sayfası: ülkeye özel SSS dahil */
 export async function findCountryPageBySlug(slug: string) {
   return prisma.country.findFirst({
     where: { slug, ...activeCountry },

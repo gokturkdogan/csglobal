@@ -26,7 +26,7 @@ export default async function EditCategoryPage({ params }: Props) {
     <div className="space-y-6">
       <AdminPageHeader
         title={category ? `${category.name} Düzenle` : "Yeni Kategori"}
-        description="Global kategori — hizmetler ülkeye bağlanır, kategori tüm ülkelerde ortaktır."
+        description="Global kategori: hizmetler ülkeye bağlanır, kategori tüm ülkelerde ortaktır."
       />
 
       <AdminActionForm action={saveCategoryAction} className="max-w-3xl space-y-6">

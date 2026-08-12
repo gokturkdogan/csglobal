@@ -1,4 +1,4 @@
-/** Cloudinary Home klasörü — aynı public_id ile yükleme = görseli değiştirir (yeni dosya oluşturmaz). */
+/** Cloudinary Home klasörü: aynı public_id ile yükleme = görseli değiştirir (yeni dosya oluşturmaz). */
 import {
   HOMEPAGE_CLOUDINARY_FOLDER,
   buildHomeImagePublicId,

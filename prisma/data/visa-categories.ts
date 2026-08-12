@@ -14,7 +14,7 @@ export type VisaServiceSeed = {
   isFeatured?: boolean;
 };
 
-/** Tüm ülkelerde ortak kök kategoriler — altında ülkeye bağlı hizmetler */
+/** Tüm ülkelerde ortak kök kategoriler; altında ülkeye bağlı hizmetler */
 export const VISA_ROOT_CATEGORIES: VisaCategorySeed[] = [
   {
     slug: "turistik-vizeler",
@@ -74,7 +74,7 @@ export const VISA_ROOT_CATEGORIES: VisaCategorySeed[] = [
   },
 ];
 
-/** Örnek hizmetler — Ticari Vizeler altında */
+/** Örnek hizmetler: Ticari Vizeler altında */
 export const TICARI_SAMPLE_SERVICES: VisaServiceSeed[] = [
   {
     slug: "ticari-vize",

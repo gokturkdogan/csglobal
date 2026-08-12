@@ -2,16 +2,17 @@
 
 ## Architecture Principles
 
-1. **Country-driven, database-driven** — All country/category/service content comes from PostgreSQL.
-2. **No country-specific hardcoding** — Never `if (country === 'germany')` in UI or business logic.
-3. **Recursive category tree** — Categories use `parent_id` self-reference; depth is not fixed in code.
-4. **Empty categories hidden** — Do not render categories with no active children or services.
-5. **SEO from database** — Meta tags and structured data via `seo_metadata` table.
-6. **New content without deploy** — Adding countries/services requires only admin + DB, not code changes.
-7. **Business logic outside UI** — Use `src/lib/` services/repositories, not React components.
-8. **No unnecessary abstraction** — Prefer clear, maintainable code over over-engineering.
-9. **Production quality** — Indexes, FK constraints, validation, secure admin auth.
-10. **Preserve design language** — CSGLOBAL blue/red/white corporate palette; premium minimal UI.
+1. **Country-driven, database-driven**: All country/category/service content comes from PostgreSQL.
+2. **No country-specific hardcoding**: Never `if (country === 'germany')` in UI or business logic.
+3. **Recursive category tree**: Categories use `parent_id` self-reference; depth is not fixed in code.
+4. **Empty categories hidden**: Do not render categories with no active children or services.
+5. **SEO from database**: Meta tags and structured data via `seo_metadata` table.
+6. **New content without deploy**: Adding countries/services requires only admin + DB, not code changes.
+7. **Business logic outside UI**: Use `src/lib/` services/repositories, not React components.
+8. **No unnecessary abstraction**: Prefer clear, maintainable code over over-engineering.
+9. **Production quality**: Indexes, FK constraints, validation, secure admin auth.
+10. **Preserve design language**: CSGLOBAL blue/red/white corporate palette; premium minimal UI.
+11. **No em dash in Turkish copy**: Do not use `—` (U+2014) in user-facing text, defaults, or admin UI. Use periods, commas, colons, or ASCII hyphen. See `.cursor/rules/no-em-dash.mdc`.
 
 ## Naming Conventions
 

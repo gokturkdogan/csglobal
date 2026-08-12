@@ -1,4 +1,4 @@
-# CSGLOBAL — Vize & Göçmenlik Platformu
+# CSGLOBAL: Vize & Göçmenlik Platformu
 
 Country-driven, database-driven vize / oturum / çalışma izni bilgi ve hizmet platformu.
 
@@ -10,7 +10,7 @@ Country-driven, database-driven vize / oturum / çalışma izni bilgi ve hizmet 
 - Evrak kütüphanesi, başvuru profilleri, ücretler, FAQ
 - Rehber / makaleler (`/rehber`)
 - SEO metadata, sitemap, structured data
-- Admin panel (`/admin`) — içerik kod değişikliği olmadan yönetilir
+- Admin panel (`/admin`): içerik kod değişikliği olmadan yönetilir
 - WhatsApp + iletişim CTA (online başvuru / belge yükleme yok)
 
 ## Kurulum
@@ -41,13 +41,13 @@ npm run dev
 
 ## Dokümantasyon
 
-- `rules.md` — mimari kurallar
+- `rules.md`: mimari kurallar
 - `docs/architecture.md`, `docs/database.md`, `docs/seo.md`, `docs/admin.md`, `docs/content-model.md`
 
 ## Seed verisi
 
-- **Almanya** — tam kategori ağacı (vizeler, oturma, çalışma, vatandaşlık)
-- **Fransa** — farklı yapı (yalnızca vizeler + vatandaşlık)
+- **Almanya**: tam kategori ağacı (vizeler, oturma, çalışma, vatandaşlık)
+- **Fransa**: farklı yapı (yalnızca vizeler + vatandaşlık)
 
 ## Vercel deploy
 

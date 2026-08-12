@@ -29,7 +29,7 @@ body {
   font-family: var(--font-inter), system-ui, sans-serif;
 }
 
-/* Ülke detay — sol kategori paneli viewport içinde tam görünür (lg+) */
+/* Ülke detay: sol kategori paneli viewport içinde tam görünür (lg+) */
 @media (min-width: 1024px) {
   .country-panel-sticky {
     position: sticky;
@@ -44,7 +44,7 @@ body {
   }
 }
 
-/* Ülke detay — modern kurumsal yüzeyler */
+/* Ülke detay: modern kurumsal yüzeyler */
 .country-detail-main {
   background:
     radial-gradient(ellipse 120% 80% at 100% 0%, rgba(0, 61, 122, 0.06), transparent 50%),
@@ -276,7 +276,7 @@ body {
   }
 }
 
-/* Anasayfa bantları — kurumsal mavi, abartısız */
+/* Anasayfa bantları: kurumsal mavi, abartısız */
 .home-band-soft {
   background: linear-gradient(180deg, #f0f5fa 0%, #e8eef6 100%);
   border-top: 1px solid rgba(0, 61, 122, 0.08);

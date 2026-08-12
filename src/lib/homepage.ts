@@ -223,7 +223,7 @@ function resolveHeroImage(url: string | undefined): string {
   if (!trimmed) return siteImages.hero;
   if (trimmed.includes("/images/hero-banner")) return siteImages.hero;
   if (trimmed.includes("images.unsplash.com")) return siteImages.hero;
-  // Home/hero henüz yüklenmemiş olabilir — kırık URL yerine bilinen banner
+  // Home/hero henüz yüklenmemiş olabilir; kırık URL yerine bilinen banner
   if (/\/Home\/hero(\.[a-z]+)?$/i.test(trimmed) && !trimmed.includes("/v")) {
     return siteImages.hero;
   }
@@ -267,7 +267,7 @@ export function buildHomepageContent(settings: SiteSettingsMap): HomepageContent
       settings.homeCtaBannerTitle || "Sürecinizi birlikte planlayalım",
     ctaBannerSubtitle:
       settings.homeCtaBannerSubtitle ||
-      "Online başvuru yok — uzman danışmanımızla doğrudan iletişime geçin.",
+      "Online başvuru yok. Uzman danışmanımızla doğrudan iletişime geçin.",
     ctaBannerImage: settings.homeCtaBannerImage || siteImages.ctaBanner,
     seoTitle: settings.homeSeoTitle || "",
     seoDescription:

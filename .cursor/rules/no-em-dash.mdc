@@ -1,0 +1,38 @@
+---
+description: Türkçe metinlerde em dash (—) kullanma; AI çizgisi yasak
+alwaysApply: true
+---
+
+# Em dash (—) yasak
+
+CSGLOBAL projesinde **em dash** (`—`, U+2014) kullanma. Bu karakter sık AI metinlerinde görülür; sitede ve panelde istenmiyor.
+
+## Yerine ne kullan
+
+| Amaç | Kullan |
+|------|--------|
+| İki cümle / vurgu | Nokta veya virgül |
+| Başlık alt başlık | İki nokta (`:`) veya tire (`-`) |
+| Boş tablo hücresi | `-` veya boş metin |
+| Sayı aralığı | `10-15` (ASCII tire) |
+| İlişki / cardinality (dokümantasyon) | `1-N`, `N-M` |
+
+## Örnekler
+
+```text
+❌ Online başvuru yok — uzman ekibimizle iletişim kurarsınız.
+✅ Online başvuru yok. Uzman ekibimizle doğrudan iletişim kurarsınız.
+
+❌ Anasayfa — Görsel Düzenleyici
+✅ Anasayfa: Görsel Düzenleyici
+
+❌ Levent, Beşiktaş — İstanbul
+✅ Levent, Beşiktaş, İstanbul
+```
+
+## Kapsam
+
+- `src/` içindeki tüm kullanıcıya görünen metinler (site, admin, seed varsayılanları)
+- Yeni içerik, varsayılan metinler ve commit mesajları (Türkçe UI metinleri)
+
+Kod yorumlarında da em dash kullanma; `:` veya ASCII `-` tercih et.

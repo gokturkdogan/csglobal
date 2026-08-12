@@ -20,7 +20,7 @@ export function FeeTable({ fees }: { fees: Fee[] }) {
               <td className="px-4 py-3 text-slate-700">
                 {fee.amount.toString()} {fee.currency}
               </td>
-              <td className="px-4 py-3 text-slate-600">{fee.description ?? "—"}</td>
+              <td className="px-4 py-3 text-slate-600">{fee.description ?? "-"}</td>
             </tr>
           ))}
         </tbody>

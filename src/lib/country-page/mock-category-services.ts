@@ -11,7 +11,7 @@ export type MockCategoryWithServices = {
   services: MockCategoryService[];
 };
 
-/** Geçici mock — sonra DB'den country + category + service ile değişecek */
+/** Geçici mock: sonra DB'den country + category + service ile değişecek */
 export function getMockCountryCategories(countryName: string): MockCategoryWithServices[] {
   return [
     {
