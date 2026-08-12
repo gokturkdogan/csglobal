@@ -34,11 +34,11 @@ export function CountryCard({
         <div className="absolute bottom-3 left-4 flex items-center gap-3">
           {flag && (
             <SiteImage
-              src={`https://flagcdn.com/w40/${flag.toLowerCase()}.png`}
+              src={`https://flagcdn.com/w80/${flag.toLowerCase()}.png`}
               alt=""
-              width={32}
-              height={24}
-              className="rounded shadow-sm"
+              width={48}
+              height={36}
+              className="rounded shadow-md ring-1 ring-white/30"
             />
           )}
           <h3 className="text-lg font-semibold text-white">{name}</h3>

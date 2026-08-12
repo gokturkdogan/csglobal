@@ -13,8 +13,10 @@ export const siteImages = {
   about: homeAsset("about"),
   ctaBanner: homeAsset("cta-banner"),
   travel: homeAsset("seo-1"),
-  country:
-    "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=80&auto=format",
+  /** Ülke kartı varsayılan kapak */
+  countryItemCover:
+    "https://res.cloudinary.com/ulnb2wjo/image/upload/v1786556725/country-item-cover.png",
+  country: "https://res.cloudinary.com/ulnb2wjo/image/upload/v1786556725/country-item-cover.png",
   article:
     "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80&auto=format",
   germany:
@@ -24,4 +26,7 @@ export const siteImages = {
   conference:
     "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80&auto=format",
   office: homeAsset("seo-2"),
+  /** Ülkeler sayfası hero */
+  countriesHero:
+    "https://res.cloudinary.com/ulnb2wjo/image/upload/v1786556193/countries-hero.png",
 } as const;
