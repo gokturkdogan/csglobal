@@ -6,6 +6,7 @@ import {
   COUNTRY_NOTES_MAX,
   parseCountryNotesJson,
 } from "@/lib/country-detail";
+import { CountryDetailSectionsEditor } from "@/components/admin/country/CountryDetailSectionsEditor";
 import {
   AdminCheckbox,
   AdminField,
@@ -91,12 +92,14 @@ export default async function EditCountryPage({ params }: Props) {
             name="detailParagraph1"
             value={country?.detailParagraph1}
             rows={4}
+            hint="Enter ile alt satıra geçebilirsiniz; satır sonları sitede aynı şekilde görünür."
           />
           <AdminTextArea
             label="Açıklama paragrafı 2"
             name="detailParagraph2"
             value={country?.detailParagraph2}
             rows={4}
+            hint="Enter ile alt satıra geçebilirsiniz; satır sonları sitede aynı şekilde görünür."
           />
         </AdminFormSection>
 
@@ -114,6 +117,13 @@ export default async function EditCountryPage({ params }: Props) {
               hint={i === 0 ? "Boş bırakılan satırlar kaydedilmez." : undefined}
             />
           ))}
+        </AdminFormSection>
+
+        <AdminFormSection
+          title="Ek içerik bölümleri"
+          description="Notlar ve sık sorulan sorular arasında gösterilir. Kalın yazı ve liste desteklenir."
+        >
+          <CountryDetailSectionsEditor initialJson={country?.detailSectionsJson} />
         </AdminFormSection>
 
         <AdminFormSection

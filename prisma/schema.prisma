@@ -66,6 +66,7 @@ model Country {
   detailParagraph1        String?  @map("detail_paragraph_1") @db.Text
   detailParagraph2        String?  @map("detail_paragraph_2") @db.Text
   importantNotesJson      String?  @map("important_notes_json") @db.Text
+  detailSectionsJson      String?  @map("detail_sections_json") @db.Text
   isActive         Boolean  @default(true) @map("is_active")
   sortOrder        Int      @default(0) @map("sort_order")
   createdAt        DateTime @default(now()) @map("created_at")

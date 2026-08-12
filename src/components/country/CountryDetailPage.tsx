@@ -2,6 +2,7 @@ import type { SiteSettingsMap } from "@/lib/site-settings.shared";
 import {
   buildCountryDetailParagraphs,
   buildCountryQuickStats,
+  parseCountryDetailSectionsJson,
   parseCountryNotesJson,
 } from "@/lib/country-detail";
 import { getMockCountryCategories } from "@/lib/country-page/mock-category-services";
@@ -9,6 +10,7 @@ import { ContactCTA } from "@/components/domain/ContactCTA";
 import { FaqAccordion } from "@/components/domain/FaqAccordion";
 import { CountryPageHero } from "@/components/domain/CountryPageHero";
 import { CountryCategoryPanel } from "@/components/country/CountryCategoryPanel";
+import { RichContent } from "@/components/RichTextContent";
 
 export type CountryDetailViewModel = {
   id: string;
@@ -22,6 +24,7 @@ export type CountryDetailViewModel = {
   detailParagraph1: string | null;
   detailParagraph2: string | null;
   importantNotesJson: string | null;
+  detailSectionsJson: string | null;
   faqs: Array<{ question: string; answer: string }>;
 };
 
@@ -31,6 +34,27 @@ type Props = {
   serviceCount: number;
   categoryCount: number;
 };
+
+function SectionHeading({
+  title,
+  subtitle,
+}: {
+  title: string;
+  subtitle?: string;
+}) {
+  return (
+    <div className="country-section-heading">
+      <div className="min-w-0">
+        <h2 className="text-xl font-semibold tracking-tight text-slate-900 md:text-2xl">
+          {title}
+        </h2>
+        {subtitle && (
+          <p className="mt-2 text-sm leading-relaxed text-slate-500">{subtitle}</p>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export function CountryDetailPage({
   country,
@@ -48,6 +72,7 @@ export function CountryDetailPage({
     categoryCount,
   });
   const importantNotes = parseCountryNotesJson(country.importantNotesJson);
+  const detailSections = parseCountryDetailSectionsJson(country.detailSectionsJson);
   const heroBadge = country.visaRegion?.trim() || "Ülke rehberi";
 
   return (
@@ -64,38 +89,38 @@ export function CountryDetailPage({
         secondaryCta={{ label: "İletişim", href: "/iletisim" }}
       />
 
-      <div className="home-band-soft border-b border-slate-200/80">
+      <div className="country-detail-main border-b border-slate-200/60">
         <div className="mx-auto max-w-6xl px-4 py-10 md:px-8 md:py-14">
-          <div className="grid gap-10 lg:grid-cols-[minmax(280px,320px)_1fr] lg:items-start">
-            <aside className="country-panel-sticky lg:self-start lg:z-30">
+          <div className="grid gap-8 lg:grid-cols-[minmax(280px,320px)_1fr] lg:gap-10 lg:items-start">
+            <aside className="country-panel-sticky lg:z-30 lg:self-start">
               <CountryCategoryPanel
                 countrySlug={country.slug}
                 categories={mockCategories}
               />
             </aside>
 
-            <div className="min-w-0 space-y-14 md:space-y-16">
+            <div className="min-w-0 space-y-8 md:space-y-10">
               {(paragraphs.length > 0 || stats.length > 0) && (
-                <section>
-                  <h2 className="text-2xl font-semibold text-slate-900 md:text-3xl">
-                    {country.name} vize ve göçmenlik rehberi
-                  </h2>
+                <section className="country-section-card p-6 md:p-8">
+                  <SectionHeading
+                    title={`${country.name} vize ve göçmenlik rehberi`}
+                    subtitle="Ülkeye özel süreç, evrak ve randevu bilgileri"
+                  />
                   {paragraphs.length > 0 && (
-                    <div className="mt-6 space-y-4 text-slate-600 leading-relaxed">
-                      {paragraphs.map((p) => (
-                        <p key={p}>{p}</p>
+                    <div className="mt-6 space-y-4 text-[0.9375rem] leading-relaxed text-slate-600">
+                      {paragraphs.map((p, i) => (
+                        <p key={i} className="whitespace-pre-line">{p}</p>
                       ))}
                     </div>
                   )}
                   {stats.length > 0 && (
-                    <dl className="mt-8 grid gap-4 sm:grid-cols-2">
+                    <dl className="mt-8 grid gap-3 sm:grid-cols-2">
                       {stats.map((stat) => (
-                        <div
-                          key={stat.label}
-                          className="rounded-lg border border-slate-200 bg-white px-4 py-3"
-                        >
-                          <dt className="text-xs text-slate-500">{stat.label}</dt>
-                          <dd className="mt-1 text-lg font-semibold text-csg-blue">
+                        <div key={stat.label} className="country-metric-card">
+                          <dt className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                            {stat.label}
+                          </dt>
+                          <dd className="mt-2 text-lg font-semibold tracking-tight text-csg-blue">
                             {stat.value}
                           </dd>
                         </div>
@@ -106,31 +131,45 @@ export function CountryDetailPage({
               )}
 
               {importantNotes.length > 0 && (
-                <section>
-                  <h2 className="text-xl font-semibold text-slate-900 md:text-2xl">
-                    {country.name} başvurularında önemli notlar
-                  </h2>
-                  <ul className="mt-6 space-y-2">
-                    {importantNotes.map((note) => (
-                      <li
-                        key={note}
-                        className="flex items-start gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 leading-relaxed"
-                      >
-                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-csg-blue" />
-                        {note}
+                <section className="country-section-card p-6 md:p-8">
+                  <SectionHeading
+                    title={`${country.name} başvurularında önemli notlar`}
+                    subtitle="Başvuru öncesi dikkat edilmesi gereken hususlar"
+                  />
+                  <ul className="mt-6 space-y-2.5">
+                    {importantNotes.map((note, index) => (
+                      <li key={note} className="country-note-item">
+                        <span className="country-note-icon">{index + 1}</span>
+                        <span>{note}</span>
                       </li>
                     ))}
                   </ul>
                 </section>
               )}
 
+              {detailSections.map((section, index) => (
+                <section
+                  key={`${section.title}-${index}`}
+                  className="country-section-card p-6 md:p-8"
+                >
+                  <SectionHeading title={section.title} />
+                  <div className="mt-6 country-detail-prose">
+                    <RichContent content={section.content} />
+                  </div>
+                </section>
+              ))}
+
               {country.faqs.length > 0 && (
-                <section>
-                  <h2 className="text-xl font-semibold text-slate-900 md:text-2xl">
-                    {country.name} vizesi hakkında sık sorulan sorular
-                  </h2>
+                <section className="country-section-card p-6 md:p-8">
+                  <SectionHeading
+                    title={`${country.name} vizesi hakkında sık sorulan sorular`}
+                  />
                   <div className="mt-6">
-                    <FaqAccordion items={country.faqs} />
+                    <FaqAccordion
+                      items={country.faqs}
+                      variant="modern"
+                      initialOpenIndex={null}
+                    />
                   </div>
                 </section>
               )}
@@ -140,6 +179,7 @@ export function CountryDetailPage({
                 context={`${country.name} vize danışmanlığı`}
                 title={`${country.name} için uzman danışmanlık`}
                 subtitle="Online başvuru veya belge yükleme yok. WhatsApp veya telefon ile doğrudan uzman ekibimize ulaşın."
+                variant="country"
               />
             </div>
           </div>

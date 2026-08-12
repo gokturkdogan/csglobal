@@ -44,6 +44,137 @@ body {
   }
 }
 
+/* Ülke detay — modern kurumsal yüzeyler */
+.country-detail-main {
+  background:
+    radial-gradient(ellipse 120% 80% at 100% 0%, rgba(0, 61, 122, 0.06), transparent 50%),
+    linear-gradient(180deg, #f4f8fc 0%, #eef3f9 45%, #f8fafc 100%);
+}
+
+.country-section-card {
+  border-radius: 1rem;
+  border: 1px solid rgba(0, 61, 122, 0.08);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 8px 24px -8px rgba(0, 61, 122, 0.08);
+  backdrop-filter: blur(8px);
+}
+
+.country-section-heading {
+  display: flex;
+  gap: 0.875rem;
+  align-items: flex-start;
+}
+
+.country-section-heading::before {
+  content: "";
+  margin-top: 0.35rem;
+  width: 4px;
+  height: 1.75rem;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background: linear-gradient(180deg, var(--csg-blue) 0%, var(--csg-blue-light) 100%);
+}
+
+.country-metric-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.875rem;
+  border: 1px solid rgba(0, 61, 122, 0.1);
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  padding: 1rem 1.125rem;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.country-metric-card:hover {
+  border-color: rgba(0, 61, 122, 0.22);
+  box-shadow: 0 8px 20px -12px rgba(0, 61, 122, 0.25);
+  transform: translateY(-1px);
+}
+
+.country-metric-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--csg-blue) 0%, var(--csg-blue-light) 70%, transparent 100%);
+  opacity: 0.85;
+}
+
+.country-note-item {
+  display: flex;
+  gap: 0.875rem;
+  align-items: flex-start;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(0, 61, 122, 0.08);
+  background: #fff;
+  padding: 0.875rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: #475569;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.country-note-item:hover {
+  border-color: rgba(0, 61, 122, 0.16);
+  box-shadow: 0 4px 14px -8px rgba(0, 61, 122, 0.2);
+}
+
+.country-note-icon {
+  display: flex;
+  height: 1.5rem;
+  width: 1.5rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: linear-gradient(145deg, var(--csg-blue) 0%, var(--csg-blue-light) 100%);
+  color: #fff;
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.country-cta-card {
+  border-radius: 1rem;
+  border: 1px solid rgba(0, 61, 122, 0.12);
+  background: linear-gradient(135deg, #003d7a 0%, #002a55 55%, #003566 100%);
+  color: #fff;
+  box-shadow: 0 12px 32px -16px rgba(0, 42, 85, 0.45);
+  padding: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .country-cta-card {
+    padding: 2rem 2.25rem;
+  }
+}
+
+.country-cta-card h2 {
+  color: #fff;
+}
+
+.country-cta-card p {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.country-panel-header {
+  background: linear-gradient(135deg, #003d7a 0%, #002a55 100%);
+  color: #fff;
+}
+
+.country-panel-header p {
+  color: rgba(255, 255, 255, 0.75);
+}
+
 @layer base {
   a,
   button:not(:disabled),
@@ -132,7 +263,62 @@ body {
   margin-bottom: 0.35rem;
 }
 
+.prose-csg strong {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.country-detail-prose.prose-csg,
+.country-detail-prose .prose-csg {
+  font-size: 0.9375rem;
+}
+
+.country-detail-prose .prose-csg p:last-child,
+.country-detail-prose .prose-csg ul:last-child {
+  margin-bottom: 0;
+}
+
 .prose-csg a {
   color: var(--csg-blue-light);
   text-decoration: underline;
+}
+
+/* Admin zengin metin editörü */
+.admin-rich-text-editor p {
+  margin-bottom: 0.5rem;
+}
+
+.admin-rich-text-editor p:last-child {
+  margin-bottom: 0;
+}
+
+.admin-rich-text-editor ul,
+.admin-rich-text-editor ol {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+}
+
+.admin-rich-text-editor ul {
+  list-style: disc;
+}
+
+.admin-rich-text-editor ol {
+  list-style: decimal;
+}
+
+.admin-rich-text-editor li {
+  margin-bottom: 0.25rem;
+}
+
+.admin-rich-text-editor a {
+  color: var(--csg-blue);
+  text-decoration: underline;
+}
+
+.admin-rich-text-editor p.is-editor-empty:first-child::before {
+  color: #94a3b8;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
 }

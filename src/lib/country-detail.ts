@@ -1,5 +1,13 @@
+import { normalizeRichTextContent } from "@/lib/rich-text";
+
 export const COUNTRY_NOTES_MAX = 10;
 export const COUNTRY_FAQ_MAX = 5;
+export const COUNTRY_DETAIL_SECTIONS_MAX = 15;
+
+export type CountryDetailSection = {
+  title: string;
+  content: string;
+};
 
 export function parseCountryNotesJson(json: string | null | undefined): string[] {
   if (!json?.trim()) return [];
@@ -47,11 +55,44 @@ export function buildCountryQuickStats(country: {
   return stats;
 }
 
+/** Satır sonları ve iç boşluklar korunur; yalnızca baş/son trim edilir. */
+export function normalizeMultilineText(value: string | null | undefined): string | null {
+  if (typeof value !== "string") return null;
+  const normalized = value.replace(/\r\n/g, "\n").trim();
+  return normalized.length > 0 ? normalized : null;
+}
+
 export function buildCountryDetailParagraphs(country: {
   detailParagraph1?: string | null;
   detailParagraph2?: string | null;
 }): string[] {
   return [country.detailParagraph1, country.detailParagraph2]
-    .filter((p): p is string => typeof p === "string" && p.trim().length > 0)
-    .map((p) => p.trim());
+    .map((p) => normalizeMultilineText(p))
+    .filter((p): p is string => p !== null);
+}
+
+export function parseCountryDetailSectionsJson(
+  json: string | null | undefined,
+): CountryDetailSection[] {
+  if (!json?.trim()) return [];
+  try {
+    const parsed = JSON.parse(json) as unknown;
+    if (!Array.isArray(parsed)) return [];
+
+    const sections: CountryDetailSection[] = [];
+    for (const item of parsed) {
+      if (!item || typeof item !== "object") continue;
+      const record = item as { title?: unknown; content?: unknown };
+      const title = typeof record.title === "string" ? record.title.trim() : "";
+      const content = normalizeRichTextContent(
+        typeof record.content === "string" ? record.content : "",
+      );
+      if (!title || !content) continue;
+      sections.push({ title, content });
+      if (sections.length >= COUNTRY_DETAIL_SECTIONS_MAX) break;
+    }
+    return sections;
+  } catch {
+    return [];
+  }
 }

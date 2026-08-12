@@ -5,7 +5,12 @@ import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { auth, signIn, signOut } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { COUNTRY_FAQ_MAX, COUNTRY_NOTES_MAX } from "@/lib/country-detail";
+import {
+  COUNTRY_FAQ_MAX,
+  COUNTRY_NOTES_MAX,
+  normalizeMultilineText,
+  parseCountryDetailSectionsJson,
+} from "@/lib/country-detail";
 import { serializeHomepageToSettings, type HomepageContent } from "@/lib/homepage";
 import { AdminRole } from "@/generated/prisma/client";
 
@@ -200,10 +205,15 @@ export async function saveCountryAction(formData: FormData) {
     requiresAppointment: formData.get("requiresAppointment") === "on",
     averageProcessingTime:
       ((formData.get("averageProcessingTime") as string) || "").trim() || null,
-    detailParagraph1: ((formData.get("detailParagraph1") as string) || "").trim() || null,
-    detailParagraph2: ((formData.get("detailParagraph2") as string) || "").trim() || null,
+    detailParagraph1: normalizeMultilineText(formData.get("detailParagraph1") as string),
+    detailParagraph2: normalizeMultilineText(formData.get("detailParagraph2") as string),
     importantNotesJson:
       importantNotes.length > 0 ? JSON.stringify(importantNotes) : null,
+    detailSectionsJson: (() => {
+      const raw = (formData.get("detailSectionsJson") as string) || "";
+      const sections = parseCountryDetailSectionsJson(raw);
+      return sections.length > 0 ? JSON.stringify(sections) : null;
+    })(),
     sortOrder: Number(formData.get("sortOrder") || 0),
     isActive: formData.get("isActive") === "on",
   };
