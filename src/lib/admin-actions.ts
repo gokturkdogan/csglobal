@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { auth, signIn, signOut } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { serializeHomepageToSettings, type HomepageContent } from "@/lib/homepage";
 import { AdminRole } from "@/generated/prisma/client";
 
 async function requireAdmin() {
@@ -102,6 +103,33 @@ export async function updateHomepageAction(formData: FormData) {
 
   revalidatePath("/", "layout");
   redirect("/admin/homepage?saved=1");
+}
+
+export async function updateHomepageEditorAction(contentJson: string) {
+  await requireAdmin();
+
+  let content: HomepageContent;
+  try {
+    content = JSON.parse(contentJson) as HomepageContent;
+  } catch {
+    throw new Error("Geçersiz anasayfa verisi");
+  }
+
+  const settings = serializeHomepageToSettings(content);
+
+  for (const key of homepageKeys) {
+    const value = settings[key];
+    if (value !== undefined) {
+      await prisma.siteSetting.upsert({
+        where: { key },
+        create: { key, value },
+        update: { value },
+      });
+    }
+  }
+
+  revalidatePath("/", "layout");
+  return { ok: true as const };
 }
 
 export async function saveCountryAction(formData: FormData) {

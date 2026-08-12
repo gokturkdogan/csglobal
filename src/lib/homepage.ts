@@ -1,5 +1,5 @@
 import { siteImages } from "@/lib/media";
-import type { SiteSettingsMap } from "@/lib/settings";
+import type { SiteSettingsMap } from "@/lib/site-settings.shared";
 
 export type HomeStat = { label: string; value: string };
 export type HomeWhyUsItem = { title: string; description: string };
@@ -235,5 +235,43 @@ export function buildHomepageContent(settings: SiteSettingsMap): HomepageContent
     faqSubtitle:
       settings.homeFaqSubtitle ||
       "Vize ve danışmanlık süreci hakkında en çok sorulan konular.",
+  };
+}
+
+/** Admin görsel düzenleyici → site_settings kayıtları */
+export function serializeHomepageToSettings(content: HomepageContent): Record<string, string> {
+  return {
+    homeHeroBadge: content.heroBadge,
+    homeHeroTitle: content.heroTitle,
+    homeHeroSubtitle: content.heroSubtitle,
+    homeHeroImage: content.heroImage,
+    homeHeroCtaPrimary: content.heroCtaPrimary,
+    homeHeroCtaSecondary: content.heroCtaSecondary,
+    homeAboutTitle: content.aboutTitle,
+    homeAboutText: content.aboutText,
+    homeAboutImage: content.aboutImage,
+    homeStatsJson: JSON.stringify(content.stats),
+    homeWhyUsTitle: content.whyUsTitle,
+    homeWhyUsJson: JSON.stringify(content.whyUsItems),
+    homeProcessTitle: content.processTitle,
+    homeProcessJson: JSON.stringify(content.processSteps),
+    homeServicesTitle: content.servicesTitle,
+    homeServicesSubtitle: content.servicesSubtitle,
+    homeCountriesTitle: content.countriesTitle,
+    homeArticlesTitle: content.articlesTitle,
+    homeCtaBannerTitle: content.ctaBannerTitle,
+    homeCtaBannerSubtitle: content.ctaBannerSubtitle,
+    homeCtaBannerImage: content.ctaBannerImage,
+    homeSeoTitle: content.seoTitle,
+    homeSeoDescription: content.seoDescription,
+    homeSeoIntroTitle: content.seoIntroTitle,
+    homeSeoIntroJson: JSON.stringify(content.seoIntroParagraphs),
+    homeSeoBlocksTitle: content.seoBlocksTitle,
+    homeSeoBlocksJson: JSON.stringify(content.seoBlocks),
+    homeServiceAreasTitle: content.serviceAreasTitle,
+    homeServiceAreasSubtitle: content.serviceAreasSubtitle,
+    homeServiceAreasJson: JSON.stringify(content.serviceAreas),
+    homeFaqTitle: content.faqTitle,
+    homeFaqSubtitle: content.faqSubtitle,
   };
 }

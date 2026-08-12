@@ -1,5 +1,5 @@
-import type { SiteSettingsMap } from "@/lib/settings";
-import { buildWhatsAppUrl } from "@/lib/settings";
+import type { SiteSettingsMap } from "@/lib/site-settings.shared";
+import { buildWhatsAppUrl } from "@/lib/site-settings.shared";
 import Link from "next/link";
 import { WhatsAppIcon, whatsappButtonClass } from "@/components/ui/WhatsAppIcon";
 

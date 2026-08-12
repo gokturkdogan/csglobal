@@ -121,7 +121,9 @@ export function AdminShell({ children, userName, userEmail }: AdminShellProps) {
         </header>
 
         <main className="p-4 md:p-6 lg:p-8">
-          <div className="mx-auto max-w-6xl">{children}</div>
+          <div className="mx-auto max-w-6xl [&:has(.homepage-editor-preview)]:max-w-none">
+            {children}
+          </div>
         </main>
       </div>
     </div>

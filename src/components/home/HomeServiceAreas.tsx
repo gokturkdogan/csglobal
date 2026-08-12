@@ -1,5 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import type { HomepageContent } from "@/lib/homepage";
+import { HomeEditableField } from "@/components/admin/homepage/HomeEditableField";
+import { useHomepageEdit } from "@/components/admin/homepage/HomepageEditContext";
+import { EditableText } from "@/components/admin/homepage/EditableText";
 
 const icons = [
   <svg key="0" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -17,31 +22,68 @@ const icons = [
 ];
 
 export function HomeServiceAreas({ content }: { content: HomepageContent }) {
+  const edit = useHomepageEdit();
+  const areas = edit?.content.serviceAreas ?? content.serviceAreas;
+  const preview = edit?.editing;
+
   return (
     <section className="border-t border-slate-200 bg-white">
       <div className="mx-auto max-w-6xl px-4 py-16 md:px-8 md:py-20">
         <div className="max-w-2xl">
-          <h2 className="text-2xl font-semibold text-slate-900 md:text-3xl">
-            {content.serviceAreasTitle}
-          </h2>
-          <p className="mt-3 text-slate-600 leading-relaxed">{content.serviceAreasSubtitle}</p>
+          <HomeEditableField
+            field="serviceAreasTitle"
+            value={content.serviceAreasTitle}
+            className="text-2xl font-semibold text-slate-900 md:text-3xl"
+            as="h2"
+          />
+          <HomeEditableField
+            field="serviceAreasSubtitle"
+            value={content.serviceAreasSubtitle}
+            className="mt-3 text-slate-600 leading-relaxed"
+            as="p"
+            multiline
+          />
         </div>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {content.serviceAreas.map((area, i) => (
-            <Link
-              key={area.title}
-              href={area.href}
-              className="group rounded-xl border border-slate-200 bg-slate-50/50 p-6 transition hover:border-csg-blue/40 hover:bg-white hover:shadow-sm"
-            >
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-csg-blue text-white">
-                {icons[i % icons.length]}
-              </div>
-              <h3 className="mt-4 font-semibold text-slate-900 group-hover:text-csg-blue">
-                {area.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-slate-600">{area.description}</p>
-            </Link>
-          ))}
+          {areas.map((area, i) => {
+            const cardClass =
+              "group rounded-xl border border-slate-200 bg-slate-50/50 p-6 transition hover:border-csg-blue/40 hover:bg-white hover:shadow-sm";
+
+            if (preview) {
+              return (
+                <div key={`${area.title}-${i}`} className={cardClass}>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-csg-blue text-white">
+                    {icons[i % icons.length]}
+                  </div>
+                  <EditableText
+                    value={area.title}
+                    onChange={(v) => edit!.updateServiceArea(i, "title", v)}
+                    className="mt-4 block font-semibold text-slate-900"
+                    as="h3"
+                  />
+                  <EditableText
+                    value={area.description}
+                    onChange={(v) => edit!.updateServiceArea(i, "description", v)}
+                    className="mt-2 block text-sm leading-relaxed text-slate-600"
+                    as="p"
+                    multiline
+                  />
+                </div>
+              );
+            }
+
+            return (
+              <Link key={`${area.title}-${i}`} href={area.href} className={cardClass}>
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-csg-blue text-white">
+                  {icons[i % icons.length]}
+                </div>
+                <h3 className="mt-4 font-semibold text-slate-900 group-hover:text-csg-blue">
+                  {area.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">{area.description}</p>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>

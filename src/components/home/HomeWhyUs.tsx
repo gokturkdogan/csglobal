@@ -1,4 +1,9 @@
+"use client";
+
 import type { HomepageContent } from "@/lib/homepage";
+import { HomeEditableField } from "@/components/admin/homepage/HomeEditableField";
+import { useHomepageEdit } from "@/components/admin/homepage/HomepageEditContext";
+import { EditableText } from "@/components/admin/homepage/EditableText";
 
 const icons = [
   <svg key="0" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -17,23 +22,49 @@ const icons = [
 ];
 
 export function HomeWhyUs({ content }: { content: HomepageContent }) {
+  const edit = useHomepageEdit();
+  const items = edit?.content.whyUsItems ?? content.whyUsItems;
+
   return (
     <section className="home-band-navy">
       <div className="mx-auto max-w-6xl px-4 py-16 md:px-8 md:py-20">
-        <h2 className="text-center text-2xl font-semibold md:text-3xl">
-          {content.whyUsTitle}
-        </h2>
+        <HomeEditableField
+          field="whyUsTitle"
+          value={content.whyUsTitle}
+          className="text-center text-2xl font-semibold md:text-3xl"
+          as="h2"
+        />
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {content.whyUsItems.map((item, i) => (
+          {items.map((item, i) => (
             <div
-              key={item.title}
+              key={`${item.title}-${i}`}
               className="home-glass-card rounded-xl p-6 shadow-lg shadow-black/15 transition hover:border-white/50 hover:bg-white/35"
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/20 text-white shadow-sm ring-1 ring-white/30">
                 {icons[i % icons.length]}
               </div>
-              <h3 className="mt-4 font-semibold text-white">{item.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-white/90">{item.description}</p>
+              {edit ? (
+                <>
+                  <EditableText
+                    value={item.title}
+                    onChange={(v) => edit.updateWhyUsItem(i, "title", v)}
+                    className="mt-4 block font-semibold text-white"
+                    as="h3"
+                  />
+                  <EditableText
+                    value={item.description}
+                    onChange={(v) => edit.updateWhyUsItem(i, "description", v)}
+                    className="mt-2 block text-sm leading-relaxed text-white/90"
+                    as="p"
+                    multiline
+                  />
+                </>
+              ) : (
+                <>
+                  <h3 className="mt-4 font-semibold text-white">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-white/90">{item.description}</p>
+                </>
+              )}
             </div>
           ))}
         </div>
