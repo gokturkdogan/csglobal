@@ -47,7 +47,7 @@ export function HomeServiceAreas({ content }: { content: HomepageContent }) {
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {areas.map((area, i) => {
             const cardClass =
-              "group rounded-xl border border-slate-200 bg-slate-50/50 p-6 transition hover:border-csg-blue/40 hover:bg-white hover:shadow-sm";
+              "group cursor-pointer rounded-xl border border-slate-200 bg-slate-50/50 p-6 transition hover:border-csg-blue/40 hover:bg-white hover:shadow-sm";
 
             if (preview) {
               return (

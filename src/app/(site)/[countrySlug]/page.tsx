@@ -1,11 +1,8 @@
 import { notFound } from "next/navigation";
-import { ContactCTA } from "@/components/domain/ContactCTA";
-import { CountryPageHero } from "@/components/domain/CountryPageHero";
-import { ServiceCard } from "@/components/domain/ServiceCard";
-import { MarkdownContent } from "@/components/MarkdownContent";
-import { findCountryBySlug } from "@/lib/repositories/country.repository";
+import { CountryDetailPage } from "@/components/country/CountryDetailPage";
+import { findCountryPageBySlug } from "@/lib/repositories/country.repository";
 import { findCategoriesWithCountryServices } from "@/lib/repositories/category.repository";
-import { buildEntityMetadata } from "@/lib/services/seo.service";
+import { buildEntityMetadata, buildFaqJsonLd } from "@/lib/services/seo.service";
 import { getSiteSettings } from "@/lib/settings";
 import { SeoEntityType } from "@/generated/prisma/client";
 
@@ -13,7 +10,7 @@ type Props = { params: Promise<{ countrySlug: string }> };
 
 export async function generateMetadata({ params }: Props) {
   const { countrySlug } = await params;
-  const country = await findCountryBySlug(countrySlug);
+  const country = await findCountryPageBySlug(countrySlug);
   if (!country) return {};
 
   return buildEntityMetadata({
@@ -27,66 +24,45 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function CountryPage({ params }: Props) {
   const { countrySlug } = await params;
-  const country = await findCountryBySlug(countrySlug);
+  const country = await findCountryPageBySlug(countrySlug);
   if (!country) notFound();
 
   const settings = await getSiteSettings();
-  const categoryRoots = await findCategoriesWithCountryServices(country.id);
-  const serviceCount = categoryRoots.reduce((n, cat) => n + cat.services.length, 0);
+  const categories = await findCategoriesWithCountryServices(country.id);
+  const serviceCount = categories.reduce((n, cat) => n + cat.services.length, 0);
+  const faqs = country.faqs.map((f) => ({
+    question: f.question,
+    answer: f.answer,
+  }));
+  const faqJsonLd = buildFaqJsonLd(faqs);
 
   return (
     <>
-      <CountryPageHero
-        name={country.name}
-        shortDescription={country.shortDescription}
-        flag={country.flag}
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
+      <CountryDetailPage
+        country={{
+          id: country.id,
+          name: country.name,
+          slug: country.slug,
+          flag: country.flag,
+          shortDescription: country.shortDescription,
+          visaRegion: country.visaRegion,
+          requiresAppointment: country.requiresAppointment,
+          averageProcessingTime: country.averageProcessingTime,
+          detailParagraph1: country.detailParagraph1,
+          detailParagraph2: country.detailParagraph2,
+          importantNotesJson: country.importantNotesJson,
+          faqs,
+        }}
+        settings={settings}
         serviceCount={serviceCount}
-        categoryCount={categoryRoots.length}
+        categoryCount={categories.length}
       />
-
-      <div className="home-band-soft">
-        <div className="mx-auto max-w-6xl px-4 py-12 md:px-8 md:py-16">
-          {country.description && (
-            <div className="max-w-3xl">
-              <MarkdownContent content={country.description} />
-            </div>
-          )}
-
-          <div className={`space-y-12 ${country.description ? "mt-12" : ""}`}>
-            {categoryRoots.map((category) => (
-              <section key={category.id}>
-                <h2 className="text-xl font-semibold text-slate-900">{category.name}</h2>
-                {category.shortDescription && (
-                  <p className="mt-2 text-sm text-slate-600">{category.shortDescription}</p>
-                )}
-
-                {category.services.length > 0 ? (
-                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                    {category.services.map((service) => (
-                      <ServiceCard
-                        key={service.id}
-                        name={service.name}
-                        slug={service.slug}
-                        countrySlug={countrySlug}
-                        shortDescription={service.shortDescription}
-                        processingTime={service.processingTime}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <p className="mt-4 text-sm text-slate-500">
-                    Bu kategoride henüz hizmet eklenmemiş.
-                  </p>
-                )}
-              </section>
-            ))}
-          </div>
-
-          <div className="mt-16">
-            <ContactCTA settings={settings} context={country.name} />
-          </div>
-        </div>
-      </div>
     </>
   );
 }

@@ -20,7 +20,7 @@ export function CountryCard({
   return (
     <Link
       href={`/${slug}`}
-      className="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:border-csg-blue/40 hover:shadow-md"
+      className="group flex cursor-pointer flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:border-csg-blue/40 hover:shadow-md"
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-slate-200">
         <SiteImage

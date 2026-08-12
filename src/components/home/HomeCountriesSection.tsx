@@ -37,7 +37,7 @@ export function HomeCountriesSection({
           {edit?.editing ? (
             <span className="text-sm font-medium text-slate-400">Tüm ülkeler</span>
           ) : (
-            <Link href="/ulkeler" className="text-sm font-medium text-csg-blue hover:underline">
+            <Link href="/ulkeler" className="cursor-pointer text-sm font-medium text-csg-blue hover:underline">
               Tüm ülkeler
             </Link>
           )}

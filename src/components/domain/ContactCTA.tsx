@@ -35,7 +35,7 @@ export function ContactCTA({
         </a>
         <Link
           href="/iletisim"
-          className="inline-flex items-center justify-center rounded-md bg-csg-blue px-5 py-2.5 text-sm font-semibold text-white hover:bg-csg-blue-dark"
+          className="inline-flex cursor-pointer items-center justify-center rounded-md bg-csg-blue px-5 py-2.5 text-sm font-semibold text-white hover:bg-csg-blue-dark"
         >
           İletişim
         </Link>
@@ -56,7 +56,7 @@ export function FloatingWhatsApp({ settings }: { settings: SiteSettingsMap }) {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="WhatsApp"
-      className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-md transition hover:scale-105 hover:bg-[#1da851] md:bottom-8 md:right-8"
+      className="fixed bottom-6 right-6 z-50 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-[#25D366] text-white shadow-md transition hover:scale-105 hover:bg-[#1da851] md:bottom-8 md:right-8"
     >
       <WhatsAppIcon className="h-7 w-7" />
     </a>

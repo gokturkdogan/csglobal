@@ -2,7 +2,7 @@ export const whatsappGreen = "#25D366";
 export const whatsappGreenHover = "#1da851";
 
 export const whatsappButtonClass =
-  "inline-flex items-center justify-center gap-2 rounded-md bg-[#25D366] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#1da851]";
+  "inline-flex cursor-pointer items-center justify-center gap-2 rounded-md bg-[#25D366] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#1da851]";
 
 export function WhatsAppIcon({ className = "h-5 w-5" }: { className?: string }) {
   return (

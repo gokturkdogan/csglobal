@@ -8,6 +8,8 @@
   --csg-blue-light: #1e5aa8;
   --csg-red: #c41e3a;
   --csg-red-dark: #9e1830;
+  --site-header-height: 4.25rem;
+  --country-panel-offset: 1rem;
 }
 
 @theme inline {
@@ -25,6 +27,42 @@ body {
   background: #fafafa;
   color: var(--foreground);
   font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+/* Ülke detay — sol kategori paneli viewport içinde tam görünür (lg+) */
+@media (min-width: 1024px) {
+  .country-panel-sticky {
+    position: sticky;
+    top: calc(var(--site-header-height) + var(--country-panel-offset));
+    max-height: calc(
+      100dvh - var(--site-header-height) - var(--country-panel-offset) - var(--country-panel-offset)
+    );
+  }
+
+  .country-panel-card {
+    max-height: inherit;
+  }
+}
+
+@layer base {
+  a,
+  button:not(:disabled),
+  [role="button"]:not(:disabled),
+  label[for],
+  select,
+  summary,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  input[type="checkbox"],
+  input[type="radio"] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [role="button"][disabled] {
+    cursor: not-allowed;
+  }
 }
 
 /* Anasayfa bantları — kurumsal mavi, abartısız */

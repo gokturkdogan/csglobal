@@ -17,7 +17,7 @@ export function FaqAccordion({
         <div key={i}>
           <button
             type="button"
-            className="flex w-full items-center justify-between px-5 py-4 text-left text-sm font-medium text-slate-900 hover:bg-slate-50"
+            className="flex w-full cursor-pointer items-center justify-between px-5 py-4 text-left text-sm font-medium text-slate-900 hover:bg-slate-50"
             onClick={() => setOpen(open === i ? null : i)}
             aria-expanded={open === i}
           >

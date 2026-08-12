@@ -8,6 +8,10 @@ type CountryPageHeroProps = {
   flag?: string | null;
   serviceCount: number;
   categoryCount: number;
+  badge?: string;
+  subtitle?: string;
+  primaryCta?: { label: string; href: string };
+  secondaryCta?: { label: string; href: string };
 };
 
 export function CountryPageHero({
@@ -16,7 +20,13 @@ export function CountryPageHero({
   flag,
   serviceCount,
   categoryCount,
+  badge,
+  subtitle,
+  primaryCta,
+  secondaryCta,
 }: CountryPageHeroProps) {
+  const displaySubtitle = subtitle ?? shortDescription;
+
   return (
     <section className="relative overflow-hidden border-b border-slate-200 bg-slate-900">
       <div className="absolute inset-0">
@@ -40,13 +50,13 @@ export function CountryPageHero({
         <nav aria-label="Breadcrumb" className="text-sm text-slate-300">
           <ol className="flex flex-wrap items-center gap-1.5">
             <li>
-              <Link href="/" className="hover:text-white transition-colors">
+              <Link href="/" className="cursor-pointer hover:text-white transition-colors">
                 Anasayfa
               </Link>
             </li>
             <li className="text-slate-500">/</li>
             <li>
-              <Link href="/ulkeler" className="hover:text-white transition-colors">
+              <Link href="/ulkeler" className="cursor-pointer hover:text-white transition-colors">
                 Ülkeler
               </Link>
             </li>
@@ -69,7 +79,7 @@ export function CountryPageHero({
               )}
               <div className="min-w-0">
                 <p className="text-sm font-semibold uppercase tracking-widest text-sky-300">
-                  Ülke rehberi
+                  {badge ?? "Ülke rehberi"}
                 </p>
                 <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white md:text-4xl lg:text-5xl">
                   {name}
@@ -77,9 +87,9 @@ export function CountryPageHero({
               </div>
             </div>
 
-            {shortDescription && (
+            {displaySubtitle && (
               <p className="mt-5 text-base leading-relaxed text-slate-200 md:text-lg">
-                {shortDescription}
+                {displaySubtitle}
               </p>
             )}
 
@@ -101,6 +111,27 @@ export function CountryPageHero({
                 </span>
               )}
             </div>
+
+            {(primaryCta || secondaryCta) && (
+              <div className="mt-8 flex flex-wrap gap-3">
+                {primaryCta && (
+                  <Link
+                    href={primaryCta.href}
+                    className="rounded-md cursor-pointer bg-csg-red px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-csg-red/20 transition hover:bg-csg-red-dark"
+                  >
+                    {primaryCta.label}
+                  </Link>
+                )}
+                {secondaryCta && (
+                  <Link
+                    href={secondaryCta.href}
+                    className="rounded-md cursor-pointer border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
+                  >
+                    {secondaryCta.label}
+                  </Link>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

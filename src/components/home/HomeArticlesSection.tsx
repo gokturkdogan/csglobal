@@ -38,7 +38,7 @@ export function HomeArticlesSection({
           {edit?.editing ? (
             <span className="text-sm font-medium text-slate-400">Tüm rehberler</span>
           ) : (
-            <Link href="/rehber" className="text-sm font-medium text-csg-blue hover:underline">
+            <Link href="/rehber" className="cursor-pointer text-sm font-medium text-csg-blue hover:underline">
               Tüm rehberler
             </Link>
           )}

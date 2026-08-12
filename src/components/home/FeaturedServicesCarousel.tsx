@@ -64,7 +64,7 @@ export function FeaturedServicesCarousel({ services }: { services: ServiceItem[]
           <button
             type="button"
             onClick={() => go(-1)}
-            className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
+            className="rounded-md cursor-pointer border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
             aria-label="Önceki hizmetler"
           >
             ←
@@ -75,7 +75,7 @@ export function FeaturedServicesCarousel({ services }: { services: ServiceItem[]
           <button
             type="button"
             onClick={() => go(1)}
-            className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
+            className="rounded-md cursor-pointer border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
             aria-label="Sonraki hizmetler"
           >
             →

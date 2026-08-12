@@ -198,7 +198,7 @@ export default async function CountryPathPage({ params }: Props) {
                 <ul className="mt-3 space-y-2">
                   {service.sections.map((s) => (
                     <li key={s.id}>
-                      <a href={`#${s.slug}`} className="text-slate-600 hover:text-csg-blue">
+                      <a href={`#${s.slug}`} className="cursor-pointer text-slate-600 hover:text-csg-blue">
                         {s.title}
                       </a>
                     </li>

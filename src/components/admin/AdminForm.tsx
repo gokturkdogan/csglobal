@@ -172,7 +172,7 @@ export function AdminButtonLink({
   return (
     <Link
       href={href}
-      className={`inline-flex items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold transition ${styles}`}
+      className={`inline-flex cursor-pointer items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold transition ${styles}`}
     >
       {children}
     </Link>
@@ -193,7 +193,7 @@ export function AdminLink({
       href={href}
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
-      className="font-medium text-csg-blue hover:text-csg-blue-dark hover:underline"
+      className="cursor-pointer font-medium text-csg-blue hover:text-csg-blue-dark hover:underline"
     >
       {children}
     </Link>

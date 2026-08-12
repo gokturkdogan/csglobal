@@ -42,7 +42,7 @@ export function HomeFaqPreview({ content }: { content: HomepageContent }) {
             ) : (
               <Link
                 href="/iletisim"
-                className="mt-6 inline-flex text-sm font-semibold text-white underline-offset-4 hover:underline"
+                className="mt-6 inline-flex cursor-pointer text-sm font-semibold text-white underline-offset-4 hover:underline"
               >
                 Sorunuz için bize ulaşın →
               </Link>
@@ -62,7 +62,7 @@ export function HomeFaqPreview({ content }: { content: HomepageContent }) {
                       <div className="flex items-start gap-2 px-4 py-3">
                         <button
                           type="button"
-                          className="mt-1 shrink-0 text-slate-400 hover:text-slate-600"
+                          className="mt-1 shrink-0 cursor-pointer text-slate-400 hover:text-slate-600"
                           onClick={() => setOpenIndex(openIndex === index ? null : index)}
                           aria-expanded={openIndex === index}
                           aria-label={openIndex === index ? "Cevabı gizle" : "Cevabı göster"}

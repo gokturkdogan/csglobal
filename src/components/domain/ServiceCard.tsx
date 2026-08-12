@@ -17,7 +17,7 @@ export function ServiceCard({
   return (
     <Link
       href={buildServicePath(countrySlug, slug)}
-      className="block rounded-lg border border-slate-200 bg-white px-5 py-4 transition hover:border-csg-blue/40 hover:shadow-sm"
+      className="block cursor-pointer rounded-lg border border-slate-200 bg-white px-5 py-4 transition hover:border-csg-blue/40 hover:shadow-sm"
     >
       <h3 className="font-semibold text-slate-900">{name}</h3>
       {shortDescription && (
@@ -42,7 +42,7 @@ export function CategoryLinkCard({
   return (
     <Link
       href={href}
-      className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-5 py-4 transition hover:border-csg-blue/40"
+      className="flex cursor-pointer items-center justify-between rounded-lg border border-slate-200 bg-white px-5 py-4 transition hover:border-csg-blue/40"
     >
       <span className="font-medium text-slate-900">{name}</span>
       {meta && <span className="text-xs text-slate-500">{meta}</span>}

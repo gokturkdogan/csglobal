@@ -137,7 +137,12 @@ async function main() {
     });
   }
 
-  // Germany
+  const germanyDetailNotes = [
+    "Schengen vizesi ile Almanya'ya giriş yapılabilir; vize türü ve süresi başvuru amacına göre değişir.",
+    "Turistik ve ticari kısa süreli vizeler için seyahat sigortası ve konaklama belgesi genellikle zorunludur.",
+    "İşlem süreleri yoğun dönemlerde uzayabilir; seyahat tarihinize göre erken planlama önerilir.",
+  ];
+
   const germany = await prisma.country.upsert({
     where: { slug: "almanya" },
     create: {
@@ -146,14 +151,54 @@ async function main() {
       iso2: "DE",
       iso3: "DEU",
       flag: "DE",
-      shortDescription: "Vize, oturum, çalışma izni ve vatandaşlık hizmetleri.",
+      shortDescription:
+        "Almanya vize, oturum, çalışma izni ve vatandaşlık süreçlerinde uzman danışmanlık.",
       description:
         "Almanya Schengen kapsamındadır. Bordo pasaport sahipleri vizeye tabidir.",
+      visaRegion: "Schengen",
+      requiresAppointment: true,
+      averageProcessingTime: "10–15 iş günü",
+      detailParagraph1:
+        "Almanya, Schengen bölgesinin en önemli ülkelerinden biri olarak turistik, ticari, aile ve uzun süreli oturum başvurularında yoğun talep görür.",
+      detailParagraph2:
+        "CSGLOBAL ile online başvuru veya belge yükleme yok; sürecinizi WhatsApp ve telefon üzerinden uzman danışmanlarımızla yönetirsiniz.",
+      importantNotesJson: JSON.stringify(germanyDetailNotes),
       heroImage: IMG.germany,
       isActive: true,
       sortOrder: 1,
     },
-    update: {},
+    update: {
+      visaRegion: "Schengen",
+      requiresAppointment: true,
+      averageProcessingTime: "10–15 iş günü",
+      detailParagraph1:
+        "Almanya, Schengen bölgesinin en önemli ülkelerinden biri olarak turistik, ticari, aile ve uzun süreli oturum başvurularında yoğun talep görür.",
+      detailParagraph2:
+        "CSGLOBAL ile online başvuru veya belge yükleme yok; sürecinizi WhatsApp ve telefon üzerinden uzman danışmanlarımızla yönetirsiniz.",
+      importantNotesJson: JSON.stringify(germanyDetailNotes),
+    },
+  });
+
+  await prisma.faq.deleteMany({
+    where: { countryId: germany.id, serviceId: null, categoryId: null },
+  });
+  await prisma.faq.createMany({
+    data: [
+      {
+        countryId: germany.id,
+        question: "Almanya vizesi için randevu şart mı?",
+        answer: "Evet. Kısa süreli vize başvuruları yetkili vize başvuru merkezleri üzerinden randevu ile yapılır.",
+        sortOrder: 1,
+        isActive: true,
+      },
+      {
+        countryId: germany.id,
+        question: "Almanya turistik vize ne kadar sürede çıkar?",
+        answer: "Standart işlem süresi genellikle 10–15 iş günüdür. Yoğun dönemlerde süre uzayabilir.",
+        sortOrder: 2,
+        isActive: true,
+      },
+    ],
   });
 
   await prisma.seoMetadata.upsert({

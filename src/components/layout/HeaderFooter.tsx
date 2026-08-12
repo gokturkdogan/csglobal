@@ -30,7 +30,7 @@ export function Header({
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/95 backdrop-blur-sm">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 md:px-8">
-        <Link href="/" className="flex shrink-0 items-center" aria-label={siteName}>
+        <Link href="/" className="flex shrink-0 cursor-pointer items-center" aria-label={siteName}>
           <SiteImage
             src={logo}
             alt={siteName}
@@ -46,7 +46,7 @@ export function Header({
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-md px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-csg-blue"
+              className="cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-csg-blue"
             >
               {item.label}
             </Link>
@@ -65,7 +65,7 @@ export function Header({
           </a>
           <Link
             href="/iletisim"
-            className="rounded-md bg-csg-red px-4 py-2 text-sm font-semibold text-white transition hover:bg-csg-red-dark"
+            className="cursor-pointer rounded-md bg-csg-red px-4 py-2 text-sm font-semibold text-white transition hover:bg-csg-red-dark"
           >
             Danışmanlık Al
           </Link>
@@ -80,7 +80,7 @@ export function Header({
               <Link
                 key={item.href}
                 href={item.href}
-                className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
+                className="block cursor-pointer px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
               >
                 {item.label}
               </Link>
@@ -109,9 +109,9 @@ export function Footer({
         <div>
           <p className="text-sm font-semibold text-slate-900">Bağlantılar</p>
           <ul className="mt-3 space-y-2 text-sm text-slate-600">
-            <li><Link href="/ulkeler" className="hover:text-csg-blue">Ülkeler</Link></li>
-            <li><Link href="/rehber" className="hover:text-csg-blue">Rehber & Blog</Link></li>
-            <li><Link href="/hakkimizda" className="hover:text-csg-blue">Hakkımızda</Link></li>
+            <li><Link href="/ulkeler" className="cursor-pointer hover:text-csg-blue">Ülkeler</Link></li>
+            <li><Link href="/rehber" className="cursor-pointer hover:text-csg-blue">Rehber & Blog</Link></li>
+            <li><Link href="/hakkimizda" className="cursor-pointer hover:text-csg-blue">Hakkımızda</Link></li>
           </ul>
         </div>
         <div>
@@ -119,14 +119,14 @@ export function Footer({
           <ul className="mt-3 space-y-2 text-sm text-slate-600">
             {contactPhone && (
               <li>
-                <a href={`tel:${contactPhone.replace(/\s/g, "")}`} className="hover:text-csg-blue">
+                <a href={`tel:${contactPhone.replace(/\s/g, "")}`} className="cursor-pointer hover:text-csg-blue">
                   {contactPhone}
                 </a>
               </li>
             )}
             {contactEmail && (
               <li>
-                <a href={`mailto:${contactEmail}`} className="hover:text-csg-blue">
+                <a href={`mailto:${contactEmail}`} className="cursor-pointer hover:text-csg-blue">
                   {contactEmail}
                 </a>
               </li>

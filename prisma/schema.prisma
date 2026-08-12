@@ -60,6 +60,12 @@ model Country {
   shortDescription String?  @map("short_description") @db.Text
   description      String?  @db.Text
   heroImage        String?  @map("hero_image")
+  visaRegion              String?  @map("visa_region")
+  requiresAppointment     Boolean  @default(false) @map("requires_appointment")
+  averageProcessingTime   String?  @map("average_processing_time")
+  detailParagraph1        String?  @map("detail_paragraph_1") @db.Text
+  detailParagraph2        String?  @map("detail_paragraph_2") @db.Text
+  importantNotesJson      String?  @map("important_notes_json") @db.Text
   isActive         Boolean  @default(true) @map("is_active")
   sortOrder        Int      @default(0) @map("sort_order")
   createdAt        DateTime @default(now()) @map("created_at")

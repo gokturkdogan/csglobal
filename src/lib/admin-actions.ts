@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { auth, signIn, signOut } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { COUNTRY_FAQ_MAX, COUNTRY_NOTES_MAX } from "@/lib/country-detail";
 import { serializeHomepageToSettings, type HomepageContent } from "@/lib/homepage";
 import { AdminRole } from "@/generated/prisma/client";
 
@@ -180,23 +181,81 @@ export async function uploadCloudinaryHomeImageAction(formData: FormData) {
 export async function saveCountryAction(formData: FormData) {
   await requireAdmin();
   const id = formData.get("id") as string | null;
+  const iso2Raw = ((formData.get("iso2") as string) || "").trim().toUpperCase() || null;
+
+  const importantNotes: string[] = [];
+  for (let i = 0; i < COUNTRY_NOTES_MAX; i++) {
+    const note = ((formData.get(`importantNote${i}`) as string) || "").trim();
+    if (note) importantNotes.push(note);
+  }
+
   const data = {
     name: formData.get("name") as string,
     slug: formData.get("slug") as string,
-    iso2: (formData.get("iso2") as string) || null,
+    iso2: iso2Raw,
+    flag: iso2Raw,
     shortDescription: (formData.get("shortDescription") as string) || null,
     description: (formData.get("description") as string) || null,
+    visaRegion: ((formData.get("visaRegion") as string) || "").trim() || null,
+    requiresAppointment: formData.get("requiresAppointment") === "on",
+    averageProcessingTime:
+      ((formData.get("averageProcessingTime") as string) || "").trim() || null,
+    detailParagraph1: ((formData.get("detailParagraph1") as string) || "").trim() || null,
+    detailParagraph2: ((formData.get("detailParagraph2") as string) || "").trim() || null,
+    importantNotesJson:
+      importantNotes.length > 0 ? JSON.stringify(importantNotes) : null,
     sortOrder: Number(formData.get("sortOrder") || 0),
     isActive: formData.get("isActive") === "on",
   };
 
+  const faqItems: { question: string; answer: string; sortOrder: number }[] = [];
+  for (let i = 0; i < COUNTRY_FAQ_MAX; i++) {
+    const question = ((formData.get(`faqQuestion${i}`) as string) || "").trim();
+    const answer = ((formData.get(`faqAnswer${i}`) as string) || "").trim();
+    if (question && answer) {
+      faqItems.push({ question, answer, sortOrder: i + 1 });
+    }
+  }
+
   if (id) {
-    await prisma.country.update({ where: { id }, data });
+    await prisma.$transaction(async (tx) => {
+      await tx.country.update({ where: { id }, data });
+      await tx.faq.deleteMany({
+        where: { countryId: id, serviceId: null, categoryId: null },
+      });
+      if (faqItems.length > 0) {
+        await tx.faq.createMany({
+          data: faqItems.map((f) => ({
+            countryId: id,
+            question: f.question,
+            answer: f.answer,
+            sortOrder: f.sortOrder,
+            isActive: true,
+          })),
+        });
+      }
+    });
     revalidatePath("/");
+    revalidatePath(`/${data.slug}`);
     redirect(`/admin/countries/${id}`);
   } else {
-    const country = await prisma.country.create({ data });
+    const country = await prisma.$transaction(async (tx) => {
+      const created = await tx.country.create({ data });
+      if (faqItems.length > 0) {
+        await tx.faq.createMany({
+          data: faqItems.map((f) => ({
+            countryId: created.id,
+            question: f.question,
+            answer: f.answer,
+            sortOrder: f.sortOrder,
+            isActive: true,
+          })),
+        });
+      }
+      return created;
+    });
     revalidatePath("/");
+    revalidatePath(`/${country.slug}`);
     redirect(`/admin/countries/${country.id}`);
   }
 }

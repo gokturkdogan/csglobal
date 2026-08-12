@@ -86,13 +86,13 @@ export function HomeHero({
               <>
                 <Link
                   href="/ulkeler"
-                  className="rounded-md bg-csg-red px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-csg-red/20 transition hover:bg-csg-red-dark"
+                  className="rounded-md cursor-pointer bg-csg-red px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-csg-red/20 transition hover:bg-csg-red-dark"
                 >
                   {content.heroCtaPrimary}
                 </Link>
                 <Link
                   href="/iletisim"
-                  className="rounded-md border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
+                  className="rounded-md cursor-pointer border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
                 >
                   {content.heroCtaSecondary}
                 </Link>
@@ -107,7 +107,7 @@ export function HomeHero({
               <Link
                 key={c.slug}
                 href={`/${c.slug}`}
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/20"
+                className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/20"
               >
                 {c.flag && (
                   <SiteImage
