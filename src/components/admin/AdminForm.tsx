@@ -7,6 +7,8 @@ export {
   AdminSubmitButton,
 } from "./AdminActionForm";
 
+export { AdminCharCountField } from "./AdminCharCountField";
+
 const inputClass =
   "mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-csg-blue focus:outline-none focus:ring-2 focus:ring-csg-blue/20";
 
@@ -46,6 +48,7 @@ export function AdminField({
   hint,
   required,
   placeholder,
+  maxLength,
 }: {
   label: string;
   name: string;
@@ -54,6 +57,7 @@ export function AdminField({
   hint?: string;
   required?: boolean;
   placeholder?: string;
+  maxLength?: number;
 }) {
   return (
     <label className="block">
@@ -64,6 +68,7 @@ export function AdminField({
         defaultValue={value ?? ""}
         required={required}
         placeholder={placeholder}
+        maxLength={maxLength}
         className={inputClass}
       />
       {hint && <span className="mt-1.5 block text-xs text-slate-500">{hint}</span>}

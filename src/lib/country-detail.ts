@@ -3,6 +3,7 @@ import { normalizeRichTextContent } from "@/lib/rich-text";
 export const COUNTRY_NOTES_MAX = 10;
 export const COUNTRY_FAQ_MAX = 5;
 export const COUNTRY_DETAIL_SECTIONS_MAX = 15;
+export const COUNTRY_SHORT_DESCRIPTION_MAX = 100;
 
 export type CountryDetailSection = {
   title: string;
@@ -53,6 +54,16 @@ export function buildCountryQuickStats(country: {
   });
 
   return stats;
+}
+
+/** Hero alt metin; en fazla COUNTRY_SHORT_DESCRIPTION_MAX karakter. */
+export function normalizeCountryShortDescription(
+  value: string | null | undefined,
+): string | null {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  return trimmed.slice(0, COUNTRY_SHORT_DESCRIPTION_MAX);
 }
 
 /** Satır sonları ve iç boşluklar korunur; yalnızca baş/son trim edilir. */

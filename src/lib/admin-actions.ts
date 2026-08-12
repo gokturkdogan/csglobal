@@ -14,6 +14,8 @@ import {
 import {
   COUNTRY_FAQ_MAX,
   COUNTRY_NOTES_MAX,
+  COUNTRY_SHORT_DESCRIPTION_MAX,
+  normalizeCountryShortDescription,
   normalizeMultilineText,
   parseCountryDetailSectionsJson,
 } from "@/lib/country-detail";
@@ -220,12 +222,19 @@ export async function saveCountryAction(formData: FormData): Promise<AdminAction
     if (note) importantNotes.push(note);
   }
 
+  const shortDescriptionRaw = (formData.get("shortDescription") as string) || "";
+  if (shortDescriptionRaw.trim().length > COUNTRY_SHORT_DESCRIPTION_MAX) {
+    return adminFailure(
+      `Kısa açıklama en fazla ${COUNTRY_SHORT_DESCRIPTION_MAX} karakter olabilir.`,
+    );
+  }
+
   const data = {
     name: formData.get("name") as string,
     slug: formData.get("slug") as string,
     iso2: iso2Raw,
     flag: iso2Raw,
-    shortDescription: (formData.get("shortDescription") as string) || null,
+    shortDescription: normalizeCountryShortDescription(shortDescriptionRaw),
     description: (formData.get("description") as string) || null,
     visaRegion: ((formData.get("visaRegion") as string) || "").trim() || null,
     requiresAppointment: formData.get("requiresAppointment") === "on",

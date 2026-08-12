@@ -4,11 +4,13 @@ import { saveCountryAction } from "@/lib/admin-actions";
 import {
   COUNTRY_FAQ_MAX,
   COUNTRY_NOTES_MAX,
+  COUNTRY_SHORT_DESCRIPTION_MAX,
   parseCountryNotesJson,
 } from "@/lib/country-detail";
 import { CountryDetailSectionsEditor } from "@/components/admin/country/CountryDetailSectionsEditor";
 import {
   AdminCheckbox,
+  AdminCharCountField,
   AdminField,
   AdminFormSection,
   AdminActionForm,
@@ -54,10 +56,12 @@ export default async function EditCountryPage({ params }: Props) {
           <AdminField label="Ad" name="name" value={country?.name} required />
           <AdminField label="Slug" name="slug" value={country?.slug} required />
           <AdminField label="ISO2 (bayrak kodu)" name="iso2" value={country?.iso2} />
-          <AdminField
+          <AdminCharCountField
             label="Kısa açıklama (hero alt metin)"
             name="shortDescription"
             value={country?.shortDescription}
+            maxLength={COUNTRY_SHORT_DESCRIPTION_MAX}
+            hint="Ülke detay hero altında görünür."
           />
           <AdminTextArea
             label="Genel açıklama (opsiyonel)"
