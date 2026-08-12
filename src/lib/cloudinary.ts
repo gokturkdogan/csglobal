@@ -1,4 +1,8 @@
 import crypto from "crypto";
+import {
+  HOMEPAGE_CLOUDINARY_FOLDER,
+  parseHomeImagePublicId,
+} from "@/lib/cloudinary/home-folder";
 
 type CloudinaryConfig = {
   cloudName: string;
@@ -35,8 +39,9 @@ function signParams(params: Record<string, string>, apiSecret: string): string {
   return crypto.createHash("sha1").update(sorted + apiSecret).digest("hex");
 }
 
-export async function uploadToCloudinary(
+async function uploadWithFolder(
   file: Buffer,
+  folder: string,
   publicId: string,
   mimeType: string,
 ): Promise<{ secureUrl: string; publicId: string }> {
@@ -44,6 +49,7 @@ export async function uploadToCloudinary(
   const timestamp = String(Math.round(Date.now() / 1000));
 
   const paramsToSign: Record<string, string> = {
+    folder,
     overwrite: "true",
     invalidate: "true",
     public_id: publicId,
@@ -57,6 +63,7 @@ export async function uploadToCloudinary(
   body.append("file", blob, "upload.jpg");
   body.append("api_key", apiKey);
   body.append("timestamp", timestamp);
+  body.append("folder", folder);
   body.append("public_id", publicId);
   body.append("overwrite", "true");
   body.append("invalidate", "true");
@@ -76,6 +83,16 @@ export async function uploadToCloudinary(
   return { secureUrl: data.secure_url, publicId: data.public_id };
 }
 
+/** Anasayfa slot görseli — her zaman Cloudinary Home klasörüne yükler. */
+export async function uploadHomeImageToCloudinary(
+  file: Buffer,
+  fullPublicId: string,
+  mimeType: string,
+): Promise<{ secureUrl: string; publicId: string }> {
+  const { folder, assetName } = parseHomeImagePublicId(fullPublicId);
+  return uploadWithFolder(file, folder, assetName, mimeType);
+}
+
 export async function listCloudinaryFolder(folder: string): Promise<CloudinaryResource[]> {
   const { cloudName, apiKey, apiSecret } = getConfig();
   const auth = Buffer.from(`${apiKey}:${apiSecret}`).toString("base64");
@@ -87,7 +104,7 @@ export async function listCloudinaryFolder(folder: string): Promise<CloudinaryRe
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      expression: `folder:${folder}`,
+      expression: `folder:${folder}/*`,
       max_results: 50,
       sort_by: [{ created_at: "desc" }],
     }),
@@ -100,4 +117,8 @@ export async function listCloudinaryFolder(folder: string): Promise<CloudinaryRe
 
   const data = (await response.json()) as { resources?: CloudinaryResource[] };
   return data.resources ?? [];
+}
+
+export async function listHomeImagesFromCloudinary(): Promise<CloudinaryResource[]> {
+  return listCloudinaryFolder(HOMEPAGE_CLOUDINARY_FOLDER);
 }

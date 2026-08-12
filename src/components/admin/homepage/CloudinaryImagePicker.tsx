@@ -6,6 +6,7 @@ import {
   uploadCloudinaryHomeImageAction,
 } from "@/lib/admin-actions";
 import { dataUrlToFile, readImageFileAsDataUrl } from "@/lib/crop-image";
+import { homeImageAssetLabel } from "@/lib/cloudinary/home-folder";
 import { HomepageImageCropDialog } from "./HomepageImageCropDialog";
 
 type GalleryItem = {
@@ -175,7 +176,7 @@ export function CloudinaryImagePicker({
                         className="h-full w-full object-cover"
                       />
                       <span className="absolute inset-x-0 bottom-0 bg-black/60 px-1 py-0.5 text-[10px] text-white truncate">
-                        {item.publicId.replace("Home/", "")}
+                        {homeImageAssetLabel(item.publicId)}
                       </span>
                     </button>
                   ))}

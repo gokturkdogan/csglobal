@@ -1,5 +1,10 @@
 /** Cloudinary Home klasörü — aynı public_id ile yükleme = görseli değiştirir (yeni dosya oluşturmaz). */
-export const HOMEPAGE_CLOUDINARY_FOLDER = "Home";
+import {
+  HOMEPAGE_CLOUDINARY_FOLDER,
+  buildHomeImagePublicId,
+} from "@/lib/cloudinary/home-folder";
+
+export { HOMEPAGE_CLOUDINARY_FOLDER };
 
 export type HomepageImageSlotConfig = {
   publicId: string;
@@ -11,40 +16,40 @@ export type HomepageImageSlotConfig = {
 
 export const homepageImageSlots = {
   heroImage: {
-    publicId: "Home/hero",
+    publicId: buildHomeImagePublicId("hero"),
     label: "Hero banner",
     aspectRatio: 21 / 9,
     cropHint:
       "Geniş hero alanı (21:9). Görseli sürükleyip yakınlaştırarak hangi bölümün görüneceğini seçin.",
   },
   aboutImage: {
-    publicId: "Home/about",
+    publicId: buildHomeImagePublicId("about"),
     label: "Hakkımızda görseli",
     aspectRatio: 4 / 3,
     cropHint:
       "Hakkımızda kutusu 4:3 oranında. Görselin hangi kısmının kutuda görüneceğini ayarlayın.",
   },
   ctaBannerImage: {
-    publicId: "Home/cta-banner",
+    publicId: buildHomeImagePublicId("cta-banner"),
     label: "Alt CTA banner",
     aspectRatio: 21 / 9,
     cropHint:
       "Alt CTA şeridi geniş banner (21:9). Görseli konumlandırıp kırpın.",
   },
   seoBlock0: {
-    publicId: "Home/seo-1",
+    publicId: buildHomeImagePublicId("seo-1"),
     label: "SEO blok 1 görseli",
     aspectRatio: 4 / 3,
     cropHint: "SEO blok görseli 4:3. Kırpma alanını sürükleyerek konumlandırın.",
   },
   seoBlock1: {
-    publicId: "Home/seo-2",
+    publicId: buildHomeImagePublicId("seo-2"),
     label: "SEO blok 2 görseli",
     aspectRatio: 4 / 3,
     cropHint: "SEO blok görseli 4:3. Kırpma alanını sürükleyerek konumlandırın.",
   },
   seoBlock2: {
-    publicId: "Home/seo-3",
+    publicId: buildHomeImagePublicId("seo-3"),
     label: "SEO blok 3 görseli",
     aspectRatio: 4 / 3,
     cropHint: "SEO blok görseli 4:3. Kırpma alanını sürükleyerek konumlandırın.",

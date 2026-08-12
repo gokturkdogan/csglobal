@@ -135,9 +135,8 @@ export async function updateHomepageEditorAction(contentJson: string) {
 
 export async function listCloudinaryHomeImagesAction() {
   await requireAdmin();
-  const { listCloudinaryFolder } = await import("@/lib/cloudinary");
-  const { HOMEPAGE_CLOUDINARY_FOLDER } = await import("@/lib/homepage-image-slots");
-  const resources = await listCloudinaryFolder(HOMEPAGE_CLOUDINARY_FOLDER);
+  const { listHomeImagesFromCloudinary } = await import("@/lib/cloudinary");
+  const resources = await listHomeImagesFromCloudinary();
   return resources.map((r) => ({
     publicId: r.public_id,
     secureUrl: r.secure_url,
@@ -157,10 +156,6 @@ export async function uploadCloudinaryHomeImageAction(formData: FormData) {
     throw new Error("Dosya veya hedef eksik");
   }
 
-  if (!publicId.startsWith("Home/")) {
-    throw new Error("Yalnızca Home klasörüne yükleme yapılabilir");
-  }
-
   const maxBytes = 10 * 1024 * 1024;
   if (file.size > maxBytes) {
     throw new Error("Dosya 10MB sınırını aşıyor");
@@ -171,9 +166,13 @@ export async function uploadCloudinaryHomeImageAction(formData: FormData) {
     throw new Error("Yalnızca JPEG, PNG, WebP veya GIF yüklenebilir");
   }
 
-  const { uploadToCloudinary } = await import("@/lib/cloudinary");
+  const { uploadHomeImageToCloudinary } = await import("@/lib/cloudinary");
+  const { parseHomeImagePublicId } = await import("@/lib/cloudinary/home-folder");
+
+  parseHomeImagePublicId(publicId);
+
   const buffer = Buffer.from(await file.arrayBuffer());
-  const result = await uploadToCloudinary(buffer, publicId, file.type);
+  const result = await uploadHomeImageToCloudinary(buffer, publicId, file.type);
 
   return result;
 }
