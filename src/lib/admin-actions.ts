@@ -186,7 +186,6 @@ export async function saveCountryAction(formData: FormData) {
     iso2: (formData.get("iso2") as string) || null,
     shortDescription: (formData.get("shortDescription") as string) || null,
     description: (formData.get("description") as string) || null,
-    heroImage: (formData.get("heroImage") as string) || null,
     sortOrder: Number(formData.get("sortOrder") || 0),
     isActive: formData.get("isActive") === "on",
   };

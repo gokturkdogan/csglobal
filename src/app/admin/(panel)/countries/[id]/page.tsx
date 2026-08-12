@@ -23,7 +23,7 @@ export default async function EditCountryPage({ params }: Props) {
     <div className="space-y-6">
       <AdminPageHeader
         title={country ? `${country.name} Düzenle` : "Yeni Ülke"}
-        description="Ülke bilgileri, slug ve kapak görseli."
+        description="Ülke bilgileri ve slug."
       />
 
       <form action={saveCountryAction} className="max-w-3xl space-y-6">
@@ -46,12 +46,7 @@ export default async function EditCountryPage({ params }: Props) {
           />
         </AdminFormSection>
 
-        <AdminFormSection title="Görsel & sıralama">
-          <AdminField
-            label="Kapak / hero görsel URL"
-            name="heroImage"
-            value={country?.heroImage}
-          />
+        <AdminFormSection title="Yayın">
           <AdminField
             label="Sıra"
             name="sortOrder"

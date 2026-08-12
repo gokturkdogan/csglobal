@@ -29,4 +29,7 @@ export const siteImages = {
   /** Ülkeler sayfası hero */
   countriesHero:
     "https://res.cloudinary.com/ulnb2wjo/image/upload/v1786556193/countries-hero.png",
+  /** Ülke detay sayfası hero */
+  countryDetailHero:
+    "https://res.cloudinary.com/ulnb2wjo/image/upload/v1786557153/country-detail-banner.png",
 } as const;

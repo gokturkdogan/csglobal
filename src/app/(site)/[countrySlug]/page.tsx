@@ -1,19 +1,33 @@
 import { notFound } from "next/navigation";
-import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { ContactCTA } from "@/components/domain/ContactCTA";
+import { CountryPageHero } from "@/components/domain/CountryPageHero";
 import { CategoryLinkCard, ServiceCard } from "@/components/domain/ServiceCard";
 import { MarkdownContent } from "@/components/MarkdownContent";
 import { findCountryBySlug } from "@/lib/repositories/country.repository";
 import { buildCategoryTree, type CategoryNode } from "@/lib/services/category-tree.service";
 import {
   buildCategoryPath,
-  buildServicePath,
 } from "@/lib/services/path-resolver.service";
 import { buildEntityMetadata } from "@/lib/services/seo.service";
 import { getSiteSettings } from "@/lib/settings";
 import { SeoEntityType } from "@/generated/prisma/client";
 
 type Props = { params: Promise<{ countrySlug: string }> };
+
+function countTreeStats(nodes: CategoryNode[]): { services: number; categories: number } {
+  let services = 0;
+  let categories = 0;
+
+  for (const node of nodes) {
+    categories += 1;
+    services += node.services.length;
+    const childStats = countTreeStats(node.children);
+    services += childStats.services;
+    categories += childStats.categories;
+  }
+
+  return { services, categories };
+}
 
 export async function generateMetadata({ params }: Props) {
   const { countrySlug } = await params;
@@ -36,44 +50,38 @@ export default async function CountryPage({ params }: Props) {
 
   const settings = await getSiteSettings();
   const tree = await buildCategoryTree(country.id);
+  const { services: serviceCount, categories: categoryCount } = countTreeStats(tree);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 md:px-8">
-      <Breadcrumb
-        items={[
-          { label: "Anasayfa", href: "/" },
-          { label: "Ülkeler", href: "/ulkeler" },
-          { label: country.name },
-        ]}
+    <>
+      <CountryPageHero
+        name={country.name}
+        shortDescription={country.shortDescription}
+        flag={country.flag}
+        serviceCount={serviceCount}
+        categoryCount={categoryCount}
       />
 
-      <header className="max-w-3xl">
-        <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
-          {country.name}
-        </h1>
-        {country.shortDescription && (
-          <p className="mt-4 text-lg text-slate-600 leading-relaxed">
-            {country.shortDescription}
-          </p>
-        )}
-      </header>
+      <div className="home-band-soft">
+        <div className="mx-auto max-w-6xl px-4 py-12 md:px-8 md:py-16">
+          {country.description && (
+            <div className="max-w-3xl">
+              <MarkdownContent content={country.description} />
+            </div>
+          )}
 
-      {country.description && (
-        <div className="mt-8 max-w-3xl">
-          <MarkdownContent content={country.description} />
+          <div className={`space-y-12 ${country.description ? "mt-12" : ""}`}>
+            {tree.map((root) => (
+              <CategorySection key={root.id} node={root} countrySlug={countrySlug} />
+            ))}
+          </div>
+
+          <div className="mt-16">
+            <ContactCTA settings={settings} context={country.name} />
+          </div>
         </div>
-      )}
-
-      <div className="mt-12 space-y-12">
-        {tree.map((root) => (
-          <CategorySection key={root.id} node={root} countrySlug={countrySlug} />
-        ))}
       </div>
-
-      <div className="mt-16">
-        <ContactCTA settings={settings} context={country.name} />
-      </div>
-    </div>
+    </>
   );
 }
 
@@ -134,7 +142,10 @@ function CategorySection({
 
       {depth < 2 &&
         node.children.map((child) => (
-          <div key={child.id} className="mt-8 pl-0 md:pl-4 border-l-0 md:border-l border-slate-200 md:pl-6">
+          <div
+            key={child.id}
+            className="mt-8 border-l-0 border-slate-200 pl-0 md:border-l md:pl-6"
+          >
             <CategorySection node={child} countrySlug={countrySlug} depth={depth + 1} />
           </div>
         ))}
