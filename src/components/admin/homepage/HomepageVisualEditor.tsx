@@ -5,6 +5,8 @@ import Link from "next/link";
 import type { HomepageContent } from "@/lib/homepage";
 import type { SiteSettingsMap } from "@/lib/site-settings.shared";
 import { updateHomepageEditorAction } from "@/lib/admin-actions";
+import { AdminLoadingButton } from "@/components/admin/AdminForm";
+import { useAdminToast } from "@/components/admin/AdminToast";
 import { HomepageEditProvider, useHomepageEdit } from "./HomepageEditContext";
 import { HomepageLivePreview } from "./HomepageLivePreview";
 
@@ -48,17 +50,26 @@ function HomepageEditorInner({
   previewData: PreviewData;
 }) {
   const edit = useHomepageEdit();
-  const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const toast = useAdminToast();
+  const [pending, setPending] = useState(false);
 
   async function handleSave() {
     if (!edit) return;
-    setStatus("saving");
+    setPending(true);
     try {
-      await updateHomepageEditorAction(JSON.stringify(edit.content));
-      setStatus("saved");
-      setTimeout(() => setStatus("idle"), 3000);
+      const result = await updateHomepageEditorAction(JSON.stringify(edit.content));
+      if (result.ok) {
+        toast.show({ variant: "success", message: result.message });
+      } else {
+        toast.show({ variant: "error", message: result.message });
+      }
     } catch {
-      setStatus("error");
+      toast.show({
+        variant: "error",
+        message: "Anasayfa kaydedilemedi. Lütfen tekrar deneyin.",
+      });
+    } finally {
+      setPending(false);
     }
   }
 
@@ -73,16 +84,10 @@ function HomepageEditorInner({
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          {status === "saved" && (
-            <span className="text-sm font-medium text-emerald-600">Kaydedildi ✓</span>
-          )}
-          {status === "error" && (
-            <span className="text-sm font-medium text-red-600">Kayıt hatası</span>
-          )}
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            className="cursor-pointer rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
           >
             Sıfırla
           </button>
@@ -93,14 +98,9 @@ function HomepageEditorInner({
           >
             Canlı site
           </Link>
-          <button
-            type="button"
-            disabled={status === "saving"}
-            onClick={handleSave}
-            className="rounded-lg bg-csg-blue px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-csg-blue-dark disabled:opacity-60"
-          >
-            {status === "saving" ? "Kaydediliyor…" : "Değişiklikleri kaydet"}
-          </button>
+          <AdminLoadingButton pending={pending} onClick={handleSave}>
+            Değişiklikleri kaydet
+          </AdminLoadingButton>
         </div>
       </div>
 

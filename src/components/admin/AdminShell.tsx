@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { logoutAction } from "@/lib/admin-actions";
+import { AdminToastProvider } from "./AdminToast";
 import { adminNav } from "./nav-config";
 import { AdminNavIcon } from "./AdminIcons";
 
@@ -23,7 +24,8 @@ export function AdminShell({ children, userName, userEmail }: AdminShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#f0f4f9]">
+    <AdminToastProvider>
+      <div className="min-h-screen bg-[#f0f4f9]">
       {mobileOpen && (
         <button
           type="button"
@@ -126,6 +128,7 @@ export function AdminShell({ children, userName, userEmail }: AdminShellProps) {
           </div>
         </main>
       </div>
-    </div>
+      </div>
+    </AdminToastProvider>
   );
 }

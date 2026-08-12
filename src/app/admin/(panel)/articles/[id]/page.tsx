@@ -6,6 +6,7 @@ import {
   AdminField,
   AdminFormSection,
   AdminSelect,
+  AdminActionForm,
   AdminSubmitButton,
   AdminTextArea,
 } from "@/components/admin/AdminForm";
@@ -30,7 +31,7 @@ export default async function EditArticlePage({ params }: Props) {
         description="Rehber ve blog içeriği (Markdown destekli)."
       />
 
-      <form action={saveArticleAction} className="max-w-3xl space-y-6">
+      <AdminActionForm action={saveArticleAction} className="max-w-3xl space-y-6">
         {article && <input type="hidden" name="id" value={article.id} />}
 
         <AdminFormSection title="Genel">
@@ -79,7 +80,7 @@ export default async function EditArticlePage({ params }: Props) {
         </AdminFormSection>
 
         <AdminSubmitButton>Kaydet</AdminSubmitButton>
-      </form>
+      </AdminActionForm>
     </div>
   );
 }

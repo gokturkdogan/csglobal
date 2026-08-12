@@ -5,6 +5,7 @@ import {
   AdminCheckbox,
   AdminField,
   AdminFormSection,
+  AdminActionForm,
   AdminSubmitButton,
   AdminTextArea,
 } from "@/components/admin/AdminForm";
@@ -21,7 +22,7 @@ export default async function EditSitePagePage({ params }: Props) {
     <div className="space-y-6">
       <AdminPageHeader title={`${page.title} Düzenle`} description={`Slug: /${page.slug}`} />
 
-      <form action={saveSitePageAction} className="max-w-3xl space-y-6">
+      <AdminActionForm action={saveSitePageAction} className="max-w-3xl space-y-6">
         <input type="hidden" name="id" value={page.id} />
 
         <AdminFormSection title="Sayfa bilgileri">
@@ -38,7 +39,7 @@ export default async function EditSitePagePage({ params }: Props) {
         </AdminFormSection>
 
         <AdminSubmitButton>Kaydet</AdminSubmitButton>
-      </form>
+      </AdminActionForm>
     </div>
   );
 }

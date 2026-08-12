@@ -5,6 +5,7 @@ import {
   AdminCheckbox,
   AdminField,
   AdminFormSection,
+  AdminActionForm,
   AdminSubmitButton,
 } from "@/components/admin/AdminForm";
 import { AdminPageHeader } from "@/components/admin/AdminUi";
@@ -28,7 +29,7 @@ export default async function EditCategoryPage({ params }: Props) {
         description="Global kategori — hizmetler ülkeye bağlanır, kategori tüm ülkelerde ortaktır."
       />
 
-      <form action={saveCategoryAction} className="max-w-3xl space-y-6">
+      <AdminActionForm action={saveCategoryAction} className="max-w-3xl space-y-6">
         {category && <input type="hidden" name="id" value={category.id} />}
 
         <AdminFormSection title="Bilgiler">
@@ -58,7 +59,7 @@ export default async function EditCategoryPage({ params }: Props) {
         </AdminFormSection>
 
         <AdminSubmitButton>Kaydet</AdminSubmitButton>
-      </form>
+      </AdminActionForm>
     </div>
   );
 }

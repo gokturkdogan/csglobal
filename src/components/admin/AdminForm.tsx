@@ -1,6 +1,12 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+export {
+  AdminActionForm,
+  AdminLoadingButton,
+  AdminSubmitButton,
+} from "./AdminActionForm";
+
 const inputClass =
   "mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-csg-blue focus:outline-none focus:ring-2 focus:ring-csg-blue/20";
 
@@ -135,23 +141,6 @@ export function AdminFormSection({
       </div>
       <div className="space-y-4">{children}</div>
     </section>
-  );
-}
-
-export function AdminSubmitButton({
-  children = "Kaydet",
-  className = "",
-}: {
-  children?: ReactNode;
-  className?: string;
-}) {
-  return (
-    <button
-      type="submit"
-      className={`rounded-lg bg-csg-blue px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-csg-blue-dark focus:outline-none focus:ring-2 focus:ring-csg-blue/30 ${className}`}
-    >
-      {children}
-    </button>
   );
 }
 

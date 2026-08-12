@@ -3,18 +3,14 @@ import { updateSettingsAction } from "@/lib/admin-actions";
 import {
   AdminField,
   AdminFormSection,
+  AdminActionForm,
   AdminSubmitButton,
   AdminTextArea,
 } from "@/components/admin/AdminForm";
-import { AdminAlert, AdminPageHeader } from "@/components/admin/AdminUi";
+import { AdminPageHeader } from "@/components/admin/AdminUi";
 
-export default async function AdminSettingsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ saved?: string }>;
-}) {
+export default async function AdminSettingsPage() {
   const settings = await getSiteSettings();
-  const params = await searchParams;
 
   return (
     <div className="space-y-6">
@@ -23,9 +19,7 @@ export default async function AdminSettingsPage({
         description="Genel site bilgileri, logo, iletişim ve sosyal medya bağlantıları."
       />
 
-      {params.saved && <AdminAlert>Ayarlar kaydedildi.</AdminAlert>}
-
-      <form action={updateSettingsAction} className="max-w-2xl space-y-6">
+      <AdminActionForm action={updateSettingsAction} className="max-w-2xl space-y-6">
         <AdminFormSection title="Genel">
           <AdminField label="Site adı" name="siteName" value={settings.siteName} />
           <AdminField
@@ -62,7 +56,7 @@ export default async function AdminSettingsPage({
         </AdminFormSection>
 
         <AdminSubmitButton>Ayarları kaydet</AdminSubmitButton>
-      </form>
+      </AdminActionForm>
     </div>
   );
 }

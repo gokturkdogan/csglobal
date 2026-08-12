@@ -6,6 +6,12 @@ import bcrypt from "bcryptjs";
 import { auth, signIn, signOut } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import {
+  adminErrorMessage,
+  adminFailure,
+  adminSuccess,
+  type AdminActionResult,
+} from "@/lib/admin-action-result";
+import {
   COUNTRY_FAQ_MAX,
   COUNTRY_NOTES_MAX,
   normalizeMultilineText,
@@ -31,7 +37,7 @@ export async function logoutAction() {
   await signOut({ redirectTo: "/admin/login" });
 }
 
-export async function updateSettingsAction(formData: FormData) {
+export async function updateSettingsAction(formData: FormData): Promise<AdminActionResult> {
   await requireAdmin();
   const keys = [
     "siteName",
@@ -44,18 +50,24 @@ export async function updateSettingsAction(formData: FormData) {
     "headerLogoUrl",
   ] as const;
 
-  for (const key of keys) {
-    const value = formData.get(key) as string | null;
-    if (value !== null) {
-      await prisma.siteSetting.upsert({
-        where: { key },
-        create: { key, value },
-        update: { value },
-      });
+  try {
+    for (const key of keys) {
+      const value = formData.get(key) as string | null;
+      if (value !== null) {
+        await prisma.siteSetting.upsert({
+          where: { key },
+          create: { key, value },
+          update: { value },
+        });
+      }
     }
+    revalidatePath("/", "layout");
+    return adminSuccess("Site ayarları kaydedildi.");
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Site ayarları kaydedilemedi. Lütfen tekrar deneyin."),
+    );
   }
-  revalidatePath("/", "layout");
-  redirect("/admin/settings?saved=1");
 }
 
 const homepageKeys = [
@@ -94,49 +106,63 @@ const homepageKeys = [
   "homeFaqJson",
 ] as const;
 
-export async function updateHomepageAction(formData: FormData) {
+export async function updateHomepageAction(formData: FormData): Promise<AdminActionResult> {
   await requireAdmin();
 
-  for (const key of homepageKeys) {
-    const value = formData.get(key) as string | null;
-    if (value !== null) {
-      await prisma.siteSetting.upsert({
-        where: { key },
-        create: { key, value },
-        update: { value },
-      });
+  try {
+    for (const key of homepageKeys) {
+      const value = formData.get(key) as string | null;
+      if (value !== null) {
+        await prisma.siteSetting.upsert({
+          where: { key },
+          create: { key, value },
+          update: { value },
+        });
+      }
     }
-  }
 
-  revalidatePath("/", "layout");
-  redirect("/admin/homepage?saved=1");
+    revalidatePath("/", "layout");
+    return adminSuccess("Anasayfa ayarları kaydedildi.");
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Anasayfa ayarları kaydedilemedi. Lütfen tekrar deneyin."),
+    );
+  }
 }
 
-export async function updateHomepageEditorAction(contentJson: string) {
+export async function updateHomepageEditorAction(
+  contentJson: string,
+): Promise<AdminActionResult> {
   await requireAdmin();
 
   let content: HomepageContent;
   try {
     content = JSON.parse(contentJson) as HomepageContent;
   } catch {
-    throw new Error("Geçersiz anasayfa verisi");
+    return adminFailure("Geçersiz anasayfa verisi.");
   }
 
-  const settings = serializeHomepageToSettings(content);
+  try {
+    const settings = serializeHomepageToSettings(content);
 
-  for (const key of homepageKeys) {
-    const value = settings[key];
-    if (value !== undefined) {
-      await prisma.siteSetting.upsert({
-        where: { key },
-        create: { key, value },
-        update: { value },
-      });
+    for (const key of homepageKeys) {
+      const value = settings[key];
+      if (value !== undefined) {
+        await prisma.siteSetting.upsert({
+          where: { key },
+          create: { key, value },
+          update: { value },
+        });
+      }
     }
-  }
 
-  revalidatePath("/", "layout");
-  return { ok: true as const };
+    revalidatePath("/", "layout");
+    return adminSuccess("Anasayfa başarıyla güncellendi.");
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Anasayfa kaydedilemedi. Lütfen tekrar deneyin."),
+    );
+  }
 }
 
 export async function listCloudinaryHomeImagesAction() {
@@ -183,7 +209,7 @@ export async function uploadCloudinaryHomeImageAction(formData: FormData) {
   return result;
 }
 
-export async function saveCountryAction(formData: FormData) {
+export async function saveCountryAction(formData: FormData): Promise<AdminActionResult> {
   await requireAdmin();
   const id = formData.get("id") as string | null;
   const iso2Raw = ((formData.get("iso2") as string) || "").trim().toUpperCase() || null;
@@ -227,28 +253,30 @@ export async function saveCountryAction(formData: FormData) {
     }
   }
 
-  if (id) {
-    await prisma.$transaction(async (tx) => {
-      await tx.country.update({ where: { id }, data });
-      await tx.faq.deleteMany({
-        where: { countryId: id, serviceId: null, categoryId: null },
-      });
-      if (faqItems.length > 0) {
-        await tx.faq.createMany({
-          data: faqItems.map((f) => ({
-            countryId: id,
-            question: f.question,
-            answer: f.answer,
-            sortOrder: f.sortOrder,
-            isActive: true,
-          })),
+  try {
+    if (id) {
+      await prisma.$transaction(async (tx) => {
+        await tx.country.update({ where: { id }, data });
+        await tx.faq.deleteMany({
+          where: { countryId: id, serviceId: null, categoryId: null },
         });
-      }
-    });
-    revalidatePath("/");
-    revalidatePath(`/${data.slug}`);
-    redirect(`/admin/countries/${id}`);
-  } else {
+        if (faqItems.length > 0) {
+          await tx.faq.createMany({
+            data: faqItems.map((f) => ({
+              countryId: id,
+              question: f.question,
+              answer: f.answer,
+              sortOrder: f.sortOrder,
+              isActive: true,
+            })),
+          });
+        }
+      });
+      revalidatePath("/");
+      revalidatePath(`/${data.slug}`);
+      return adminSuccess("Ülke başarıyla güncellendi.", `/admin/countries/${id}`);
+    }
+
     const country = await prisma.$transaction(async (tx) => {
       const created = await tx.country.create({ data });
       if (faqItems.length > 0) {
@@ -266,11 +294,18 @@ export async function saveCountryAction(formData: FormData) {
     });
     revalidatePath("/");
     revalidatePath(`/${country.slug}`);
-    redirect(`/admin/countries/${country.id}`);
+    return adminSuccess(
+      "Ülke başarıyla oluşturuldu.",
+      `/admin/countries/${country.id}`,
+    );
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Ülke kaydedilemedi. Lütfen tekrar deneyin."),
+    );
   }
 }
 
-export async function saveCategoryAction(formData: FormData) {
+export async function saveCategoryAction(formData: FormData): Promise<AdminActionResult> {
   await requireAdmin();
   const id = formData.get("id") as string | null;
 
@@ -283,16 +318,27 @@ export async function saveCategoryAction(formData: FormData) {
     isActive: formData.get("isActive") === "on",
   };
 
-  if (id) {
-    await prisma.category.update({ where: { id }, data });
-  } else {
-    await prisma.category.create({ data });
+  try {
+    if (id) {
+      await prisma.category.update({ where: { id }, data });
+      revalidatePath("/");
+      return adminSuccess("Kategori başarıyla güncellendi.", `/admin/categories/${id}`);
+    }
+
+    const category = await prisma.category.create({ data });
+    revalidatePath("/");
+    return adminSuccess(
+      "Kategori başarıyla oluşturuldu.",
+      `/admin/categories/${category.id}`,
+    );
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Kategori kaydedilemedi. Lütfen tekrar deneyin."),
+    );
   }
-  revalidatePath("/");
-  redirect("/admin/categories");
 }
 
-export async function saveServiceAction(formData: FormData) {
+export async function saveServiceAction(formData: FormData): Promise<AdminActionResult> {
   await requireAdmin();
   const id = formData.get("id") as string | null;
   const data = {
@@ -309,18 +355,29 @@ export async function saveServiceAction(formData: FormData) {
     sortOrder: Number(formData.get("sortOrder") || 0),
   };
 
-  if (id) {
-    await prisma.service.update({ where: { id }, data });
-    revalidatePath("/");
-    redirect(`/admin/services/${id}`);
-  } else {
+  try {
+    if (id) {
+      await prisma.service.update({ where: { id }, data });
+      revalidatePath("/");
+      return adminSuccess("Hizmet başarıyla güncellendi.", `/admin/services/${id}`);
+    }
+
     const service = await prisma.service.create({ data });
     revalidatePath("/");
-    redirect(`/admin/services/${service.id}`);
+    return adminSuccess(
+      "Hizmet başarıyla oluşturuldu.",
+      `/admin/services/${service.id}`,
+    );
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Hizmet kaydedilemedi. Lütfen tekrar deneyin."),
+    );
   }
 }
 
-export async function saveServiceSectionAction(formData: FormData) {
+export async function saveServiceSectionAction(
+  formData: FormData,
+): Promise<AdminActionResult> {
   await requireAdmin();
   const serviceId = formData.get("serviceId") as string;
   const id = formData.get("id") as string | null;
@@ -334,16 +391,27 @@ export async function saveServiceSectionAction(formData: FormData) {
     isActive: true,
   };
 
-  if (id) {
-    await prisma.serviceSection.update({ where: { id }, data });
-  } else {
+  try {
+    if (id) {
+      await prisma.serviceSection.update({ where: { id }, data });
+      revalidatePath("/");
+      return adminSuccess(
+        "Hizmet bölümü güncellendi.",
+        `/admin/services/${serviceId}`,
+      );
+    }
+
     await prisma.serviceSection.create({ data });
+    revalidatePath("/");
+    return adminSuccess("Hizmet bölümü eklendi.", `/admin/services/${serviceId}`);
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Hizmet bölümü kaydedilemedi. Lütfen tekrar deneyin."),
+    );
   }
-  revalidatePath("/");
-  redirect(`/admin/services/${serviceId}`);
 }
 
-export async function saveArticleAction(formData: FormData) {
+export async function saveArticleAction(formData: FormData): Promise<AdminActionResult> {
   await requireAdmin();
   const id = formData.get("id") as string | null;
   const isPublished = formData.get("isPublished") === "on";
@@ -360,49 +428,74 @@ export async function saveArticleAction(formData: FormData) {
     publishedAt: isPublished ? new Date() : null,
   };
 
-  if (id) {
-    await prisma.article.update({ where: { id }, data });
-    redirect(`/admin/articles/${id}`);
-  } else {
+  try {
+    if (id) {
+      await prisma.article.update({ where: { id }, data });
+      revalidatePath("/rehber");
+      revalidatePath(`/rehber/${data.slug}`);
+      return adminSuccess("Makale başarıyla güncellendi.", `/admin/articles/${id}`);
+    }
+
     const article = await prisma.article.create({ data });
-    redirect(`/admin/articles/${article.id}`);
+    revalidatePath("/rehber");
+    return adminSuccess(
+      "Makale başarıyla oluşturuldu.",
+      `/admin/articles/${article.id}`,
+    );
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Makale kaydedilemedi. Lütfen tekrar deneyin."),
+    );
   }
 }
 
-export async function createAdminUserAction(formData: FormData) {
+export async function createAdminUserAction(formData: FormData): Promise<AdminActionResult> {
   await requireAdmin();
   const session = await auth();
   const user = await prisma.user.findUnique({ where: { id: session?.user?.id } });
   if (user?.role !== AdminRole.SUPER_ADMIN) {
-    redirect("/admin");
+    return adminFailure("Bu işlem için yetkiniz yok.");
   }
 
-  const passwordHash = await bcrypt.hash(formData.get("password") as string, 12);
-  await prisma.user.create({
-    data: {
-      email: formData.get("email") as string,
-      passwordHash,
-      name: formData.get("name") as string,
-      role: (formData.get("role") as AdminRole) || AdminRole.EDITOR,
-    },
-  });
-  redirect("/admin/users");
+  try {
+    const passwordHash = await bcrypt.hash(formData.get("password") as string, 12);
+    await prisma.user.create({
+      data: {
+        email: formData.get("email") as string,
+        passwordHash,
+        name: formData.get("name") as string,
+        role: (formData.get("role") as AdminRole) || AdminRole.EDITOR,
+      },
+    });
+    return adminSuccess("Admin kullanıcı oluşturuldu.");
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Kullanıcı oluşturulamadı. Lütfen tekrar deneyin."),
+    );
+  }
 }
 
-export async function saveSitePageAction(formData: FormData) {
+export async function saveSitePageAction(formData: FormData): Promise<AdminActionResult> {
   await requireAdmin();
   const id = formData.get("id") as string;
 
-  await prisma.sitePage.update({
-    where: { id },
-    data: {
-      title: formData.get("title") as string,
-      slug: formData.get("slug") as string,
-      content: formData.get("content") as string,
-      isActive: formData.get("isActive") === "on",
-    },
-  });
+  try {
+    const page = await prisma.sitePage.update({
+      where: { id },
+      data: {
+        title: formData.get("title") as string,
+        slug: formData.get("slug") as string,
+        content: formData.get("content") as string,
+        isActive: formData.get("isActive") === "on",
+      },
+    });
 
-  revalidatePath("/", "layout");
-  redirect(`/admin/site-pages/${id}?saved=1`);
+    revalidatePath("/", "layout");
+    revalidatePath(`/${page.slug}`);
+    return adminSuccess("Sayfa başarıyla güncellendi.", `/admin/site-pages/${id}`);
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Sayfa kaydedilemedi. Lütfen tekrar deneyin."),
+    );
+  }
 }

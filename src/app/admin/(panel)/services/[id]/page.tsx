@@ -6,6 +6,7 @@ import {
   AdminField,
   AdminFormSection,
   AdminSelect,
+  AdminActionForm,
   AdminSubmitButton,
   AdminTextArea,
 } from "@/components/admin/AdminForm";
@@ -42,7 +43,7 @@ export default async function EditServicePage({ params }: Props) {
         description="Hizmet detayları, öne çıkan işareti ve içerik bölümleri."
       />
 
-      <form action={saveServiceAction} className="max-w-3xl space-y-6">
+      <AdminActionForm action={saveServiceAction} className="max-w-3xl space-y-6">
         {service && <input type="hidden" name="id" value={service.id} />}
 
         <AdminFormSection title="Konum">
@@ -109,7 +110,7 @@ export default async function EditServicePage({ params }: Props) {
         </AdminFormSection>
 
         <AdminSubmitButton>Kaydet</AdminSubmitButton>
-      </form>
+      </AdminActionForm>
 
       {service && (
         <div className="max-w-3xl space-y-6">
@@ -130,7 +131,7 @@ export default async function EditServicePage({ params }: Props) {
           </AdminCard>
 
           <AdminFormSection title="Yeni bölüm ekle">
-            <form action={saveServiceSectionAction} className="space-y-4">
+            <AdminActionForm action={saveServiceSectionAction} className="space-y-4">
               <input type="hidden" name="serviceId" value={service.id} />
               <AdminField label="Başlık" name="title" required />
               <AdminField label="Slug" name="slug" required />
@@ -146,10 +147,13 @@ export default async function EditServicePage({ params }: Props) {
                 type="number"
                 value={service.sections.length}
               />
-              <AdminSubmitButton className="!bg-slate-800 hover:!bg-slate-900">
+              <AdminSubmitButton
+                className="!bg-slate-800 hover:!bg-slate-900"
+                loadingLabel="Ekleniyor…"
+              >
                 Bölüm ekle
               </AdminSubmitButton>
-            </form>
+            </AdminActionForm>
           </AdminFormSection>
 
           {service.fees.length > 0 && (

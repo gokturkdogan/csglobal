@@ -11,6 +11,7 @@ import {
   AdminCheckbox,
   AdminField,
   AdminFormSection,
+  AdminActionForm,
   AdminSubmitButton,
   AdminTextArea,
 } from "@/components/admin/AdminForm";
@@ -46,7 +47,7 @@ export default async function EditCountryPage({ params }: Props) {
         description="Ülke bilgileri, detay sayfası içeriği ve ülkeye özel SSS."
       />
 
-      <form action={saveCountryAction} className="max-w-3xl space-y-6">
+      <AdminActionForm action={saveCountryAction} className="max-w-3xl space-y-6">
         {country && <input type="hidden" name="id" value={country.id} />}
 
         <AdminFormSection title="Genel bilgiler">
@@ -171,7 +172,7 @@ export default async function EditCountryPage({ params }: Props) {
         </AdminFormSection>
 
         <AdminSubmitButton>Kaydet</AdminSubmitButton>
-      </form>
+      </AdminActionForm>
     </div>
   );
 }
