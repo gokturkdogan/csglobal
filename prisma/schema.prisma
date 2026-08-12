@@ -1,0 +1,318 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+}
+
+enum SeoEntityType {
+  COUNTRY
+  CATEGORY
+  SERVICE
+  ARTICLE
+  SITE_PAGE
+}
+
+enum SectionType {
+  GENERAL
+  REQUIREMENTS
+  DOCUMENTS
+  PROCESS
+  FEES
+  FAQ
+  CUSTOM
+}
+
+enum FeeType {
+  CONSULAR
+  SERVICE
+  APPLICATION_CENTER
+  OTHER
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String    @map("password_hash")
+  name         String?
+  role         AdminRole @default(EDITOR)
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Country {
+  id               String   @id @default(cuid())
+  name             String
+  slug             String   @unique
+  iso2             String?  @unique @db.Char(2)
+  iso3             String?  @db.Char(3)
+  flag             String?
+  shortDescription String?  @map("short_description") @db.Text
+  description      String?  @db.Text
+  heroImage        String?  @map("hero_image")
+  isActive         Boolean  @default(true) @map("is_active")
+  sortOrder        Int      @default(0) @map("sort_order")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  categories           Category[]
+  services             Service[]
+  faqs                 Faq[]
+  articles             Article[]
+  feesAsNationality    Fee[]      @relation("FeeNationality")
+
+  @@index([isActive, sortOrder])
+  @@map("countries")
+}
+
+model Category {
+  id               String   @id @default(cuid())
+  countryId        String   @map("country_id")
+  parentId         String?  @map("parent_id")
+  name             String
+  slug             String
+  shortDescription String?  @map("short_description") @db.Text
+  description      String?  @db.Text
+  categoryType     String?  @map("category_type")
+  icon             String?
+  image            String?
+  isActive         Boolean  @default(true) @map("is_active")
+  sortOrder        Int      @default(0) @map("sort_order")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  country   Country    @relation(fields: [countryId], references: [id], onDelete: Restrict)
+  parent    Category?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: Restrict)
+  children  Category[] @relation("CategoryTree")
+  services  Service[]
+  faqs      Faq[]
+  articles  Article[]
+
+  @@unique([countryId, parentId, slug])
+  @@index([countryId])
+  @@index([parentId])
+  @@index([countryId, isActive, sortOrder])
+  @@map("categories")
+}
+
+model Service {
+  id                  String   @id @default(cuid())
+  countryId           String   @map("country_id")
+  categoryId          String   @map("category_id")
+  name                String
+  slug                String
+  shortTitle          String?  @map("short_title")
+  shortDescription    String?  @map("short_description") @db.Text
+  description         String?  @db.Text
+  heroImage           String?  @map("hero_image")
+  icon                String?
+  isFeatured          Boolean  @default(false) @map("is_featured")
+  isActive            Boolean  @default(true) @map("is_active")
+  sortOrder           Int      @default(0) @map("sort_order")
+  processingTime      String?  @map("processing_time")
+  requiresAppointment Boolean  @default(false) @map("requires_appointment")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  country          Country           @relation(fields: [countryId], references: [id], onDelete: Restrict)
+  category         Category          @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  sections         ServiceSection[]
+  serviceDocuments ServiceDocument[]
+  fees             Fee[]
+  faqs             Faq[]
+  articles         Article[]
+
+  @@unique([countryId, slug])
+  @@index([countryId])
+  @@index([categoryId])
+  @@index([countryId, isActive, isFeatured])
+  @@map("services")
+}
+
+model ServiceSection {
+  id          String      @id @default(cuid())
+  serviceId   String      @map("service_id")
+  title       String
+  slug        String
+  sectionType SectionType @default(CUSTOM) @map("section_type")
+  content     String      @db.Text
+  sortOrder   Int         @default(0) @map("sort_order")
+  isActive    Boolean     @default(true) @map("is_active")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@unique([serviceId, slug])
+  @@index([serviceId, sortOrder])
+  @@map("service_sections")
+}
+
+model Document {
+  id           String  @id @default(cuid())
+  name         String
+  slug         String  @unique
+  description  String? @db.Text
+  documentType String? @map("document_type")
+  isActive     Boolean @default(true) @map("is_active")
+
+  serviceDocuments ServiceDocument[]
+
+  @@map("documents")
+}
+
+model ApplicantProfile {
+  id       String  @id @default(cuid())
+  name     String
+  slug     String  @unique
+  isActive Boolean @default(true) @map("is_active")
+
+  serviceDocuments ServiceDocument[]
+
+  @@map("applicant_profiles")
+}
+
+model ServiceDocument {
+  id                 String  @id @default(cuid())
+  serviceId          String  @map("service_id")
+  documentId         String  @map("document_id")
+  applicantProfileId String? @map("applicant_profile_id")
+  isRequired         Boolean @default(true) @map("is_required")
+  descriptionOverride String? @map("description_override") @db.Text
+  sortOrder          Int     @default(0) @map("sort_order")
+
+  service          Service           @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  document         Document          @relation(fields: [documentId], references: [id], onDelete: Restrict)
+  applicantProfile ApplicantProfile? @relation(fields: [applicantProfileId], references: [id], onDelete: SetNull)
+
+  @@unique([serviceId, documentId, applicantProfileId])
+  @@index([serviceId])
+  @@map("service_documents")
+}
+
+model Fee {
+  id                   String    @id @default(cuid())
+  serviceId            String    @map("service_id")
+  name                 String
+  feeType              FeeType   @map("fee_type")
+  amount               Decimal   @db.Decimal(12, 2)
+  currency             String    @default("EUR") @db.VarChar(3)
+  ageMin               Int?      @map("age_min")
+  ageMax               Int?      @map("age_max")
+  nationalityCountryId String?   @map("nationality_country_id")
+  validFrom            DateTime? @map("valid_from")
+  validUntil           DateTime? @map("valid_until")
+  description          String?   @db.Text
+  isActive             Boolean   @default(true) @map("is_active")
+
+  service            Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  nationalityCountry Country? @relation("FeeNationality", fields: [nationalityCountryId], references: [id], onDelete: SetNull)
+
+  @@index([serviceId])
+  @@map("fees")
+}
+
+model Faq {
+  id         String  @id @default(cuid())
+  countryId  String? @map("country_id")
+  categoryId String? @map("category_id")
+  serviceId  String? @map("service_id")
+  question   String
+  answer     String  @db.Text
+  sortOrder  Int     @default(0) @map("sort_order")
+  isActive   Boolean @default(true) @map("is_active")
+
+  country  Country?  @relation(fields: [countryId], references: [id], onDelete: SetNull)
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  service  Service?  @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+
+  @@index([countryId])
+  @@index([categoryId])
+  @@index([serviceId])
+  @@map("faqs")
+}
+
+model ArticleCategory {
+  id   String @id @default(cuid())
+  name String
+  slug String @unique
+
+  articles Article[]
+
+  @@map("article_categories")
+}
+
+model Article {
+  id                String    @id @default(cuid())
+  countryId         String?   @map("country_id")
+  categoryId        String?   @map("category_id")
+  serviceId         String?   @map("service_id")
+  articleCategoryId String    @map("article_category_id")
+  title             String
+  slug              String    @unique
+  excerpt           String?   @db.Text
+  content           String    @db.Text
+  coverImage        String?   @map("cover_image")
+  publishedAt       DateTime? @map("published_at")
+  isPublished       Boolean   @default(false) @map("is_published")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  country         Country?        @relation(fields: [countryId], references: [id], onDelete: SetNull)
+  category        Category?       @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  service         Service?        @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  articleCategory ArticleCategory @relation(fields: [articleCategoryId], references: [id], onDelete: Restrict)
+
+  @@index([isPublished, publishedAt])
+  @@map("articles")
+}
+
+model SeoMetadata {
+  id              String        @id @default(cuid())
+  entityType      SeoEntityType @map("entity_type")
+  entityId        String        @map("entity_id")
+  metaTitle       String?       @map("meta_title")
+  metaDescription String?       @map("meta_description") @db.Text
+  canonicalUrl    String?       @map("canonical_url")
+  ogTitle         String?       @map("og_title")
+  ogDescription   String?       @map("og_description") @db.Text
+  ogImage         String?       @map("og_image")
+  robotsIndex     Boolean       @default(true) @map("robots_index")
+  robotsFollow    Boolean       @default(true) @map("robots_follow")
+  structuredData  String?       @map("structured_data") @db.Text
+
+  @@unique([entityType, entityId])
+  @@map("seo_metadata")
+}
+
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("site_settings")
+}
+
+model SitePage {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  content   String   @db.Text
+  isActive  Boolean  @default(true) @map("is_active")
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("site_pages")
+}

@@ -1,0 +1,87 @@
+import Link from "next/link";
+import { siteImages } from "@/lib/media";
+import { SiteImage } from "@/components/ui/SiteImage";
+
+export function CountryCard({
+  name,
+  slug,
+  shortDescription,
+  serviceCount,
+  flag,
+  heroImage,
+}: {
+  name: string;
+  slug: string;
+  shortDescription?: string | null;
+  serviceCount: number;
+  flag?: string | null;
+  heroImage?: string | null;
+}) {
+  return (
+    <Link
+      href={`/${slug}`}
+      className="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:border-csg-blue/40 hover:shadow-md"
+    >
+      <div className="relative aspect-[16/10] overflow-hidden bg-slate-200">
+        <SiteImage
+          src={heroImage || siteImages.country}
+          alt={name}
+          fill
+          sizes="(max-width: 768px) 100vw, 33vw"
+          className="object-cover transition duration-500 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent" />
+        <div className="absolute bottom-3 left-4 flex items-center gap-3">
+          {flag && (
+            <SiteImage
+              src={`https://flagcdn.com/w40/${flag.toLowerCase()}.png`}
+              alt=""
+              width={32}
+              height={24}
+              className="rounded shadow-sm"
+            />
+          )}
+          <h3 className="text-lg font-semibold text-white">{name}</h3>
+        </div>
+        <span className="absolute right-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold text-slate-700 backdrop-blur-sm">
+          {serviceCount} hizmet
+        </span>
+      </div>
+      {shortDescription && (
+        <p className="px-5 py-4 text-sm text-slate-600 line-clamp-2 leading-relaxed">
+          {shortDescription}
+        </p>
+      )}
+      <span className="px-5 pb-4 text-sm font-medium text-csg-red">İncele →</span>
+    </Link>
+  );
+}
+
+export function CountryGrid({
+  countries,
+}: {
+  countries: Array<{
+    name: string;
+    slug: string;
+    shortDescription?: string | null;
+    flag?: string | null;
+    heroImage?: string | null;
+    services: { id: string }[];
+  }>;
+}) {
+  return (
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {countries.map((c) => (
+        <CountryCard
+          key={c.slug}
+          name={c.name}
+          slug={c.slug}
+          shortDescription={c.shortDescription}
+          serviceCount={c.services.length}
+          flag={c.flag}
+          heroImage={c.heroImage}
+        />
+      ))}
+    </div>
+  );
+}
