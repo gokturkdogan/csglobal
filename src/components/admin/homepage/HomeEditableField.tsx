@@ -64,7 +64,6 @@ export function HomeEditableImage({
       {edit && (
         <CloudinaryImagePicker
           publicId={slot.publicId}
-          currentUrl={edit.content[field]}
           onChange={(v) => edit.updateField(field, v)}
           label={label ?? slot.label}
           placement={fullBleed ? "top" : "bottom"}
@@ -99,7 +98,6 @@ export function HomeEditableSeoBlockImage({
       {edit && (
         <CloudinaryImagePicker
           publicId={slot.publicId}
-          currentUrl={value}
           onChange={(url) => edit.updateSeoBlock(index, "image", url)}
           label={slot.label}
           aspectRatio={slot.aspectRatio}

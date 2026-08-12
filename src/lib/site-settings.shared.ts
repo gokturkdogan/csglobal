@@ -6,6 +6,8 @@ export type SiteSettingsMap = {
   contactPhone: string;
   contactEmail: string;
   address: string;
+  contactHeroImage: string;
+  contactMapEmbedUrl: string;
   facebookUrl: string;
   instagramUrl: string;
   twitterUrl: string;
@@ -55,6 +57,8 @@ export const defaultSiteSettings: SiteSettingsMap = {
   contactPhone: "+90 212 963 03 43",
   contactEmail: "info@csglobal.com",
   address: "İstanbul, Türkiye",
+  contactHeroImage: "",
+  contactMapEmbedUrl: "",
   facebookUrl: "",
   instagramUrl: "",
   twitterUrl: "",

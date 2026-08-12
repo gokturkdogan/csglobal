@@ -44,12 +44,10 @@ export async function updateSettingsAction(formData: FormData): Promise<AdminAct
   const keys = [
     "siteName",
     "siteDescription",
-    "whatsappNumber",
-    "whatsappMessage",
-    "contactPhone",
-    "contactEmail",
-    "address",
     "headerLogoUrl",
+    "facebookUrl",
+    "instagramUrl",
+    "twitterUrl",
   ] as const;
 
   try {
@@ -167,19 +165,6 @@ export async function updateHomepageEditorAction(
   }
 }
 
-export async function listCloudinaryHomeImagesAction() {
-  await requireAdmin();
-  const { listHomeImagesFromCloudinary } = await import("@/lib/cloudinary");
-  const resources = await listHomeImagesFromCloudinary();
-  return resources.map((r) => ({
-    publicId: r.public_id,
-    secureUrl: r.secure_url,
-    format: r.format,
-    width: r.width,
-    height: r.height,
-  }));
-}
-
 export async function uploadCloudinaryHomeImageAction(formData: FormData) {
   await requireAdmin();
 
@@ -202,8 +187,13 @@ export async function uploadCloudinaryHomeImageAction(formData: FormData) {
 
   const { uploadHomeImageToCloudinary } = await import("@/lib/cloudinary");
   const { parseHomeImagePublicId } = await import("@/lib/cloudinary/home-folder");
+  const { parseHerosImagePublicId } = await import("@/lib/cloudinary/heros-folder");
 
-  parseHomeImagePublicId(publicId);
+  if (publicId.startsWith("Heros/")) {
+    parseHerosImagePublicId(publicId);
+  } else {
+    parseHomeImagePublicId(publicId);
+  }
 
   const buffer = Buffer.from(await file.arrayBuffer());
   const result = await uploadHomeImageToCloudinary(buffer, publicId, file.type);
@@ -480,6 +470,78 @@ export async function createAdminUserAction(formData: FormData): Promise<AdminAc
   } catch (error) {
     return adminFailure(
       adminErrorMessage(error, "Kullanıcı oluşturulamadı. Lütfen tekrar deneyin."),
+    );
+  }
+}
+
+export async function saveAboutPageAction(formData: FormData): Promise<AdminActionResult> {
+  await requireAdmin();
+  const id = formData.get("id") as string;
+
+  try {
+    await prisma.sitePage.update({
+      where: { id },
+      data: {
+        title: formData.get("title") as string,
+        content: formData.get("content") as string,
+        isActive: formData.get("isActive") === "on",
+      },
+    });
+
+    revalidatePath("/", "layout");
+    revalidatePath("/hakkimizda");
+    return adminSuccess("Hakkımızda sayfası güncellendi.", "/admin/hakkimizda");
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Hakkımızda sayfası kaydedilemedi. Lütfen tekrar deneyin."),
+    );
+  }
+}
+
+export async function saveContactPageAction(formData: FormData): Promise<AdminActionResult> {
+  await requireAdmin();
+  const id = formData.get("id") as string;
+
+  const settingKeys = [
+    "whatsappNumber",
+    "whatsappMessage",
+    "contactPhone",
+    "contactEmail",
+    "address",
+    "contactHeroImage",
+    "contactMapEmbedUrl",
+  ] as const;
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.sitePage.update({
+        where: { id },
+        data: {
+          title: formData.get("title") as string,
+          content: formData.get("content") as string,
+          isActive: formData.get("isActive") === "on",
+        },
+      });
+
+      for (const key of settingKeys) {
+        const value = formData.get(key) as string | null;
+        if (value !== null) {
+          await tx.siteSetting.upsert({
+            where: { key },
+            create: { key, value },
+            update: { value },
+          });
+        }
+      }
+    });
+
+    revalidatePath("/", "layout");
+    revalidatePath("/iletisim");
+    revalidatePath("/hakkimizda");
+    return adminSuccess("İletişim sayfası güncellendi.", "/admin/iletisim");
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "İletişim sayfası kaydedilemedi. Lütfen tekrar deneyin."),
     );
   }
 }

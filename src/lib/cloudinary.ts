@@ -1,22 +1,11 @@
 import crypto from "crypto";
-import {
-  HOMEPAGE_CLOUDINARY_FOLDER,
-  parseHomeImagePublicId,
-} from "@/lib/cloudinary/home-folder";
+import { parseHomeImagePublicId } from "@/lib/cloudinary/home-folder";
+import { parseHerosImagePublicId } from "@/lib/cloudinary/heros-folder";
 
 type CloudinaryConfig = {
   cloudName: string;
   apiKey: string;
   apiSecret: string;
-};
-
-export type CloudinaryResource = {
-  public_id: string;
-  secure_url: string;
-  format: string;
-  bytes: number;
-  width: number;
-  height: number;
 };
 
 function getConfig(): CloudinaryConfig {
@@ -83,42 +72,17 @@ async function uploadWithFolder(
   return { secureUrl: data.secure_url, publicId: data.public_id };
 }
 
-/** Anasayfa slot görseli — her zaman Cloudinary Home klasörüne yükler. */
+/** Home veya Heros klasörüne yükler (public_id ile hedef belirlenir). */
 export async function uploadHomeImageToCloudinary(
   file: Buffer,
   fullPublicId: string,
   mimeType: string,
 ): Promise<{ secureUrl: string; publicId: string }> {
-  const { folder, assetName } = parseHomeImagePublicId(fullPublicId);
-  return uploadWithFolder(file, folder, assetName, mimeType);
-}
-
-export async function listCloudinaryFolder(folder: string): Promise<CloudinaryResource[]> {
-  const { cloudName, apiKey, apiSecret } = getConfig();
-  const auth = Buffer.from(`${apiKey}:${apiSecret}`).toString("base64");
-
-  const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/resources/search`, {
-    method: "POST",
-    headers: {
-      Authorization: `Basic ${auth}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      expression: `folder:${folder}/*`,
-      max_results: 50,
-      sort_by: [{ created_at: "desc" }],
-    }),
-  });
-
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Cloudinary listeleme hatası: ${errText}`);
+  if (fullPublicId.startsWith("Heros/")) {
+    const { folder, assetName } = parseHerosImagePublicId(fullPublicId);
+    return uploadWithFolder(file, folder, assetName, mimeType);
   }
 
-  const data = (await response.json()) as { resources?: CloudinaryResource[] };
-  return data.resources ?? [];
-}
-
-export async function listHomeImagesFromCloudinary(): Promise<CloudinaryResource[]> {
-  return listCloudinaryFolder(HOMEPAGE_CLOUDINARY_FOLDER);
+  const { folder, assetName } = parseHomeImagePublicId(fullPublicId);
+  return uploadWithFolder(file, folder, assetName, mimeType);
 }

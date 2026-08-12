@@ -16,7 +16,7 @@ export default async function AdminSettingsPage() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Site Ayarları"
-        description="Genel site bilgileri, logo, iletişim ve sosyal medya bağlantıları."
+        description="Genel site bilgileri, logo ve sosyal medya bağlantıları. İletişim bilgileri İletişim sayfasından yönetilir."
       />
 
       <AdminActionForm action={updateSettingsAction} className="max-w-2xl space-y-6">
@@ -34,19 +34,6 @@ export default async function AdminSettingsPage() {
             value={settings.siteDescription}
             rows={2}
           />
-        </AdminFormSection>
-
-        <AdminFormSection title="İletişim">
-          <AdminField label="WhatsApp numarası" name="whatsappNumber" value={settings.whatsappNumber} />
-          <AdminTextArea
-            label="WhatsApp mesajı"
-            name="whatsappMessage"
-            value={settings.whatsappMessage}
-            rows={2}
-          />
-          <AdminField label="Telefon" name="contactPhone" value={settings.contactPhone} />
-          <AdminField label="E-posta" name="contactEmail" value={settings.contactEmail} />
-          <AdminTextArea label="Adres" name="address" value={settings.address} rows={2} />
         </AdminFormSection>
 
         <AdminFormSection title="Sosyal medya">

@@ -14,12 +14,26 @@ export function parseHomeImagePublicId(publicId: string): {
     throw new Error("Yalnızca Home klasörüne yükleme yapılabilir");
   }
 
-  const assetName = publicId.slice(prefix.length);
-  if (!assetName || assetName.includes("/")) {
+  const relativePath = publicId.slice(prefix.length);
+  if (!relativePath || relativePath.startsWith("/") || relativePath.endsWith("/")) {
     throw new Error("Geçersiz Home görsel yolu");
   }
 
-  return { folder: HOMEPAGE_CLOUDINARY_FOLDER, assetName };
+  const lastSlash = relativePath.lastIndexOf("/");
+  if (lastSlash === -1) {
+    return { folder: HOMEPAGE_CLOUDINARY_FOLDER, assetName: relativePath };
+  }
+
+  const subFolder = relativePath.slice(0, lastSlash);
+  const assetName = relativePath.slice(lastSlash + 1);
+  if (!assetName) {
+    throw new Error("Geçersiz Home görsel yolu");
+  }
+
+  return {
+    folder: `${HOMEPAGE_CLOUDINARY_FOLDER}/${subFolder}`,
+    assetName,
+  };
 }
 
 export function homeImageAssetLabel(publicId: string): string {
