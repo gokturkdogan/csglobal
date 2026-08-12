@@ -8,6 +8,7 @@ export type SiteSettingsMap = {
   address: string;
   contactHeroImage: string;
   contactMapEmbedUrl: string;
+  aboutPageJson: string;
   facebookUrl: string;
   instagramUrl: string;
   twitterUrl: string;
@@ -59,6 +60,7 @@ export const defaultSiteSettings: SiteSettingsMap = {
   address: "İstanbul, Türkiye",
   contactHeroImage: "",
   contactMapEmbedUrl: "",
+  aboutPageJson: "",
   facebookUrl: "",
   instagramUrl: "",
   twitterUrl: "",

@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { parseAboutImagePublicId } from "@/lib/cloudinary/about-folder";
 import { parseHomeImagePublicId } from "@/lib/cloudinary/home-folder";
 import { parseHerosImagePublicId } from "@/lib/cloudinary/heros-folder";
 
@@ -80,6 +81,11 @@ export async function uploadHomeImageToCloudinary(
 ): Promise<{ secureUrl: string; publicId: string }> {
   if (fullPublicId.startsWith("Heros/")) {
     const { folder, assetName } = parseHerosImagePublicId(fullPublicId);
+    return uploadWithFolder(file, folder, assetName, mimeType);
+  }
+
+  if (fullPublicId.startsWith("About/")) {
+    const { folder, assetName } = parseAboutImagePublicId(fullPublicId);
     return uploadWithFolder(file, folder, assetName, mimeType);
   }
 

@@ -19,6 +19,11 @@ import {
   normalizeMultilineText,
   parseCountryDetailSectionsJson,
 } from "@/lib/country-detail";
+import {
+  serializeAboutPageEditable,
+  textToParagraphs,
+  type AboutPageEditable,
+} from "@/lib/about";
 import { serializeHomepageToSettings, type HomepageContent } from "@/lib/homepage";
 import { AdminRole } from "@/generated/prisma/client";
 
@@ -186,11 +191,14 @@ export async function uploadCloudinaryHomeImageAction(formData: FormData) {
   }
 
   const { uploadHomeImageToCloudinary } = await import("@/lib/cloudinary");
+  const { parseAboutImagePublicId } = await import("@/lib/cloudinary/about-folder");
   const { parseHomeImagePublicId } = await import("@/lib/cloudinary/home-folder");
   const { parseHerosImagePublicId } = await import("@/lib/cloudinary/heros-folder");
 
   if (publicId.startsWith("Heros/")) {
     parseHerosImagePublicId(publicId);
+  } else if (publicId.startsWith("About/")) {
+    parseAboutImagePublicId(publicId);
   } else {
     parseHomeImagePublicId(publicId);
   }
@@ -478,14 +486,45 @@ export async function saveAboutPageAction(formData: FormData): Promise<AdminActi
   await requireAdmin();
   const id = formData.get("id") as string;
 
+  const valuesItems = Array.from({ length: 4 }, (_, i) => ({
+    title: (formData.get(`valuesItem${i}Title`) as string) || "",
+    description: (formData.get(`valuesItem${i}Description`) as string) || "",
+  }));
+
+  const editable: AboutPageEditable = {
+    heroBadge: formData.get("heroBadge") as string,
+    heroTitle: formData.get("heroTitle") as string,
+    heroSubtitle: formData.get("heroSubtitle") as string,
+    heroImage: (formData.get("heroImage") as string) || "",
+    whoWeAreTitle: formData.get("whoWeAreTitle") as string,
+    whoWeAreLead: formData.get("whoWeAreLead") as string,
+    whoWeAreParagraphs: textToParagraphs((formData.get("whoWeAreBody") as string) || ""),
+    whoWeAreImage: (formData.get("whoWeAreImage") as string) || "",
+    visionTitle: formData.get("visionTitle") as string,
+    visionText: formData.get("visionText") as string,
+    missionTitle: formData.get("missionTitle") as string,
+    missionText: formData.get("missionText") as string,
+    valuesTitle: formData.get("valuesTitle") as string,
+    valuesSubtitle: formData.get("valuesSubtitle") as string,
+    valuesSectionImage: (formData.get("valuesSectionImage") as string) || "",
+    valuesItems,
+  };
+
   try {
-    await prisma.sitePage.update({
-      where: { id },
-      data: {
-        title: formData.get("title") as string,
-        content: formData.get("content") as string,
-        isActive: formData.get("isActive") === "on",
-      },
+    await prisma.$transaction(async (tx) => {
+      await tx.sitePage.update({
+        where: { id },
+        data: {
+          title: editable.heroTitle,
+          isActive: formData.get("isActive") === "on",
+        },
+      });
+
+      await tx.siteSetting.upsert({
+        where: { key: "aboutPageJson" },
+        create: { key: "aboutPageJson", value: serializeAboutPageEditable(editable) },
+        update: { value: serializeAboutPageEditable(editable) },
+      });
     });
 
     revalidatePath("/", "layout");

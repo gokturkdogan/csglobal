@@ -55,4 +55,16 @@ export const siteImages = {
   contactHero: optimizeCloudinaryDeliveryUrl(
     `https://res.cloudinary.com/${CLOUD}/image/upload/Heros/contact-hero`,
   ),
+  /** Hakkımızda hero — Heros/about-hero */
+  aboutHero: optimizeCloudinaryDeliveryUrl(
+    `https://res.cloudinary.com/${CLOUD}/image/upload/Heros/about-hero`,
+  ),
+  aboutWhoWeAre: optimizeCloudinaryDeliveryUrl(
+    `https://res.cloudinary.com/${CLOUD}/image/upload/About/who-we-are`,
+    1200,
+  ),
+  aboutValuesSection: optimizeCloudinaryDeliveryUrl(
+    `https://res.cloudinary.com/${CLOUD}/image/upload/About/values-section`,
+    1200,
+  ),
 } as const;
