@@ -1,5 +1,12 @@
 import { getSiteSettings } from "@/lib/settings";
 import { updateSettingsAction } from "@/lib/admin-actions";
+import {
+  AdminField,
+  AdminFormSection,
+  AdminSubmitButton,
+  AdminTextArea,
+} from "@/components/admin/AdminForm";
+import { AdminAlert, AdminPageHeader } from "@/components/admin/AdminUi";
 
 export default async function AdminSettingsPage({
   searchParams,
@@ -10,25 +17,51 @@ export default async function AdminSettingsPage({
   const params = await searchParams;
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-csg-blue">Site Ayarları</h1>
-      {params.saved && (
-        <p className="mt-2 text-sm text-green-600">Ayarlar kaydedildi.</p>
-      )}
+    <div className="space-y-6">
+      <AdminPageHeader
+        title="Site Ayarları"
+        description="Genel site bilgileri, logo, iletişim ve sosyal medya bağlantıları."
+      />
 
-      <form action={updateSettingsAction} className="mt-6 space-y-4 max-w-xl">
-        <label className="block text-sm font-medium">Site Adı<input name="siteName" value={settings.siteName} className="mt-1 w-full rounded-lg border px-3 py-2" /></label>
-        <label className="block text-sm font-medium">Header logo URL<input name="headerLogoUrl" value={settings.headerLogoUrl} placeholder="Cloudinary veya /images/..." className="mt-1 w-full rounded-lg border px-3 py-2" /></label>
-        <label className="block text-sm font-medium">Site Açıklaması<textarea name="siteDescription" rows={2} value={settings.siteDescription} className="mt-1 w-full rounded-lg border px-3 py-2" /></label>
-        <label className="block text-sm font-medium">WhatsApp Numarası<input name="whatsappNumber" value={settings.whatsappNumber} className="mt-1 w-full rounded-lg border px-3 py-2" /></label>
-        <label className="block text-sm font-medium">WhatsApp Mesajı<textarea name="whatsappMessage" rows={2} value={settings.whatsappMessage} className="mt-1 w-full rounded-lg border px-3 py-2" /></label>
-        <label className="block text-sm font-medium">Telefon<input name="contactPhone" value={settings.contactPhone} className="mt-1 w-full rounded-lg border px-3 py-2" /></label>
-        <label className="block text-sm font-medium">E-posta<input name="contactEmail" value={settings.contactEmail} className="mt-1 w-full rounded-lg border px-3 py-2" /></label>
-        <label className="block text-sm font-medium">Adres<textarea name="address" rows={2} value={settings.address} className="mt-1 w-full rounded-lg border px-3 py-2" /></label>
-        <label className="block text-sm font-medium">Facebook URL<input name="facebookUrl" value={settings.facebookUrl} className="mt-1 w-full rounded-lg border px-3 py-2" /></label>
-        <label className="block text-sm font-medium">Instagram URL<input name="instagramUrl" value={settings.instagramUrl} className="mt-1 w-full rounded-lg border px-3 py-2" /></label>
-        <label className="block text-sm font-medium">Twitter URL<input name="twitterUrl" value={settings.twitterUrl} className="mt-1 w-full rounded-lg border px-3 py-2" /></label>
-        <button type="submit" className="rounded-lg bg-csg-blue px-6 py-2 font-semibold text-white">Kaydet</button>
+      {params.saved && <AdminAlert>Ayarlar kaydedildi.</AdminAlert>}
+
+      <form action={updateSettingsAction} className="max-w-2xl space-y-6">
+        <AdminFormSection title="Genel">
+          <AdminField label="Site adı" name="siteName" value={settings.siteName} />
+          <AdminField
+            label="Header logo URL"
+            name="headerLogoUrl"
+            value={settings.headerLogoUrl}
+            placeholder="Cloudinary veya /images/..."
+          />
+          <AdminTextArea
+            label="Site açıklaması"
+            name="siteDescription"
+            value={settings.siteDescription}
+            rows={2}
+          />
+        </AdminFormSection>
+
+        <AdminFormSection title="İletişim">
+          <AdminField label="WhatsApp numarası" name="whatsappNumber" value={settings.whatsappNumber} />
+          <AdminTextArea
+            label="WhatsApp mesajı"
+            name="whatsappMessage"
+            value={settings.whatsappMessage}
+            rows={2}
+          />
+          <AdminField label="Telefon" name="contactPhone" value={settings.contactPhone} />
+          <AdminField label="E-posta" name="contactEmail" value={settings.contactEmail} />
+          <AdminTextArea label="Adres" name="address" value={settings.address} rows={2} />
+        </AdminFormSection>
+
+        <AdminFormSection title="Sosyal medya">
+          <AdminField label="Facebook URL" name="facebookUrl" value={settings.facebookUrl} />
+          <AdminField label="Instagram URL" name="instagramUrl" value={settings.instagramUrl} />
+          <AdminField label="Twitter URL" name="twitterUrl" value={settings.twitterUrl} />
+        </AdminFormSection>
+
+        <AdminSubmitButton>Ayarları kaydet</AdminSubmitButton>
       </form>
     </div>
   );

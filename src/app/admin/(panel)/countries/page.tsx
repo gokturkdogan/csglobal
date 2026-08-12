@@ -1,5 +1,14 @@
-import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import {
+  AdminButtonLink,
+  AdminLink,
+} from "@/components/admin/AdminForm";
+import {
+  AdminPageHeader,
+  AdminStatusBadge,
+  AdminTable,
+  AdminTableHead,
+} from "@/components/admin/AdminUi";
 
 export default async function AdminCountriesPage() {
   const countries = await prisma.country.findMany({
@@ -11,52 +20,41 @@ export default async function AdminCountriesPage() {
   });
 
   return (
-    <div>
-      <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold text-csg-blue">Ülkeler</h1>
-        <Link
-          href="/admin/countries/new"
-          className="rounded-lg bg-csg-red px-4 py-2 text-sm font-semibold text-white hover:bg-csg-red-dark"
-        >
-          + Yeni Ülke
-        </Link>
-      </div>
+    <div className="space-y-6">
+      <AdminPageHeader
+        title="Ülkeler"
+        description="Vize ve göçmenlik hizmetlerinin ülke bazlı yapısını yönetin."
+        actions={<AdminButtonLink href="/admin/countries/new">+ Yeni Ülke</AdminButtonLink>}
+      />
 
-      <table className="mt-6 w-full text-left text-sm">
-        <thead>
-          <tr className="border-b border-slate-200 text-csg-gray">
-            <th className="py-2">Ad</th>
-            <th className="py-2">Slug</th>
-            <th className="py-2">Durum</th>
-            <th className="py-2">Kategori</th>
-            <th className="py-2">Hizmet</th>
-            <th className="py-2"></th>
-          </tr>
-        </thead>
-        <tbody>
+      <AdminTable>
+        <AdminTableHead>
+          <th className="px-5 py-3">Ad</th>
+          <th className="px-5 py-3">Slug</th>
+          <th className="px-5 py-3">Durum</th>
+          <th className="px-5 py-3">Kategori</th>
+          <th className="px-5 py-3">Hizmet</th>
+          <th className="px-5 py-3 text-right">İşlem</th>
+        </AdminTableHead>
+        <tbody className="divide-y divide-slate-100">
           {countries.map((c) => (
-            <tr key={c.id} className="border-b border-slate-100">
-              <td className="py-3 font-medium">{c.name}</td>
-              <td className="py-3 text-csg-gray">/{c.slug}</td>
-              <td className="py-3">{c.isActive ? "Aktif" : "Pasif"}</td>
-              <td className="py-3">{c.categories.length}</td>
-              <td className="py-3">{c.services.length}</td>
-              <td className="py-3 text-right">
-                <Link href={`/admin/countries/${c.id}`} className="text-csg-blue hover:underline">
-                  Düzenle
-                </Link>
-                <Link
-                  href={`/${c.slug}`}
-                  className="ml-3 text-csg-gray hover:underline"
-                  target="_blank"
-                >
-                  Görüntüle
-                </Link>
+            <tr key={c.id} className="hover:bg-slate-50/80">
+              <td className="px-5 py-3.5 font-medium text-slate-900">{c.name}</td>
+              <td className="px-5 py-3.5 text-slate-500">/{c.slug}</td>
+              <td className="px-5 py-3.5">
+                <AdminStatusBadge active={c.isActive} />
+              </td>
+              <td className="px-5 py-3.5 text-slate-600">{c.categories.length}</td>
+              <td className="px-5 py-3.5 text-slate-600">{c.services.length}</td>
+              <td className="px-5 py-3.5 text-right">
+                <AdminLink href={`/admin/countries/${c.id}`}>Düzenle</AdminLink>
+                <span className="mx-2 text-slate-300">|</span>
+                <AdminLink href={`/${c.slug}`} external>Görüntüle</AdminLink>
               </td>
             </tr>
           ))}
         </tbody>
-      </table>
+      </AdminTable>
     </div>
   );
 }

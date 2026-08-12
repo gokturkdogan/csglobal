@@ -1,6 +1,15 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { saveArticleAction } from "@/lib/admin-actions";
+import {
+  AdminCheckbox,
+  AdminField,
+  AdminFormSection,
+  AdminSelect,
+  AdminSubmitButton,
+  AdminTextArea,
+} from "@/components/admin/AdminForm";
+import { AdminPageHeader } from "@/components/admin/AdminUi";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -15,92 +24,62 @@ export default async function EditArticlePage({ params }: Props) {
   const countries = await prisma.country.findMany({ orderBy: { name: "asc" } });
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-csg-blue">
-        {article ? article.title : "Yeni Makale"}
-      </h1>
+    <div className="space-y-6">
+      <AdminPageHeader
+        title={article ? article.title : "Yeni Makale"}
+        description="Rehber ve blog içeriği (Markdown destekli)."
+      />
 
-      <form action={saveArticleAction} className="mt-6 space-y-4 max-w-3xl">
+      <form action={saveArticleAction} className="max-w-3xl space-y-6">
         {article && <input type="hidden" name="id" value={article.id} />}
 
-        <Field label="Başlık" name="title" value={article?.title} required />
-        <Field label="Slug" name="slug" value={article?.slug} required />
-        <Field label="Özet" name="excerpt" value={article?.excerpt} />
-        <Field label="Kapak görsel URL" name="coverImage" value={article?.coverImage} />
+        <AdminFormSection title="Genel">
+          <AdminField label="Başlık" name="title" value={article?.title} required />
+          <AdminField label="Slug" name="slug" value={article?.slug} required />
+          <AdminField label="Özet" name="excerpt" value={article?.excerpt} />
+          <AdminField label="Kapak görsel URL" name="coverImage" value={article?.coverImage} />
 
-        <label className="block text-sm font-medium">
-          Makale kategorisi
-          <select
+          <AdminSelect
+            label="Makale kategorisi"
             name="articleCategoryId"
             required
             defaultValue={article?.articleCategoryId ?? ""}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
           >
             <option value="" disabled>Seçin</option>
             {articleCategories.map((c) => (
               <option key={c.id} value={c.id}>{c.name}</option>
             ))}
-          </select>
-        </label>
+          </AdminSelect>
 
-        <label className="block text-sm font-medium">
-          İlgili ülke (opsiyonel)
-          <select
+          <AdminSelect
+            label="İlgili ülke (opsiyonel)"
             name="countryId"
             defaultValue={article?.countryId ?? ""}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
           >
             <option value="">—</option>
             {countries.map((c) => (
               <option key={c.id} value={c.id}>{c.name}</option>
             ))}
-          </select>
-        </label>
+          </AdminSelect>
+        </AdminFormSection>
 
-        <label className="block text-sm font-medium">
-          İçerik (Markdown)
-          <textarea
+        <AdminFormSection title="İçerik">
+          <AdminTextArea
+            label="İçerik (Markdown)"
             name="content"
+            value={article?.content ?? ""}
             rows={14}
-            required
-            defaultValue={article?.content ?? ""}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-sm"
+            mono
           />
-        </label>
+          <AdminCheckbox
+            label="Yayınla"
+            name="isPublished"
+            defaultChecked={article?.isPublished ?? false}
+          />
+        </AdminFormSection>
 
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="isPublished" defaultChecked={article?.isPublished ?? false} />
-          Yayınla
-        </label>
-
-        <button type="submit" className="rounded-lg bg-csg-blue px-6 py-2 font-semibold text-white">
-          Kaydet
-        </button>
+        <AdminSubmitButton>Kaydet</AdminSubmitButton>
       </form>
     </div>
-  );
-}
-
-function Field({
-  label,
-  name,
-  value,
-  required,
-}: {
-  label: string;
-  name: string;
-  value?: string | null;
-  required?: boolean;
-}) {
-  return (
-    <label className="block text-sm font-medium">
-      {label}
-      <input
-        name={name}
-        required={required}
-        defaultValue={value ?? ""}
-        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
-      />
-    </label>
   );
 }

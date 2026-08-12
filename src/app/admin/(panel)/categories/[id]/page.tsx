@@ -1,6 +1,14 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { saveCategoryAction } from "@/lib/admin-actions";
+import {
+  AdminCheckbox,
+  AdminField,
+  AdminFormSection,
+  AdminSelect,
+  AdminSubmitButton,
+} from "@/components/admin/AdminForm";
+import { AdminPageHeader } from "@/components/admin/AdminUi";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -25,35 +33,32 @@ export default async function EditCategoryPage({ params }: Props) {
   });
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-csg-blue">
-        {category ? `${category.name} Düzenle` : "Yeni Kategori"}
-      </h1>
+    <div className="space-y-6">
+      <AdminPageHeader
+        title={category ? `${category.name} Düzenle` : "Yeni Kategori"}
+        description="Kategori hiyerarşisi ve slug yapılandırması."
+      />
 
-      <form action={saveCategoryAction} className="mt-6 space-y-4 max-w-3xl">
+      <form action={saveCategoryAction} className="max-w-3xl space-y-6">
         {category && <input type="hidden" name="id" value={category.id} />}
 
-        <label className="block text-sm font-medium">
-          Ülke
-          <select
+        <AdminFormSection title="Konum">
+          <AdminSelect
+            label="Ülke"
             name="countryId"
             required
             defaultValue={category?.countryId ?? ""}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
           >
             <option value="" disabled>Seçin</option>
             {countries.map((c) => (
               <option key={c.id} value={c.id}>{c.name}</option>
             ))}
-          </select>
-        </label>
+          </AdminSelect>
 
-        <label className="block text-sm font-medium">
-          Üst kategori
-          <select
+          <AdminSelect
+            label="Üst kategori"
             name="parentId"
             defaultValue={category?.parentId ?? ""}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
           >
             <option value="">Yok (kök)</option>
             {allCategories
@@ -61,51 +66,37 @@ export default async function EditCategoryPage({ params }: Props) {
               .map((c) => (
                 <option key={c.id} value={c.id}>{c.name}</option>
               ))}
-          </select>
-        </label>
+          </AdminSelect>
+        </AdminFormSection>
 
-        <Field label="Ad" name="name" value={category?.name} required />
-        <Field label="Slug" name="slug" value={category?.slug} required />
-        <Field label="Tip (visa, residence, work…)" name="categoryType" value={category?.categoryType} />
-        <Field label="Kısa açıklama" name="shortDescription" value={category?.shortDescription} />
-        <Field label="Sıra" name="sortOrder" type="number" value={category?.sortOrder ?? 0} />
+        <AdminFormSection title="Bilgiler">
+          <AdminField label="Ad" name="name" value={category?.name} required />
+          <AdminField label="Slug" name="slug" value={category?.slug} required />
+          <AdminField
+            label="Tip (visa, residence, work…)"
+            name="categoryType"
+            value={category?.categoryType}
+          />
+          <AdminField
+            label="Kısa açıklama"
+            name="shortDescription"
+            value={category?.shortDescription}
+          />
+          <AdminField
+            label="Sıra"
+            name="sortOrder"
+            type="number"
+            value={category?.sortOrder ?? 0}
+          />
+          <AdminCheckbox
+            label="Aktif"
+            name="isActive"
+            defaultChecked={category?.isActive ?? true}
+          />
+        </AdminFormSection>
 
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="isActive" defaultChecked={category?.isActive ?? true} />
-          Aktif
-        </label>
-
-        <button type="submit" className="rounded-lg bg-csg-blue px-6 py-2 font-semibold text-white">
-          Kaydet
-        </button>
+        <AdminSubmitButton>Kaydet</AdminSubmitButton>
       </form>
     </div>
-  );
-}
-
-function Field({
-  label,
-  name,
-  value,
-  type = "text",
-  required,
-}: {
-  label: string;
-  name: string;
-  value?: string | number | null;
-  type?: string;
-  required?: boolean;
-}) {
-  return (
-    <label className="block text-sm font-medium">
-      {label}
-      <input
-        name={name}
-        type={type}
-        required={required}
-        defaultValue={value ?? ""}
-        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
-      />
-    </label>
   );
 }

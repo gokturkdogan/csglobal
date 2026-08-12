@@ -1,6 +1,14 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { saveCountryAction } from "@/lib/admin-actions";
+import {
+  AdminCheckbox,
+  AdminField,
+  AdminFormSection,
+  AdminSubmitButton,
+  AdminTextArea,
+} from "@/components/admin/AdminForm";
+import { AdminPageHeader } from "@/components/admin/AdminUi";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -12,93 +20,53 @@ export default async function EditCountryPage({ params }: Props) {
   if (id !== "new" && !country) notFound();
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-csg-blue">
-        {country ? `${country.name} Düzenle` : "Yeni Ülke"}
-      </h1>
+    <div className="space-y-6">
+      <AdminPageHeader
+        title={country ? `${country.name} Düzenle` : "Yeni Ülke"}
+        description="Ülke bilgileri, slug ve kapak görseli."
+      />
 
-      <form action={saveCountryAction} className="mt-6 space-y-4 max-w-3xl">
+      <form action={saveCountryAction} className="max-w-3xl space-y-6">
         {country && <input type="hidden" name="id" value={country.id} />}
 
-        <Field label="Ad" name="name" value={country?.name} required />
-        <Field label="Slug" name="slug" value={country?.slug} required />
-        <Field label="ISO2" name="iso2" value={country?.iso2} />
-        <Field label="Kısa açıklama" name="shortDescription" value={country?.shortDescription} />
-        <TextArea label="Açıklama" name="description" value={country?.description} rows={8} />
-        <Field
-          label="Kapak / hero görsel URL"
-          name="heroImage"
-          value={country?.heroImage}
-        />
-        <Field label="Sıra" name="sortOrder" type="number" value={country?.sortOrder ?? 0} />
+        <AdminFormSection title="Genel bilgiler">
+          <AdminField label="Ad" name="name" value={country?.name} required />
+          <AdminField label="Slug" name="slug" value={country?.slug} required />
+          <AdminField label="ISO2 (bayrak kodu)" name="iso2" value={country?.iso2} />
+          <AdminField
+            label="Kısa açıklama"
+            name="shortDescription"
+            value={country?.shortDescription}
+          />
+          <AdminTextArea
+            label="Açıklama"
+            name="description"
+            value={country?.description}
+            rows={8}
+          />
+        </AdminFormSection>
 
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
+        <AdminFormSection title="Görsel & sıralama">
+          <AdminField
+            label="Kapak / hero görsel URL"
+            name="heroImage"
+            value={country?.heroImage}
+          />
+          <AdminField
+            label="Sıra"
+            name="sortOrder"
+            type="number"
+            value={country?.sortOrder ?? 0}
+          />
+          <AdminCheckbox
+            label="Aktif"
             name="isActive"
             defaultChecked={country?.isActive ?? true}
           />
-          Aktif
-        </label>
+        </AdminFormSection>
 
-        <button
-          type="submit"
-          className="rounded-lg bg-csg-blue px-6 py-2 font-semibold text-white hover:bg-csg-blue-dark"
-        >
-          Kaydet
-        </button>
+        <AdminSubmitButton>Kaydet</AdminSubmitButton>
       </form>
     </div>
-  );
-}
-
-function Field({
-  label,
-  name,
-  value,
-  type = "text",
-  required,
-}: {
-  label: string;
-  name: string;
-  value?: string | number | null;
-  type?: string;
-  required?: boolean;
-}) {
-  return (
-    <label className="block text-sm font-medium">
-      {label}
-      <input
-        name={name}
-        type={type}
-        required={required}
-        defaultValue={value ?? ""}
-        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
-      />
-    </label>
-  );
-}
-
-function TextArea({
-  label,
-  name,
-  value,
-  rows = 6,
-}: {
-  label: string;
-  name: string;
-  value?: string | null;
-  rows?: number;
-}) {
-  return (
-    <label className="block text-sm font-medium">
-      {label}
-      <textarea
-        name={name}
-        rows={rows}
-        defaultValue={value ?? ""}
-        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-sm"
-      />
-    </label>
   );
 }

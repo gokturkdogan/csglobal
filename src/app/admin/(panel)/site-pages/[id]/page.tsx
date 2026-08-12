@@ -1,6 +1,14 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { saveSitePageAction } from "@/lib/admin-actions";
+import {
+  AdminCheckbox,
+  AdminField,
+  AdminFormSection,
+  AdminSubmitButton,
+  AdminTextArea,
+} from "@/components/admin/AdminForm";
+import { AdminPageHeader } from "@/components/admin/AdminUi";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -10,51 +18,26 @@ export default async function EditSitePagePage({ params }: Props) {
   if (!page) notFound();
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-csg-blue">{page.title} Düzenle</h1>
+    <div className="space-y-6">
+      <AdminPageHeader title={`${page.title} Düzenle`} description={`Slug: /${page.slug}`} />
 
-      <form action={saveSitePageAction} className="mt-6 space-y-4 max-w-3xl">
+      <form action={saveSitePageAction} className="max-w-3xl space-y-6">
         <input type="hidden" name="id" value={page.id} />
 
-        <label className="block text-sm font-medium">
-          Başlık
-          <input
-            name="title"
-            required
-            defaultValue={page.title}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
-          />
-        </label>
-
-        <label className="block text-sm font-medium">
-          Slug
-          <input
-            name="slug"
-            required
-            defaultValue={page.slug}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
-          />
-        </label>
-
-        <label className="block text-sm font-medium">
-          İçerik (Markdown)
-          <textarea
+        <AdminFormSection title="Sayfa bilgileri">
+          <AdminField label="Başlık" name="title" value={page.title} required />
+          <AdminField label="Slug" name="slug" value={page.slug} required />
+          <AdminTextArea
+            label="İçerik (Markdown)"
             name="content"
+            value={page.content}
             rows={14}
-            required
-            defaultValue={page.content}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-sm"
+            mono
           />
-        </label>
+          <AdminCheckbox label="Aktif" name="isActive" defaultChecked={page.isActive} />
+        </AdminFormSection>
 
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="isActive" defaultChecked={page.isActive} />
-          Aktif
-        </label>
-
-        <button type="submit" className="rounded-lg bg-csg-blue px-6 py-2 font-semibold text-white">
-          Kaydet
-        </button>
+        <AdminSubmitButton>Kaydet</AdminSubmitButton>
       </form>
     </div>
   );

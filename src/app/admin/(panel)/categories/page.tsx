@@ -1,5 +1,11 @@
-import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { AdminButtonLink, AdminLink } from "@/components/admin/AdminForm";
+import {
+  AdminPageHeader,
+  AdminStatusBadge,
+  AdminTable,
+  AdminTableHead,
+} from "@/components/admin/AdminUi";
 
 export default async function AdminCategoriesPage() {
   const categories = await prisma.category.findMany({
@@ -11,45 +17,39 @@ export default async function AdminCategoriesPage() {
   });
 
   return (
-    <div>
-      <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold text-csg-blue">Kategoriler</h1>
-        <Link
-          href="/admin/categories/new"
-          className="rounded-lg bg-csg-red px-4 py-2 text-sm font-semibold text-white hover:bg-csg-red-dark"
-        >
-          + Yeni Kategori
-        </Link>
-      </div>
+    <div className="space-y-6">
+      <AdminPageHeader
+        title="Kategoriler"
+        description="Ülke altında hiyerarşik kategori ağacını yönetin."
+        actions={<AdminButtonLink href="/admin/categories/new">+ Yeni Kategori</AdminButtonLink>}
+      />
 
-      <table className="mt-6 w-full text-left text-sm">
-        <thead>
-          <tr className="border-b border-slate-200 text-csg-gray">
-            <th className="py-2">Ülke</th>
-            <th className="py-2">Ad</th>
-            <th className="py-2">Slug</th>
-            <th className="py-2">Üst</th>
-            <th className="py-2">Durum</th>
-            <th className="py-2"></th>
-          </tr>
-        </thead>
-        <tbody>
+      <AdminTable>
+        <AdminTableHead>
+          <th className="px-5 py-3">Ülke</th>
+          <th className="px-5 py-3">Ad</th>
+          <th className="px-5 py-3">Slug</th>
+          <th className="px-5 py-3">Üst kategori</th>
+          <th className="px-5 py-3">Durum</th>
+          <th className="px-5 py-3 text-right">İşlem</th>
+        </AdminTableHead>
+        <tbody className="divide-y divide-slate-100">
           {categories.map((c) => (
-            <tr key={c.id} className="border-b border-slate-100">
-              <td className="py-3">{c.country.name}</td>
-              <td className="py-3 font-medium">{c.name}</td>
-              <td className="py-3 text-csg-gray">{c.slug}</td>
-              <td className="py-3 text-csg-gray">{c.parent?.name ?? "—"}</td>
-              <td className="py-3">{c.isActive ? "Aktif" : "Pasif"}</td>
-              <td className="py-3 text-right">
-                <Link href={`/admin/categories/${c.id}`} className="text-csg-blue hover:underline">
-                  Düzenle
-                </Link>
+            <tr key={c.id} className="hover:bg-slate-50/80">
+              <td className="px-5 py-3.5 text-slate-600">{c.country.name}</td>
+              <td className="px-5 py-3.5 font-medium text-slate-900">{c.name}</td>
+              <td className="px-5 py-3.5 text-slate-500">{c.slug}</td>
+              <td className="px-5 py-3.5 text-slate-500">{c.parent?.name ?? "—"}</td>
+              <td className="px-5 py-3.5">
+                <AdminStatusBadge active={c.isActive} />
+              </td>
+              <td className="px-5 py-3.5 text-right">
+                <AdminLink href={`/admin/categories/${c.id}`}>Düzenle</AdminLink>
               </td>
             </tr>
           ))}
         </tbody>
-      </table>
+      </AdminTable>
     </div>
   );
 }
