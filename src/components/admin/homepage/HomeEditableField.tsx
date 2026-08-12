@@ -68,6 +68,8 @@ export function HomeEditableImage({
           onChange={(v) => edit.updateField(field, v)}
           label={label ?? slot.label}
           placement={fullBleed ? "top" : "bottom"}
+          aspectRatio={slot.aspectRatio}
+          cropHint={slot.cropHint}
         />
       )}
     </div>
@@ -100,6 +102,8 @@ export function HomeEditableSeoBlockImage({
           currentUrl={value}
           onChange={(url) => edit.updateSeoBlock(index, "image", url)}
           label={slot.label}
+          aspectRatio={slot.aspectRatio}
+          cropHint={slot.cropHint}
         />
       )}
     </div>
