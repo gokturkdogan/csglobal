@@ -34,6 +34,10 @@ import {
   normalizeServiceFeatureText,
   normalizeServiceFeatureTitle,
 } from "@/lib/service-page";
+import {
+  buildConsulatePath,
+  buildConsulatesListPath,
+} from "@/lib/paths";
 import { AdminRole } from "@/generated/prisma/client";
 
 async function requireAdmin() {
@@ -214,6 +218,11 @@ export async function uploadCloudinaryHomeImageAction(formData: FormData) {
     parseGuidesImagePublicId(publicId);
   } else if (publicId.startsWith("Services/")) {
     parseServiceImagePublicId(publicId);
+  } else if (publicId.startsWith("Consulates/")) {
+    const { parseConsulateImagePublicId } = await import(
+      "@/lib/cloudinary/consulates-folder"
+    );
+    parseConsulateImagePublicId(publicId);
   } else {
     parseHomeImagePublicId(publicId);
   }
@@ -561,6 +570,63 @@ export async function saveArticleAction(formData: FormData): Promise<AdminAction
   } catch (error) {
     return adminFailure(
       adminErrorMessage(error, "Rehber kaydedilemedi. Lütfen tekrar deneyin."),
+    );
+  }
+}
+
+export async function saveConsulateAction(formData: FormData): Promise<AdminActionResult> {
+  await requireAdmin();
+  const id = formData.get("id") as string | null;
+  const countryId = (formData.get("countryId") as string)?.trim();
+
+  if (!countryId) {
+    return adminFailure("Ülke seçimi zorunludur.");
+  }
+
+  const sectionsRaw = (formData.get("sectionsJson") as string) || "";
+  const data = {
+    countryId,
+    name: formData.get("name") as string,
+    slug: formData.get("slug") as string,
+    heroTitle: (formData.get("heroTitle") as string) || null,
+    heroImage: (formData.get("heroImage") as string) || null,
+    sectionsJson: sectionsRaw.trim() || null,
+    mapEmbedUrl: (formData.get("mapEmbedUrl") as string) || null,
+    mapAddress: (formData.get("mapAddress") as string) || null,
+    isActive: formData.get("isActive") === "on",
+    sortOrder: Number(formData.get("sortOrder") || 0),
+  };
+
+  try {
+    if (id) {
+      const consulate = await prisma.consulate.update({
+        where: { id },
+        data,
+        include: { country: { select: { slug: true } } },
+      });
+      revalidatePath("/admin/consulates");
+      revalidatePath(buildConsulatesListPath(consulate.country.slug));
+      revalidatePath(buildConsulatePath(consulate.country.slug, consulate.slug));
+      return adminSuccess(
+        "Konsolosluk başarıyla güncellendi.",
+        `/admin/consulates/${id}`,
+      );
+    }
+
+    const consulate = await prisma.consulate.create({
+      data,
+      include: { country: { select: { slug: true } } },
+    });
+    revalidatePath("/admin/consulates");
+    revalidatePath(buildConsulatesListPath(consulate.country.slug));
+    revalidatePath(buildConsulatePath(consulate.country.slug, consulate.slug));
+    return adminSuccess(
+      "Konsolosluk başarıyla oluşturuldu.",
+      `/admin/consulates/${consulate.id}`,
+    );
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Konsolosluk kaydedilemedi. Lütfen tekrar deneyin."),
     );
   }
 }

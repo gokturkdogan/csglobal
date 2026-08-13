@@ -2,6 +2,7 @@ type Props = {
   /** Google Maps embed URL veya q= adres/koordinat */
   embedUrl?: string;
   title?: string;
+  description?: string;
   addressLabel?: string;
 };
 
@@ -14,6 +15,7 @@ const DEFAULT_ADDRESS = "Levent, Beşiktaş, İstanbul (örnek konum)";
 export function ContactMapSection({
   embedUrl = DEFAULT_EMBED_URL,
   title = "Ofis konumu",
+  description = "Randevu ve yüz yüze görüşme için ofis konumumuzu haritada inceleyebilirsiniz.",
   addressLabel = DEFAULT_ADDRESS,
 }: Props) {
   return (
@@ -22,9 +24,11 @@ export function ContactMapSection({
         <h2 className="text-xl font-semibold tracking-tight text-slate-900 md:text-2xl">
           {title}
         </h2>
-        <p className="mt-2 text-sm leading-relaxed text-slate-600 md:text-base">
-          Randevu ve yüz yüze görüşme için ofis konumumuzu haritada inceleyebilirsiniz.
-        </p>
+        {description?.trim() && (
+          <p className="mt-2 text-sm leading-relaxed text-slate-600 md:text-base">
+            {description}
+          </p>
+        )}
       </div>
 
       <div className="contact-map-card overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">

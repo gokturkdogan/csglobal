@@ -4,7 +4,12 @@ import { findActiveCountries } from "@/lib/repositories/country.repository";
 import { findAllActiveServices } from "@/lib/repositories/service.repository";
 import { findAllActiveCategories } from "@/lib/repositories/category.repository";
 import { findAllPublishedArticles } from "@/lib/repositories/article.repository";
+import { findAllActiveConsulates } from "@/lib/repositories/consulate.repository";
 import { buildCategoryPath, buildServicePath } from "@/lib/services/path-resolver.service";
+import {
+  buildConsulatePath,
+  buildConsulatesListPath,
+} from "@/lib/paths";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteUrl;
@@ -18,11 +23,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   try {
-    const [countries, services, categories, articles] = await Promise.all([
+    const [countries, services, categories, articles, consulates] = await Promise.all([
       findActiveCountries(),
       findAllActiveServices(),
       findAllActiveCategories(),
       findAllPublishedArticles(),
+      findAllActiveConsulates(),
     ]);
 
     const countryRoutes = countries.map((c) => ({
@@ -53,12 +59,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }));
 
+    const consulateListRoutes = countries.map((c) => ({
+      url: `${base}${buildConsulatesListPath(c.slug)}`,
+      changeFrequency: "weekly" as const,
+      priority: 0.72,
+    }));
+
+    const consulateRoutes = consulates.map((c) => ({
+      url: `${base}${buildConsulatePath(c.country.slug, c.slug)}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    }));
+
     return [
       ...staticRoutes,
       ...countryRoutes,
       ...serviceRoutes,
       ...categoryRoutes,
       ...articleRoutes,
+      ...consulateListRoutes,
+      ...consulateRoutes,
     ];
   } catch {
     return staticRoutes;

@@ -13,6 +13,7 @@ export type AdminNavIcon =
   | "briefcase"
   | "article"
   | "guides"
+  | "consulates"
   | "documents"
   | "about"
   | "contact"
@@ -24,6 +25,7 @@ export const adminNav: AdminNavItem[] = [
   { href: "/admin/countries", label: "Ülkeler", icon: "globe" },
   { href: "/admin/categories", label: "Kategoriler", icon: "folder" },
   { href: "/admin/services", label: "Hizmetler", icon: "briefcase" },
+  { href: "/admin/consulates", label: "Konsolosluklar", icon: "consulates" },
   { href: "/admin/articles", label: "Rehber Makaleler", icon: "article" },
   { href: "/admin/rehberlerimiz", label: "Rehberlerimiz", icon: "guides" },
   { href: "/admin/dokumanlar", label: "Dökümanlar", icon: "documents" },

@@ -98,6 +98,59 @@ export function AdminServicePublicUrl({
   return <AdminPublicUrlDisplay path={path} />;
 }
 
+/** Konsolosluk: /{ülke-slug}/konsolosluklar/{slug} */
+export function AdminConsulatePublicUrl({
+  countries,
+  defaultCountryId,
+  initialPath,
+}: {
+  countries: CountryOption[];
+  defaultCountryId: string;
+  initialPath?: string | null;
+}) {
+  const { slug, slugReady } = useVisualSlug();
+  const [countrySlug, setCountrySlug] = useState(
+    () => countries.find((c) => c.id === defaultCountryId)?.slug ?? "",
+  );
+
+  useEffect(() => {
+    const select = document.querySelector(
+      "select[name='countryId']",
+    ) as HTMLSelectElement | null;
+    if (!select) return;
+
+    const sync = () => {
+      const match = countries.find((c) => c.id === select.value);
+      setCountrySlug(match?.slug ?? "");
+    };
+
+    sync();
+    select.addEventListener("change", sync);
+    return () => select.removeEventListener("change", sync);
+  }, [countries]);
+
+  const livePath =
+    countrySlug && slugReady
+      ? `/${countrySlug}/konsolosluklar/${slug}`
+      : null;
+  const path = livePath ?? initialPath;
+
+  if (!path) {
+    if (!countrySlug) {
+      return (
+        <AdminPublicUrlPending message="Site yolu: ülke seçildiğinde görünür." />
+      );
+    }
+    return (
+      <AdminPublicUrlPending
+        message="Site yolu: geçerli slug girildiğinde görünür."
+      />
+    );
+  }
+
+  return <AdminPublicUrlDisplay path={path} />;
+}
+
 /** Slug input alanını izler (ülke, kategori vb.). */
 export function AdminFormSlugPublicUrl({
   fieldName,

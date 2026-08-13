@@ -19,6 +19,7 @@ enum SeoEntityType {
   SERVICE
   ARTICLE
   SITE_PAGE
+  CONSULATE
 }
 
 enum SectionType {
@@ -75,6 +76,7 @@ model Country {
   services             Service[]
   faqs                 Faq[]
   articles             Article[]
+  consulates           Consulate[]
   feesAsNationality    Fee[]      @relation("FeeNationality")
   siteAssets           SiteAsset[]
 
@@ -287,6 +289,28 @@ model Article {
   @@index([isPublished, publishedAt])
   @@index([countryId])
   @@map("articles")
+}
+
+model Consulate {
+  id           String   @id @default(cuid())
+  countryId    String   @map("country_id")
+  name         String
+  slug         String
+  heroTitle    String?  @map("hero_title")
+  heroImage    String?  @map("hero_image")
+  sectionsJson String?  @map("sections_json") @db.Text
+  mapEmbedUrl  String?  @map("map_embed_url") @db.Text
+  mapAddress   String?  @map("map_address") @db.Text
+  isActive     Boolean  @default(true) @map("is_active")
+  sortOrder    Int      @default(0) @map("sort_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  country Country @relation(fields: [countryId], references: [id], onDelete: Restrict)
+
+  @@unique([countryId, slug])
+  @@index([countryId, isActive, sortOrder])
+  @@map("consulates")
 }
 
 model ArticleService {
