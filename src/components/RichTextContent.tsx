@@ -3,7 +3,24 @@ import { MarkdownContent } from "@/components/MarkdownContent";
 import { isProbablyHtml, resolveRichTextLinkHref } from "@/lib/rich-text";
 
 const SANITIZE_OPTIONS = {
-  ALLOWED_TAGS: ["p", "br", "strong", "b", "em", "i", "ul", "ol", "li", "a"],
+  ALLOWED_TAGS: [
+    "p",
+    "br",
+    "strong",
+    "b",
+    "em",
+    "i",
+    "ul",
+    "ol",
+    "li",
+    "a",
+    "table",
+    "thead",
+    "tbody",
+    "tr",
+    "th",
+    "td",
+  ],
   ALLOWED_ATTR: ["href", "target", "rel"],
   RETURN_TRUSTED_TYPE: false as const,
 };

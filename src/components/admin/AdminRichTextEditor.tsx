@@ -2,10 +2,24 @@
 
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
+import {
+  Table,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "@tiptap/extension-table";
 import { EditorContent, useEditor, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { AdminRichTextTableModal } from "@/components/admin/AdminRichTextTableModal";
 import { contentForRichTextEditor, linkUrlForEditor, normalizeLinkUrl } from "@/lib/rich-text";
+import {
+  buildTableContent,
+  createEmptyMatrix,
+  matrixFromTableNode,
+  type TableMatrix,
+} from "@/lib/rich-text-table";
+import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
 
 const inputClass =
   "mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-csg-blue focus:outline-none focus:ring-2 focus:ring-csg-blue/20";
@@ -42,12 +56,37 @@ function ToolbarButton({
   );
 }
 
+type TableTarget = { pos: number; nodeSize: number };
+
+function findTableAtPos(
+  editor: Editor,
+  pos: number,
+): { pos: number; nodeSize: number; node: ProseMirrorNode } | null {
+  const safePos = Math.min(Math.max(pos, 0), editor.state.doc.content.size - 1);
+  const $pos = editor.state.doc.resolve(safePos);
+
+  for (let depth = $pos.depth; depth > 0; depth--) {
+    const node = $pos.node(depth);
+    if (node.type.name === "table") {
+      return {
+        pos: $pos.before(depth),
+        nodeSize: node.nodeSize,
+        node,
+      };
+    }
+  }
+
+  return null;
+}
+
 function EditorToolbar({
   editor,
   onLinkClick,
+  onTableClick,
 }: {
   editor: Editor;
   onLinkClick: () => void;
+  onTableClick: () => void;
 }) {
   return (
     <div className="flex flex-wrap items-center gap-1 border-b border-slate-200 bg-slate-50 px-2 py-1.5">
@@ -78,6 +117,9 @@ function EditorToolbar({
         onClick={onLinkClick}
       >
         Bağlantı
+      </ToolbarButton>
+      <ToolbarButton title="Tablo ekle" onClick={onTableClick}>
+        Tablo
       </ToolbarButton>
     </div>
   );
@@ -209,6 +251,37 @@ export function AdminRichTextEditor({
   const [linkUrl, setLinkUrl] = useState("");
   const [linkModalOpen, setLinkModalOpen] = useState(false);
   const [editingLink, setEditingLink] = useState(false);
+  const [tableModalOpen, setTableModalOpen] = useState(false);
+  const [tableMode, setTableMode] = useState<"create" | "edit">("create");
+  const [tableMatrix, setTableMatrix] = useState<TableMatrix>(() =>
+    createEmptyMatrix(2, 2),
+  );
+  const [tableTarget, setTableTarget] = useState<TableTarget | null>(null);
+
+  const closeTableModal = useCallback(() => {
+    setTableModalOpen(false);
+    setTableMode("create");
+    setTableMatrix(createEmptyMatrix(2, 2));
+    setTableTarget(null);
+  }, []);
+
+  const openCreateTableModal = useCallback(() => {
+    setTableMode("create");
+    setTableMatrix(createEmptyMatrix(2, 2));
+    setTableTarget(null);
+    setTableModalOpen(true);
+  }, []);
+
+  const openEditTableModal = useCallback(
+    (editor: Editor, target: { pos: number; nodeSize: number; node: ProseMirrorNode }) => {
+      setTableMode("edit");
+      setTableMatrix(matrixFromTableNode(target.node));
+      setTableTarget({ pos: target.pos, nodeSize: target.nodeSize });
+      setTableModalOpen(true);
+      editor.chain().focus().setTextSelection(target.pos).run();
+    },
+    [],
+  );
 
   const closeLinkModal = useCallback(() => {
     setLinkModalOpen(false);
@@ -260,6 +333,15 @@ export function AdminRichTextEditor({
           class: "text-csg-blue underline cursor-pointer",
         },
       }),
+      Table.configure({
+        resizable: false,
+        HTMLAttributes: {
+          class: "admin-rich-text-table",
+        },
+      }),
+      TableRow,
+      TableHeader,
+      TableCell,
       Placeholder.configure({ placeholder }),
     ],
     content: contentForRichTextEditor(value),
@@ -288,21 +370,35 @@ export function AdminRichTextEditor({
 
     const handleClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
+
       const anchor = target.closest("a");
-      if (!anchor || !editor.view.dom.contains(anchor)) return;
+      if (anchor && editor.view.dom.contains(anchor)) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const pos = editor.view.posAtDOM(anchor, 0);
+        editor.chain().focus().setTextSelection(pos).extendMarkRange("link").run();
+        openLinkModal(editor);
+        return;
+      }
+
+      const table = target.closest("table");
+      if (!table || !editor.view.dom.contains(table)) return;
 
       event.preventDefault();
       event.stopPropagation();
 
-      const pos = editor.view.posAtDOM(anchor, 0);
-      editor.chain().focus().setTextSelection(pos).extendMarkRange("link").run();
-      openLinkModal(editor);
+      const pos = editor.view.posAtDOM(table, 0);
+      const found = findTableAtPos(editor, pos);
+      if (!found) return;
+
+      openEditTableModal(editor, found);
     };
 
     const dom = editor.view.dom;
     dom.addEventListener("click", handleClick, true);
     return () => dom.removeEventListener("click", handleClick, true);
-  }, [editor, openLinkModal]);
+  }, [editor, openLinkModal, openEditTableModal]);
 
   const applyLink = () => {
     if (!editor) return;
@@ -350,6 +446,43 @@ export function AdminRichTextEditor({
     closeLinkModal();
   };
 
+  const applyTable = () => {
+    if (!editor) return;
+
+    const content = buildTableContent(tableMatrix);
+
+    if (tableMode === "create") {
+      editor.chain().focus().insertContent(content).run();
+    } else if (tableTarget) {
+      editor
+        .chain()
+        .focus()
+        .deleteRange({
+          from: tableTarget.pos,
+          to: tableTarget.pos + tableTarget.nodeSize,
+        })
+        .insertContentAt(tableTarget.pos, content)
+        .run();
+    }
+
+    closeTableModal();
+  };
+
+  const removeTable = () => {
+    if (!editor || !tableTarget) return;
+
+    editor
+      .chain()
+      .focus()
+      .deleteRange({
+        from: tableTarget.pos,
+        to: tableTarget.pos + tableTarget.nodeSize,
+      })
+      .run();
+
+    closeTableModal();
+  };
+
   if (!editor) {
     return (
       <div className="rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-400">
@@ -363,8 +496,18 @@ export function AdminRichTextEditor({
       <EditorToolbar
         editor={editor}
         onLinkClick={() => openLinkModal(editor)}
+        onTableClick={openCreateTableModal}
       />
       <EditorContent editor={editor} />
+      <AdminRichTextTableModal
+        open={tableModalOpen}
+        mode={tableMode}
+        matrix={tableMatrix}
+        onMatrixChange={setTableMatrix}
+        onApply={applyTable}
+        onRemove={tableMode === "edit" ? removeTable : undefined}
+        onClose={closeTableModal}
+      />
       <LinkEditModal
         open={linkModalOpen}
         text={linkText}

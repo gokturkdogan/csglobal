@@ -383,6 +383,26 @@ body {
   text-decoration: underline;
 }
 
+.prose-csg table {
+  width: 100%;
+  margin: 1rem 0;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.prose-csg th,
+.prose-csg td {
+  border: 1px solid #cbd5e1;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.prose-csg th {
+  background: #f1f5f9;
+  font-weight: 600;
+}
+
 /* Admin zengin metin editörü */
 .admin-rich-text-editor p {
   margin-bottom: 0.5rem;
@@ -413,6 +433,28 @@ body {
 .admin-rich-text-editor a {
   color: var(--csg-blue);
   text-decoration: underline;
+}
+
+.admin-rich-text-editor table,
+.admin-rich-text-table {
+  width: 100%;
+  margin: 0.75rem 0;
+  border-collapse: collapse;
+  cursor: pointer;
+}
+
+.admin-rich-text-editor th,
+.admin-rich-text-editor td {
+  border: 1px solid #cbd5e1;
+  padding: 0.375rem 0.5rem;
+  text-align: left;
+  vertical-align: top;
+  min-width: 4rem;
+}
+
+.admin-rich-text-editor th {
+  background: #f8fafc;
+  font-weight: 600;
 }
 
 .admin-rich-text-editor p.is-editor-empty:first-child::before {
