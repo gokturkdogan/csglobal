@@ -89,7 +89,7 @@ export function GuideSectionsEditor({ initialJson }: Props) {
               <AdminRichTextEditor
                 value={section.content}
                 onChange={(html) => updateSection(index, "content", html)}
-                placeholder="Paragraf, kalın metin ve madde listeleri ekleyebilirsiniz."
+                placeholder="Paragraf, kalın metin, liste ve bağlantılar ekleyebilirsiniz."
               />
             </div>
           </div>

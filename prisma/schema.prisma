@@ -76,6 +76,7 @@ model Country {
   faqs                 Faq[]
   articles             Article[]
   feesAsNationality    Fee[]      @relation("FeeNationality")
+  siteAssets           SiteAsset[]
 
   @@index([isActive, sortOrder])
   @@map("countries")
@@ -340,4 +341,24 @@ model SitePage {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("site_pages")
+}
+
+/** Form, dilekçe ve indirilebilir dökümanlar (/asset/{id}/{ülke}/{dosya}) */
+model SiteAsset {
+  id                 Int      @id @default(autoincrement())
+  countryId          String   @map("country_id")
+  fileName           String   @map("file_name")
+  cloudinaryPublicId String?  @map("cloudinary_public_id")
+  fileUrl            String   @map("file_url")
+  fileData           Bytes?   @map("file_data")
+  mimeType           String?  @map("mime_type")
+  byteSize           Int?     @map("byte_size")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  country Country @relation(fields: [countryId], references: [id], onDelete: Restrict)
+
+  @@unique([countryId, fileName])
+  @@index([countryId])
+  @@map("site_assets")
 }

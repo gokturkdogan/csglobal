@@ -5,6 +5,26 @@ import {
   VISA_ROOT_CATEGORIES,
 } from "../data/visa-categories";
 
+export async function wipeArticlesOnly(prisma: PrismaClient) {
+  const articleIds = (
+    await prisma.article.findMany({ select: { id: true } })
+  ).map((a) => a.id);
+
+  if (articleIds.length === 0) {
+    return { deleted: 0 };
+  }
+
+  await prisma.seoMetadata.deleteMany({
+    where: { entityType: SeoEntityType.ARTICLE, entityId: { in: articleIds } },
+  });
+  await prisma.articleService.deleteMany({
+    where: { articleId: { in: articleIds } },
+  });
+  const result = await prisma.article.deleteMany();
+
+  return { deleted: result.count };
+}
+
 export async function wipeServicesOnly(prisma: PrismaClient) {
   const serviceIds = (
     await prisma.service.findMany({ select: { id: true } })

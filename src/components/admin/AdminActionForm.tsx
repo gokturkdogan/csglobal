@@ -5,6 +5,7 @@ import {
   createContext,
   useContext,
   useState,
+  type FormEvent,
   type FormHTMLAttributes,
   type ReactNode,
 } from "react";
@@ -63,7 +64,9 @@ export function AdminActionForm({
   const toast = useAdminToast();
   const [pending, setPending] = useState(false);
 
-  async function handleAction(formData: FormData) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
     setPending(true);
     try {
       const result = await action(formData);
@@ -95,7 +98,7 @@ export function AdminActionForm({
 
   return (
     <AdminFormPendingContext.Provider value={pending}>
-      <form action={handleAction} className={className} {...props}>
+      <form onSubmit={handleSubmit} className={className} {...props}>
         {children}
       </form>
     </AdminFormPendingContext.Provider>

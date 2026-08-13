@@ -745,6 +745,114 @@ export async function saveGuidesListPageAction(formData: FormData): Promise<Admi
   }
 }
 
+export async function uploadSiteAssetAction(formData: FormData): Promise<AdminActionResult> {
+  await requireAdmin();
+
+  const countryId = (formData.get("countryId") as string)?.trim();
+  const file = formData.get("file") as File | null;
+
+  if (!countryId) {
+    return adminFailure("Ülke seçin.");
+  }
+  if (!file || file.size === 0) {
+    return adminFailure("Dosya seçin.");
+  }
+
+  const {
+    SITE_ASSET_MAX_BYTES,
+    sanitizeSiteAssetFileName,
+    buildSiteAssetPath,
+    buildSiteAssetPublicUrl,
+    resolveSiteAssetMimeType,
+  } = await import("@/lib/site-asset");
+
+  if (file.size > SITE_ASSET_MAX_BYTES) {
+    return adminFailure("Dosya 10MB sınırını aşıyor.");
+  }
+
+  const mimeType = resolveSiteAssetMimeType(file.name, file.type);
+  if (!mimeType) {
+    return adminFailure("Yalnızca PDF, Word, Excel veya görsel dosyaları yüklenebilir.");
+  }
+
+  try {
+    const country = await prisma.country.findUnique({
+      where: { id: countryId },
+      select: { slug: true },
+    });
+    if (!country) {
+      return adminFailure("Ülke bulunamadı.");
+    }
+
+    const fileName = sanitizeSiteAssetFileName(file.name);
+    const buffer = Buffer.from(await file.arrayBuffer());
+
+    const asset = await prisma.siteAsset.upsert({
+      where: {
+        countryId_fileName: { countryId, fileName },
+      },
+      create: {
+        countryId,
+        fileName,
+        cloudinaryPublicId: null,
+        fileUrl: "",
+        fileData: buffer,
+        mimeType,
+        byteSize: file.size,
+      },
+      update: {
+        cloudinaryPublicId: null,
+        fileData: buffer,
+        mimeType,
+        byteSize: file.size,
+      },
+    });
+
+    const path = buildSiteAssetPath(asset.id, country.slug, fileName);
+    const publicUrl = buildSiteAssetPublicUrl(asset.id, country.slug, fileName);
+
+    await prisma.siteAsset.update({
+      where: { id: asset.id },
+      data: { fileUrl: publicUrl },
+    });
+
+    revalidatePath("/admin/dokumanlar");
+    revalidatePath(path);
+    return adminSuccess(`Döküman yüklendi: ${path}`, "/admin/dokumanlar");
+  } catch (error) {
+    const detail = adminErrorMessage(error, "");
+    const message = detail
+      ? `Döküman yüklenemedi: ${detail}`
+      : "Döküman yüklenemedi. Lütfen tekrar deneyin.";
+    return adminFailure(message);
+  }
+}
+
+export async function deleteSiteAssetAction(formData: FormData): Promise<AdminActionResult> {
+  await requireAdmin();
+  const id = Number(formData.get("id"));
+  if (!Number.isFinite(id)) {
+    return adminFailure("Geçersiz döküman.");
+  }
+
+  try {
+    const asset = await prisma.siteAsset.delete({
+      where: { id },
+      include: { country: { select: { slug: true } } },
+    });
+
+    revalidatePath("/admin/dokumanlar");
+    revalidatePath(
+      `/asset/${asset.id}/${asset.country.slug}/${asset.fileName}`,
+    );
+    return adminSuccess("Döküman silindi.", "/admin/dokumanlar");
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Döküman silinemedi. Lütfen tekrar deneyin."),
+    );
+  }
+}
+
 export async function saveSitePageAction(formData: FormData): Promise<AdminActionResult> {
   await requireAdmin();
   const id = formData.get("id") as string;

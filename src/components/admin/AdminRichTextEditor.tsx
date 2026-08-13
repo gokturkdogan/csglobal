@@ -73,7 +73,7 @@ function EditorToolbar({
         1. Liste
       </ToolbarButton>
       <ToolbarButton
-        title="Bağlantı ekle"
+        title="Seçili metni bağlantı alanına taşı"
         active={editor.isActive("link")}
         onClick={onLinkClick}
       >
@@ -83,92 +83,73 @@ function EditorToolbar({
   );
 }
 
-function LinkDialog({
-  open,
+function LinkInsertPanel({
   text,
   url,
   onTextChange,
   onUrlChange,
   onApply,
   onRemove,
-  onClose,
   canRemove,
 }: {
-  open: boolean;
   text: string;
   url: string;
   onTextChange: (value: string) => void;
   onUrlChange: (value: string) => void;
   onApply: () => void;
   onRemove: () => void;
-  onClose: () => void;
   canRemove: boolean;
 }) {
-  if (!open) return null;
-
   return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 p-4"
-      onClick={onClose}
-    >
-      <div
-        className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-5 shadow-xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <h3 className="text-base font-semibold text-slate-900">Bağlantı ekle</h3>
-        <p className="mt-1 text-sm text-slate-500">
-          Görünen metin ve adres ayrı ayrı girilebilir.
-        </p>
+    <div className="border-t border-slate-200 bg-slate-50/80 px-3 py-3">
+      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+        Bağlantı ekle
+      </p>
+      <p className="mt-1 text-xs text-slate-500">
+        Görünen metin ve URL ayrı ayrı girilebilir.
+      </p>
 
-        <div className="mt-4 space-y-3">
-          <label className="block">
-            <span className="text-sm font-medium text-slate-700">Görünen metin</span>
-            <input
-              type="text"
-              value={text}
-              onChange={(e) => onTextChange(e.target.value)}
-              placeholder="Örn. Resmi web sitesi"
-              className={inputClass}
-            />
-          </label>
-          <label className="block">
-            <span className="text-sm font-medium text-slate-700">URL</span>
-            <input
-              type="url"
-              value={url}
-              onChange={(e) => onUrlChange(e.target.value)}
-              placeholder="https://..."
-              className={inputClass}
-            />
-          </label>
-        </div>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        <label className="block">
+          <span className="text-xs font-medium text-slate-600">Görünen metin</span>
+          <input
+            type="text"
+            value={text}
+            onChange={(e) => onTextChange(e.target.value)}
+            placeholder="Örn. Resmi web sitesi"
+            className={inputClass}
+          />
+        </label>
+        <label className="block">
+          <span className="text-xs font-medium text-slate-600">URL</span>
+          <input
+            type="url"
+            value={url}
+            onChange={(e) => onUrlChange(e.target.value)}
+            placeholder="https://..."
+            className={inputClass}
+          />
+        </label>
+      </div>
 
-        <div className="mt-5 flex flex-wrap items-center justify-end gap-2">
-          {canRemove && (
-            <button
-              type="button"
-              onClick={onRemove}
-              className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
-            >
-              Bağlantıyı kaldır
-            </button>
-          )}
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={onApply}
+          disabled={!text.trim() || !url.trim()}
+          className="cursor-pointer rounded-lg bg-csg-blue px-3 py-1.5 text-sm font-semibold text-white hover:bg-csg-blue-dark disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          Bağlantıyı ekle
+        </button>
+        {canRemove && (
           <button
             type="button"
-            onClick={onClose}
-            className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
+            onClick={onRemove}
+            className="cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50"
           >
-            İptal
+            Bağlantıyı kaldır
           </button>
-          <button
-            type="button"
-            onClick={onApply}
-            disabled={!text.trim() || !url.trim()}
-            className="cursor-pointer rounded-lg bg-csg-blue px-4 py-2 text-sm font-semibold text-white hover:bg-csg-blue-dark disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Uygula
-          </button>
-        </div>
+        )}
       </div>
     </div>
   );
@@ -185,7 +166,6 @@ export function AdminRichTextEditor({
   onChange,
   placeholder = "İçerik yazın…",
 }: AdminRichTextEditorProps) {
-  const [linkOpen, setLinkOpen] = useState(false);
   const [linkText, setLinkText] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
   const [editingLink, setEditingLink] = useState(false);
@@ -220,6 +200,18 @@ export function AdminRichTextEditor({
     onUpdate: ({ editor: currentEditor }) => {
       onChange(currentEditor.getHTML());
     },
+    onSelectionUpdate: ({ editor: currentEditor }) => {
+      const activeLink = currentEditor.getAttributes("link").href as string | undefined;
+      if (activeLink) {
+        setEditingLink(true);
+        setLinkUrl(activeLink);
+        const { from, to } = currentEditor.state.selection;
+        const selectedText = currentEditor.state.doc.textBetween(from, to, "");
+        if (selectedText) {
+          setLinkText(selectedText);
+        }
+      }
+    },
   });
 
   useEffect(() => {
@@ -231,17 +223,20 @@ export function AdminRichTextEditor({
     }
   }, [editor, value]);
 
-  const openLinkDialog = () => {
+  const fillLinkFromSelection = () => {
     if (!editor) return;
 
     const { from, to } = editor.state.selection;
     const selectedText = editor.state.doc.textBetween(from, to, "");
     const activeLink = editor.getAttributes("link").href as string | undefined;
 
-    setLinkText(selectedText || "");
-    setLinkUrl(activeLink || "");
-    setEditingLink(Boolean(activeLink));
-    setLinkOpen(true);
+    if (selectedText) {
+      setLinkText(selectedText);
+    }
+    if (activeLink) {
+      setLinkUrl(activeLink);
+      setEditingLink(true);
+    }
   };
 
   const applyLink = () => {
@@ -255,19 +250,43 @@ export function AdminRichTextEditor({
       editor.chain().focus().extendMarkRange("link").unsetLink().run();
     }
 
-    editor.chain().focus().deleteSelection().insertContent({
-      type: "text",
-      text,
-      marks: [{ type: "link", attrs: { href } }],
-    }).run();
+    const linkMark = { type: "link", attrs: { href } };
+    const { empty } = editor.state.selection;
 
-    setLinkOpen(false);
+    if (empty) {
+      editor
+        .chain()
+        .focus()
+        .insertContent({
+          type: "text",
+          text,
+          marks: [linkMark],
+        })
+        .run();
+    } else {
+      editor
+        .chain()
+        .focus()
+        .deleteSelection()
+        .insertContent({
+          type: "text",
+          text,
+          marks: [linkMark],
+        })
+        .run();
+    }
+
+    setLinkText("");
+    setLinkUrl("");
+    setEditingLink(false);
   };
 
   const removeLink = () => {
     if (!editor) return;
     editor.chain().focus().extendMarkRange("link").unsetLink().run();
-    setLinkOpen(false);
+    setLinkText("");
+    setLinkUrl("");
+    setEditingLink(false);
   };
 
   if (!editor) {
@@ -279,23 +298,52 @@ export function AdminRichTextEditor({
   }
 
   return (
-    <>
-      <div className="overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm">
-        <EditorToolbar editor={editor} onLinkClick={openLinkDialog} />
-        <EditorContent editor={editor} />
-      </div>
-
-      <LinkDialog
-        open={linkOpen}
+    <div className="overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm">
+      <EditorToolbar editor={editor} onLinkClick={fillLinkFromSelection} />
+      <EditorContent editor={editor} />
+      <LinkInsertPanel
         text={linkText}
         url={linkUrl}
         onTextChange={setLinkText}
         onUrlChange={setLinkUrl}
         onApply={applyLink}
         onRemove={removeLink}
-        onClose={() => setLinkOpen(false)}
-        canRemove={editingLink}
+        canRemove={editingLink || editor.isActive("link")}
       />
-    </>
+    </div>
+  );
+}
+
+type AdminRichTextFormFieldProps = {
+  label: string;
+  name: string;
+  value?: string | null;
+  hint?: string;
+  placeholder?: string;
+};
+
+/** Form gönderimi için gizli input + zengin metin editörü (bağlantı alanı dahil). */
+export function AdminRichTextFormField({
+  label,
+  name,
+  value,
+  hint,
+  placeholder,
+}: AdminRichTextFormFieldProps) {
+  const [html, setHtml] = useState(() => contentForRichTextEditor(value ?? ""));
+
+  return (
+    <div className="block">
+      <span className="text-sm font-medium text-slate-700">{label}</span>
+      <input type="hidden" name={name} value={html} readOnly />
+      <div className="mt-1.5">
+        <AdminRichTextEditor
+          value={html}
+          onChange={setHtml}
+          placeholder={placeholder}
+        />
+      </div>
+      {hint && <span className="mt-1.5 block text-xs text-slate-500">{hint}</span>}
+    </div>
   );
 }
