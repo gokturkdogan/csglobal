@@ -38,7 +38,7 @@ export function HomeHero({
         />
       </div>
 
-      <div className="relative z-[2] mx-auto max-w-6xl px-4 py-20 md:px-8 md:py-28 lg:py-32">
+      <div className="relative z-[2] site-container py-20 md:py-28 lg:py-32">
         <div className="max-w-2xl">
           <HomeEditableField
             field="heroBadge"

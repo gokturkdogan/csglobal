@@ -47,7 +47,7 @@ export default async function ContactPage() {
       />
 
       <div className="contact-page-main border-b border-slate-200/60">
-        <div className="mx-auto max-w-6xl px-4 py-10 md:px-8 md:py-14">
+        <div className="site-container py-10 md:py-14">
           <ContactWhatsAppBanner settings={settings} />
 
           <div className="mt-10 md:mt-12">

@@ -3,14 +3,17 @@
 import { useState } from "react";
 import Link from "next/link";
 import { buildServicePath } from "@/lib/paths";
-import type { MockCategoryWithServices } from "@/lib/country-page/mock-category-services";
+import type { CountryCategoryPanelItem } from "@/lib/country-page/category-panel";
 
 type Props = {
   countrySlug: string;
-  categories: MockCategoryWithServices[];
+  categories: CountryCategoryPanelItem[];
 };
 
-export function CountryCategoryPanel({ countrySlug, categories }: Props) {
+export function CountryCategoryPanel({
+  countrySlug,
+  categories = [],
+}: Props) {
   const [openSlug, setOpenSlug] = useState<string | null>(null);
 
   const toggle = (slug: string) => {
@@ -33,9 +36,10 @@ export function CountryCategoryPanel({ countrySlug, categories }: Props) {
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-white">
-        {categories.map((category) => {
+        {(categories ?? []).map((category) => {
           const isOpen = openSlug === category.slug;
-          const count = category.services.length;
+          const services = category.services ?? [];
+          const count = services.length;
 
           return (
             <div
@@ -70,31 +74,31 @@ export function CountryCategoryPanel({ countrySlug, categories }: Props) {
                     {category.name}
                   </span>
                   <span className="mt-0.5 block text-xs text-slate-500">
-                    {count > 0 ? `${count} hizmet` : "Henüz hizmet yok"}
+                    {count} hizmet
                   </span>
                 </span>
-                {count > 0 && (
-                  <span
-                    className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                      isOpen
-                        ? "bg-csg-blue text-white"
-                        : "bg-slate-100 text-slate-600"
-                    }`}
-                  >
-                    {count}
-                  </span>
-                )}
+                <span
+                  className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                    isOpen
+                      ? "bg-csg-blue text-white"
+                      : count > 0
+                        ? "bg-slate-100 text-slate-600"
+                        : "bg-slate-50 text-slate-400"
+                  }`}
+                >
+                  {count}
+                </span>
               </button>
 
               {isOpen && (
                 <div className="border-t border-slate-100/80 bg-white px-3 pb-3 pt-1">
-                  {category.services.length === 0 ? (
+                  {services.length === 0 ? (
                     <p className="px-2 py-3 text-sm text-slate-500">
                       Bu kategoride henüz hizmet eklenmemiş.
                     </p>
                   ) : (
                     <ul className="space-y-1">
-                      {category.services.map((service) => (
+                      {services.map((service) => (
                         <li key={service.slug}>
                           <Link
                             href={buildServicePath(countrySlug, service.slug)}

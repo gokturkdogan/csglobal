@@ -8,6 +8,7 @@ export {
 } from "./AdminActionForm";
 
 export { AdminCharCountField } from "./AdminCharCountField";
+export { AdminCharCountTextArea } from "./AdminCharCountTextArea";
 
 const inputClass =
   "mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-csg-blue focus:outline-none focus:ring-2 focus:ring-csg-blue/20";

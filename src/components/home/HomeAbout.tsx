@@ -13,7 +13,7 @@ export function HomeAbout({ content }: { content: HomepageContent }) {
 
   return (
     <section className="bg-white border-t border-slate-100">
-      <div className="mx-auto max-w-6xl px-4 py-16 md:px-8 md:py-20">
+      <div className="site-container py-16 md:py-20">
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <HomeEditableImage field="aboutImage" value={content.aboutImage}>
             <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lg">

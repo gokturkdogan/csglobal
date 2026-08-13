@@ -1,0 +1,91 @@
+import { normalizeRichTextContent } from "@/lib/rich-text";
+import { optimizeCloudinaryDeliveryUrl } from "@/lib/media";
+import { siteImages } from "@/lib/media";
+
+export const GUIDE_SECTIONS_MAX = 15;
+export const GUIDE_HERO_CROP_ASPECT = 3.2;
+export const GUIDE_FEATURE_IMAGE_TITLE_MAX = 35;
+export const GUIDE_FEATURE_IMAGE_TEXT_MAX = 450;
+
+export type GuideSection = {
+  title: string;
+  content: string;
+};
+
+export function parseGuideSectionsJson(json: string | null | undefined): GuideSection[] {
+  if (!json?.trim()) return [];
+  try {
+    const parsed = JSON.parse(json) as unknown;
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .map((item) => {
+        if (!item || typeof item !== "object") return null;
+        const record = item as { title?: unknown; content?: unknown };
+        const title = typeof record.title === "string" ? record.title.trim() : "";
+        const content = normalizeRichTextContent(
+          typeof record.content === "string" ? record.content : "",
+        );
+        if (!title || !content) return null;
+        return { title, content };
+      })
+      .filter((item): item is GuideSection => item !== null)
+      .slice(0, GUIDE_SECTIONS_MAX);
+  } catch {
+    return [];
+  }
+}
+
+export function serializeGuideSections(sections: GuideSection[]): string {
+  const valid = sections
+    .map((section) => ({
+      title: section.title.trim(),
+      content: normalizeRichTextContent(section.content) ?? "",
+    }))
+    .filter((section) => section.title && section.content)
+    .slice(0, GUIDE_SECTIONS_MAX);
+
+  return JSON.stringify(valid);
+}
+
+export function resolveGuideHeroImage(url: string | null | undefined): string {
+  const trimmed = url?.trim();
+  if (trimmed) return optimizeCloudinaryDeliveryUrl(trimmed);
+  return siteImages.article;
+}
+
+export function resolveGuideFeatureImage(url: string | null | undefined): string | null {
+  const trimmed = url?.trim();
+  return trimmed || null;
+}
+
+export function resolveGuideCardImage(
+  heroImage: string | null | undefined,
+  coverImage: string | null | undefined,
+): string {
+  const hero = heroImage?.trim();
+  if (hero) return optimizeCloudinaryDeliveryUrl(hero, 1200);
+  const cover = coverImage?.trim();
+  if (cover) return optimizeCloudinaryDeliveryUrl(cover, 1200);
+  return siteImages.article;
+}
+
+export function normalizeGuideFeatureImageTitle(
+  value: string | null | undefined,
+): string | null {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  return trimmed.slice(0, GUIDE_FEATURE_IMAGE_TITLE_MAX);
+}
+
+export function normalizeGuideFeatureImageText(
+  value: string | null | undefined,
+): string | null {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  return trimmed.slice(0, GUIDE_FEATURE_IMAGE_TEXT_MAX);
+}
+
+export const guideHeroImageClassName =
+  "object-cover object-center md:object-[center_30%]";

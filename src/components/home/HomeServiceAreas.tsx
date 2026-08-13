@@ -28,7 +28,7 @@ export function HomeServiceAreas({ content }: { content: HomepageContent }) {
 
   return (
     <section className="border-t border-slate-200 bg-white">
-      <div className="mx-auto max-w-6xl px-4 py-16 md:px-8 md:py-20">
+      <div className="site-container py-16 md:py-20">
         <div className="max-w-2xl">
           <HomeEditableField
             field="serviceAreasTitle"

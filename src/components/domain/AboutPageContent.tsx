@@ -44,7 +44,7 @@ export function AboutPageContent({ content, settings }: Props) {
   return (
     <>
       <section className="about-page-section bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-14 md:px-8 md:py-20">
+        <div className="site-container py-14 md:py-20">
           <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
             <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lg ring-1 ring-slate-200/80">
               <SiteImage
@@ -73,7 +73,7 @@ export function AboutPageContent({ content, settings }: Props) {
       </section>
 
       <section className="about-page-section home-band-soft">
-        <div className="mx-auto max-w-6xl px-4 py-14 md:px-8 md:py-20">
+        <div className="site-container py-14 md:py-20">
           <div className="grid gap-6 md:grid-cols-2">
             <article className="about-vision-card rounded-2xl border border-white/70 bg-white/90 p-6 shadow-sm backdrop-blur-sm md:p-8">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-csg-blue/10 text-csg-blue">
@@ -103,7 +103,7 @@ export function AboutPageContent({ content, settings }: Props) {
       </section>
 
       <section className="about-page-section home-band-navy">
-        <div className="mx-auto max-w-6xl px-4 py-14 md:px-8 md:py-20">
+        <div className="site-container py-14 md:py-20">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-2xl font-semibold text-white md:text-3xl">{whyUs.title}</h2>
             <p className="mt-3 text-base leading-relaxed text-white/85">{whyUs.subtitle}</p>
@@ -126,7 +126,7 @@ export function AboutPageContent({ content, settings }: Props) {
       </section>
 
       <section className="about-page-section bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-14 md:px-8 md:py-20">
+        <div className="site-container py-14 md:py-20">
           <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
             <div>
               <h2 className="text-2xl font-semibold tracking-tight text-slate-900 md:text-3xl">
@@ -175,7 +175,7 @@ export function AboutPageContent({ content, settings }: Props) {
       </section>
 
       <section className="about-page-section border-t border-slate-200/60">
-        <div className="mx-auto max-w-6xl px-4 py-14 md:px-8 md:py-20">
+        <div className="site-container py-14 md:py-20">
           <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
             <ContactCTA settings={settings} title={cta.title} subtitle={cta.subtitle} />
             <div className="relative aspect-[16/10] overflow-hidden rounded-2xl shadow-md ring-1 ring-slate-200/80">

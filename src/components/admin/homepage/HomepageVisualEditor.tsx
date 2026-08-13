@@ -36,8 +36,9 @@ type PreviewData = {
     slug: string;
     excerpt: string | null;
     coverImage: string | null;
+    heroImage?: string | null;
     publishedAt: Date | null;
-    articleCategory: { name: string };
+    country: { name: string } | null;
   }>;
   settings: SiteSettingsMap;
 };

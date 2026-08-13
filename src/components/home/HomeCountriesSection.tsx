@@ -26,7 +26,7 @@ export function HomeCountriesSection({
 
   return (
     <section className="bg-white border-t border-slate-100">
-      <div className="mx-auto max-w-6xl px-4 py-16 md:px-8 md:py-20">
+      <div className="site-container py-16 md:py-20">
         <div className="flex items-end justify-between gap-4">
           <HomeEditableField
             field="countriesTitle"

@@ -25,6 +25,14 @@ import {
   type AboutPageEditable,
 } from "@/lib/about";
 import { serializeHomepageToSettings, type HomepageContent } from "@/lib/homepage";
+import {
+  normalizeGuideFeatureImageText,
+  normalizeGuideFeatureImageTitle,
+} from "@/lib/guide";
+import {
+  normalizeServiceFeatureText,
+  normalizeServiceFeatureTitle,
+} from "@/lib/service-page";
 import { AdminRole } from "@/generated/prisma/client";
 
 async function requireAdmin() {
@@ -192,6 +200,8 @@ export async function uploadCloudinaryHomeImageAction(formData: FormData) {
 
   const { uploadHomeImageToCloudinary } = await import("@/lib/cloudinary");
   const { parseAboutImagePublicId } = await import("@/lib/cloudinary/about-folder");
+  const { parseGuideImagePublicId } = await import("@/lib/cloudinary/guides-folder");
+  const { parseServiceImagePublicId } = await import("@/lib/cloudinary/services-folder");
   const { parseHomeImagePublicId } = await import("@/lib/cloudinary/home-folder");
   const { parseHerosImagePublicId } = await import("@/lib/cloudinary/heros-folder");
 
@@ -199,6 +209,10 @@ export async function uploadCloudinaryHomeImageAction(formData: FormData) {
     parseHerosImagePublicId(publicId);
   } else if (publicId.startsWith("About/")) {
     parseAboutImagePublicId(publicId);
+  } else if (publicId.startsWith("Guides/")) {
+    parseGuideImagePublicId(publicId);
+  } else if (publicId.startsWith("Services/")) {
+    parseServiceImagePublicId(publicId);
   } else {
     parseHomeImagePublicId(publicId);
   }
@@ -348,6 +362,8 @@ export async function saveCategoryAction(formData: FormData): Promise<AdminActio
 export async function saveServiceAction(formData: FormData): Promise<AdminActionResult> {
   await requireAdmin();
   const id = formData.get("id") as string | null;
+  const sectionsRaw = (formData.get("sectionsJson") as string) || "";
+
   const data = {
     countryId: formData.get("countryId") as string,
     categoryId: formData.get("categoryId") as string,
@@ -356,6 +372,23 @@ export async function saveServiceAction(formData: FormData): Promise<AdminAction
     shortDescription: (formData.get("shortDescription") as string) || null,
     processingTime: (formData.get("processingTime") as string) || null,
     heroImage: (formData.get("heroImage") as string) || null,
+    heroTitle: (formData.get("heroTitle") as string) || null,
+    heroSubtitle: (formData.get("heroSubtitle") as string) || null,
+    sectionsJson: sectionsRaw.trim() || null,
+    featureImage1: (formData.get("featureImage1") as string) || null,
+    featureImage1Title: normalizeServiceFeatureTitle(
+      formData.get("featureImage1Title") as string,
+    ),
+    featureImage1Text: normalizeServiceFeatureText(
+      formData.get("featureImage1Text") as string,
+    ),
+    featureImage2: (formData.get("featureImage2") as string) || null,
+    featureImage2Title: normalizeServiceFeatureTitle(
+      formData.get("featureImage2Title") as string,
+    ),
+    featureImage2Text: normalizeServiceFeatureText(
+      formData.get("featureImage2Text") as string,
+    ),
     requiresAppointment: formData.get("requiresAppointment") === "on",
     isFeatured: formData.get("isFeatured") === "on",
     isActive: formData.get("isActive") === "on",
@@ -364,13 +397,24 @@ export async function saveServiceAction(formData: FormData): Promise<AdminAction
 
   try {
     if (id) {
-      await prisma.service.update({ where: { id }, data });
+      const service = await prisma.service.update({
+        where: { id },
+        data,
+        include: { country: { select: { slug: true } } },
+      });
       revalidatePath("/");
+      revalidatePath(`/${service.country.slug}/${service.slug}`);
+      revalidatePath("/admin/services");
       return adminSuccess("Hizmet başarıyla güncellendi.", `/admin/services/${id}`);
     }
 
-    const service = await prisma.service.create({ data });
+    const service = await prisma.service.create({
+      data,
+      include: { country: { select: { slug: true } } },
+    });
     revalidatePath("/");
+    revalidatePath(`/${service.country.slug}/${service.slug}`);
+    revalidatePath("/admin/services");
     return adminSuccess(
       "Hizmet başarıyla oluşturuldu.",
       `/admin/services/${service.id}`,
@@ -422,36 +466,100 @@ export async function saveArticleAction(formData: FormData): Promise<AdminAction
   await requireAdmin();
   const id = formData.get("id") as string | null;
   const isPublished = formData.get("isPublished") === "on";
+  const countryId = (formData.get("countryId") as string)?.trim();
 
+  if (!countryId) {
+    return adminFailure("Ülke seçimi zorunludur.");
+  }
+
+  const serviceIds = formData
+    .getAll("serviceIds")
+    .map((value) => String(value).trim())
+    .filter(Boolean);
+
+  const sectionsRaw = (formData.get("sectionsJson") as string) || "";
   const data = {
     title: formData.get("title") as string,
     slug: formData.get("slug") as string,
     excerpt: (formData.get("excerpt") as string) || null,
-    content: formData.get("content") as string,
+    content: (formData.get("content") as string) || "",
+    heroTitle: (formData.get("heroTitle") as string) || null,
+    heroSubtitle: (formData.get("heroSubtitle") as string) || null,
+    heroImage: (formData.get("heroImage") as string) || null,
+    sectionsJson: sectionsRaw.trim() || null,
+    featureImage: (formData.get("featureImage") as string) || null,
+    featureImageTitle: normalizeGuideFeatureImageTitle(
+      formData.get("featureImageTitle") as string,
+    ),
+    featureImageText: normalizeGuideFeatureImageText(
+      formData.get("featureImageText") as string,
+    ),
     coverImage: (formData.get("coverImage") as string) || null,
-    articleCategoryId: formData.get("articleCategoryId") as string,
-    countryId: (formData.get("countryId") as string) || null,
+    countryId,
     isPublished,
     publishedAt: isPublished ? new Date() : null,
   };
 
   try {
     if (id) {
-      await prisma.article.update({ where: { id }, data });
+      const existing = await prisma.article.findUnique({
+        where: { id },
+        select: { publishedAt: true },
+      });
+
+      await prisma.$transaction(async (tx) => {
+        await tx.article.update({
+          where: { id },
+          data: {
+            ...data,
+            publishedAt:
+              isPublished
+                ? existing?.publishedAt ?? new Date()
+                : null,
+          },
+        });
+
+        await tx.articleService.deleteMany({ where: { articleId: id } });
+        if (serviceIds.length > 0) {
+          await tx.articleService.createMany({
+            data: serviceIds.map((serviceId) => ({
+              articleId: id,
+              serviceId,
+            })),
+            skipDuplicates: true,
+          });
+        }
+      });
+
       revalidatePath("/rehber");
       revalidatePath(`/rehber/${data.slug}`);
-      return adminSuccess("Makale başarıyla güncellendi.", `/admin/articles/${id}`);
+      revalidatePath("/admin/articles");
+      return adminSuccess("Rehber başarıyla güncellendi.", `/admin/articles/${id}`);
     }
 
-    const article = await prisma.article.create({ data });
+    const article = await prisma.$transaction(async (tx) => {
+      const created = await tx.article.create({ data });
+      if (serviceIds.length > 0) {
+        await tx.articleService.createMany({
+          data: serviceIds.map((serviceId) => ({
+            articleId: created.id,
+            serviceId,
+          })),
+          skipDuplicates: true,
+        });
+      }
+      return created;
+    });
+
     revalidatePath("/rehber");
+    revalidatePath("/admin/articles");
     return adminSuccess(
-      "Makale başarıyla oluşturuldu.",
+      "Rehber başarıyla oluşturuldu.",
       `/admin/articles/${article.id}`,
     );
   } catch (error) {
     return adminFailure(
-      adminErrorMessage(error, "Makale kaydedilemedi. Lütfen tekrar deneyin."),
+      adminErrorMessage(error, "Rehber kaydedilemedi. Lütfen tekrar deneyin."),
     );
   }
 }

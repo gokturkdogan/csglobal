@@ -1,6 +1,13 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { saveServiceAction, saveServiceSectionAction } from "@/lib/admin-actions";
+import { saveServiceAction } from "@/lib/admin-actions";
+import { ServiceFeatureBlock } from "@/components/admin/service/ServiceFeatureBlock";
+import { ServiceHeroBlock } from "@/components/admin/service/ServiceHeroBlock";
+import { ServiceSectionsEditor } from "@/components/admin/service/ServiceSectionsEditor";
+import {
+  VisualSlugField,
+  VisualSlugProvider,
+} from "@/components/admin/VisualSlugProvider";
 import {
   AdminCheckbox,
   AdminField,
@@ -22,10 +29,7 @@ export default async function EditServicePage({ params }: Props) {
     ? null
     : await prisma.service.findUnique({
         where: { id },
-        include: {
-          sections: { orderBy: { sortOrder: "asc" } },
-          fees: true,
-        },
+        include: { fees: true },
       });
 
   if (!isNew && !service) notFound();
@@ -40,7 +44,7 @@ export default async function EditServicePage({ params }: Props) {
     <div className="space-y-6">
       <AdminPageHeader
         title={service ? `${service.name} Düzenle` : "Yeni Hizmet"}
-        description="Hizmet detayları, öne çıkan işareti ve içerik bölümleri."
+        description="Banner, içerik bölümleri ve görselli alanlar."
       />
 
       <AdminActionForm action={saveServiceAction} className="max-w-3xl space-y-6">
@@ -72,102 +76,109 @@ export default async function EditServicePage({ params }: Props) {
           </AdminSelect>
         </AdminFormSection>
 
-        <AdminFormSection title="Hizmet bilgileri">
-          <AdminField label="Ad" name="name" value={service?.name} required />
-          <AdminField label="Slug" name="slug" value={service?.slug} required />
-          <AdminField
-            label="Kısa açıklama"
-            name="shortDescription"
-            value={service?.shortDescription}
-          />
-          <AdminField
-            label="İşlem süresi"
-            name="processingTime"
-            value={service?.processingTime}
-          />
-          <AdminField label="Kapak görsel URL" name="heroImage" value={service?.heroImage} />
-          <AdminField
-            label="Sıra"
-            name="sortOrder"
-            type="number"
-            value={service?.sortOrder ?? 0}
-          />
-          <AdminCheckbox
-            label="Randevu gerekli"
-            name="requiresAppointment"
-            defaultChecked={service?.requiresAppointment ?? false}
-          />
-          <AdminCheckbox
-            label="Öne çıkan (anasayfada göster)"
-            name="isFeatured"
-            defaultChecked={service?.isFeatured ?? false}
-          />
-          <AdminCheckbox
-            label="Aktif"
-            name="isActive"
-            defaultChecked={service?.isActive ?? true}
-          />
-        </AdminFormSection>
+        <VisualSlugProvider initialSlug={service?.slug ?? ""}>
+          <AdminFormSection title="Hizmet bilgileri">
+            <AdminField label="Başlık" name="name" value={service?.name} required />
+            <VisualSlugField cloudinaryPrefix="Services" placeholder="turistik-vize" />
+            <AdminTextArea
+              label="Kısa açıklama (liste / kart)"
+              name="shortDescription"
+              value={service?.shortDescription}
+              rows={3}
+              hint="Banner alt metin boşsa burada kullanılabilir."
+            />
+            <AdminField
+              label="İşlem süresi"
+              name="processingTime"
+              value={service?.processingTime}
+              placeholder="Örn. 10-15 iş günü"
+            />
+            <AdminField
+              label="Sıra"
+              name="sortOrder"
+              type="number"
+              value={service?.sortOrder ?? 0}
+            />
+            <AdminCheckbox
+              label="Randevu gerekli"
+              name="requiresAppointment"
+              defaultChecked={service?.requiresAppointment ?? false}
+            />
+            <AdminCheckbox
+              label="Öne çıkan (anasayfada göster)"
+              name="isFeatured"
+              defaultChecked={service?.isFeatured ?? false}
+            />
+            <AdminCheckbox
+              label="Aktif"
+              name="isActive"
+              defaultChecked={service?.isActive ?? true}
+            />
+          </AdminFormSection>
+
+          <AdminFormSection
+            title="Banner"
+            description="Banner görseli ve üzerindeki metinler birlikte düzenlenir."
+          >
+            <ServiceHeroBlock
+              heroImage={service?.heroImage ?? ""}
+              heroTitle={service?.heroTitle}
+              heroSubtitle={service?.heroSubtitle}
+              defaultTitle={service?.name}
+              defaultSubtitle={service?.shortDescription}
+            />
+          </AdminFormSection>
+
+          <AdminFormSection
+            title="İçerik bölümleri"
+            description="Blog tarzında başlık ve zengin metin blokları."
+          >
+            <ServiceSectionsEditor initialJson={service?.sectionsJson} />
+          </AdminFormSection>
+
+          <AdminFormSection
+            title="Görsel alan 1"
+            description="Görsel, başlık ve metin birlikte; sitede görsel solda."
+          >
+            <ServiceFeatureBlock
+              index={1}
+              featureImage={service?.featureImage1 ?? ""}
+              featureImageTitle={service?.featureImage1Title}
+              featureImageText={service?.featureImage1Text}
+            />
+          </AdminFormSection>
+
+          <AdminFormSection
+            title="Görsel alan 2"
+            description="Görsel, başlık ve metin birlikte; sitede görsel sağda."
+          >
+            <ServiceFeatureBlock
+              index={2}
+              featureImage={service?.featureImage2 ?? ""}
+              featureImageTitle={service?.featureImage2Title}
+              featureImageText={service?.featureImage2Text}
+            />
+          </AdminFormSection>
+        </VisualSlugProvider>
 
         <AdminSubmitButton>Kaydet</AdminSubmitButton>
       </AdminActionForm>
 
-      {service && (
-        <div className="max-w-3xl space-y-6">
+      {service && service.fees.length > 0 && (
+        <div className="max-w-3xl">
           <AdminCard>
-            <h2 className="text-base font-semibold text-slate-900">İçerik bölümleri</h2>
-            {service.sections.length === 0 ? (
-              <p className="mt-3 text-sm text-slate-500">Henüz bölüm eklenmedi.</p>
-            ) : (
-              <ul className="mt-4 divide-y divide-slate-100">
-                {service.sections.map((sec) => (
-                  <li key={sec.id} className="flex items-center justify-between py-3 text-sm">
-                    <span className="font-medium text-slate-900">{sec.title}</span>
-                    <span className="text-slate-500">{sec.slug}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <h3 className="text-base font-semibold text-slate-900">Ücretler</h3>
+            <p className="mt-1 text-xs text-slate-500">
+              Ücret düzenleme yakında panelde ayrı eklenecek.
+            </p>
+            <ul className="mt-3 space-y-1 text-sm text-slate-600">
+              {service.fees.map((f) => (
+                <li key={f.id}>
+                  {f.name}: {f.amount.toString()} {f.currency}
+                </li>
+              ))}
+            </ul>
           </AdminCard>
-
-          <AdminFormSection title="Yeni bölüm ekle">
-            <AdminActionForm action={saveServiceSectionAction} className="space-y-4">
-              <input type="hidden" name="serviceId" value={service.id} />
-              <AdminField label="Başlık" name="title" required />
-              <AdminField label="Slug" name="slug" required />
-              <AdminTextArea
-                label="İçerik (Markdown)"
-                name="content"
-                rows={6}
-                mono
-              />
-              <AdminField
-                label="Sıra"
-                name="sortOrder"
-                type="number"
-                value={service.sections.length}
-              />
-              <AdminSubmitButton
-                className="!bg-slate-800 hover:!bg-slate-900"
-                loadingLabel="Ekleniyor…"
-              >
-                Bölüm ekle
-              </AdminSubmitButton>
-            </AdminActionForm>
-          </AdminFormSection>
-
-          {service.fees.length > 0 && (
-            <AdminCard>
-              <h3 className="text-base font-semibold text-slate-900">Ücretler</h3>
-              <ul className="mt-3 space-y-1 text-sm text-slate-600">
-                {service.fees.map((f) => (
-                  <li key={f.id}>
-                    {f.name}: {f.amount.toString()} {f.currency}
-                  </li>
-                ))}
-              </ul>
-            </AdminCard>
-          )}
         </div>
       )}
     </div>

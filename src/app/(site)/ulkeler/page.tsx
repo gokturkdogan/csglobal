@@ -20,7 +20,7 @@ export default async function CountriesPage() {
     <>
       <CountriesPageHero countryCount={countries.length} />
       <section className="home-band-soft">
-        <div className="mx-auto max-w-6xl px-4 py-12 md:px-8 md:py-16">
+        <div className="site-container py-12 md:py-16">
           <CountryGrid countries={countries} />
         </div>
       </section>

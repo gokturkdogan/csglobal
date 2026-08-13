@@ -31,7 +31,7 @@ export function ContactPageHero({ heroImage, title = "İletişim", subtitle }: P
         />
       </div>
 
-      <div className="relative z-[1] mx-auto max-w-6xl px-4 py-16 md:px-8 md:py-20 lg:py-24">
+      <div className="relative z-[1] site-container py-16 md:py-20 lg:py-24">
         <div className="max-w-2xl">
           <p className="text-sm font-semibold uppercase tracking-widest text-sky-300">
             Uzman danışmanlık

@@ -46,7 +46,7 @@ export function CountryPageHero({
         />
       </div>
 
-      <div className="relative z-[1] mx-auto max-w-6xl px-4 py-10 md:px-8 md:py-14 lg:py-16">
+      <div className="relative z-[1] site-container py-10 md:py-14 lg:py-16">
         <nav aria-label="Breadcrumb" className="text-sm text-slate-300">
           <ol className="flex flex-wrap items-center gap-1.5">
             <li>

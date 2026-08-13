@@ -11,8 +11,11 @@ import {
   wipeServicesAndCategories,
   seedGlobalVisaCategories,
 } from "./lib/visa-structure-seed";
+import { resolvePgConnectionString } from "../src/lib/pg-connection";
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL! });
+const pool = new Pool({
+  connectionString: resolvePgConnectionString(process.env.DATABASE_URL!),
+});
 const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
 const IMG = {
   hero: "https://res.cloudinary.com/ulnb2wjo/image/upload/v1786551822/banner-1.png",
@@ -231,20 +234,42 @@ async function main() {
   await wipeServicesAndCategories(prisma);
   await seedGlobalVisaCategories(prisma);
 
+  const guideSections = JSON.stringify([
+    {
+      title: "Başvuru sürecine genel bakış",
+      content:
+        "<p>Almanya vizesi için evrak hazırlığı, randevu planlaması ve başvuru merkezi süreçleri ülkeye özeldir.</p><ul><li><strong>Evrak listesi</strong> vize türüne göre değişir.</li><li><strong>Randevu</strong> yoğun dönemlerde erken planlama gerektirir.</li></ul>",
+    },
+  ]);
+
   await prisma.article.upsert({
     where: { slug: "almanya-vize-rehberi" },
     create: {
       slug: "almanya-vize-rehberi",
       title: "Almanya Vize Başvuru Rehberi",
-      excerpt: "Almanya vizesi için temel adımlar.",
-      content: "## Almanya vizesi\n\nEvrak hazırlığı ve randevu süreci ülkeye özeldir.",
+      excerpt: "Almanya vizesi için temel adımlar ve evrak hazırlığı.",
+      heroTitle: "Almanya Vize Başvuru Rehberi",
+      heroSubtitle:
+        "Evrak, randevu ve başvuru merkezi süreçlerine ülkeye özel özet.",
+      content: "",
+      sectionsJson: guideSections,
+      featureImageTitle: "Doğru evrak, doğru zamanlama",
+      featureImageText:
+        "Almanya vizesi için belgelerin eksiksiz ve güncel olması sürecin en kritik adımıdır. Uzman danışmanımız profilinize uygun evrak listesini netleştirir.",
       coverImage: IMG.germany,
+      heroImage: IMG.germany,
       articleCategoryId: guideCat.id,
       countryId: germany.id,
       isPublished: true,
       publishedAt: new Date(),
     },
-    update: {},
+    update: {
+      countryId: germany.id,
+      sectionsJson: guideSections,
+      heroTitle: "Almanya Vize Başvuru Rehberi",
+      heroSubtitle:
+        "Evrak, randevu ve başvuru merkezi süreçlerine ülkeye özel özet.",
+    },
   });
 
   const homeFaqs = [

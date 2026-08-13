@@ -5,7 +5,7 @@ import {
   parseCountryDetailSectionsJson,
   parseCountryNotesJson,
 } from "@/lib/country-detail";
-import { getMockCountryCategories } from "@/lib/country-page/mock-category-services";
+import type { CountryCategoryPanelItem } from "@/lib/country-page/category-panel";
 import { ContactCTA } from "@/components/domain/ContactCTA";
 import { FaqAccordion } from "@/components/domain/FaqAccordion";
 import { CountryPageHero } from "@/components/domain/CountryPageHero";
@@ -33,6 +33,7 @@ type Props = {
   settings: SiteSettingsMap;
   serviceCount: number;
   categoryCount: number;
+  categories: CountryCategoryPanelItem[];
 };
 
 function SectionHeading({
@@ -61,8 +62,8 @@ export function CountryDetailPage({
   settings,
   serviceCount,
   categoryCount,
+  categories = [],
 }: Props) {
-  const mockCategories = getMockCountryCategories(country.name);
   const paragraphs = buildCountryDetailParagraphs(country);
   const stats = buildCountryQuickStats({
     name: country.name,
@@ -90,12 +91,12 @@ export function CountryDetailPage({
       />
 
       <div className="country-detail-main border-b border-slate-200/60">
-        <div className="mx-auto max-w-6xl px-4 py-10 md:px-8 md:py-14">
+        <div className="site-container py-10 md:py-14">
           <div className="grid gap-8 lg:grid-cols-[minmax(280px,320px)_1fr] lg:gap-10 lg:items-start">
             <aside className="country-panel-sticky lg:z-30 lg:self-start">
               <CountryCategoryPanel
                 countrySlug={country.slug}
-                categories={mockCategories}
+                categories={categories}
               />
             </aside>
 

@@ -8,8 +8,11 @@ import {
   seedVisaDataOnly,
   wipeServicesAndCategories,
 } from "./lib/visa-structure-seed";
+import { resolvePgConnectionString } from "../src/lib/pg-connection";
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL! });
+const pool = new Pool({
+  connectionString: resolvePgConnectionString(process.env.DATABASE_URL!),
+});
 const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
 const root = new URL(".", import.meta.url).pathname.replace(/\/prisma\/?$/, "");
 
@@ -37,7 +40,9 @@ async function main() {
     return;
   }
 
-  const pool2 = new Pool({ connectionString: process.env.DATABASE_URL! });
+  const pool2 = new Pool({
+    connectionString: resolvePgConnectionString(process.env.DATABASE_URL!),
+  });
   const prisma2 = new PrismaClient({ adapter: new PrismaPg(pool2) });
 
   const result = await seedVisaDataOnly(prisma2);

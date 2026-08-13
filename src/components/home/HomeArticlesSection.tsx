@@ -17,8 +17,9 @@ export function HomeArticlesSection({
     slug: string;
     excerpt: string | null;
     coverImage: string | null;
+    heroImage?: string | null;
     publishedAt: Date | null;
-    articleCategory: { name: string };
+    country: { name: string } | null;
   }>;
 }) {
   const edit = useHomepageEdit();
@@ -27,7 +28,7 @@ export function HomeArticlesSection({
 
   return (
     <section className="border-t border-slate-200 bg-white">
-      <div className="mx-auto max-w-6xl px-4 py-16 md:px-8 md:py-20">
+      <div className="site-container py-16 md:py-20">
         <div className="flex items-end justify-between gap-4">
           <HomeEditableField
             field="articlesTitle"
@@ -50,8 +51,8 @@ export function HomeArticlesSection({
               title={a.title}
               slug={a.slug}
               excerpt={a.excerpt}
-              coverImage={a.coverImage}
-              categoryName={a.articleCategory.name}
+              coverImage={a.heroImage ?? a.coverImage}
+              categoryName={a.country?.name}
               publishedAt={a.publishedAt}
             />
           ))}

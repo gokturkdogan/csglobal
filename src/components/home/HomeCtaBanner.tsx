@@ -45,7 +45,7 @@ export function HomeCtaBanner({
         />
       </div>
 
-      <div className="relative z-[2] mx-auto max-w-6xl px-4 py-16 text-center md:px-8 md:py-20">
+      <div className="relative z-[2] site-container py-16 text-center md:py-20">
         <HomeEditableField
           field="ctaBannerTitle"
           value={content.ctaBannerTitle}

@@ -19,7 +19,7 @@ export function HomeFaqPreview({ content }: { content: HomepageContent }) {
 
   return (
     <section className="home-band-soft">
-      <div className="mx-auto max-w-6xl px-4 py-16 md:px-8 md:py-20">
+      <div className="site-container py-16 md:py-20">
         <div className="grid gap-10 lg:grid-cols-[1fr_1.2fr] lg:items-start">
           <div className="rounded-2xl bg-csg-blue p-8 shadow-lg lg:p-10">
             <HomeEditableField

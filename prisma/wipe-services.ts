@@ -3,8 +3,11 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { wipeServicesOnly } from "./lib/visa-structure-seed";
+import { resolvePgConnectionString } from "../src/lib/pg-connection";
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL! });
+const pool = new Pool({
+  connectionString: resolvePgConnectionString(process.env.DATABASE_URL!),
+});
 const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
 
 async function main() {

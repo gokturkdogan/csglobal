@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { CountryDetailPage } from "@/components/country/CountryDetailPage";
 import { findCountryPageBySlug } from "@/lib/repositories/country.repository";
 import { findCategoriesWithCountryServices } from "@/lib/repositories/category.repository";
+import { mapCategoriesForCountryPanel } from "@/lib/country-page/category-panel";
 import { buildEntityMetadata, buildFaqJsonLd } from "@/lib/services/seo.service";
 import { getSiteSettings } from "@/lib/settings";
 import { SeoEntityType } from "@/generated/prisma/client";
@@ -28,8 +29,9 @@ export default async function CountryPage({ params }: Props) {
   if (!country) notFound();
 
   const settings = await getSiteSettings();
-  const categories = await findCategoriesWithCountryServices(country.id);
-  const serviceCount = categories.reduce((n, cat) => n + cat.services.length, 0);
+  const categories = (await findCategoriesWithCountryServices(country.id)) ?? [];
+  const panelCategories = mapCategoriesForCountryPanel(categories);
+  const serviceCount = panelCategories.reduce((n, cat) => n + cat.services.length, 0);
   const faqs = country.faqs.map((f) => ({
     question: f.question,
     answer: f.answer,
@@ -63,6 +65,7 @@ export default async function CountryPage({ params }: Props) {
         settings={settings}
         serviceCount={serviceCount}
         categoryCount={categories.length}
+        categories={panelCategories}
       />
     </>
   );

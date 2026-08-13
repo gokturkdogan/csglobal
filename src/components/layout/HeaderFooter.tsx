@@ -29,7 +29,7 @@ export function Header({
 
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/95 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 md:px-8">
+      <div className="site-container flex items-center justify-between gap-4 py-3">
         <Link href="/" className="flex shrink-0 cursor-pointer items-center" aria-label={siteName}>
           <SiteImage
             src={logo}
@@ -99,7 +99,7 @@ export function Footer({
 }: Pick<SiteSettingsMap, "siteName" | "contactPhone" | "contactEmail">) {
   return (
     <footer className="border-t border-slate-200 bg-slate-50">
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 md:grid-cols-3 md:px-8">
+      <div className="site-container grid gap-10 py-14 md:grid-cols-3">
         <div>
           <p className="text-base font-semibold text-slate-900">{siteName}</p>
           <p className="mt-2 text-sm text-slate-600 leading-relaxed">
