@@ -7,7 +7,6 @@ import {
   SERVICE_FEATURE_TEXT_MAX,
   SERVICE_FEATURE_TITLE_MAX,
 } from "@/lib/service-page";
-import { siteImages } from "@/lib/media";
 import { VisualSlugGate } from "@/components/admin/VisualSlugProvider";
 
 type Props = {
@@ -26,8 +25,6 @@ export function ServiceFeatureBlock({
   const imageName = index === 1 ? "featureImage1" : "featureImage2";
   const titleName = index === 1 ? "featureImage1Title" : "featureImage2Title";
   const textName = index === 1 ? "featureImage1Text" : "featureImage2Text";
-  const fallback =
-    index === 1 ? siteImages.conference : siteImages.office;
 
   return (
     <div className="space-y-5">
@@ -36,7 +33,6 @@ export function ServiceFeatureBlock({
           <AdminManagedImageField
             name={imageName}
             defaultValue={featureImage}
-            fallbackSrc={fallback}
             slot={serviceFeatureImageSlot(slug, index)}
             previewVariant="card"
           />

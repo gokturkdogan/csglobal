@@ -7,6 +7,7 @@ import { ServiceSectionsEditor } from "@/components/admin/service/ServiceSection
 import {
   VisualSlugField,
   VisualSlugProvider,
+  VisualTitleField,
 } from "@/components/admin/VisualSlugProvider";
 import {
   AdminCheckbox,
@@ -76,9 +77,12 @@ export default async function EditServicePage({ params }: Props) {
           </AdminSelect>
         </AdminFormSection>
 
-        <VisualSlugProvider initialSlug={service?.slug ?? ""}>
+        <VisualSlugProvider
+          initialSlug={service?.slug ?? ""}
+          initialTitle={service?.name ?? ""}
+        >
           <AdminFormSection title="Hizmet bilgileri">
-            <AdminField label="Başlık" name="name" value={service?.name} required />
+            <VisualTitleField label="Başlık" name="name" required />
             <VisualSlugField cloudinaryPrefix="Services" placeholder="turistik-vize" />
             <AdminTextArea
               label="Kısa açıklama (liste / kart)"

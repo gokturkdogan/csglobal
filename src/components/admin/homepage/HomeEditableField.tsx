@@ -57,10 +57,22 @@ export function HomeEditableImage({
 }) {
   const edit = useHomepageEdit();
   const slot = homepageImageSlots[field];
+  const currentUrl = edit ? (edit.content[field] as string) : value;
+  const hasImage = currentUrl.trim().length > 0;
 
   return (
     <div className={fullBleed ? "absolute inset-0" : "relative"}>
-      {children}
+      {hasImage ? children : (
+        edit && (
+          <div
+            className={
+              fullBleed
+                ? "absolute inset-0 bg-slate-200"
+                : "relative aspect-[4/3] overflow-hidden rounded-2xl bg-slate-100"
+            }
+          />
+        )
+      )}
       {edit && (
         <CloudinaryImagePicker
           publicId={slot.publicId}
@@ -69,6 +81,7 @@ export function HomeEditableImage({
           placement={fullBleed ? "top" : "bottom"}
           aspectRatio={slot.aspectRatio}
           cropHint={slot.cropHint}
+          hasImage={hasImage}
         />
       )}
     </div>
@@ -87,6 +100,8 @@ export function HomeEditableSeoBlockImage({
   const edit = useHomepageEdit();
   const slotKey = `seoBlock${index}` as "seoBlock0" | "seoBlock1" | "seoBlock2";
   const slot = homepageImageSlots[slotKey];
+  const currentUrl = edit?.content.seoBlocks[index]?.image ?? value;
+  const hasImage = currentUrl.trim().length > 0;
 
   if (!slot) {
     return <>{children}</>;
@@ -94,7 +109,11 @@ export function HomeEditableSeoBlockImage({
 
   return (
     <div className="relative">
-      {children}
+      {hasImage ? children : (
+        edit && (
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-slate-100" />
+        )
+      )}
       {edit && (
         <CloudinaryImagePicker
           publicId={slot.publicId}
@@ -102,6 +121,7 @@ export function HomeEditableSeoBlockImage({
           label={slot.label}
           aspectRatio={slot.aspectRatio}
           cropHint={slot.cropHint}
+          hasImage={hasImage}
         />
       )}
     </div>

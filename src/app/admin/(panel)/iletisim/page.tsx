@@ -3,6 +3,10 @@ import { prisma } from "@/lib/prisma";
 import { saveContactPageAction } from "@/lib/admin-actions";
 import { getSiteSettings } from "@/lib/settings";
 import {
+  contactHeroImageClassName,
+  contactHeroImageSlot,
+} from "@/lib/contact-image-slot";
+import {
   AdminCheckbox,
   AdminField,
   AdminFormSection,
@@ -11,7 +15,7 @@ import {
   AdminTextArea,
   AdminButtonLink,
 } from "@/components/admin/AdminForm";
-import { AdminContactHeroImageField } from "@/components/admin/contact/AdminContactHeroImageField";
+import { AdminManagedImageField } from "@/components/admin/AdminManagedImageField";
 import { AdminPageHeader } from "@/components/admin/AdminUi";
 
 export default async function AdminContactPage() {
@@ -47,9 +51,13 @@ export default async function AdminContactPage() {
             rows={4}
             hint="Hero bölümünde başlık altında görünen açıklama metni."
           />
-          <AdminContactHeroImageField
+          <AdminManagedImageField
             name="contactHeroImage"
             defaultValue={settings.contactHeroImage}
+            slot={contactHeroImageSlot}
+            previewVariant="hero"
+            imageClassName={contactHeroImageClassName}
+            hint="PNG, JPG veya WebP; sabit 3.2:1 oranında kırpılır. Kaydet ile siteye uygulanır."
           />
           <AdminCheckbox label="Sayfa yayında" name="isActive" defaultChecked={page.isActive} />
         </AdminFormSection>

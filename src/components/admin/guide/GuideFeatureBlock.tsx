@@ -7,7 +7,6 @@ import {
   GUIDE_FEATURE_IMAGE_TEXT_MAX,
   GUIDE_FEATURE_IMAGE_TITLE_MAX,
 } from "@/lib/guide";
-import { siteImages } from "@/lib/media";
 import { VisualSlugGate } from "@/components/admin/VisualSlugProvider";
 
 type Props = {
@@ -28,7 +27,6 @@ export function GuideFeatureBlock({
           <AdminManagedImageField
             name="featureImage"
             defaultValue={featureImage}
-            fallbackSrc={siteImages.conference}
             slot={guideFeatureImageSlot(slug)}
             previewVariant="card"
           />

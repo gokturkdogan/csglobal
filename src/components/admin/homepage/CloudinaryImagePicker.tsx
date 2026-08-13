@@ -12,6 +12,7 @@ export function CloudinaryImagePicker({
   placement = "bottom",
   aspectRatio,
   cropHint,
+  hasImage = false,
 }: {
   publicId: string;
   onChange: (url: string) => void;
@@ -19,6 +20,7 @@ export function CloudinaryImagePicker({
   placement?: "bottom" | "top";
   aspectRatio: number;
   cropHint: string;
+  hasImage?: boolean;
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -55,16 +57,18 @@ export function CloudinaryImagePicker({
     }
   }
 
-  const positionClass =
-    placement === "top"
+  const positionClass = hasImage
+    ? placement === "top"
       ? "top-4 left-4 right-4"
-      : "bottom-3 left-3 right-3";
+      : "bottom-3 left-3 right-3"
+    : "inset-0 flex flex-col items-center justify-center gap-2 px-4";
 
   const cropTitle = label ?? "Görseli kırp";
+  const buttonLabel = uploading ? "Yükleniyor…" : hasImage ? "Değiştir" : "Ekle";
 
   return (
     <>
-      <div className={`absolute ${positionClass} z-50 pointer-events-auto`}>
+      <div className={`absolute z-50 pointer-events-auto ${positionClass}`}>
         {error && (
           <p className="mb-2 rounded-md bg-white px-2 py-1 text-xs font-medium text-red-600 shadow-sm">
             {error}
@@ -74,9 +78,13 @@ export function CloudinaryImagePicker({
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading || cropOpen}
-          className="rounded-md bg-csg-blue/95 px-3 py-1.5 text-xs font-semibold text-white shadow-lg hover:bg-csg-blue disabled:opacity-60"
+          className={
+            hasImage
+              ? "rounded-md bg-csg-blue/95 px-3 py-1.5 text-xs font-semibold text-white shadow-lg hover:bg-csg-blue disabled:opacity-60"
+              : "rounded-lg border-2 border-dashed border-slate-300 bg-white/90 px-6 py-3 text-sm font-semibold text-slate-600 shadow-sm transition hover:border-csg-blue hover:text-csg-blue disabled:opacity-60"
+          }
         >
-          {uploading ? "Yükleniyor…" : "Görseli değiştir"}
+          {buttonLabel}
         </button>
         <input
           ref={fileInputRef}

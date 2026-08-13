@@ -3,7 +3,6 @@
 import { AdminManagedImageField } from "@/components/admin/AdminManagedImageField";
 import { AdminField, AdminTextArea } from "@/components/admin/AdminForm";
 import { guideHeroImageSlot } from "@/lib/guide-image-slots";
-import { siteImages } from "@/lib/media";
 import { VisualSlugGate } from "@/components/admin/VisualSlugProvider";
 
 type Props = {
@@ -28,7 +27,6 @@ export function GuideHeroBlock({
           <AdminManagedImageField
             name="heroImage"
             defaultValue={heroImage}
-            fallbackSrc={siteImages.article}
             slot={guideHeroImageSlot(slug)}
             previewVariant="hero"
             imageClassName="object-cover object-center md:object-[center_30%]"

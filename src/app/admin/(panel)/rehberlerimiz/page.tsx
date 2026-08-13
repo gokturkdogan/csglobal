@@ -3,7 +3,11 @@ import { saveGuidesListPageAction } from "@/lib/admin-actions";
 import { parseGuidesListPageEditableFromSettings } from "@/lib/guides-list-page";
 import { ensureGuidesListSitePage } from "@/lib/repositories/site.repository";
 import { getSiteSettings } from "@/lib/settings";
-import { AdminGuidesListHeroImageField } from "@/components/admin/guides/AdminGuidesListHeroImageField";
+import {
+  guidesListHeroImageClassName,
+  guidesListHeroImageSlot,
+} from "@/lib/guides-list-image-slot";
+import { AdminManagedImageField } from "@/components/admin/AdminManagedImageField";
 import {
   AdminCheckbox,
   AdminField,
@@ -52,7 +56,14 @@ export default async function AdminGuidesListPage() {
             value={content.heroSubtitle}
             rows={3}
           />
-          <AdminGuidesListHeroImageField name="heroImage" defaultValue={content.heroImage} />
+          <AdminManagedImageField
+            name="heroImage"
+            defaultValue={content.heroImage}
+            slot={guidesListHeroImageSlot}
+            previewVariant="hero"
+            imageClassName={guidesListHeroImageClassName}
+            hint="PNG, JPG veya WebP; sabit 3.2:1 oranında kırpılır. Kaydet ile siteye uygulanır."
+          />
           <AdminCheckbox label="Sayfa yayında" name="isActive" defaultChecked={page.isActive} />
         </AdminFormSection>
 

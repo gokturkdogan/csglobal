@@ -7,7 +7,12 @@ import {
 } from "@/lib/about";
 import { ABOUT_VALUES_COUNT } from "@/lib/about-image-slots";
 import { getSiteSettings } from "@/lib/settings";
-import { siteImages } from "@/lib/media";
+import {
+  aboutHeroImageClassName,
+  aboutHeroImageSlot,
+  aboutWhoWeAreImageSlot,
+  aboutValuesSectionImageSlot,
+} from "@/lib/about-image-slots";
 import {
   AdminCheckbox,
   AdminField,
@@ -18,12 +23,6 @@ import {
   AdminButtonLink,
 } from "@/components/admin/AdminForm";
 import { AdminManagedImageField } from "@/components/admin/AdminManagedImageField";
-import {
-  aboutHeroImageClassName,
-  aboutHeroImageSlot,
-  aboutWhoWeAreImageSlot,
-  aboutValuesSectionImageSlot,
-} from "@/lib/about-image-slots";
 import { AdminPageHeader } from "@/components/admin/AdminUi";
 
 export default async function AdminAboutPage() {
@@ -60,7 +59,6 @@ export default async function AdminAboutPage() {
           <AdminManagedImageField
             name="heroImage"
             defaultValue={content.heroImage}
-            fallbackSrc={siteImages.aboutHero}
             slot={aboutHeroImageSlot}
             previewVariant="hero"
             imageClassName={aboutHeroImageClassName}
@@ -72,7 +70,6 @@ export default async function AdminAboutPage() {
           <AdminManagedImageField
             name="whoWeAreImage"
             defaultValue={content.whoWeAreImage}
-            fallbackSrc={siteImages.office}
             slot={aboutWhoWeAreImageSlot}
             previewVariant="card"
           />
@@ -113,7 +110,6 @@ export default async function AdminAboutPage() {
           <AdminManagedImageField
             name="valuesSectionImage"
             defaultValue={content.valuesSectionImage}
-            fallbackSrc={siteImages.conference}
             slot={aboutValuesSectionImageSlot}
             previewVariant="card"
           />
