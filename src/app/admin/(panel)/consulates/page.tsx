@@ -1,6 +1,5 @@
 import {
   buildConsulatePath,
-  buildConsulatesListPath,
 } from "@/lib/paths";
 import { formatPublicSitePath } from "@/lib/site-url";
 import { listConsulatesForAdmin } from "@/lib/repositories/consulate.repository";

@@ -3,7 +3,9 @@ import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { ContactCTA } from "@/components/domain/ContactCTA";
 import { GuideDetailContent } from "@/components/domain/GuideDetailContent";
 import { GuidePageHero } from "@/components/domain/GuidePageHero";
+import { ServiceTableOfContents } from "@/components/domain/ServiceTableOfContents";
 import { findArticleBySlug } from "@/lib/repositories/article.repository";
+import { getGuideSectionNavItems } from "@/lib/guide";
 import { getSiteSettings } from "@/lib/settings";
 import { buildEntityMetadata } from "@/lib/services/seo.service";
 import { SeoEntityType } from "@/generated/prisma/client";
@@ -32,6 +34,8 @@ export default async function ArticlePage({ params }: Props) {
   const settings = await getSiteSettings();
   const heroTitle = article.heroTitle?.trim() || article.title;
   const heroSubtitle = article.heroSubtitle?.trim() || article.excerpt;
+  const sectionNav = getGuideSectionNavItems(article.sectionsJson);
+  const showSidebar = sectionNav.length > 0;
 
   return (
     <>
@@ -51,41 +55,53 @@ export default async function ArticlePage({ params }: Props) {
           ]}
         />
 
-        {article.publishedAt && (
-          <time className="mt-6 block text-sm text-slate-500">
-            {new Date(article.publishedAt).toLocaleDateString("tr-TR", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}
-          </time>
-        )}
+        <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_280px] lg:items-start">
+          <div className="min-w-0">
+            {article.publishedAt && (
+              <time className="block text-sm text-slate-500">
+                {new Date(article.publishedAt).toLocaleDateString("tr-TR", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
+              </time>
+            )}
 
-        <div className="mt-8">
-          <GuideDetailContent
-            sectionsJson={article.sectionsJson}
-            featureImage={article.featureImage}
-            featureImageTitle={article.featureImageTitle}
-            featureImageText={article.featureImageText}
-          />
-        </div>
+            <div className={article.publishedAt ? "mt-6" : ""}>
+              <GuideDetailContent
+                sectionsJson={article.sectionsJson}
+                featureImage={article.featureImage}
+                featureImageTitle={article.featureImageTitle}
+                featureImageText={article.featureImageText}
+              />
+            </div>
 
-        <div className="mt-12">
-          <ContactCTA
-            settings={settings}
-            context={
-              article.country?.name
-                ? `${article.country.name} rehber danışmanlığı`
-                : "Rehber danışmanlığı"
-            }
-            title={
-              article.country?.name
-                ? `${article.country.name} için uzman danışmanlık`
-                : "Sürecinizi birlikte planlayalım"
-            }
-            subtitle="Online başvuru veya belge yükleme yok. WhatsApp veya telefon ile doğrudan uzman ekibimize ulaşın."
-            variant="country"
-          />
+            <div className="mt-12">
+              <ContactCTA
+                settings={settings}
+                context={
+                  article.country?.name
+                    ? `${article.country.name} rehber danışmanlığı`
+                    : "Rehber danışmanlığı"
+                }
+                title={
+                  article.country?.name
+                    ? `${article.country.name} için uzman danışmanlık`
+                    : "Sürecinizi birlikte planlayalım"
+                }
+                subtitle="Online başvuru veya belge yükleme yok. WhatsApp veya telefon ile doğrudan uzman ekibimize ulaşın."
+                variant="country"
+              />
+            </div>
+          </div>
+
+          {showSidebar && (
+            <aside
+              className="flex flex-col gap-6 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100dvh-var(--site-header-height)-2rem)]"
+            >
+              <ServiceTableOfContents items={sectionNav} />
+            </aside>
+          )}
         </div>
       </div>
     </>

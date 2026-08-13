@@ -1,7 +1,7 @@
 import { SiteImage } from "@/components/ui/SiteImage";
 import { RichContent } from "@/components/RichTextContent";
 import {
-  parseGuideSectionsJson,
+  resolveGuideDisplaySections,
   resolveGuideFeatureImage,
 } from "@/lib/guide";
 
@@ -18,7 +18,7 @@ export function GuideDetailContent({
   featureImageTitle,
   featureImageText,
 }: Props) {
-  const sections = parseGuideSectionsJson(sectionsJson);
+  const sections = resolveGuideDisplaySections(sectionsJson);
   const featureSrc = resolveGuideFeatureImage(featureImage);
   const hasFeatureBlock =
     featureSrc &&
@@ -26,10 +26,11 @@ export function GuideDetailContent({
 
   return (
     <div className="space-y-8 md:space-y-10">
-      {sections.map((section, index) => (
+      {sections.map((section) => (
         <section
-          key={`${section.title}-${index}`}
-          className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm md:p-8"
+          key={section.slug}
+          id={section.slug}
+          className="scroll-mt-24 rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm md:p-8"
         >
           <h2 className="text-xl font-semibold tracking-tight text-slate-900 md:text-2xl">
             {section.title}

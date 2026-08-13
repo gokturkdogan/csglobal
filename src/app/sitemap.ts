@@ -8,7 +8,6 @@ import { findAllActiveConsulates } from "@/lib/repositories/consulate.repository
 import { buildCategoryPath, buildServicePath } from "@/lib/services/path-resolver.service";
 import {
   buildConsulatePath,
-  buildConsulatesListPath,
 } from "@/lib/paths";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -59,12 +58,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }));
 
-    const consulateListRoutes = countries.map((c) => ({
-      url: `${base}${buildConsulatesListPath(c.slug)}`,
-      changeFrequency: "weekly" as const,
-      priority: 0.72,
-    }));
-
     const consulateRoutes = consulates.map((c) => ({
       url: `${base}${buildConsulatePath(c.country.slug, c.slug)}`,
       changeFrequency: "monthly" as const,
@@ -77,7 +70,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ...serviceRoutes,
       ...categoryRoutes,
       ...articleRoutes,
-      ...consulateListRoutes,
       ...consulateRoutes,
     ];
   } catch {

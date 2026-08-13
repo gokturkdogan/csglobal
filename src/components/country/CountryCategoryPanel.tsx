@@ -1,24 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import Link from "next/link";
-import { buildServicePath } from "@/lib/paths";
-import type { CountryCategoryPanelItem } from "@/lib/country-page/category-panel";
+import {
+  buildConsulatePath,
+  buildServicePath,
+} from "@/lib/paths";
+import {
+  COUNTRY_PANEL_CONSULATES_SLUG,
+  type CountryCategoryPanelItem,
+  type CountryConsulatePanelItem,
+} from "@/lib/country-page/category-panel";
 
 type Props = {
   countrySlug: string;
   categories: CountryCategoryPanelItem[];
+  consulates?: CountryConsulatePanelItem[];
 };
 
 export function CountryCategoryPanel({
   countrySlug,
   categories = [],
+  consulates = [],
 }: Props) {
   const [openSlug, setOpenSlug] = useState<string | null>(null);
 
   const toggle = (slug: string) => {
     setOpenSlug((current) => (current === slug ? null : slug));
   };
+
+  const hasConsulates = consulates.length > 0;
 
   return (
     <nav
@@ -42,96 +53,148 @@ export function CountryCategoryPanel({
           const count = services.length;
 
           return (
-            <div
+            <PanelRow
               key={category.slug}
-              className={`border-b border-slate-100 last:border-b-0 ${
-                isOpen ? "bg-slate-50/80" : ""
-              }`}
+              isOpen={isOpen}
+              onToggle={() => toggle(category.slug)}
+              title={category.name}
+              meta={`${count} hizmet`}
+              count={count}
             >
-              <button
-                type="button"
-                onClick={() => toggle(category.slug)}
-                className={`flex w-full cursor-pointer items-center gap-3 px-4 py-3.5 text-left transition ${
-                  isOpen ? "bg-csg-blue/[0.04]" : "hover:bg-slate-50"
-                }`}
-                aria-expanded={isOpen}
-              >
-                <span
-                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition ${
-                    isOpen
-                      ? "bg-csg-blue text-white shadow-sm shadow-csg-blue/30"
-                      : "bg-slate-100 text-slate-500"
-                  }`}
-                >
-                  <ChevronIcon open={isOpen} />
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span
-                    className={`block font-medium ${
-                      isOpen ? "text-csg-blue" : "text-slate-900"
-                    }`}
-                  >
-                    {category.name}
-                  </span>
-                  <span className="mt-0.5 block text-xs text-slate-500">
-                    {count} hizmet
-                  </span>
-                </span>
-                <span
-                  className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                    isOpen
-                      ? "bg-csg-blue text-white"
-                      : count > 0
-                        ? "bg-slate-100 text-slate-600"
-                        : "bg-slate-50 text-slate-400"
-                  }`}
-                >
-                  {count}
-                </span>
-              </button>
-
-              {isOpen && (
-                <div className="border-t border-slate-100/80 bg-white px-3 pb-3 pt-1">
-                  {services.length === 0 ? (
-                    <p className="px-2 py-3 text-sm text-slate-500">
-                      Bu kategoride henüz hizmet eklenmemiş.
-                    </p>
-                  ) : (
-                    <ul className="space-y-1">
-                      {services.map((service) => (
-                        <li key={service.slug}>
-                          <Link
-                            href={buildServicePath(countrySlug, service.slug)}
-                            className="group block cursor-pointer rounded-lg border border-transparent px-3 py-3 transition hover:border-csg-blue/15 hover:bg-csg-blue/[0.04]"
-                          >
-                            <span className="flex items-start justify-between gap-2">
-                              <span className="font-medium text-slate-900 group-hover:text-csg-blue">
-                                {service.name}
-                              </span>
-                              <ArrowIcon />
-                            </span>
-                            {service.shortDescription && (
-                              <span className="mt-1 block text-xs leading-relaxed text-slate-600 line-clamp-2">
-                                {service.shortDescription}
-                              </span>
-                            )}
-                            {service.processingTime && (
-                              <span className="mt-2 inline-flex rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600">
-                                {service.processingTime}
-                              </span>
-                            )}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
+              {services.length === 0 ? (
+                <p className="px-2 py-3 text-sm text-slate-500">
+                  Bu kategoride henüz hizmet eklenmemiş.
+                </p>
+              ) : (
+                <ul className="space-y-1">
+                  {services.map((service) => (
+                    <li key={service.slug}>
+                      <Link
+                        href={buildServicePath(countrySlug, service.slug)}
+                        className="group block cursor-pointer rounded-lg border border-transparent px-3 py-3 transition hover:border-csg-blue/15 hover:bg-csg-blue/[0.04]"
+                      >
+                        <span className="flex items-start justify-between gap-2">
+                          <span className="font-medium text-slate-900 group-hover:text-csg-blue">
+                            {service.name}
+                          </span>
+                          <ArrowIcon />
+                        </span>
+                        {service.shortDescription && (
+                          <span className="mt-1 block text-xs leading-relaxed text-slate-600 line-clamp-2">
+                            {service.shortDescription}
+                          </span>
+                        )}
+                        {service.processingTime && (
+                          <span className="mt-2 inline-flex rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600">
+                            {service.processingTime}
+                          </span>
+                        )}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               )}
-            </div>
+            </PanelRow>
           );
         })}
+
+        {hasConsulates && (
+          <PanelRow
+            isOpen={openSlug === COUNTRY_PANEL_CONSULATES_SLUG}
+            onToggle={() => toggle(COUNTRY_PANEL_CONSULATES_SLUG)}
+            title="Konsolosluklar"
+            meta={`${consulates.length} konsolosluk`}
+            count={consulates.length}
+          >
+            <ul className="space-y-1">
+              {consulates.map((consulate) => (
+                <li key={consulate.slug}>
+                  <Link
+                    href={buildConsulatePath(countrySlug, consulate.slug)}
+                    className="group flex cursor-pointer items-center justify-between gap-2 rounded-lg border border-transparent px-3 py-3 transition hover:border-csg-blue/15 hover:bg-csg-blue/[0.04]"
+                  >
+                    <span className="font-medium text-slate-900 group-hover:text-csg-blue">
+                      {consulate.name}
+                    </span>
+                    <ArrowIcon />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </PanelRow>
+        )}
       </div>
     </nav>
+  );
+}
+
+function PanelRow({
+  isOpen,
+  onToggle,
+  title,
+  meta,
+  count,
+  children,
+}: {
+  isOpen: boolean;
+  onToggle: () => void;
+  title: string;
+  meta: string;
+  count: number;
+  children: ReactNode;
+}) {
+  return (
+    <div
+      className={`border-b border-slate-100 last:border-b-0 ${
+        isOpen ? "bg-slate-50/80" : ""
+      }`}
+    >
+      <button
+        type="button"
+        onClick={onToggle}
+        className={`flex w-full cursor-pointer items-center gap-3 px-4 py-3.5 text-left transition ${
+          isOpen ? "bg-csg-blue/[0.04]" : "hover:bg-slate-50"
+        }`}
+        aria-expanded={isOpen}
+      >
+        <span
+          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition ${
+            isOpen
+              ? "bg-csg-blue text-white shadow-sm shadow-csg-blue/30"
+              : "bg-slate-100 text-slate-500"
+          }`}
+        >
+          <ChevronIcon open={isOpen} />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span
+            className={`block font-medium ${
+              isOpen ? "text-csg-blue" : "text-slate-900"
+            }`}
+          >
+            {title}
+          </span>
+          <span className="mt-0.5 block text-xs text-slate-500">{meta}</span>
+        </span>
+        <span
+          className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+            isOpen
+              ? "bg-csg-blue text-white"
+              : count > 0
+                ? "bg-slate-100 text-slate-600"
+                : "bg-slate-50 text-slate-400"
+          }`}
+        >
+          {count}
+        </span>
+      </button>
+
+      {isOpen && (
+        <div className="border-t border-slate-100/80 bg-white px-3 pb-3 pt-1">
+          {children}
+        </div>
+      )}
+    </div>
   );
 }
 

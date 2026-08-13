@@ -12,6 +12,37 @@ export type GuideSection = {
   content: string;
 };
 
+export type GuideDisplaySection = GuideSection & {
+  slug: string;
+};
+
+export type GuideSectionNavItem = {
+  slug: string;
+  title: string;
+};
+
+export function guideSectionDomId(index: number): string {
+  return `guide-section-${index}`;
+}
+
+export function resolveGuideDisplaySections(
+  json: string | null | undefined,
+): GuideDisplaySection[] {
+  return parseGuideSectionsJson(json).map((section, index) => ({
+    ...section,
+    slug: guideSectionDomId(index),
+  }));
+}
+
+export function getGuideSectionNavItems(
+  json: string | null | undefined,
+): GuideSectionNavItem[] {
+  return resolveGuideDisplaySections(json).map((section) => ({
+    slug: section.slug,
+    title: section.title,
+  }));
+}
+
 export function parseGuideSectionsJson(json: string | null | undefined): GuideSection[] {
   if (!json?.trim()) return [];
   try {

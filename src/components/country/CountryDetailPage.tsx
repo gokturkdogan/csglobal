@@ -5,7 +5,7 @@ import {
   parseCountryDetailSectionsJson,
   parseCountryNotesJson,
 } from "@/lib/country-detail";
-import type { CountryCategoryPanelItem } from "@/lib/country-page/category-panel";
+import type { CountryCategoryPanelItem, CountryConsulatePanelItem } from "@/lib/country-page/category-panel";
 import { ContactCTA } from "@/components/domain/ContactCTA";
 import { FaqAccordion } from "@/components/domain/FaqAccordion";
 import { CountryPageHero } from "@/components/domain/CountryPageHero";
@@ -34,6 +34,7 @@ type Props = {
   serviceCount: number;
   categoryCount: number;
   categories: CountryCategoryPanelItem[];
+  consulates?: CountryConsulatePanelItem[];
 };
 
 function SectionHeading({
@@ -63,6 +64,7 @@ export function CountryDetailPage({
   serviceCount,
   categoryCount,
   categories = [],
+  consulates = [],
 }: Props) {
   const paragraphs = buildCountryDetailParagraphs(country);
   const stats = buildCountryQuickStats({
@@ -97,6 +99,7 @@ export function CountryDetailPage({
               <CountryCategoryPanel
                 countrySlug={country.slug}
                 categories={categories}
+                consulates={consulates}
               />
             </aside>
 

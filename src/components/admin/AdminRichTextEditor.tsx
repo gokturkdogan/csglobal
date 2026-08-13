@@ -1,5 +1,6 @@
 "use client";
 
+import { mergeAttributes } from "@tiptap/core";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import {
@@ -10,7 +11,7 @@ import {
 } from "@tiptap/extension-table";
 import { EditorContent, useEditor, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { AdminRichTextTableModal } from "@/components/admin/AdminRichTextTableModal";
 import { contentForRichTextEditor, linkUrlForEditor, normalizeLinkUrl } from "@/lib/rich-text";
 import {
@@ -23,6 +24,26 @@ import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
 
 const inputClass =
   "mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-csg-blue focus:outline-none focus:ring-2 focus:ring-csg-blue/20";
+
+/** Admin editörde link tıklaması modal açar; tarayıcı gezinmesi ve yeni sekme açılmasın. */
+const AdminEditorLink = Link.extend({
+  parseHTML() {
+    return [
+      {
+        tag: "a[href]:not([href *= 'javascript:'])",
+        getAttrs: (dom) => {
+          const href = (dom as HTMLAnchorElement).getAttribute("href");
+          if (!href) return false;
+          return { href };
+        },
+      },
+    ];
+  },
+  renderHTML({ HTMLAttributes }) {
+    const { target, rel, onclick, ...rest } = HTMLAttributes;
+    return ["a", mergeAttributes(this.options.HTMLAttributes, rest), 0];
+  },
+});
 
 type ToolbarButtonProps = {
   onClick: () => void;
@@ -257,6 +278,8 @@ export function AdminRichTextEditor({
     createEmptyMatrix(2, 2),
   );
   const [tableTarget, setTableTarget] = useState<TableTarget | null>(null);
+  const editorInstanceRef = useRef<Editor | null>(null);
+  const openLinkModalRef = useRef<(editor: Editor) => void>(() => {});
 
   const closeTableModal = useCallback(() => {
     setTableModalOpen(false);
@@ -315,6 +338,8 @@ export function AdminRichTextEditor({
     [fillLinkFromEditor],
   );
 
+  openLinkModalRef.current = openLinkModal;
+
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -325,7 +350,7 @@ export function AdminRichTextEditor({
         code: false,
         horizontalRule: false,
       }),
-      Link.configure({
+      AdminEditorLink.configure({
         openOnClick: false,
         autolink: false,
         linkOnPaste: false,
@@ -345,10 +370,49 @@ export function AdminRichTextEditor({
       Placeholder.configure({ placeholder }),
     ],
     content: contentForRichTextEditor(value),
+    onCreate: ({ editor: createdEditor }) => {
+      editorInstanceRef.current = createdEditor;
+    },
+    onDestroy: () => {
+      editorInstanceRef.current = null;
+    },
     editorProps: {
       attributes: {
         class:
           "admin-rich-text-editor min-h-[140px] px-3 py-2.5 text-sm text-slate-900 focus:outline-none",
+      },
+      handleDOMEvents: {
+        mousedown(view, event) {
+          const anchor = (event.target as HTMLElement).closest("a");
+          if (anchor && view.dom.contains(anchor)) {
+            event.preventDefault();
+            return true;
+          }
+          return false;
+        },
+        auxclick(view, event) {
+          const anchor = (event.target as HTMLElement).closest("a");
+          if (anchor && view.dom.contains(anchor)) {
+            event.preventDefault();
+            return true;
+          }
+          return false;
+        },
+        click(view, event) {
+          const anchor = (event.target as HTMLElement).closest("a");
+          if (!anchor || !view.dom.contains(anchor)) return false;
+
+          event.preventDefault();
+
+          const ed = editorInstanceRef.current;
+          if (ed) {
+            const pos = ed.view.posAtDOM(anchor, 0);
+            ed.chain().focus().setTextSelection(pos).extendMarkRange("link").run();
+            openLinkModalRef.current(ed);
+          }
+
+          return true;
+        },
       },
     },
     onUpdate: ({ editor: currentEditor }) => {
@@ -371,17 +435,6 @@ export function AdminRichTextEditor({
     const handleClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
 
-      const anchor = target.closest("a");
-      if (anchor && editor.view.dom.contains(anchor)) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        const pos = editor.view.posAtDOM(anchor, 0);
-        editor.chain().focus().setTextSelection(pos).extendMarkRange("link").run();
-        openLinkModal(editor);
-        return;
-      }
-
       const table = target.closest("table");
       if (!table || !editor.view.dom.contains(table)) return;
 
@@ -398,7 +451,7 @@ export function AdminRichTextEditor({
     const dom = editor.view.dom;
     dom.addEventListener("click", handleClick, true);
     return () => dom.removeEventListener("click", handleClick, true);
-  }, [editor, openLinkModal, openEditTableModal]);
+  }, [editor, openEditTableModal]);
 
   const applyLink = () => {
     if (!editor) return;

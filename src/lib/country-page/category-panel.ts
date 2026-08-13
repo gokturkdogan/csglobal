@@ -5,11 +5,24 @@ export type CountryCategoryServiceItem = {
   processingTime?: string | null;
 };
 
+export type CountryPanelConsulateItem = {
+  slug: string;
+  name: string;
+};
+
 export type CountryCategoryPanelItem = {
   slug: string;
   name: string;
   services: CountryCategoryServiceItem[];
 };
+
+export type CountryConsulatePanelItem = {
+  slug: string;
+  name: string;
+};
+
+/** Panel içinde konsolosluk satırı için sabit slug (gerçek kategori slug çakışmasını önler). */
+export const COUNTRY_PANEL_CONSULATES_SLUG = "__consulates__";
 
 export function mapCategoriesForCountryPanel(
   categories: Array<{

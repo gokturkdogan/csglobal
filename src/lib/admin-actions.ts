@@ -36,7 +36,6 @@ import {
 } from "@/lib/service-page";
 import {
   buildConsulatePath,
-  buildConsulatesListPath,
 } from "@/lib/paths";
 import { AdminRole } from "@/generated/prisma/client";
 
@@ -605,7 +604,7 @@ export async function saveConsulateAction(formData: FormData): Promise<AdminActi
         include: { country: { select: { slug: true } } },
       });
       revalidatePath("/admin/consulates");
-      revalidatePath(buildConsulatesListPath(consulate.country.slug));
+      revalidatePath(`/${consulate.country.slug}`);
       revalidatePath(buildConsulatePath(consulate.country.slug, consulate.slug));
       return adminSuccess(
         "Konsolosluk başarıyla güncellendi.",
@@ -618,7 +617,7 @@ export async function saveConsulateAction(formData: FormData): Promise<AdminActi
       include: { country: { select: { slug: true } } },
     });
     revalidatePath("/admin/consulates");
-    revalidatePath(buildConsulatesListPath(consulate.country.slug));
+    revalidatePath(`/${consulate.country.slug}`);
     revalidatePath(buildConsulatePath(consulate.country.slug, consulate.slug));
     return adminSuccess(
       "Konsolosluk başarıyla oluşturuldu.",

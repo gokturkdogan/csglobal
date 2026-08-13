@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { CountryDetailPage } from "@/components/country/CountryDetailPage";
 import { findCountryPageBySlug } from "@/lib/repositories/country.repository";
+import { findActiveConsulatesByCountrySlug } from "@/lib/repositories/consulate.repository";
 import { findCategoriesWithCountryServices } from "@/lib/repositories/category.repository";
 import { mapCategoriesForCountryPanel } from "@/lib/country-page/category-panel";
 import { buildEntityMetadata, buildFaqJsonLd } from "@/lib/services/seo.service";
@@ -32,6 +33,11 @@ export default async function CountryPage({ params }: Props) {
   const categories = (await findCategoriesWithCountryServices(country.id)) ?? [];
   const panelCategories = mapCategoriesForCountryPanel(categories);
   const serviceCount = panelCategories.reduce((n, cat) => n + cat.services.length, 0);
+  const consulateRows = await findActiveConsulatesByCountrySlug(countrySlug);
+  const consulates = consulateRows.map((c) => ({
+    name: c.name,
+    slug: c.slug,
+  }));
   const faqs = country.faqs.map((f) => ({
     question: f.question,
     answer: f.answer,
@@ -66,6 +72,7 @@ export default async function CountryPage({ params }: Props) {
         serviceCount={serviceCount}
         categoryCount={categories.length}
         categories={panelCategories}
+        consulates={consulates}
       />
     </>
   );
