@@ -200,7 +200,7 @@ export async function uploadCloudinaryHomeImageAction(formData: FormData) {
 
   const { uploadHomeImageToCloudinary } = await import("@/lib/cloudinary");
   const { parseAboutImagePublicId } = await import("@/lib/cloudinary/about-folder");
-  const { parseGuideImagePublicId } = await import("@/lib/cloudinary/guides-folder");
+  const { parseGuidesImagePublicId } = await import("@/lib/cloudinary/guides-folder");
   const { parseServiceImagePublicId } = await import("@/lib/cloudinary/services-folder");
   const { parseHomeImagePublicId } = await import("@/lib/cloudinary/home-folder");
   const { parseHerosImagePublicId } = await import("@/lib/cloudinary/heros-folder");
@@ -210,7 +210,7 @@ export async function uploadCloudinaryHomeImageAction(formData: FormData) {
   } else if (publicId.startsWith("About/")) {
     parseAboutImagePublicId(publicId);
   } else if (publicId.startsWith("Guides/")) {
-    parseGuideImagePublicId(publicId);
+    parseGuidesImagePublicId(publicId);
   } else if (publicId.startsWith("Services/")) {
     parseServiceImagePublicId(publicId);
   } else {
@@ -689,6 +689,58 @@ export async function saveContactPageAction(formData: FormData): Promise<AdminAc
   } catch (error) {
     return adminFailure(
       adminErrorMessage(error, "İletişim sayfası kaydedilemedi. Lütfen tekrar deneyin."),
+    );
+  }
+}
+
+export async function saveGuidesListPageAction(formData: FormData): Promise<AdminActionResult> {
+  await requireAdmin();
+  const id = formData.get("id") as string;
+
+  const editable = {
+    heroBadge: (formData.get("heroBadge") as string) || "",
+    heroTitle: (formData.get("heroTitle") as string) || "",
+    heroSubtitle: (formData.get("heroSubtitle") as string) || "",
+    heroImage: (formData.get("heroImage") as string) || "",
+    listIntro: (formData.get("listIntro") as string) || "",
+    ctaTitle: (formData.get("ctaTitle") as string) || "",
+    ctaSubtitle: (formData.get("ctaSubtitle") as string) || "",
+    ctaPrimaryLabel: (formData.get("ctaPrimaryLabel") as string) || "",
+    ctaSecondaryLabel: (formData.get("ctaSecondaryLabel") as string) || "",
+    ctaSecondaryHref: (formData.get("ctaSecondaryHref") as string) || "",
+  };
+
+  const { serializeGuidesListPageEditable } = await import("@/lib/guides-list-page");
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.sitePage.update({
+        where: { id },
+        data: {
+          title: editable.heroTitle,
+          isActive: formData.get("isActive") === "on",
+        },
+      });
+
+      await tx.siteSetting.upsert({
+        where: { key: "guidesListPageJson" },
+        create: {
+          key: "guidesListPageJson",
+          value: serializeGuidesListPageEditable(editable),
+        },
+        update: { value: serializeGuidesListPageEditable(editable) },
+      });
+    });
+
+    revalidatePath("/", "layout");
+    revalidatePath("/rehber");
+    return adminSuccess("Rehberlerimiz sayfası güncellendi.", "/admin/rehberlerimiz");
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(
+        error,
+        "Rehberlerimiz sayfası kaydedilemedi. Lütfen tekrar deneyin.",
+      ),
     );
   }
 }

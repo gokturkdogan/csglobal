@@ -67,4 +67,8 @@ export const siteImages = {
     `https://res.cloudinary.com/${CLOUD}/image/upload/About/values-section`,
     1200,
   ),
+  /** Rehber liste sayfası hero: Guides/list-hero */
+  guidesListHero: optimizeCloudinaryDeliveryUrl(
+    `https://res.cloudinary.com/${CLOUD}/image/upload/Guides/list-hero`,
+  ),
 } as const;

@@ -9,6 +9,7 @@ export type SiteSettingsMap = {
   contactHeroImage: string;
   contactMapEmbedUrl: string;
   aboutPageJson: string;
+  guidesListPageJson: string;
   facebookUrl: string;
   instagramUrl: string;
   twitterUrl: string;
@@ -61,6 +62,7 @@ export const defaultSiteSettings: SiteSettingsMap = {
   contactHeroImage: "",
   contactMapEmbedUrl: "",
   aboutPageJson: "",
+  guidesListPageJson: "",
   facebookUrl: "",
   instagramUrl: "",
   twitterUrl: "",

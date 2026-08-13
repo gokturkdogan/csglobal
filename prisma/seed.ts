@@ -106,6 +106,17 @@ async function main() {
     update: {},
   });
 
+  await prisma.sitePage.upsert({
+    where: { slug: "rehber" },
+    create: {
+      slug: "rehber",
+      title: "Rehberlerimiz",
+      content: "Ülkeye özel vize ve göçmenlik rehberleri.",
+      isActive: true,
+    },
+    update: {},
+  });
+
   const guideCat = await prisma.articleCategory.upsert({
     where: { slug: "ulke-rehberleri" },
     create: { slug: "ulke-rehberleri", name: "Ülke Rehberleri" },
