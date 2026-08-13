@@ -13,6 +13,9 @@
   --site-container-max: 80rem;
   --site-gutter: 0.75rem;
   --site-gutter-md: 1.25rem;
+  --site-font-size: 0.9375rem;
+  --content-font-size: 0.875rem;
+  --content-line-height: 1.65;
 }
 
 @theme inline {
@@ -30,6 +33,13 @@ body {
   background: #fafafa;
   color: var(--foreground);
   font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: var(--site-font-size);
+  line-height: 1.6;
+}
+
+.text-content {
+  font-size: var(--content-font-size);
+  line-height: var(--content-line-height);
 }
 
 .site-container {
@@ -329,13 +339,14 @@ body {
 }
 
 .prose-csg {
-  line-height: 1.75;
+  font-size: var(--content-font-size);
+  line-height: var(--content-line-height);
   color: #475569;
 }
 
 .prose-csg h2 {
   color: #0f172a;
-  font-size: 1.35rem;
+  font-size: 1.2rem;
   font-weight: 600;
   margin-top: 2rem;
   margin-bottom: 0.75rem;
@@ -343,7 +354,7 @@ body {
 
 .prose-csg h3 {
   color: #1e293b;
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 600;
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
@@ -370,7 +381,7 @@ body {
 
 .country-detail-prose.prose-csg,
 .country-detail-prose .prose-csg {
-  font-size: 0.9375rem;
+  font-size: var(--content-font-size);
 }
 
 .country-detail-prose .prose-csg p:last-child,
@@ -387,7 +398,7 @@ body {
   width: 100%;
   margin: 1rem 0;
   border-collapse: collapse;
-  font-size: 0.9375rem;
+  font-size: var(--content-font-size);
 }
 
 .prose-csg th,

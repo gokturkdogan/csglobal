@@ -10,11 +10,7 @@ import { ServiceTableOfContents } from "@/components/domain/ServiceTableOfConten
 import { ServicePageHero } from "@/components/domain/ServicePageHero";
 import { CountryCategoryPanel } from "@/components/country/CountryCategoryPanel";
 import { getServiceSectionNavItems } from "@/lib/service-page";
-import {
-  filterPopulatedCountryCategories,
-  mapCategoriesForCountryPanel,
-} from "@/lib/country-page/category-panel";
-import { findCategoriesWithCountryServices } from "@/lib/repositories/category.repository";
+import { loadCountryCategoryPanelData } from "@/lib/country-page/load-category-panel";
 import { getSiteSettings } from "@/lib/settings";
 import {
   resolveCountryPath,
@@ -22,7 +18,7 @@ import {
   buildCategoryPath,
   buildServicePath,
 } from "@/lib/services/path-resolver.service";
-import { findPublishedArticlesByServiceId } from "@/lib/repositories/article.repository";
+import { findPublishedArticlesByCountryId } from "@/lib/repositories/article.repository";
 import { findServiceByCountrySlug } from "@/lib/repositories/service.repository";
 import { RelatedGuidesSection } from "@/components/domain/RelatedGuidesSection";
 import { findCountryBySlug } from "@/lib/repositories/country.repository";
@@ -79,7 +75,11 @@ export default async function CountryPathPage({ params }: Props) {
     const service = await findServiceByCountrySlug(country.id, resolved.serviceSlug);
     if (!service) notFound();
 
-    const relatedGuides = await findPublishedArticlesByServiceId(service.id);
+    const countryGuides = await findPublishedArticlesByCountryId(country.id);
+    const { panelCategories, consulates, documents } = await loadCountryCategoryPanelData(
+      country.id,
+      countrySlug,
+    );
 
     const minFee = service.fees.length
       ? service.fees.reduce((min, f) =>
@@ -115,12 +115,14 @@ export default async function CountryPathPage({ params }: Props) {
       service.sections,
     );
 
-    const countryCategories = await findCategoriesWithCountryServices(country.id);
-    const panelCategories = filterPopulatedCountryCategories(
-      mapCategoriesForCountryPanel(countryCategories),
-    );
+    const showTocSidebar = sectionNav.length > 0;
 
-    const showSidebar = sectionNav.length > 0 || panelCategories.length > 0;
+    const contentGridClass = showTocSidebar
+      ? "mt-8 grid gap-6 lg:grid-cols-[minmax(240px,280px)_minmax(0,1fr)_minmax(0,240px)] lg:items-start"
+      : "mt-8 grid gap-6 lg:grid-cols-[minmax(240px,280px)_minmax(0,1fr)] lg:items-start";
+
+    const tocStickyClass =
+      "lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100dvh-var(--site-header-height)-2rem)] lg:overflow-y-auto";
 
     return (
       <>
@@ -148,8 +150,17 @@ export default async function CountryPathPage({ params }: Props) {
 
           <Breadcrumb items={breadcrumbItems} />
 
-          <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_280px] lg:items-start">
-            <div>
+          <div className={contentGridClass}>
+            <aside className="order-2 country-panel-sticky min-w-0 lg:order-1 lg:z-30 lg:self-start">
+              <CountryCategoryPanel
+                countrySlug={countrySlug}
+                categories={panelCategories}
+                consulates={consulates}
+                documents={documents}
+              />
+            </aside>
+
+            <div className="order-1 min-w-0 lg:order-2">
               <ServiceDetailContent
                 sectionsJson={service.sectionsJson}
                 legacySections={service.sections}
@@ -194,7 +205,7 @@ export default async function CountryPathPage({ params }: Props) {
                 </section>
               )}
 
-              <RelatedGuidesSection guides={relatedGuides} />
+              <RelatedGuidesSection guides={countryGuides} countryName={country.name} />
 
               <div className="mt-12">
                 <ContactCTA
@@ -207,21 +218,9 @@ export default async function CountryPathPage({ params }: Props) {
               </div>
             </div>
 
-            {showSidebar && (
-              <aside
-                className="flex flex-col gap-6 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100dvh-var(--site-header-height)-2rem)]"
-              >
-                {sectionNav.length > 0 && (
-                  <ServiceTableOfContents items={sectionNav} />
-                )}
-                {panelCategories.length > 0 && (
-                  <div className="service-sidebar-panel min-h-0 flex-1">
-                    <CountryCategoryPanel
-                      countrySlug={countrySlug}
-                      categories={panelCategories}
-                    />
-                  </div>
-                )}
+            {showTocSidebar && (
+              <aside className={`order-3 min-w-0 lg:order-3 ${tocStickyClass}`}>
+                <ServiceTableOfContents items={sectionNav} />
               </aside>
             )}
           </div>

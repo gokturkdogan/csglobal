@@ -62,7 +62,7 @@ export function AboutPageContent({ content, settings }: Props) {
               <p className="mt-4 text-lg font-medium leading-relaxed text-slate-800">
                 {content.whoWeAreLead}
               </p>
-              <div className="mt-5 space-y-4 text-base leading-relaxed text-slate-600">
+              <div className="mt-5 space-y-4 text-content text-slate-600">
                 {content.whoWeAreParagraphs.map((paragraph) => (
                   <p key={paragraph.slice(0, 48)}>{paragraph}</p>
                 ))}
@@ -85,7 +85,7 @@ export function AboutPageContent({ content, settings }: Props) {
               <h2 className="mt-5 text-xl font-semibold text-slate-900 md:text-2xl">
                 {content.visionTitle}
               </h2>
-              <p className="mt-3 text-base leading-relaxed text-slate-600">{content.visionText}</p>
+              <p className="mt-3 text-content text-slate-600">{content.visionText}</p>
             </article>
             <article className="about-vision-card rounded-2xl border border-white/70 bg-white/90 p-6 shadow-sm backdrop-blur-sm md:p-8">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-csg-blue/10 text-csg-blue">
@@ -96,7 +96,7 @@ export function AboutPageContent({ content, settings }: Props) {
               <h2 className="mt-5 text-xl font-semibold text-slate-900 md:text-2xl">
                 {content.missionTitle}
               </h2>
-              <p className="mt-3 text-base leading-relaxed text-slate-600">{content.missionText}</p>
+              <p className="mt-3 text-content text-slate-600">{content.missionText}</p>
             </article>
           </div>
         </div>
@@ -106,7 +106,7 @@ export function AboutPageContent({ content, settings }: Props) {
         <div className="site-container py-14 md:py-20">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-2xl font-semibold text-white md:text-3xl">{whyUs.title}</h2>
-            <p className="mt-3 text-base leading-relaxed text-white/85">{whyUs.subtitle}</p>
+            <p className="mt-3 text-content text-white/85">{whyUs.subtitle}</p>
           </div>
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {whyUs.items.map((item, index) => (
@@ -132,7 +132,7 @@ export function AboutPageContent({ content, settings }: Props) {
               <h2 className="text-2xl font-semibold tracking-tight text-slate-900 md:text-3xl">
                 {content.valuesTitle}
               </h2>
-              <p className="mt-3 text-base text-slate-600">{content.valuesSubtitle}</p>
+              <p className="mt-3 text-content text-slate-600">{content.valuesSubtitle}</p>
               <dl className="mt-8 grid gap-4 sm:grid-cols-2">
                 {content.valuesItems.map((item) => (
                   <div

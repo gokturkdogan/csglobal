@@ -4,7 +4,9 @@ import { ContactCTA } from "@/components/domain/ContactCTA";
 import { GuideDetailContent } from "@/components/domain/GuideDetailContent";
 import { GuidePageHero } from "@/components/domain/GuidePageHero";
 import { ServiceTableOfContents } from "@/components/domain/ServiceTableOfContents";
+import { CountryCategoryPanel } from "@/components/country/CountryCategoryPanel";
 import { findArticleBySlug } from "@/lib/repositories/article.repository";
+import { loadCountryCategoryPanelData } from "@/lib/country-page/load-category-panel";
 import { getGuideSectionNavItems } from "@/lib/guide";
 import { getSiteSettings } from "@/lib/settings";
 import { buildEntityMetadata } from "@/lib/services/seo.service";
@@ -35,7 +37,20 @@ export default async function ArticlePage({ params }: Props) {
   const heroTitle = article.heroTitle?.trim() || article.title;
   const heroSubtitle = article.heroSubtitle?.trim() || article.excerpt;
   const sectionNav = getGuideSectionNavItems(article.sectionsJson);
-  const showSidebar = sectionNav.length > 0;
+  const showTocSidebar = sectionNav.length > 0;
+
+  const countrySlug = article.country.slug;
+  const { panelCategories, consulates, documents } = await loadCountryCategoryPanelData(
+    article.countryId,
+    countrySlug,
+  );
+
+  const contentGridClass = showTocSidebar
+    ? "mt-8 grid gap-6 lg:grid-cols-[minmax(240px,280px)_minmax(0,1fr)_minmax(0,240px)] lg:items-start"
+    : "mt-8 grid gap-6 lg:grid-cols-[minmax(240px,280px)_minmax(0,1fr)] lg:items-start";
+
+  const tocStickyClass =
+    "lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100dvh-var(--site-header-height)-2rem)] lg:overflow-y-auto";
 
   return (
     <>
@@ -46,7 +61,7 @@ export default async function ArticlePage({ params }: Props) {
         badge={article.country?.name ?? "Rehber"}
       />
 
-      <div className="site-container py-10 md:py-14">
+      <div className="site-container py-10">
         <Breadcrumb
           items={[
             { label: "Anasayfa", href: "/" },
@@ -55,8 +70,17 @@ export default async function ArticlePage({ params }: Props) {
           ]}
         />
 
-        <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_280px] lg:items-start">
-          <div className="min-w-0">
+        <div className={contentGridClass}>
+          <aside className="order-2 country-panel-sticky min-w-0 lg:order-1 lg:z-30 lg:self-start">
+            <CountryCategoryPanel
+              countrySlug={countrySlug}
+              categories={panelCategories}
+              consulates={consulates}
+              documents={documents}
+            />
+          </aside>
+
+          <div className="order-1 min-w-0 lg:order-2">
             {article.publishedAt && (
               <time className="block text-sm text-slate-500">
                 {new Date(article.publishedAt).toLocaleDateString("tr-TR", {
@@ -95,10 +119,8 @@ export default async function ArticlePage({ params }: Props) {
             </div>
           </div>
 
-          {showSidebar && (
-            <aside
-              className="flex flex-col gap-6 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100dvh-var(--site-header-height)-2rem)]"
-            >
+          {showTocSidebar && (
+            <aside className={`order-3 min-w-0 lg:order-3 ${tocStickyClass}`}>
               <ServiceTableOfContents items={sectionNav} />
             </aside>
           )}

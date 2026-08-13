@@ -45,7 +45,7 @@ export function FaqAccordion({
               type="button"
               className={`flex w-full cursor-pointer items-center justify-between gap-4 text-left ${
                 isModern
-                  ? "px-5 py-4 text-[0.9375rem] font-semibold text-slate-900"
+                  ? "px-5 py-4 text-content font-semibold text-slate-900"
                   : "px-5 py-4 text-sm font-medium text-slate-900 hover:bg-slate-50"
               }`}
               onClick={() => setOpen(isOpen ? null : i)}
@@ -72,8 +72,8 @@ export function FaqAccordion({
               <div
                 className={
                   isModern
-                    ? "border-t border-slate-100 px-5 pb-5 pt-1 text-sm leading-relaxed text-slate-600"
-                    : "px-5 pb-4 text-sm text-slate-600 leading-relaxed"
+                    ? "border-t border-slate-100 px-5 pb-5 pt-1 text-content text-slate-600"
+                    : "px-5 pb-4 text-content text-slate-600"
                 }
               >
                 {item.answer}

@@ -42,7 +42,7 @@ export function ContactCTA({
       <p
         className={
           isCountry
-            ? "mt-3 max-w-2xl text-sm leading-relaxed text-white/85 md:text-[0.9375rem]"
+            ? "mt-3 max-w-2xl text-sm leading-relaxed text-white/85 md:text-content"
             : "mt-2 text-sm text-slate-600 leading-relaxed"
         }
       >

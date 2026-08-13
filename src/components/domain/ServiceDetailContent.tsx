@@ -52,7 +52,7 @@ function ServiceFeatureBlock({
             </h2>
           )}
           {text?.trim() && (
-            <p className="mt-4 text-[0.9375rem] leading-relaxed text-slate-600">
+            <p className="mt-4 text-content text-slate-600">
               {text}
             </p>
           )}

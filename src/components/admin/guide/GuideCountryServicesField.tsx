@@ -14,6 +14,7 @@ type Props = {
   services: GuideServiceOption[];
   initialCountryId: string;
   initialServiceIds: string[];
+  initialShowInCategoryPanel?: boolean;
 };
 
 const selectClass =
@@ -24,6 +25,7 @@ export function GuideCountryServicesField({
   services,
   initialCountryId,
   initialServiceIds,
+  initialShowInCategoryPanel = false,
 }: Props) {
   const [countryId, setCountryId] = useState(initialCountryId);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(
@@ -123,6 +125,24 @@ export function GuideCountryServicesField({
           </div>
         )}
       </div>
+
+      <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-slate-50/80 px-3 py-3">
+        <input
+          type="checkbox"
+          name="showInCategoryPanel"
+          defaultChecked={initialShowInCategoryPanel}
+          className="mt-0.5 h-4 w-4 rounded border-slate-300 text-csg-blue focus:ring-csg-blue/30"
+        />
+        <span className="min-w-0">
+          <span className="block text-sm font-medium text-slate-900">
+            Ülke sayfasında hizmet kategorisinde göster
+          </span>
+          <span className="mt-1 block text-xs leading-relaxed text-slate-500">
+            Bağlı hizmetlerin kategorisinde sol panelde listelenir. Aynı kategoride
+            yalnızca bir kez görünür.
+          </span>
+        </span>
+      </label>
     </div>
   );
 }

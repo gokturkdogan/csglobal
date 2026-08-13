@@ -32,6 +32,19 @@ export async function findArticleBySlug(slug: string) {
   });
 }
 
+export async function findPublishedArticlesByCountryId(countryId: string) {
+  return prisma.article.findMany({
+    where: {
+      isPublished: true,
+      countryId,
+    },
+    orderBy: { publishedAt: "desc" },
+    include: {
+      country: { select: { name: true } },
+    },
+  });
+}
+
 export async function findPublishedArticlesByServiceId(serviceId: string) {
   return prisma.article.findMany({
     where: {
@@ -41,6 +54,28 @@ export async function findPublishedArticlesByServiceId(serviceId: string) {
     orderBy: { publishedAt: "desc" },
     include: {
       country: { select: { name: true } },
+    },
+  });
+}
+
+/** Ülke panelinde kategori altında listelenecek yayınlanmış rehberler. */
+export async function findCategoryPanelArticlesByCountry(countryId: string) {
+  return prisma.article.findMany({
+    where: {
+      countryId,
+      isPublished: true,
+      showInCategoryPanel: true,
+      linkedServices: { some: {} },
+    },
+    orderBy: { publishedAt: "desc" },
+    select: {
+      slug: true,
+      title: true,
+      linkedServices: {
+        select: {
+          service: { select: { categoryId: true } },
+        },
+      },
     },
   });
 }

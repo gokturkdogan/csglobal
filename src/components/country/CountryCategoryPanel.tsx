@@ -6,22 +6,27 @@ import {
   buildConsulatePath,
   buildServicePath,
 } from "@/lib/paths";
+import { buildSiteAssetPath } from "@/lib/site-asset";
 import {
   COUNTRY_PANEL_CONSULATES_SLUG,
+  COUNTRY_PANEL_DOCUMENTS_SLUG,
   type CountryCategoryPanelItem,
   type CountryConsulatePanelItem,
+  type CountryDocumentPanelItem,
 } from "@/lib/country-page/category-panel";
 
 type Props = {
   countrySlug: string;
   categories: CountryCategoryPanelItem[];
   consulates?: CountryConsulatePanelItem[];
+  documents?: CountryDocumentPanelItem[];
 };
 
 export function CountryCategoryPanel({
   countrySlug,
   categories = [],
   consulates = [],
+  documents = [],
 }: Props) {
   const [openSlug, setOpenSlug] = useState<string | null>(null);
 
@@ -35,13 +40,13 @@ export function CountryCategoryPanel({
     <nav
       id="kategoriler-panel"
       aria-label="Hizmet kategorileri"
-      className="country-panel-card scroll-mt-24 flex max-h-[inherit] flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-lg shadow-csg-blue/[0.06] ring-1 ring-slate-900/[0.04]"
+      className="country-panel-card scroll-mt-24 flex max-h-[inherit] flex-col overflow-hidden rounded-xl border border-slate-200/80 bg-white text-sm shadow-md shadow-csg-blue/[0.05] ring-1 ring-slate-900/[0.04]"
     >
-      <div className="country-panel-header shrink-0 px-5 py-4">
-        <h2 className="text-sm font-semibold tracking-wide text-white">
+      <div className="country-panel-header shrink-0 px-3.5 py-3">
+        <h2 className="text-xs font-semibold tracking-wide text-white">
           Hizmet kategorileri
         </h2>
-        <p className="mt-1 text-xs">
+        <p className="mt-0.5 text-[11px] leading-snug">
           Kategori seçerek hizmetlere göz atın
         </p>
       </div>
@@ -50,7 +55,9 @@ export function CountryCategoryPanel({
         {(categories ?? []).map((category) => {
           const isOpen = openSlug === category.slug;
           const services = category.services ?? [];
-          const count = services.length;
+          const guides = category.guides ?? [];
+          const itemCount = services.length + guides.length;
+          const meta = `${itemCount} öğe`;
 
           return (
             <PanelRow
@@ -58,37 +65,38 @@ export function CountryCategoryPanel({
               isOpen={isOpen}
               onToggle={() => toggle(category.slug)}
               title={category.name}
-              meta={`${count} hizmet`}
-              count={count}
+              meta={meta}
+              count={itemCount}
             >
-              {services.length === 0 ? (
-                <p className="px-2 py-3 text-sm text-slate-500">
-                  Bu kategoride henüz hizmet eklenmemiş.
+              {itemCount === 0 ? (
+                <p className="px-2 py-2 text-xs text-slate-500">
+                  Bu kategoride henüz içerik eklenmemiş.
                 </p>
               ) : (
-                <ul className="space-y-1">
+                <ul className="space-y-0.5">
                   {services.map((service) => (
-                    <li key={service.slug}>
+                    <li key={`service-${service.slug}`}>
                       <Link
                         href={buildServicePath(countrySlug, service.slug)}
-                        className="group block cursor-pointer rounded-lg border border-transparent px-3 py-3 transition hover:border-csg-blue/15 hover:bg-csg-blue/[0.04]"
+                        className="group flex cursor-pointer items-center justify-between gap-1.5 rounded-md border border-transparent px-2 py-2 text-xs transition hover:border-csg-blue/15 hover:bg-csg-blue/[0.04]"
                       >
-                        <span className="flex items-start justify-between gap-2">
-                          <span className="font-medium text-slate-900 group-hover:text-csg-blue">
-                            {service.name}
-                          </span>
-                          <ArrowIcon />
+                        <span className="min-w-0 font-medium leading-snug text-slate-900 group-hover:text-csg-blue line-clamp-2">
+                          {service.name}
                         </span>
-                        {service.shortDescription && (
-                          <span className="mt-1 block text-xs leading-relaxed text-slate-600 line-clamp-2">
-                            {service.shortDescription}
-                          </span>
-                        )}
-                        {service.processingTime && (
-                          <span className="mt-2 inline-flex rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600">
-                            {service.processingTime}
-                          </span>
-                        )}
+                        <ArrowIcon />
+                      </Link>
+                    </li>
+                  ))}
+                  {guides.map((guide) => (
+                    <li key={`guide-${guide.slug}`}>
+                      <Link
+                        href={`/rehber/${guide.slug}`}
+                        className="group flex cursor-pointer items-center justify-between gap-1.5 rounded-md border border-transparent px-2 py-2 text-xs transition hover:border-csg-blue/15 hover:bg-csg-blue/[0.04]"
+                      >
+                        <span className="min-w-0 font-medium leading-snug text-slate-900 group-hover:text-csg-blue line-clamp-2">
+                          {guide.title}
+                        </span>
+                        <ArrowIcon />
                       </Link>
                     </li>
                   ))}
@@ -98,6 +106,40 @@ export function CountryCategoryPanel({
           );
         })}
 
+        <PanelRow
+          isOpen={openSlug === COUNTRY_PANEL_DOCUMENTS_SLUG}
+          onToggle={() => toggle(COUNTRY_PANEL_DOCUMENTS_SLUG)}
+          title="Dilekçe, Formlar ve Belgeler"
+          meta={`${documents.length} belge`}
+          count={documents.length}
+        >
+          {documents.length === 0 ? (
+            <p className="px-2 py-2 text-xs text-slate-500">
+              Menüde gösterilecek belge seçilmemiş.
+            </p>
+          ) : (
+            <ul className="space-y-0.5">
+              {documents.map((document) => (
+                <li key={document.id}>
+                  <Link
+                    href={buildSiteAssetPath(
+                      document.id,
+                      countrySlug,
+                      document.fileName,
+                    )}
+                    className="group flex cursor-pointer items-center justify-between gap-1.5 rounded-md border border-transparent px-2 py-2 text-xs transition hover:border-csg-blue/15 hover:bg-csg-blue/[0.04]"
+                  >
+                    <span className="min-w-0 font-medium leading-snug text-slate-900 group-hover:text-csg-blue line-clamp-2">
+                      {document.label}
+                    </span>
+                    <ArrowIcon />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </PanelRow>
+
         {hasConsulates && (
           <PanelRow
             isOpen={openSlug === COUNTRY_PANEL_CONSULATES_SLUG}
@@ -106,14 +148,14 @@ export function CountryCategoryPanel({
             meta={`${consulates.length} konsolosluk`}
             count={consulates.length}
           >
-            <ul className="space-y-1">
+            <ul className="space-y-0.5">
               {consulates.map((consulate) => (
                 <li key={consulate.slug}>
                   <Link
                     href={buildConsulatePath(countrySlug, consulate.slug)}
-                    className="group flex cursor-pointer items-center justify-between gap-2 rounded-lg border border-transparent px-3 py-3 transition hover:border-csg-blue/15 hover:bg-csg-blue/[0.04]"
+                    className="group flex cursor-pointer items-center justify-between gap-1.5 rounded-md border border-transparent px-2 py-2 text-xs transition hover:border-csg-blue/15 hover:bg-csg-blue/[0.04]"
                   >
-                    <span className="font-medium text-slate-900 group-hover:text-csg-blue">
+                    <span className="min-w-0 font-medium leading-snug text-slate-900 group-hover:text-csg-blue line-clamp-2">
                       {consulate.name}
                     </span>
                     <ArrowIcon />
@@ -152,13 +194,13 @@ function PanelRow({
       <button
         type="button"
         onClick={onToggle}
-        className={`flex w-full cursor-pointer items-center gap-3 px-4 py-3.5 text-left transition ${
+        className={`flex w-full cursor-pointer items-center gap-2 px-3 py-2.5 text-left transition ${
           isOpen ? "bg-csg-blue/[0.04]" : "hover:bg-slate-50"
         }`}
         aria-expanded={isOpen}
       >
         <span
-          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition ${
+          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md transition ${
             isOpen
               ? "bg-csg-blue text-white shadow-sm shadow-csg-blue/30"
               : "bg-slate-100 text-slate-500"
@@ -168,16 +210,16 @@ function PanelRow({
         </span>
         <span className="min-w-0 flex-1">
           <span
-            className={`block font-medium ${
+            className={`block text-sm font-medium leading-snug ${
               isOpen ? "text-csg-blue" : "text-slate-900"
             }`}
           >
             {title}
           </span>
-          <span className="mt-0.5 block text-xs text-slate-500">{meta}</span>
+          <span className="mt-0.5 block text-[10px] text-slate-500">{meta}</span>
         </span>
         <span
-          className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+          className={`shrink-0 rounded-full px-1.5 py-0 text-[10px] font-semibold leading-5 min-w-[1.25rem] text-center ${
             isOpen
               ? "bg-csg-blue text-white"
               : count > 0
@@ -190,7 +232,7 @@ function PanelRow({
       </button>
 
       {isOpen && (
-        <div className="border-t border-slate-100/80 bg-white px-3 pb-3 pt-1">
+        <div className="border-t border-slate-100/80 bg-white px-2 pb-2 pt-0.5">
           {children}
         </div>
       )}
@@ -201,7 +243,7 @@ function PanelRow({
 function ChevronIcon({ open }: { open: boolean }) {
   return (
     <svg
-      className={`h-4 w-4 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+      className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
@@ -215,7 +257,7 @@ function ChevronIcon({ open }: { open: boolean }) {
 function ArrowIcon() {
   return (
     <svg
-      className="h-4 w-4 shrink-0 text-slate-300 transition group-hover:text-csg-blue group-hover:translate-x-0.5"
+      className="h-3.5 w-3.5 shrink-0 text-slate-300 transition group-hover:text-csg-blue group-hover:translate-x-0.5"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"

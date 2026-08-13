@@ -506,6 +506,7 @@ export async function saveArticleAction(formData: FormData): Promise<AdminAction
     coverImage: (formData.get("coverImage") as string) || null,
     countryId,
     isPublished,
+    showInCategoryPanel: formData.get("showInCategoryPanel") === "on",
     publishedAt: isPublished ? new Date() : null,
   };
 
@@ -543,6 +544,11 @@ export async function saveArticleAction(formData: FormData): Promise<AdminAction
       revalidatePath("/rehber");
       revalidatePath(`/rehber/${data.slug}`);
       revalidatePath("/admin/articles");
+      const country = await prisma.country.findUnique({
+        where: { id: countryId },
+        select: { slug: true },
+      });
+      if (country) revalidatePath(`/${country.slug}`);
       return adminSuccess("Rehber başarıyla güncellendi.", `/admin/articles/${id}`);
     }
 
@@ -562,6 +568,11 @@ export async function saveArticleAction(formData: FormData): Promise<AdminAction
 
     revalidatePath("/rehber");
     revalidatePath("/admin/articles");
+    const country = await prisma.country.findUnique({
+      where: { id: countryId },
+      select: { slug: true },
+    });
+    if (country) revalidatePath(`/${country.slug}`);
     return adminSuccess(
       "Rehber başarıyla oluşturuldu.",
       `/admin/articles/${article.id}`,
@@ -816,6 +827,7 @@ export async function uploadSiteAssetAction(formData: FormData): Promise<AdminAc
 
   const countryId = (formData.get("countryId") as string)?.trim();
   const file = formData.get("file") as File | null;
+  const showInMenu = formData.get("showInMenu") === "on";
 
   if (!countryId) {
     return adminFailure("Ülke seçin.");
@@ -865,12 +877,14 @@ export async function uploadSiteAssetAction(formData: FormData): Promise<AdminAc
         fileData: buffer,
         mimeType,
         byteSize: file.size,
+        showInMenu,
       },
       update: {
         cloudinaryPublicId: null,
         fileData: buffer,
         mimeType,
         byteSize: file.size,
+        showInMenu,
       },
     });
 
@@ -883,6 +897,7 @@ export async function uploadSiteAssetAction(formData: FormData): Promise<AdminAc
     });
 
     revalidatePath("/admin/dokumanlar");
+    revalidatePath(`/${country.slug}`);
     revalidatePath(path);
     return adminSuccess(`Döküman yüklendi: ${path}`, "/admin/dokumanlar");
   } catch (error) {
@@ -891,6 +906,39 @@ export async function uploadSiteAssetAction(formData: FormData): Promise<AdminAc
       ? `Döküman yüklenemedi: ${detail}`
       : "Döküman yüklenemedi. Lütfen tekrar deneyin.";
     return adminFailure(message);
+  }
+}
+
+export async function updateSiteAssetShowInMenuAction(
+  formData: FormData,
+): Promise<AdminActionResult> {
+  await requireAdmin();
+
+  const id = Number(formData.get("id"));
+  if (!Number.isFinite(id)) {
+    return adminFailure("Geçersiz döküman.");
+  }
+
+  const showInMenu = formData.get("showInMenu") === "on";
+
+  try {
+    const asset = await prisma.siteAsset.update({
+      where: { id },
+      data: { showInMenu },
+      include: { country: { select: { slug: true } } },
+    });
+
+    revalidatePath("/admin/dokumanlar");
+    revalidatePath(`/${asset.country.slug}`);
+    return adminSuccess(
+      showInMenu
+        ? "Döküman sol menüde gösterilecek."
+        : "Döküman sol menüden kaldırıldı.",
+    );
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Menü ayarı güncellenemedi. Lütfen tekrar deneyin."),
+    );
   }
 }
 
@@ -908,6 +956,7 @@ export async function deleteSiteAssetAction(formData: FormData): Promise<AdminAc
     });
 
     revalidatePath("/admin/dokumanlar");
+    revalidatePath(`/${asset.country.slug}`);
     revalidatePath(
       `/asset/${asset.id}/${asset.country.slug}/${asset.fileName}`,
     );

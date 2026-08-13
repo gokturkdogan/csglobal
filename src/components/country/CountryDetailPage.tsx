@@ -5,7 +5,7 @@ import {
   parseCountryDetailSectionsJson,
   parseCountryNotesJson,
 } from "@/lib/country-detail";
-import type { CountryCategoryPanelItem, CountryConsulatePanelItem } from "@/lib/country-page/category-panel";
+import type { CountryCategoryPanelItem, CountryConsulatePanelItem, CountryDocumentPanelItem } from "@/lib/country-page/category-panel";
 import { ContactCTA } from "@/components/domain/ContactCTA";
 import { FaqAccordion } from "@/components/domain/FaqAccordion";
 import { CountryPageHero } from "@/components/domain/CountryPageHero";
@@ -35,6 +35,7 @@ type Props = {
   categoryCount: number;
   categories: CountryCategoryPanelItem[];
   consulates?: CountryConsulatePanelItem[];
+  documents?: CountryDocumentPanelItem[];
 };
 
 function SectionHeading({
@@ -65,6 +66,7 @@ export function CountryDetailPage({
   categoryCount,
   categories = [],
   consulates = [],
+  documents = [],
 }: Props) {
   const paragraphs = buildCountryDetailParagraphs(country);
   const stats = buildCountryQuickStats({
@@ -94,12 +96,13 @@ export function CountryDetailPage({
 
       <div className="country-detail-main border-b border-slate-200/60">
         <div className="site-container py-10 md:py-14">
-          <div className="grid gap-8 lg:grid-cols-[minmax(280px,320px)_1fr] lg:gap-10 lg:items-start">
+          <div className="grid gap-6 lg:grid-cols-[minmax(240px,280px)_1fr] lg:gap-8 lg:items-start">
             <aside className="country-panel-sticky lg:z-30 lg:self-start">
               <CountryCategoryPanel
                 countrySlug={country.slug}
                 categories={categories}
                 consulates={consulates}
+                documents={documents}
               />
             </aside>
 
@@ -111,7 +114,7 @@ export function CountryDetailPage({
                     subtitle="Ülkeye özel süreç, evrak ve randevu bilgileri"
                   />
                   {paragraphs.length > 0 && (
-                    <div className="mt-6 space-y-4 text-[0.9375rem] leading-relaxed text-slate-600">
+                    <div className="mt-6 space-y-4 text-content text-slate-600">
                       {paragraphs.map((p, i) => (
                         <p key={i} className="whitespace-pre-line">{p}</p>
                       ))}

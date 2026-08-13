@@ -13,6 +13,7 @@ import {
   AdminSelect,
   AdminSubmitButton,
 } from "@/components/admin/AdminForm";
+import { SiteAssetShowInMenuField } from "@/components/admin/SiteAssetShowInMenuField";
 import { AdminPageHeader, AdminTable, AdminTableHead } from "@/components/admin/AdminUi";
 
 function formatFileSize(bytes: number | null | undefined): string {
@@ -70,6 +71,8 @@ export default async function AdminDocumentsPage() {
           />
         </label>
 
+        <SiteAssetShowInMenuField variant="upload" />
+
         <AdminSubmitButton loadingLabel="Yükleniyor…">Yükle</AdminSubmitButton>
       </AdminActionForm>
 
@@ -77,6 +80,7 @@ export default async function AdminDocumentsPage() {
         <AdminTableHead>
           <th className="px-5 py-3">Dosya</th>
           <th className="px-5 py-3">Ülke</th>
+          <th className="px-5 py-3">Menü</th>
           <th className="px-5 py-3">Site URL</th>
           <th className="px-5 py-3">Boyut</th>
           <th className="px-5 py-3 text-right">İşlem</th>
@@ -84,7 +88,7 @@ export default async function AdminDocumentsPage() {
         <tbody className="divide-y divide-slate-100">
           {assets.length === 0 ? (
             <tr>
-              <td colSpan={5} className="px-5 py-8 text-center text-sm text-slate-500">
+              <td colSpan={6} className="px-5 py-8 text-center text-sm text-slate-500">
                 Henüz döküman yüklenmemiş.
               </td>
             </tr>
@@ -100,6 +104,13 @@ export default async function AdminDocumentsPage() {
                 <tr key={asset.id} className="hover:bg-slate-50/80">
                   <td className="px-5 py-3.5 font-medium text-slate-900">{asset.fileName}</td>
                   <td className="px-5 py-3.5 text-slate-600">{asset.country.name}</td>
+                  <td className="px-5 py-3.5">
+                    <SiteAssetShowInMenuField
+                      variant="list"
+                      assetId={asset.id}
+                      initialChecked={asset.showInMenu}
+                    />
+                  </td>
                   <td className="px-5 py-3.5">
                     <code className="text-xs text-slate-600 select-all break-all">
                       {sitePath}

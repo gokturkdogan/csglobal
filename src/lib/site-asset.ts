@@ -1,4 +1,5 @@
-import { siteUrl } from "@/lib/services/seo.service";
+const DEFAULT_SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://csglobal.com";
 
 const ALLOWED_EXTENSIONS = new Set([
   "pdf",
@@ -44,7 +45,7 @@ export function buildSiteAssetPublicUrl(
   countrySlug: string,
   fileName: string,
 ): string {
-  return `${siteUrl}${buildSiteAssetPath(id, countrySlug, fileName)}`;
+  return `${DEFAULT_SITE_URL}${buildSiteAssetPath(id, countrySlug, fileName)}`;
 }
 
 /** Önizleme iframe / embed için kendi domain üzerinden dosya akışı. */
@@ -58,6 +59,13 @@ export function buildSiteAssetViewApiUrl(
     fileName,
   });
   return `/api/asset/${id}/view?${params.toString()}`;
+}
+
+/** Panel ve listelerde dosya adı gösterimi. */
+export function formatSiteAssetDisplayName(fileName: string): string {
+  const base = fileName.replace(/\.[^.]+$/, "").trim();
+  if (!base) return fileName;
+  return base.replace(/-/g, " ").replace(/\s+/g, " ").trim();
 }
 
 export function formatSiteAssetFileSize(bytes: number | null | undefined): string {

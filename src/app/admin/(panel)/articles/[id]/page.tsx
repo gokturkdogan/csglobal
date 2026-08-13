@@ -90,6 +90,7 @@ export default async function EditArticlePage({ params }: Props) {
               services={serviceOptions}
               initialCountryId={defaultCountryId}
               initialServiceIds={selectedServiceIds}
+              initialShowInCategoryPanel={article?.showInCategoryPanel ?? false}
             />
           </AdminFormSection>
 

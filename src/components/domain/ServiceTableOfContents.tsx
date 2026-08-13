@@ -70,10 +70,18 @@ export function ServiceTableOfContents({ items }: Props) {
   return (
     <nav
       aria-label="İçindekiler"
-      className="rounded-xl border border-slate-200 bg-white p-5 text-sm shadow-sm"
+      className="flex max-h-[inherit] flex-col overflow-hidden rounded-xl border border-slate-200/80 bg-white text-sm shadow-md shadow-csg-blue/[0.05] ring-1 ring-slate-900/[0.04]"
     >
-      <p className="font-semibold text-slate-900">İçindekiler</p>
-      <ul className="mt-3 space-y-1">
+      <div className="country-panel-header shrink-0 px-3.5 py-3">
+        <h2 className="text-xs font-semibold tracking-wide text-white">
+          İçindekiler
+        </h2>
+        <p className="mt-0.5 text-[11px] leading-snug">
+          Sayfa bölümlerine hızlı geçiş
+        </p>
+      </div>
+
+      <ul className="min-h-0 flex-1 space-y-0.5 overflow-y-auto overscroll-contain bg-white px-2 py-2">
         {items.map((item) => {
           const isActive = activeSlug === item.slug;
 
@@ -82,7 +90,7 @@ export function ServiceTableOfContents({ items }: Props) {
               <button
                 type="button"
                 onClick={() => handleClick(item.slug)}
-                className={`block w-full cursor-pointer px-2.5 py-2 text-left transition duration-200 ${
+                className={`block w-full cursor-pointer rounded-md px-2 py-2 text-left text-xs leading-snug transition ${
                   isActive
                     ? "text-csg-blue underline underline-offset-4"
                     : "text-slate-600 hover:text-csg-blue"

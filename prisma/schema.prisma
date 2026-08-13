@@ -279,6 +279,7 @@ model Article {
   coverImage        String?   @map("cover_image")
   publishedAt       DateTime? @map("published_at")
   isPublished       Boolean   @default(false) @map("is_published")
+  showInCategoryPanel Boolean @default(false) @map("show_in_category_panel")
   createdAt         DateTime  @default(now()) @map("created_at")
   updatedAt         DateTime  @updatedAt @map("updated_at")
 
@@ -377,6 +378,7 @@ model SiteAsset {
   fileData           Bytes?   @map("file_data")
   mimeType           String?  @map("mime_type")
   byteSize           Int?     @map("byte_size")
+  showInMenu         Boolean  @default(false) @map("show_in_menu")
   createdAt          DateTime @default(now()) @map("created_at")
   updatedAt          DateTime @updatedAt @map("updated_at")
 

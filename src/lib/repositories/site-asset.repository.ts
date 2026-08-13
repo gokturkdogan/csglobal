@@ -9,6 +9,17 @@ export async function listSiteAssetsForAdmin() {
   });
 }
 
+export async function findSiteAssetsByCountryId(countryId: string) {
+  return prisma.siteAsset.findMany({
+    where: { countryId, showInMenu: true },
+    orderBy: { fileName: "asc" },
+    select: {
+      id: true,
+      fileName: true,
+    },
+  });
+}
+
 export async function findSiteAssetForPublicUrl(
   id: number,
   countrySlug: string,
