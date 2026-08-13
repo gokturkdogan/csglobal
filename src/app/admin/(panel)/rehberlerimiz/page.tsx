@@ -103,7 +103,8 @@ export default async function AdminGuidesListPage() {
             label="İkincil buton linki"
             name="ctaSecondaryHref"
             value={content.ctaSecondaryHref}
-            placeholder="/iletisim"
+            placeholder="/iletisim veya https://..."
+            hint="Site içi: /yol. Dış site: tam https adresi."
           />
         </AdminFormSection>
 

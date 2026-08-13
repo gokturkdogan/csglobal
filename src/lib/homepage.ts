@@ -1,5 +1,6 @@
 import { siteImages } from "@/lib/media";
 import type { SiteSettingsMap } from "@/lib/site-settings.shared";
+import { normalizeLinkUrl } from "@/lib/rich-text";
 
 export type HomeStat = { label: string; value: string };
 export type HomeWhyUsItem = { title: string; description: string };
@@ -325,10 +326,22 @@ export function serializeHomepageToSettings(content: HomepageContent): Record<st
     homeSeoIntroTitle: content.seoIntroTitle,
     homeSeoIntroJson: JSON.stringify(content.seoIntroParagraphs),
     homeSeoBlocksTitle: content.seoBlocksTitle,
-    homeSeoBlocksJson: JSON.stringify(content.seoBlocks),
+    homeSeoBlocksJson: JSON.stringify(
+      content.seoBlocks.map((block) => ({
+        ...block,
+        linkHref: block.linkHref?.trim()
+          ? normalizeLinkUrl(block.linkHref)
+          : block.linkHref,
+      })),
+    ),
     homeServiceAreasTitle: content.serviceAreasTitle,
     homeServiceAreasSubtitle: content.serviceAreasSubtitle,
-    homeServiceAreasJson: JSON.stringify(content.serviceAreas),
+    homeServiceAreasJson: JSON.stringify(
+      content.serviceAreas.map((area) => ({
+        ...area,
+        href: normalizeLinkUrl(area.href),
+      })),
+    ),
     homeFaqTitle: content.faqTitle,
     homeFaqSubtitle: content.faqSubtitle,
     homeFaqJson: JSON.stringify(content.faqs.slice(0, HOMEPAGE_FAQ_MAX)),

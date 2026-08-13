@@ -25,6 +25,7 @@ import {
   type AboutPageEditable,
 } from "@/lib/about";
 import { serializeHomepageToSettings, type HomepageContent } from "@/lib/homepage";
+import { normalizeLinkUrl } from "@/lib/rich-text";
 import {
   normalizeGuideFeatureImageText,
   normalizeGuideFeatureImageTitle,
@@ -707,7 +708,7 @@ export async function saveGuidesListPageAction(formData: FormData): Promise<Admi
     ctaSubtitle: (formData.get("ctaSubtitle") as string) || "",
     ctaPrimaryLabel: (formData.get("ctaPrimaryLabel") as string) || "",
     ctaSecondaryLabel: (formData.get("ctaSecondaryLabel") as string) || "",
-    ctaSecondaryHref: (formData.get("ctaSecondaryHref") as string) || "",
+    ctaSecondaryHref: normalizeLinkUrl((formData.get("ctaSecondaryHref") as string) || ""),
   };
 
   const { serializeGuidesListPageEditable } = await import("@/lib/guides-list-page");

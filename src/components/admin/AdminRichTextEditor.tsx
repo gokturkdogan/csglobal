@@ -4,8 +4,9 @@ import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import { EditorContent, useEditor, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useEffect, useState, type ReactNode } from "react";
-import { contentForRichTextEditor, normalizeLinkUrl } from "@/lib/rich-text";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { contentForRichTextEditor, linkUrlForEditor, normalizeLinkUrl } from "@/lib/rich-text";
+import { getPublicSiteUrl } from "@/lib/site-url";
 
 const inputClass =
   "mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-csg-blue focus:outline-none focus:ring-2 focus:ring-csg-blue/20";
@@ -73,7 +74,7 @@ function EditorToolbar({
         1. Liste
       </ToolbarButton>
       <ToolbarButton
-        title="Seçili metni bağlantı alanına taşı"
+        title="Bağlantı ekle veya düzenle"
         active={editor.isActive("link")}
         onClick={onLinkClick}
       >
@@ -83,73 +84,112 @@ function EditorToolbar({
   );
 }
 
-function LinkInsertPanel({
+function LinkEditModal({
+  open,
   text,
   url,
+  isEditing,
   onTextChange,
   onUrlChange,
   onApply,
   onRemove,
-  canRemove,
+  onClose,
 }: {
+  open: boolean;
   text: string;
   url: string;
+  isEditing: boolean;
   onTextChange: (value: string) => void;
   onUrlChange: (value: string) => void;
   onApply: () => void;
   onRemove: () => void;
-  canRemove: boolean;
+  onClose: () => void;
 }) {
+  useEffect(() => {
+    if (!open) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open]);
+
+  if (!open) return null;
+
   return (
-    <div className="border-t border-slate-200 bg-slate-50/80 px-3 py-3">
-      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-        Bağlantı ekle
-      </p>
-      <p className="mt-1 text-xs text-slate-500">
-        Görünen metin ve URL ayrı ayrı girilebilir.
-      </p>
-
-      <div className="mt-3 grid gap-3 sm:grid-cols-2">
-        <label className="block">
-          <span className="text-xs font-medium text-slate-600">Görünen metin</span>
-          <input
-            type="text"
-            value={text}
-            onChange={(e) => onTextChange(e.target.value)}
-            placeholder="Örn. Resmi web sitesi"
-            className={inputClass}
-          />
-        </label>
-        <label className="block">
-          <span className="text-xs font-medium text-slate-600">URL</span>
-          <input
-            type="url"
-            value={url}
-            onChange={(e) => onUrlChange(e.target.value)}
-            placeholder="https://..."
-            className={inputClass}
-          />
-        </label>
-      </div>
-
-      <div className="mt-3 flex flex-wrap items-center gap-2">
-        <button
-          type="button"
-          onClick={onApply}
-          disabled={!text.trim() || !url.trim()}
-          className="cursor-pointer rounded-lg bg-csg-blue px-3 py-1.5 text-sm font-semibold text-white hover:bg-csg-blue-dark disabled:cursor-not-allowed disabled:opacity-50"
+    <div
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="rich-text-link-modal-title"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-md rounded-xl bg-white p-5 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2
+          id="rich-text-link-modal-title"
+          className="text-sm font-semibold text-slate-900"
         >
-          Bağlantıyı ekle
-        </button>
-        {canRemove && (
+          {isEditing ? "Bağlantıyı düzenle" : "Bağlantı ekle"}
+        </h2>
+
+        <div className="mt-4 space-y-3">
+          <label className="block">
+            <span className="text-xs font-medium text-slate-600">Görünen metin</span>
+            <input
+              type="text"
+              value={text}
+              onChange={(e) => onTextChange(e.target.value)}
+              placeholder="Örn. Resmi web sitesi"
+              className={inputClass}
+            />
+          </label>
+          <label className="block">
+            <span className="text-xs font-medium text-slate-600">URL</span>
+            <input
+              type="text"
+              value={url}
+              onChange={(e) => onUrlChange(e.target.value)}
+              placeholder="https://... veya /rehber/..."
+              className={inputClass}
+            />
+            <span className="mt-1 block text-xs text-slate-500">
+              Dış site: tam adres (https://…). Site içi: yol ({getPublicSiteUrl()}/… yerine{" "}
+              <code className="text-csg-blue">/asset/…</code>).
+            </span>
+          </label>
+        </div>
+
+        <div className="mt-5 flex flex-wrap items-center justify-end gap-2">
+          {isEditing && (
+            <button
+              type="button"
+              onClick={onRemove}
+              className="cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50"
+            >
+              Kaldır
+            </button>
+          )}
           <button
             type="button"
-            onClick={onRemove}
-            className="cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50"
+            onClick={onClose}
+            className="cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100"
           >
-            Bağlantıyı kaldır
+            İptal
           </button>
-        )}
+          <button
+            type="button"
+            onClick={onApply}
+            disabled={!text.trim() || !url.trim()}
+            className="cursor-pointer rounded-lg bg-csg-blue px-3 py-1.5 text-sm font-semibold text-white hover:bg-csg-blue-dark disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isEditing ? "Kaydet" : "Ekle"}
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -168,7 +208,40 @@ export function AdminRichTextEditor({
 }: AdminRichTextEditorProps) {
   const [linkText, setLinkText] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
+  const [linkModalOpen, setLinkModalOpen] = useState(false);
   const [editingLink, setEditingLink] = useState(false);
+
+  const closeLinkModal = useCallback(() => {
+    setLinkModalOpen(false);
+    setLinkText("");
+    setLinkUrl("");
+    setEditingLink(false);
+  }, []);
+
+  const fillLinkFromEditor = useCallback((editor: Editor) => {
+    const activeLink = editor.getAttributes("link").href as string | undefined;
+    const { from, to } = editor.state.selection;
+    const selectedText = editor.state.doc.textBetween(from, to, "");
+
+    if (activeLink) {
+      setEditingLink(true);
+      setLinkUrl(linkUrlForEditor(activeLink));
+      setLinkText(selectedText);
+      return;
+    }
+
+    setEditingLink(false);
+    setLinkUrl("");
+    setLinkText(selectedText);
+  }, []);
+
+  const openLinkModal = useCallback(
+    (editor: Editor) => {
+      fillLinkFromEditor(editor);
+      setLinkModalOpen(true);
+    },
+    [fillLinkFromEditor],
+  );
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -185,7 +258,7 @@ export function AdminRichTextEditor({
         autolink: false,
         linkOnPaste: false,
         HTMLAttributes: {
-          class: "text-csg-blue underline",
+          class: "text-csg-blue underline cursor-pointer",
         },
       }),
       Placeholder.configure({ placeholder }),
@@ -200,18 +273,6 @@ export function AdminRichTextEditor({
     onUpdate: ({ editor: currentEditor }) => {
       onChange(currentEditor.getHTML());
     },
-    onSelectionUpdate: ({ editor: currentEditor }) => {
-      const activeLink = currentEditor.getAttributes("link").href as string | undefined;
-      if (activeLink) {
-        setEditingLink(true);
-        setLinkUrl(activeLink);
-        const { from, to } = currentEditor.state.selection;
-        const selectedText = currentEditor.state.doc.textBetween(from, to, "");
-        if (selectedText) {
-          setLinkText(selectedText);
-        }
-      }
-    },
   });
 
   useEffect(() => {
@@ -223,21 +284,26 @@ export function AdminRichTextEditor({
     }
   }, [editor, value]);
 
-  const fillLinkFromSelection = () => {
+  useEffect(() => {
     if (!editor) return;
 
-    const { from, to } = editor.state.selection;
-    const selectedText = editor.state.doc.textBetween(from, to, "");
-    const activeLink = editor.getAttributes("link").href as string | undefined;
+    const handleClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      const anchor = target.closest("a");
+      if (!anchor || !editor.view.dom.contains(anchor)) return;
 
-    if (selectedText) {
-      setLinkText(selectedText);
-    }
-    if (activeLink) {
-      setLinkUrl(activeLink);
-      setEditingLink(true);
-    }
-  };
+      event.preventDefault();
+      event.stopPropagation();
+
+      const pos = editor.view.posAtDOM(anchor, 0);
+      editor.chain().focus().setTextSelection(pos).extendMarkRange("link").run();
+      openLinkModal(editor);
+    };
+
+    const dom = editor.view.dom;
+    dom.addEventListener("click", handleClick, true);
+    return () => dom.removeEventListener("click", handleClick, true);
+  }, [editor, openLinkModal]);
 
   const applyLink = () => {
     if (!editor) return;
@@ -276,17 +342,13 @@ export function AdminRichTextEditor({
         .run();
     }
 
-    setLinkText("");
-    setLinkUrl("");
-    setEditingLink(false);
+    closeLinkModal();
   };
 
   const removeLink = () => {
     if (!editor) return;
     editor.chain().focus().extendMarkRange("link").unsetLink().run();
-    setLinkText("");
-    setLinkUrl("");
-    setEditingLink(false);
+    closeLinkModal();
   };
 
   if (!editor) {
@@ -298,17 +360,22 @@ export function AdminRichTextEditor({
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm">
-      <EditorToolbar editor={editor} onLinkClick={fillLinkFromSelection} />
+    <div className="admin-rich-text-root overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm">
+      <EditorToolbar
+        editor={editor}
+        onLinkClick={() => openLinkModal(editor)}
+      />
       <EditorContent editor={editor} />
-      <LinkInsertPanel
+      <LinkEditModal
+        open={linkModalOpen}
         text={linkText}
         url={linkUrl}
+        isEditing={editingLink}
         onTextChange={setLinkText}
         onUrlChange={setLinkUrl}
         onApply={applyLink}
         onRemove={removeLink}
-        canRemove={editingLink || editor.isActive("link")}
+        onClose={closeLinkModal}
       />
     </div>
   );

@@ -15,7 +15,6 @@ import {
   AdminSubmitButton,
 } from "@/components/admin/AdminForm";
 import { AdminPageHeader, AdminTable, AdminTableHead } from "@/components/admin/AdminUi";
-import { AdminLink } from "@/components/admin/AdminForm";
 
 function formatFileSize(bytes: number | null | undefined): string {
   if (!bytes || bytes <= 0) return "-";
@@ -38,7 +37,7 @@ export default async function AdminDocumentsPage() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Dökümanlar"
-        description="Form ve dilekçe PDF'leri. Site URL ile bloglarda paylaşılır; önizleme ve indirme siteden yapılır."
+        description="Form ve dilekçe PDF'leri. Site URL ile bloglarda paylaşılır."
       />
 
       <AdminActionForm
@@ -122,8 +121,6 @@ export default async function AdminDocumentsPage() {
                     {formatFileSize(asset.byteSize)}
                   </td>
                   <td className="px-5 py-3.5 text-right">
-                    <AdminLink href={sitePath}>Önizle</AdminLink>
-                    <span className="mx-2 text-slate-300">|</span>
                     <AdminActionForm
                       action={deleteSiteAssetAction}
                       className="inline"

@@ -1,6 +1,7 @@
 import { getSiteSettings } from "@/lib/settings";
 import type { SiteSettingsMap } from "@/lib/site-settings.shared";
 import { optimizeCloudinaryDeliveryUrl, siteImages } from "@/lib/media";
+import { linkUrlForEditor } from "@/lib/rich-text";
 
 export const guidesListPageSeo = {
   title: "Rehber",
@@ -66,7 +67,9 @@ export function parseGuidesListPageEditableFromSettings(
       ctaPrimaryLabel: parsed.ctaPrimaryLabel?.trim() || defaultEditable.ctaPrimaryLabel,
       ctaSecondaryLabel:
         parsed.ctaSecondaryLabel?.trim() || defaultEditable.ctaSecondaryLabel,
-      ctaSecondaryHref: parsed.ctaSecondaryHref?.trim() || defaultEditable.ctaSecondaryHref,
+      ctaSecondaryHref: linkUrlForEditor(
+        parsed.ctaSecondaryHref?.trim() || defaultEditable.ctaSecondaryHref,
+      ),
     };
   } catch {
     return defaultGuidesListPageEditable();
