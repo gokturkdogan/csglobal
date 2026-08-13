@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import type { HomepageContent } from "@/lib/homepage";
+import { FlagImage } from "@/components/ui/FlagImage";
 import { SiteImage } from "@/components/ui/SiteImage";
 import { HomeEditableField, HomeEditableImage } from "@/components/admin/homepage/HomeEditableField";
 import { useHomepageEdit } from "@/components/admin/homepage/HomepageEditContext";
@@ -110,13 +111,7 @@ export function HomeHero({
                 className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/20"
               >
                 {c.flag && (
-                  <SiteImage
-                    src={`https://flagcdn.com/w20/${c.flag.toLowerCase()}.png`}
-                    alt=""
-                    width={20}
-                    height={14}
-                    className="rounded-sm"
-                  />
+                  <FlagImage flag={c.flag} displayWidth={20} className="rounded-sm" />
                 )}
                 {c.name}
               </Link>

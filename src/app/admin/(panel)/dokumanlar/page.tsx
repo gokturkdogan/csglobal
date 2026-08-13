@@ -4,17 +4,15 @@ import {
   uploadSiteAssetAction,
 } from "@/lib/admin-actions";
 import { listSiteAssetsForAdmin } from "@/lib/repositories/site-asset.repository";
-import {
-  buildSiteAssetPath,
-  SITE_ASSET_ACCEPT,
-} from "@/lib/site-asset";
+import { SiteAssetBulkUploadField } from "@/components/admin/SiteAssetBulkUploadField";
+import { SiteAssetShowInMenuField } from "@/components/admin/SiteAssetShowInMenuField";
 import {
   AdminActionForm,
   AdminSelect,
   AdminSubmitButton,
 } from "@/components/admin/AdminForm";
-import { SiteAssetShowInMenuField } from "@/components/admin/SiteAssetShowInMenuField";
 import { AdminPageHeader, AdminTable, AdminTableHead } from "@/components/admin/AdminUi";
+import { buildSiteAssetPath, SITE_ASSET_MAX_BATCH } from "@/lib/site-asset";
 
 function formatFileSize(bytes: number | null | undefined): string {
   if (!bytes || bytes <= 0) return "-";
@@ -43,13 +41,14 @@ export default async function AdminDocumentsPage() {
       <AdminActionForm
         action={uploadSiteAssetAction}
         className="max-w-3xl rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-5"
-        successMessage="Döküman yüklendi."
+        successMessage="Dökümanlar yüklendi."
       >
         <div>
           <h2 className="text-base font-semibold text-slate-900">Dosya yükle</h2>
           <p className="mt-1 text-sm text-slate-500">
-            Dosya adı URL&apos;de kullanılır (ör.{" "}
-            <code className="text-csg-blue">almanya-schengen-formu.pdf</code>). Maks. 10MB.
+            Ülke seçin, ardından aynı ülke için en fazla {SITE_ASSET_MAX_BATCH} dosyayı
+            toplu seçip yükleyin. Dosya adı URL&apos;de kullanılır (ör.{" "}
+            <code className="text-csg-blue">almanya-schengen-formu.pdf</code>).
           </p>
         </div>
 
@@ -60,16 +59,7 @@ export default async function AdminDocumentsPage() {
           ))}
         </AdminSelect>
 
-        <label className="block">
-          <span className="text-sm font-medium text-slate-700">Dosya</span>
-          <input
-            type="file"
-            name="file"
-            required
-            accept={SITE_ASSET_ACCEPT}
-            className="mt-1.5 block w-full text-sm text-slate-600 file:mr-4 file:rounded-md file:border-0 file:bg-csg-blue file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-csg-blue-dark"
-          />
-        </label>
+        <SiteAssetBulkUploadField />
 
         <SiteAssetShowInMenuField variant="upload" />
 

@@ -29,8 +29,8 @@ export function SiteAssetShowInMenuField(props: Props) {
         <span className="min-w-0">
           <span className="block text-sm font-medium text-slate-900">Menüde göster</span>
           <span className="mt-1 block text-xs leading-relaxed text-slate-500">
-            İşaretliyse ülke, hizmet ve rehber sayfalarında sol panelde
-            &quot;Dilekçe, Formlar ve Belgeler&quot; altında listelenir.
+            İşaretliyse seçilen tüm dosyalar ülke, hizmet ve rehber sayfalarında sol
+            panelde &quot;Dilekçe, Formlar ve Belgeler&quot; altında listelenir.
           </span>
         </span>
       </label>

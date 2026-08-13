@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { siteImages } from "@/lib/media";
+import { FlagImage } from "@/components/ui/FlagImage";
 import { SiteImage } from "@/components/ui/SiteImage";
+import { siteImages } from "@/lib/media";
 
 export function CountryCard({
   name,
@@ -33,11 +34,9 @@ export function CountryCard({
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent" />
         <div className="absolute bottom-3 left-4 flex items-center gap-3">
           {flag && (
-            <SiteImage
-              src={`https://flagcdn.com/w80/${flag.toLowerCase()}.png`}
-              alt=""
-              width={48}
-              height={36}
+            <FlagImage
+              flag={flag}
+              displayWidth={48}
               className="rounded shadow-md ring-1 ring-white/30"
             />
           )}

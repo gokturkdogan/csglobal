@@ -77,6 +77,9 @@ export function formatSiteAssetFileSize(bytes: number | null | undefined): strin
 
 export const SITE_ASSET_MAX_BYTES = 10 * 1024 * 1024;
 
+/** Tek yüklemede seçilebilecek dosya sayısı */
+export const SITE_ASSET_MAX_BATCH = 10;
+
 export const SITE_ASSET_ACCEPT =
   ".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.webp,application/pdf";
 

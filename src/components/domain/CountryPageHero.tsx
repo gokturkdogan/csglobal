@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FlagImage } from "@/components/ui/FlagImage";
 import { SiteImage } from "@/components/ui/SiteImage";
 import { siteImages } from "@/lib/media";
 
@@ -69,11 +70,9 @@ export function CountryPageHero({
           <div className="max-w-3xl">
             <div className="flex items-start gap-4">
               {flag && (
-                <SiteImage
-                  src={`https://flagcdn.com/w160/${flag.toLowerCase()}.png`}
-                  alt=""
-                  width={64}
-                  height={48}
+                <FlagImage
+                  flag={flag}
+                  displayWidth={64}
                   className="shrink-0 rounded-md shadow-lg ring-2 ring-white/25"
                 />
               )}

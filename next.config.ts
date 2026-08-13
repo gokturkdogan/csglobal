@@ -1,10 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Görsel yükleme (Server Actions) varsayılan 1MB sınırını aşar
+  // Toplu döküman yükleme (10 dosya x 10MB)
   experimental: {
     serverActions: {
-      bodySizeLimit: "10mb",
+      bodySizeLimit: "100mb",
     },
   },
   images: {

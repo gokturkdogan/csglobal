@@ -826,31 +826,30 @@ export async function uploadSiteAssetAction(formData: FormData): Promise<AdminAc
   await requireAdmin();
 
   const countryId = (formData.get("countryId") as string)?.trim();
-  const file = formData.get("file") as File | null;
   const showInMenu = formData.get("showInMenu") === "on";
+  const rawFiles = formData.getAll("files");
+  const files = rawFiles.filter(
+    (entry): entry is File => entry instanceof File && entry.size > 0,
+  );
 
   if (!countryId) {
     return adminFailure("Ülke seçin.");
   }
-  if (!file || file.size === 0) {
+  if (files.length === 0) {
     return adminFailure("Dosya seçin.");
   }
 
   const {
     SITE_ASSET_MAX_BYTES,
+    SITE_ASSET_MAX_BATCH,
     sanitizeSiteAssetFileName,
     buildSiteAssetPath,
     buildSiteAssetPublicUrl,
     resolveSiteAssetMimeType,
   } = await import("@/lib/site-asset");
 
-  if (file.size > SITE_ASSET_MAX_BYTES) {
-    return adminFailure("Dosya 10MB sınırını aşıyor.");
-  }
-
-  const mimeType = resolveSiteAssetMimeType(file.name, file.type);
-  if (!mimeType) {
-    return adminFailure("Yalnızca PDF, Word, Excel veya görsel dosyaları yüklenebilir.");
+  if (files.length > SITE_ASSET_MAX_BATCH) {
+    return adminFailure(`Tek seferde en fazla ${SITE_ASSET_MAX_BATCH} dosya yükleyebilirsiniz.`);
   }
 
   try {
@@ -862,44 +861,85 @@ export async function uploadSiteAssetAction(formData: FormData): Promise<AdminAc
       return adminFailure("Ülke bulunamadı.");
     }
 
-    const fileName = sanitizeSiteAssetFileName(file.name);
-    const buffer = Buffer.from(await file.arrayBuffer());
+    const uploaded: string[] = [];
+    const failed: string[] = [];
 
-    const asset = await prisma.siteAsset.upsert({
-      where: {
-        countryId_fileName: { countryId, fileName },
-      },
-      create: {
-        countryId,
-        fileName,
-        cloudinaryPublicId: null,
-        fileUrl: "",
-        fileData: buffer,
-        mimeType,
-        byteSize: file.size,
-        showInMenu,
-      },
-      update: {
-        cloudinaryPublicId: null,
-        fileData: buffer,
-        mimeType,
-        byteSize: file.size,
-        showInMenu,
-      },
-    });
+    for (const file of files) {
+      if (file.size > SITE_ASSET_MAX_BYTES) {
+        failed.push(`${file.name}: 10MB sınırını aşıyor`);
+        continue;
+      }
 
-    const path = buildSiteAssetPath(asset.id, country.slug, fileName);
-    const publicUrl = buildSiteAssetPublicUrl(asset.id, country.slug, fileName);
+      const mimeType = resolveSiteAssetMimeType(file.name, file.type);
+      if (!mimeType) {
+        failed.push(`${file.name}: desteklenmeyen dosya türü`);
+        continue;
+      }
 
-    await prisma.siteAsset.update({
-      where: { id: asset.id },
-      data: { fileUrl: publicUrl },
-    });
+      try {
+        const fileName = sanitizeSiteAssetFileName(file.name);
+        const buffer = Buffer.from(await file.arrayBuffer());
+
+        const asset = await prisma.siteAsset.upsert({
+          where: {
+            countryId_fileName: { countryId, fileName },
+          },
+          create: {
+            countryId,
+            fileName,
+            cloudinaryPublicId: null,
+            fileUrl: "",
+            fileData: buffer,
+            mimeType,
+            byteSize: file.size,
+            showInMenu,
+          },
+          update: {
+            cloudinaryPublicId: null,
+            fileData: buffer,
+            mimeType,
+            byteSize: file.size,
+            showInMenu,
+          },
+        });
+
+        const path = buildSiteAssetPath(asset.id, country.slug, fileName);
+        const publicUrl = buildSiteAssetPublicUrl(asset.id, country.slug, fileName);
+
+        await prisma.siteAsset.update({
+          where: { id: asset.id },
+          data: { fileUrl: publicUrl },
+        });
+
+        revalidatePath(path);
+        uploaded.push(fileName);
+      } catch (error) {
+        const detail = adminErrorMessage(error, "");
+        failed.push(
+          detail ? `${file.name}: ${detail}` : `${file.name}: yüklenemedi`,
+        );
+      }
+    }
 
     revalidatePath("/admin/dokumanlar");
     revalidatePath(`/${country.slug}`);
-    revalidatePath(path);
-    return adminSuccess(`Döküman yüklendi: ${path}`, "/admin/dokumanlar");
+
+    if (uploaded.length === 0) {
+      return adminFailure(
+        failed.length > 0
+          ? `Hiçbir dosya yüklenemedi. ${failed.join("; ")}`
+          : "Döküman yüklenemedi. Lütfen tekrar deneyin.",
+      );
+    }
+
+    const menuNote = showInMenu ? " Sol menüde göster işaretli." : "";
+    const failNote =
+      failed.length > 0 ? ` ${failed.length} dosya yüklenemedi: ${failed.join("; ")}` : "";
+
+    return adminSuccess(
+      `${uploaded.length} döküman yüklendi.${menuNote}${failNote}`,
+      "/admin/dokumanlar",
+    );
   } catch (error) {
     const detail = adminErrorMessage(error, "");
     const message = detail
