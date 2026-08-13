@@ -7,6 +7,7 @@ import { GuideSectionsEditor } from "@/components/admin/guide/GuideSectionsEdito
 import {
   VisualSlugField,
   VisualSlugProvider,
+  VisualTitleField,
 } from "@/components/admin/VisualSlugProvider";
 import {
   AdminCheckbox,
@@ -16,6 +17,7 @@ import {
   AdminSubmitButton,
 } from "@/components/admin/AdminForm";
 import { AdminPageHeader } from "@/components/admin/AdminUi";
+import { AdminSlugPublicUrl } from "@/components/admin/AdminPublicUrl";
 import {
   findArticleForAdmin,
   listServicesForGuideAdmin,
@@ -49,20 +51,30 @@ export default async function EditArticlePage({ params }: Props) {
     article?.linkedServices.map((link) => link.serviceId) ?? [];
 
   const defaultCountryId = article?.countryId ?? countries[0]?.id ?? "";
+  const initialArticlePath = article ? `/rehber/${article.slug}` : null;
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader
-        title={article ? article.title : "Yeni Rehber"}
-        description="Ülkeye bağlı rehber içeriği, hero görseli ve hizmet ilişkileri."
-      />
+      <VisualSlugProvider
+        initialSlug={article?.slug ?? ""}
+        initialTitle={article?.title ?? ""}
+      >
+        <AdminPageHeader
+          title={article ? article.title : "Yeni Rehber"}
+          description="Ülkeye bağlı rehber içeriği, hero görseli ve hizmet ilişkileri."
+          publicUrl={
+            <AdminSlugPublicUrl
+              prefix="/rehber"
+              initialPath={initialArticlePath}
+            />
+          }
+        />
 
-      <AdminActionForm action={saveArticleAction} className="max-w-3xl space-y-6">
+        <AdminActionForm action={saveArticleAction} className="max-w-3xl space-y-6">
         {article && <input type="hidden" name="id" value={article.id} />}
 
-        <VisualSlugProvider initialSlug={article?.slug ?? ""}>
           <AdminFormSection title="Genel">
-            <AdminField label="Başlık" name="title" value={article?.title} required />
+            <VisualTitleField label="Başlık" name="title" required />
             <VisualSlugField
               cloudinaryPrefix="Guides"
               placeholder="almanya-vize-rehberi"
@@ -111,7 +123,6 @@ export default async function EditArticlePage({ params }: Props) {
               featureImageText={article?.featureImageText}
             />
           </AdminFormSection>
-        </VisualSlugProvider>
 
         <AdminFormSection title="Yayın">
           <AdminCheckbox
@@ -123,6 +134,7 @@ export default async function EditArticlePage({ params }: Props) {
 
         <AdminSubmitButton>Kaydet</AdminSubmitButton>
       </AdminActionForm>
+      </VisualSlugProvider>
     </div>
   );
 }

@@ -79,7 +79,12 @@ function HomepageEditorInner({
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-slate-900">Anasayfa: Görsel Düzenleyici</h1>
-          <p className="mt-1 text-sm text-slate-600">
+          <code
+            className="mt-2 block break-all rounded-md bg-slate-100 px-2.5 py-1.5 text-sm text-slate-700 select-all"
+          >
+            /
+          </code>
+          <p className="mt-2 text-sm text-slate-600">
             WordPress benzeri önizleme; metinlere tıklayıp düzenleyin, görsellerde &quot;Görseli değiştir&quot;
             kullanın.
           </p>

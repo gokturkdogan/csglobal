@@ -29,6 +29,7 @@ export default async function AdminContactPage() {
       <AdminPageHeader
         title="İletişim"
         description="İletişim sayfası hero, kanallar, harita ve site genelinde kullanılan iletişim bilgileri."
+        publicPath="/iletisim"
         actions={
           <AdminButtonLink href="/iletisim" variant="secondary">
             Sayfayı görüntüle

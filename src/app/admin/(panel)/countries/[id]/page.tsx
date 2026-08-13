@@ -18,6 +18,7 @@ import {
   AdminTextArea,
 } from "@/components/admin/AdminForm";
 import { AdminPageHeader } from "@/components/admin/AdminUi";
+import { AdminFormSlugPublicUrl } from "@/components/admin/AdminPublicUrl";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -47,6 +48,13 @@ export default async function EditCountryPage({ params }: Props) {
       <AdminPageHeader
         title={country ? `${country.name} Düzenle` : "Yeni Ülke"}
         description="Ülke bilgileri, detay sayfası içeriği ve ülkeye özel SSS."
+        publicUrl={
+          <AdminFormSlugPublicUrl
+            fieldName="slug"
+            initialSlug={country?.slug ?? ""}
+            initialPath={country ? `/${country.slug}` : null}
+          />
+        }
       />
 
       <AdminActionForm action={saveCountryAction} className="max-w-3xl space-y-6">

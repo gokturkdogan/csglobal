@@ -1,21 +1,38 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { formatPublicSitePath } from "@/lib/site-url";
 
 export function AdminPageHeader({
   title,
   description,
   actions,
+  publicPath,
+  publicUrl,
 }: {
   title: string;
   description?: string;
   actions?: ReactNode;
+  /** Statik site yolu, örn. /hakkimizda */
+  publicPath?: string;
+  /** Canlı URL (slug değişiminde güncellenen bileşen) */
+  publicUrl?: ReactNode;
 }) {
+  const staticPath = publicPath ? formatPublicSitePath(publicPath) : null;
+
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight text-slate-900 md:text-3xl">
           {title}
         </h1>
+        {staticPath && (
+          <code
+            className="mt-2 block break-all rounded-md bg-slate-100 px-2.5 py-1.5 text-sm text-slate-700 select-all"
+          >
+            {staticPath}
+          </code>
+        )}
+        {publicUrl}
         {description && (
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
             {description}

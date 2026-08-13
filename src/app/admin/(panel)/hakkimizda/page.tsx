@@ -37,6 +37,7 @@ export default async function AdminAboutPage() {
       <AdminPageHeader
         title="Hakkımızda"
         description="Hero, kurumsal metinler, görseller ve değerlerimiz bölümü."
+        publicPath="/hakkimizda"
         actions={
           <AdminButtonLink href="/hakkimizda" variant="secondary">
             Sayfayı görüntüle

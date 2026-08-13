@@ -28,7 +28,8 @@ export default async function AdminGuidesListPage() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Rehberlerimiz"
-        description="Rehber liste sayfası (/rehber): hero, kart listesi üst metni ve alt CTA alanı."
+        description="Rehber liste sayfası: hero, kart listesi üst metni ve alt CTA alanı."
+        publicPath="/rehber"
         actions={
           <AdminButtonLink href="/rehber" variant="secondary">
             Sayfayı görüntüle

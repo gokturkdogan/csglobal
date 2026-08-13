@@ -6,7 +6,6 @@ import {
 import { listSiteAssetsForAdmin } from "@/lib/repositories/site-asset.repository";
 import {
   buildSiteAssetPath,
-  buildSiteAssetPublicUrl,
   SITE_ASSET_ACCEPT,
 } from "@/lib/site-asset";
 import {
@@ -96,26 +95,15 @@ export default async function AdminDocumentsPage() {
                 asset.country.slug,
                 asset.fileName,
               );
-              const publicUrl = buildSiteAssetPublicUrl(
-                asset.id,
-                asset.country.slug,
-                asset.fileName,
-              );
 
               return (
                 <tr key={asset.id} className="hover:bg-slate-50/80">
                   <td className="px-5 py-3.5 font-medium text-slate-900">{asset.fileName}</td>
                   <td className="px-5 py-3.5 text-slate-600">{asset.country.name}</td>
                   <td className="px-5 py-3.5">
-                    <code className="text-xs text-slate-600">{sitePath}</code>
-                    <a
-                      href={publicUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-1 block text-xs font-medium text-csg-blue hover:underline"
-                    >
-                      {publicUrl}
-                    </a>
+                    <code className="text-xs text-slate-600 select-all break-all">
+                      {sitePath}
+                    </code>
                   </td>
                   <td className="px-5 py-3.5 text-slate-500">
                     {formatFileSize(asset.byteSize)}

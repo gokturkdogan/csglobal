@@ -6,7 +6,6 @@ import { EditorContent, useEditor, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { contentForRichTextEditor, linkUrlForEditor, normalizeLinkUrl } from "@/lib/rich-text";
-import { getPublicSiteUrl } from "@/lib/site-url";
 
 const inputClass =
   "mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-csg-blue focus:outline-none focus:ring-2 focus:ring-csg-blue/20";
@@ -158,7 +157,7 @@ function LinkEditModal({
               className={inputClass}
             />
             <span className="mt-1 block text-xs text-slate-500">
-              Dış site: tam adres (https://…). Site içi: yol ({getPublicSiteUrl()}/… yerine{" "}
+              Dış site: tam adres (https://…). Site içi: yol (
               <code className="text-csg-blue">/asset/…</code>).
             </span>
           </label>

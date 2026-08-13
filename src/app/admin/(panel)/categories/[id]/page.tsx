@@ -9,6 +9,7 @@ import {
   AdminSubmitButton,
 } from "@/components/admin/AdminForm";
 import { AdminPageHeader } from "@/components/admin/AdminUi";
+import { AdminFormSlugPublicUrl } from "@/components/admin/AdminPublicUrl";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -22,11 +23,34 @@ export default async function EditCategoryPage({ params }: Props) {
 
   if (!isNew && !category) notFound();
 
+  const exampleCountry = await prisma.country.findFirst({
+    where: { isActive: true },
+    orderBy: { name: "asc" },
+    select: { slug: true },
+  });
+  const categoryPathPrefix = exampleCountry
+    ? `/${exampleCountry.slug}`
+    : "";
+
   return (
     <div className="space-y-6">
       <AdminPageHeader
         title={category ? `${category.name} Düzenle` : "Yeni Kategori"}
         description="Global kategori: hizmetler ülkeye bağlanır, kategori tüm ülkelerde ortaktır."
+        publicUrl={
+          categoryPathPrefix ? (
+            <AdminFormSlugPublicUrl
+              fieldName="slug"
+              pathPrefix={categoryPathPrefix}
+              initialSlug={category?.slug ?? ""}
+              initialPath={
+                category
+                  ? `${categoryPathPrefix}/${category.slug}`
+                  : null
+              }
+            />
+          ) : undefined
+        }
       />
 
       <AdminActionForm action={saveCategoryAction} className="max-w-3xl space-y-6">

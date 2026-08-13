@@ -13,3 +13,18 @@ export function getPublicSiteOrigin(): string {
     return getPublicSiteUrl();
   }
 }
+
+/** Site yolu → tam public URL (NEXT_PUBLIC_SITE_URL). */
+export function buildPublicSiteUrl(path: string): string {
+  const trimmed = path.trim();
+  if (!trimmed) return getPublicSiteUrl();
+  const normalized = trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+  return `${getPublicSiteUrl()}${normalized}`;
+}
+
+/** Admin panelde gösterim: yalnızca site yolu (/rehber/..., /almanya/...). */
+export function formatPublicSitePath(path: string): string {
+  const trimmed = path.trim();
+  if (!trimmed || trimmed === "/") return "/";
+  return trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+}

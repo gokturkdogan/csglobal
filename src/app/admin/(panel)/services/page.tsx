@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { buildServicePath } from "@/lib/paths";
+import { formatPublicSitePath } from "@/lib/site-url";
 import { AdminButtonLink, AdminLink } from "@/components/admin/AdminForm";
 import {
   AdminPageHeader,
@@ -29,7 +31,7 @@ export default async function AdminServicesPage() {
           <th className="px-5 py-3">Ülke</th>
           <th className="px-5 py-3">Ad</th>
           <th className="px-5 py-3">Kategori</th>
-          <th className="px-5 py-3">Slug</th>
+          <th className="px-5 py-3">Site URL</th>
           <th className="px-5 py-3">Durum</th>
           <th className="px-5 py-3 text-right">İşlem</th>
         </AdminTableHead>
@@ -39,7 +41,11 @@ export default async function AdminServicesPage() {
               <td className="px-5 py-3.5 text-slate-600">{s.country.name}</td>
               <td className="px-5 py-3.5 font-medium text-slate-900">{s.name}</td>
               <td className="px-5 py-3.5 text-slate-500">{s.category.name}</td>
-              <td className="px-5 py-3.5 text-slate-500">/{s.country.slug}/{s.slug}</td>
+              <td className="px-5 py-3.5">
+                <code className="text-xs text-slate-600 select-all break-all">
+                  {formatPublicSitePath(buildServicePath(s.country.slug, s.slug))}
+                </code>
+              </td>
               <td className="px-5 py-3.5">
                 <AdminStatusBadge active={s.isActive} />
               </td>

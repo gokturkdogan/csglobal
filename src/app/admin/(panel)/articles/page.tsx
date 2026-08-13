@@ -1,4 +1,5 @@
 import { listArticlesForAdmin } from "@/lib/repositories/article.repository";
+import { formatPublicSitePath } from "@/lib/site-url";
 import { AdminButtonLink, AdminLink } from "@/components/admin/AdminForm";
 import {
   AdminPageHeader,
@@ -31,8 +32,10 @@ export default async function AdminArticlesPage() {
           {articles.map((article) => (
             <tr key={article.id} className="hover:bg-slate-50/80">
               <td className="px-5 py-3.5 font-medium text-slate-900">{article.title}</td>
-              <td className="px-5 py-3.5 text-slate-500">
-                <code className="text-xs">/rehber/{article.slug}</code>
+              <td className="px-5 py-3.5">
+                <code className="text-xs text-slate-600 select-all break-all">
+                  {formatPublicSitePath(`/rehber/${article.slug}`)}
+                </code>
               </td>
               <td className="px-5 py-3.5 text-slate-600">{article.country?.name ?? "-"}</td>
               <td className="px-5 py-3.5 text-slate-600">
