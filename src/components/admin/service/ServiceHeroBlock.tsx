@@ -4,7 +4,7 @@ import { AdminManagedImageField } from "@/components/admin/AdminManagedImageFiel
 import { AdminField, AdminTextArea } from "@/components/admin/AdminForm";
 import { serviceHeroImageSlot } from "@/lib/service-image-slots";
 import { siteImages } from "@/lib/media";
-import { useVisualSlug, VisualSlugGate } from "@/components/admin/VisualSlugProvider";
+import { VisualSlugGate } from "@/components/admin/VisualSlugProvider";
 
 type Props = {
   heroImage: string;
@@ -21,19 +21,19 @@ export function ServiceHeroBlock({
   defaultTitle,
   defaultSubtitle,
 }: Props) {
-  const { slug } = useVisualSlug();
-
   return (
     <div className="space-y-5">
       <VisualSlugGate>
-        <AdminManagedImageField
-          name="heroImage"
-          defaultValue={heroImage}
-          fallbackSrc={siteImages.countryDetailHero}
-          slot={serviceHeroImageSlot(slug)}
-          previewVariant="hero"
-          imageClassName="object-cover object-center md:object-[center_30%]"
-        />
+        {(slug) => (
+          <AdminManagedImageField
+            name="heroImage"
+            defaultValue={heroImage}
+            fallbackSrc={siteImages.countryDetailHero}
+            slot={serviceHeroImageSlot(slug)}
+            previewVariant="hero"
+            imageClassName="object-cover object-center md:object-[center_30%]"
+          />
+        )}
       </VisualSlugGate>
 
       <AdminField

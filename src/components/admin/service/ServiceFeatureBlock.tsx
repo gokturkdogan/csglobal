@@ -8,7 +8,7 @@ import {
   SERVICE_FEATURE_TITLE_MAX,
 } from "@/lib/service-page";
 import { siteImages } from "@/lib/media";
-import { useVisualSlug, VisualSlugGate } from "@/components/admin/VisualSlugProvider";
+import { VisualSlugGate } from "@/components/admin/VisualSlugProvider";
 
 type Props = {
   index: 1 | 2;
@@ -23,7 +23,6 @@ export function ServiceFeatureBlock({
   featureImageTitle,
   featureImageText,
 }: Props) {
-  const { slug } = useVisualSlug();
   const imageName = index === 1 ? "featureImage1" : "featureImage2";
   const titleName = index === 1 ? "featureImage1Title" : "featureImage2Title";
   const textName = index === 1 ? "featureImage1Text" : "featureImage2Text";
@@ -33,13 +32,15 @@ export function ServiceFeatureBlock({
   return (
     <div className="space-y-5">
       <VisualSlugGate>
-        <AdminManagedImageField
-          name={imageName}
-          defaultValue={featureImage}
-          fallbackSrc={fallback}
-          slot={serviceFeatureImageSlot(slug, index)}
-          previewVariant="card"
-        />
+        {(slug) => (
+          <AdminManagedImageField
+            name={imageName}
+            defaultValue={featureImage}
+            fallbackSrc={fallback}
+            slot={serviceFeatureImageSlot(slug, index)}
+            previewVariant="card"
+          />
+        )}
       </VisualSlugGate>
 
       <AdminCharCountField

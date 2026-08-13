@@ -8,7 +8,7 @@ import {
   GUIDE_FEATURE_IMAGE_TITLE_MAX,
 } from "@/lib/guide";
 import { siteImages } from "@/lib/media";
-import { useVisualSlug, VisualSlugGate } from "@/components/admin/VisualSlugProvider";
+import { VisualSlugGate } from "@/components/admin/VisualSlugProvider";
 
 type Props = {
   featureImage: string;
@@ -21,18 +21,18 @@ export function GuideFeatureBlock({
   featureImageTitle,
   featureImageText,
 }: Props) {
-  const { slug } = useVisualSlug();
-
   return (
     <div className="space-y-5">
       <VisualSlugGate>
-        <AdminManagedImageField
-          name="featureImage"
-          defaultValue={featureImage}
-          fallbackSrc={siteImages.conference}
-          slot={guideFeatureImageSlot(slug)}
-          previewVariant="card"
-        />
+        {(slug) => (
+          <AdminManagedImageField
+            name="featureImage"
+            defaultValue={featureImage}
+            fallbackSrc={siteImages.conference}
+            slot={guideFeatureImageSlot(slug)}
+            previewVariant="card"
+          />
+        )}
       </VisualSlugGate>
 
       <AdminCharCountField

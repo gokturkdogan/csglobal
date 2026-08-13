@@ -75,8 +75,12 @@ export function VisualSlugField({
   );
 }
 
-export function VisualSlugGate({ children }: { children: ReactNode }) {
-  const { slugReady } = useVisualSlug();
+export function VisualSlugGate({
+  children,
+}: {
+  children: (slug: string) => ReactNode;
+}) {
+  const { slug, slugReady } = useVisualSlug();
   if (!slugReady) return null;
-  return <>{children}</>;
+  return <>{children(slug)}</>;
 }
