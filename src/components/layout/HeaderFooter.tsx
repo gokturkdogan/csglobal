@@ -7,6 +7,7 @@ import { WhatsAppIcon, whatsappButtonClass } from "@/components/ui/WhatsAppIcon"
 
 const navItems = [
   { href: "/ulkeler", label: "Ülkeler" },
+  { href: "/hizmetlerimiz", label: "Hizmetlerimiz" },
   { href: "/rehber", label: "Rehber" },
   { href: "/hakkimizda", label: "Hakkımızda" },
   { href: "/iletisim", label: "İletişim" },
@@ -110,6 +111,7 @@ export function Footer({
           <p className="text-sm font-semibold text-slate-900">Bağlantılar</p>
           <ul className="mt-3 space-y-2 text-sm text-slate-600">
             <li><Link href="/ulkeler" className="cursor-pointer hover:text-csg-blue">Ülkeler</Link></li>
+            <li><Link href="/hizmetlerimiz" className="cursor-pointer hover:text-csg-blue">Hizmetlerimiz</Link></li>
             <li><Link href="/rehber" className="cursor-pointer hover:text-csg-blue">Rehber & Blog</Link></li>
             <li><Link href="/hakkimizda" className="cursor-pointer hover:text-csg-blue">Hakkımızda</Link></li>
           </ul>

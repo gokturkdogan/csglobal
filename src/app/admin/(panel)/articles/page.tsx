@@ -21,6 +21,7 @@ export default async function AdminArticlesPage() {
       <AdminTable>
         <AdminTableHead>
           <th className="px-5 py-3">Başlık</th>
+          <th className="px-5 py-3">Site URL</th>
           <th className="px-5 py-3">Ülke</th>
           <th className="px-5 py-3">Hizmet bağlantısı</th>
           <th className="px-5 py-3">Yayın</th>
@@ -30,6 +31,9 @@ export default async function AdminArticlesPage() {
           {articles.map((article) => (
             <tr key={article.id} className="hover:bg-slate-50/80">
               <td className="px-5 py-3.5 font-medium text-slate-900">{article.title}</td>
+              <td className="px-5 py-3.5 text-slate-500">
+                <code className="text-xs">/rehber/{article.slug}</code>
+              </td>
               <td className="px-5 py-3.5 text-slate-600">{article.country?.name ?? "-"}</td>
               <td className="px-5 py-3.5 text-slate-600">
                 {article.linkedServices.length > 0
@@ -45,6 +49,8 @@ export default async function AdminArticlesPage() {
               </td>
               <td className="px-5 py-3.5 text-right">
                 <AdminLink href={`/admin/articles/${article.id}`}>Düzenle</AdminLink>
+                <span className="mx-2 text-slate-300">|</span>
+                <AdminLink href={`/rehber/${article.slug}`} external>Görüntüle</AdminLink>
               </td>
             </tr>
           ))}

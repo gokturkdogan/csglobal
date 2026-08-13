@@ -60,6 +60,26 @@ export async function findAllActiveServices() {
   });
 }
 
+/** Tüm aktif hizmetler (aktif ülkeler), liste sayfası için. */
+export async function findAllServicesForListing() {
+  return prisma.service.findMany({
+    where: {
+      ...active,
+      country: { isActive: true },
+    },
+    orderBy: [
+      { country: { name: "asc" } },
+      { category: { sortOrder: "asc" } },
+      { sortOrder: "asc" },
+      { name: "asc" },
+    ],
+    include: {
+      country: { select: { name: true, slug: true } },
+      category: { select: { name: true, slug: true } },
+    },
+  });
+}
+
 export async function findServiceById(id: string) {
   return prisma.service.findUnique({
     where: { id },
