@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { CountryDetailPage } from "@/components/country/CountryDetailPage";
 import { findCountryPageBySlug } from "@/lib/repositories/country.repository";
-import { findCategoriesWithCountryServices } from "@/lib/repositories/category.repository";
 import { loadCountryCategoryPanelData } from "@/lib/country-page/load-category-panel";
 import { buildEntityMetadata, buildFaqJsonLd } from "@/lib/services/seo.service";
 import { getSiteSettings } from "@/lib/settings";
@@ -29,12 +28,12 @@ export default async function CountryPage({ params }: Props) {
   if (!country) notFound();
 
   const settings = await getSiteSettings();
-  const categories = (await findCategoriesWithCountryServices(country.id)) ?? [];
   const { panelCategories, consulates, documents } = await loadCountryCategoryPanelData(
     country.id,
     countrySlug,
   );
   const serviceCount = panelCategories.reduce((n, cat) => n + cat.services.length, 0);
+  const categoryCount = panelCategories.length;
   const faqs = country.faqs.map((f) => ({
     question: f.question,
     answer: f.answer,
@@ -67,7 +66,7 @@ export default async function CountryPage({ params }: Props) {
         }}
         settings={settings}
         serviceCount={serviceCount}
-        categoryCount={categories.length}
+        categoryCount={categoryCount}
         categories={panelCategories}
         consulates={consulates}
         documents={documents}

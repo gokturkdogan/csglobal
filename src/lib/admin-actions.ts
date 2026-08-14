@@ -481,8 +481,8 @@ export async function saveArticleAction(formData: FormData): Promise<AdminAction
     return adminFailure("Ülke seçimi zorunludur.");
   }
 
-  const serviceIds = formData
-    .getAll("serviceIds")
+  const categoryIds = formData
+    .getAll("categoryIds")
     .map((value) => String(value).trim())
     .filter(Boolean);
 
@@ -529,12 +529,12 @@ export async function saveArticleAction(formData: FormData): Promise<AdminAction
           },
         });
 
-        await tx.articleService.deleteMany({ where: { articleId: id } });
-        if (serviceIds.length > 0) {
-          await tx.articleService.createMany({
-            data: serviceIds.map((serviceId) => ({
+        await tx.articleCategoryLink.deleteMany({ where: { articleId: id } });
+        if (categoryIds.length > 0) {
+          await tx.articleCategoryLink.createMany({
+            data: categoryIds.map((categoryId) => ({
               articleId: id,
-              serviceId,
+              categoryId,
             })),
             skipDuplicates: true,
           });
@@ -554,11 +554,11 @@ export async function saveArticleAction(formData: FormData): Promise<AdminAction
 
     const article = await prisma.$transaction(async (tx) => {
       const created = await tx.article.create({ data });
-      if (serviceIds.length > 0) {
-        await tx.articleService.createMany({
-          data: serviceIds.map((serviceId) => ({
+      if (categoryIds.length > 0) {
+        await tx.articleCategoryLink.createMany({
+          data: categoryIds.map((categoryId) => ({
             articleId: created.id,
-            serviceId,
+            categoryId,
           })),
           skipDuplicates: true,
         });

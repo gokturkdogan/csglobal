@@ -67,7 +67,7 @@ export function mapCategoriesForCountryPanel(
 type CategoryPanelGuideRecord = {
   slug: string;
   title: string;
-  linkedServices: Array<{ service: { categoryId: string } }>;
+  linkedCategories: Array<{ categoryId: string }>;
 };
 
 /** Kategori panelinde gösterilecek rehberleri kategori slug'ına dağıtır (kategori içinde tekilleştirilmiş). */
@@ -79,13 +79,8 @@ export function attachGuidesToCategoryPanel(
   const guidesByCategorySlug = new Map<string, CountryCategoryGuideItem[]>();
 
   for (const guide of guides) {
-    const categoryIds = new Set<string>();
-    for (const link of guide.linkedServices) {
-      categoryIds.add(link.service.categoryId);
-    }
-
-    for (const categoryId of categoryIds) {
-      const categorySlug = categoryIdToSlug.get(categoryId);
+    for (const link of guide.linkedCategories) {
+      const categorySlug = categoryIdToSlug.get(link.categoryId);
       if (!categorySlug) continue;
 
       const list = guidesByCategorySlug.get(categorySlug) ?? [];
@@ -102,9 +97,12 @@ export function attachGuidesToCategoryPanel(
   }));
 }
 
-/** Yalnızca en az bir hizmeti olan kategoriler (hizmet detay yan paneli vb.) */
+/** Yalnızca en az bir hizmet veya rehber içeren kategoriler */
 export function filterPopulatedCountryCategories(
   categories: CountryCategoryPanelItem[],
 ): CountryCategoryPanelItem[] {
-  return categories.filter((category) => (category.services?.length ?? 0) > 0);
+  return categories.filter(
+    (category) =>
+      (category.services?.length ?? 0) > 0 || (category.guides?.length ?? 0) > 0,
+  );
 }

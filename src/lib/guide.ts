@@ -2,7 +2,7 @@ import { normalizeRichTextContent } from "@/lib/rich-text";
 import { optimizeCloudinaryDeliveryUrl } from "@/lib/media";
 import { siteImages } from "@/lib/media";
 
-export const GUIDE_SECTIONS_MAX = 15;
+export const GUIDE_SECTIONS_MAX = 80;
 export const GUIDE_HERO_CROP_ASPECT = 3.2;
 export const GUIDE_FEATURE_IMAGE_TITLE_MAX = 35;
 export const GUIDE_FEATURE_IMAGE_TEXT_MAX = 450;

@@ -1,7 +1,7 @@
 import { normalizeRichTextContent } from "@/lib/rich-text";
 import { optimizeCloudinaryDeliveryUrl, siteImages } from "@/lib/media";
 
-export const SERVICE_SECTIONS_MAX = 15;
+export const SERVICE_SECTIONS_MAX = 80;
 export const SERVICE_HERO_CROP_ASPECT = 3.2;
 export const SERVICE_FEATURE_TITLE_MAX = 35;
 export const SERVICE_FEATURE_TEXT_MAX = 450;

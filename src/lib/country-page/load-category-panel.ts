@@ -3,6 +3,7 @@ import { findCategoriesWithCountryServices } from "@/lib/repositories/category.r
 import { findCategoryPanelArticlesByCountry } from "@/lib/repositories/article.repository";
 import {
   attachGuidesToCategoryPanel,
+  filterPopulatedCountryCategories,
   mapCategoriesForCountryPanel,
   type CountryCategoryPanelItem,
   type CountryConsulatePanelItem,
@@ -22,10 +23,12 @@ export async function loadCountryCategoryPanelData(
   const categories = (await findCategoriesWithCountryServices(countryId)) ?? [];
   const categoryIdToSlug = new Map(categories.map((cat) => [cat.id, cat.slug]));
   const panelGuides = await findCategoryPanelArticlesByCountry(countryId);
-  const panelCategories = attachGuidesToCategoryPanel(
-    mapCategoriesForCountryPanel(categories),
-    panelGuides,
-    categoryIdToSlug,
+  const panelCategories = filterPopulatedCountryCategories(
+    attachGuidesToCategoryPanel(
+      mapCategoriesForCountryPanel(categories),
+      panelGuides,
+      categoryIdToSlug,
+    ),
   );
   const consulateRows = await findActiveConsulatesByCountrySlug(countrySlug);
   const consulates = consulateRows.map((c) => ({

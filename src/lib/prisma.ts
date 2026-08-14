@@ -3,9 +3,12 @@ import { Pool } from "pg";
 import { PrismaClient } from "@/generated/prisma/client";
 import { resolvePgConnectionString } from "@/lib/pg-connection";
 
+const PRISMA_CLIENT_BUILD_ID = "article-category-links";
+
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
   pool: Pool | undefined;
+  prismaBuildId: string | undefined;
 };
 
 function createPrismaClient() {
@@ -26,6 +29,13 @@ function createPrismaClient() {
     adapter,
     log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
   });
+}
+
+if (process.env.NODE_ENV !== "production") {
+  if (globalForPrisma.prismaBuildId !== PRISMA_CLIENT_BUILD_ID) {
+    globalForPrisma.prisma = undefined;
+    globalForPrisma.prismaBuildId = PRISMA_CLIENT_BUILD_ID;
+  }
 }
 
 export const prisma = globalForPrisma.prisma ?? createPrismaClient();

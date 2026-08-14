@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { saveArticleAction } from "@/lib/admin-actions";
-import { GuideCountryServicesField } from "@/components/admin/guide/GuideCountryServicesField";
+import { GuideCountryCategoriesField } from "@/components/admin/guide/GuideCountryCategoriesField";
 import { GuideFeatureBlock } from "@/components/admin/guide/GuideFeatureBlock";
 import { GuideHeroBlock } from "@/components/admin/guide/GuideHeroBlock";
 import { GuideSectionsEditor } from "@/components/admin/guide/GuideSectionsEditor";
@@ -20,7 +20,7 @@ import { AdminPageHeader } from "@/components/admin/AdminUi";
 import { AdminSlugPublicUrl } from "@/components/admin/AdminPublicUrl";
 import {
   findArticleForAdmin,
-  listServicesForGuideAdmin,
+  listCategoriesForGuideAdmin,
 } from "@/lib/repositories/article.repository";
 import { prisma } from "@/lib/prisma";
 
@@ -39,16 +39,10 @@ export default async function EditArticlePage({ params }: Props) {
     select: { id: true, name: true },
   });
 
-  const services = await listServicesForGuideAdmin();
-  const serviceOptions = services.map((service) => ({
-    id: service.id,
-    name: service.name,
-    countryId: service.countryId,
-    categoryName: service.category.name,
-  }));
+  const categoryOptions = await listCategoriesForGuideAdmin();
 
-  const selectedServiceIds =
-    article?.linkedServices.map((link) => link.serviceId) ?? [];
+  const selectedCategoryIds =
+    article?.linkedCategories.map((link) => link.categoryId) ?? [];
 
   const defaultCountryId = article?.countryId ?? countries[0]?.id ?? "";
   const initialArticlePath = article ? `/rehber/${article.slug}` : null;
@@ -61,7 +55,7 @@ export default async function EditArticlePage({ params }: Props) {
       >
         <AdminPageHeader
           title={article ? article.title : "Yeni Rehber"}
-          description="Ülkeye bağlı rehber içeriği, hero görseli ve hizmet ilişkileri."
+          description="Ülkeye bağlı rehber içeriği, hero görseli ve kategori ilişkileri."
           publicUrl={
             <AdminSlugPublicUrl
               prefix="/rehber"
@@ -85,11 +79,11 @@ export default async function EditArticlePage({ params }: Props) {
               value={article?.excerpt}
               hint="Rehber listesinde ve arama sonuçlarında görünür."
             />
-            <GuideCountryServicesField
+            <GuideCountryCategoriesField
               countries={countries}
-              services={serviceOptions}
+              categories={categoryOptions}
               initialCountryId={defaultCountryId}
-              initialServiceIds={selectedServiceIds}
+              initialCategoryIds={selectedCategoryIds}
               initialShowInCategoryPanel={article?.showInCategoryPanel ?? false}
             />
           </AdminFormSection>

@@ -17,7 +17,7 @@ export async function wipeArticlesOnly(prisma: PrismaClient) {
   await prisma.seoMetadata.deleteMany({
     where: { entityType: SeoEntityType.ARTICLE, entityId: { in: articleIds } },
   });
-  await prisma.articleService.deleteMany({
+  await prisma.articleCategoryLink.deleteMany({
     where: { articleId: { in: articleIds } },
   });
   const result = await prisma.article.deleteMany();
@@ -38,7 +38,6 @@ export async function wipeServicesOnly(prisma: PrismaClient) {
     where: { entityType: SeoEntityType.SERVICE, entityId: { in: serviceIds } },
   });
   await prisma.faq.deleteMany({ where: { serviceId: { in: serviceIds } } });
-  await prisma.articleService.deleteMany({ where: { serviceId: { in: serviceIds } } });
   await prisma.fee.deleteMany({ where: { serviceId: { in: serviceIds } } });
   await prisma.serviceSection.deleteMany({ where: { serviceId: { in: serviceIds } } });
   await prisma.serviceDocument.deleteMany({ where: { serviceId: { in: serviceIds } } });
@@ -60,7 +59,6 @@ export async function wipeServicesAndCategories(prisma: PrismaClient) {
       where: { entityType: SeoEntityType.SERVICE, entityId: { in: serviceIds } },
     });
     await prisma.faq.deleteMany({ where: { serviceId: { in: serviceIds } } });
-    await prisma.articleService.deleteMany({ where: { serviceId: { in: serviceIds } } });
     await prisma.fee.deleteMany({ where: { serviceId: { in: serviceIds } } });
     await prisma.serviceSection.deleteMany({ where: { serviceId: { in: serviceIds } } });
     await prisma.serviceDocument.deleteMany({ where: { serviceId: { in: serviceIds } } });
@@ -71,6 +69,9 @@ export async function wipeServicesAndCategories(prisma: PrismaClient) {
       where: { entityType: SeoEntityType.CATEGORY, entityId: { in: categoryIds } },
     });
     await prisma.faq.deleteMany({ where: { categoryId: { in: categoryIds } } });
+    await prisma.articleCategoryLink.deleteMany({
+      where: { categoryId: { in: categoryIds } },
+    });
   }
 
   await prisma.service.deleteMany();

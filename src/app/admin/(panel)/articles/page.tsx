@@ -24,7 +24,7 @@ export default async function AdminArticlesPage() {
           <th className="px-5 py-3">Başlık</th>
           <th className="px-5 py-3">Site URL</th>
           <th className="px-5 py-3">Ülke</th>
-          <th className="px-5 py-3">Hizmet bağlantısı</th>
+          <th className="px-5 py-3">Kategori bağlantısı</th>
           <th className="px-5 py-3">Yayın</th>
           <th className="px-5 py-3 text-right">İşlem</th>
         </AdminTableHead>
@@ -39,8 +39,8 @@ export default async function AdminArticlesPage() {
               </td>
               <td className="px-5 py-3.5 text-slate-600">{article.country?.name ?? "-"}</td>
               <td className="px-5 py-3.5 text-slate-600">
-                {article.linkedServices.length > 0
-                  ? `${article.linkedServices.length} hizmet`
+                {article.linkedCategories.length > 0
+                  ? `${article.linkedCategories.length} kategori`
                   : "-"}
               </td>
               <td className="px-5 py-3.5">

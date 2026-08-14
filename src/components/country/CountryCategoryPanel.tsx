@@ -35,6 +35,7 @@ export function CountryCategoryPanel({
   };
 
   const hasConsulates = consulates.length > 0;
+  const hasDocuments = documents.length > 0;
 
   return (
     <nav
@@ -106,6 +107,7 @@ export function CountryCategoryPanel({
           );
         })}
 
+        {hasDocuments && (
         <PanelRow
           isOpen={openSlug === COUNTRY_PANEL_DOCUMENTS_SLUG}
           onToggle={() => toggle(COUNTRY_PANEL_DOCUMENTS_SLUG)}
@@ -113,32 +115,27 @@ export function CountryCategoryPanel({
           meta={`${documents.length} belge`}
           count={documents.length}
         >
-          {documents.length === 0 ? (
-            <p className="px-2 py-2 text-xs text-slate-500">
-              Menüde gösterilecek belge seçilmemiş.
-            </p>
-          ) : (
-            <ul className="space-y-0.5">
-              {documents.map((document) => (
-                <li key={document.id}>
-                  <Link
-                    href={buildSiteAssetPath(
-                      document.id,
-                      countrySlug,
-                      document.fileName,
-                    )}
-                    className="group flex cursor-pointer items-center justify-between gap-1.5 rounded-md border border-transparent px-2 py-2 text-xs transition hover:border-csg-blue/15 hover:bg-csg-blue/[0.04]"
-                  >
-                    <span className="min-w-0 font-medium leading-snug text-slate-900 group-hover:text-csg-blue line-clamp-2">
-                      {document.label}
-                    </span>
-                    <ArrowIcon />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
+          <ul className="space-y-0.5">
+            {documents.map((document) => (
+              <li key={document.id}>
+                <Link
+                  href={buildSiteAssetPath(
+                    document.id,
+                    countrySlug,
+                    document.fileName,
+                  )}
+                  className="group flex cursor-pointer items-center justify-between gap-1.5 rounded-md border border-transparent px-2 py-2 text-xs transition hover:border-csg-blue/15 hover:bg-csg-blue/[0.04]"
+                >
+                  <span className="min-w-0 font-medium leading-snug text-slate-900 group-hover:text-csg-blue line-clamp-2">
+                    {document.label}
+                  </span>
+                  <ArrowIcon />
+                </Link>
+              </li>
+            ))}
+          </ul>
         </PanelRow>
+        )}
 
         {hasConsulates && (
           <PanelRow

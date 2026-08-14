@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 
 const articleListInclude = {
   country: { select: { name: true, slug: true } },
-  linkedServices: { select: { serviceId: true } },
+  linkedCategories: { select: { categoryId: true } },
 } as const;
 
 export async function findPublishedArticles(limit?: number) {
@@ -21,11 +21,9 @@ export async function findArticleBySlug(slug: string) {
     where: { slug, isPublished: true },
     include: {
       country: true,
-      linkedServices: {
+      linkedCategories: {
         include: {
-          service: {
-            select: { id: true, name: true, slug: true, countryId: true },
-          },
+          category: { select: { id: true, name: true, slug: true } },
         },
       },
     },
@@ -45,11 +43,11 @@ export async function findPublishedArticlesByCountryId(countryId: string) {
   });
 }
 
-export async function findPublishedArticlesByServiceId(serviceId: string) {
+export async function findPublishedArticlesByCategoryId(categoryId: string) {
   return prisma.article.findMany({
     where: {
       isPublished: true,
-      linkedServices: { some: { serviceId } },
+      linkedCategories: { some: { categoryId } },
     },
     orderBy: { publishedAt: "desc" },
     include: {
@@ -65,16 +63,14 @@ export async function findCategoryPanelArticlesByCountry(countryId: string) {
       countryId,
       isPublished: true,
       showInCategoryPanel: true,
-      linkedServices: { some: {} },
+      linkedCategories: { some: {} },
     },
     orderBy: { publishedAt: "desc" },
     select: {
       slug: true,
       title: true,
-      linkedServices: {
-        select: {
-          service: { select: { categoryId: true } },
-        },
+      linkedCategories: {
+        select: { categoryId: true },
       },
     },
   });
@@ -99,20 +95,20 @@ export async function listArticlesForAdmin() {
     orderBy: { updatedAt: "desc" },
     include: {
       country: { select: { name: true } },
-      linkedServices: { select: { serviceId: true } },
+      linkedCategories: { select: { categoryId: true } },
     },
   });
 }
 
-export async function listServicesForGuideAdmin() {
-  return prisma.service.findMany({
-    where: { isActive: true },
-    orderBy: [{ countryId: "asc" }, { name: "asc" }],
+export async function listCategoriesForGuideAdmin() {
+  const categories = await prisma.category.findMany({
+    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     select: {
       id: true,
       name: true,
-      countryId: true,
-      category: { select: { name: true } },
+      isActive: true,
     },
   });
+
+  return categories;
 }
