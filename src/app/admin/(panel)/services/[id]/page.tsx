@@ -141,10 +141,9 @@ export default async function EditServicePage({ params }: Props) {
 
         <AdminFormSection
           title="Banner"
-          description="Banner görseli ve üzerindeki metinler birlikte düzenlenir."
+          description="Banner metinleri. Görsel ülke ayarlarından gelir."
         >
           <ServiceHeroBlock
-            heroImage={service?.heroImage ?? ""}
             heroTitle={service?.heroTitle}
             heroSubtitle={service?.heroSubtitle}
             defaultTitle={service?.name}

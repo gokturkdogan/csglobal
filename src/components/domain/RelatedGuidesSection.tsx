@@ -1,21 +1,25 @@
 import Link from "next/link";
 import { ArticleCard } from "@/components/home/ArticleCard";
+import { resolveArticleCardImage } from "@/lib/country-item-image";
 
 type GuideItem = {
   id: string;
   title: string;
   slug: string;
-  heroImage?: string | null;
-  coverImage?: string | null;
   country?: { name: string } | null;
 };
 
 type Props = {
   guides: GuideItem[];
   countryName: string;
+  countryItemImage?: string | null;
 };
 
-export function RelatedGuidesSection({ guides, countryName }: Props) {
+export function RelatedGuidesSection({
+  guides,
+  countryName,
+  countryItemImage,
+}: Props) {
   if (guides.length === 0) return null;
 
   return (
@@ -44,7 +48,7 @@ export function RelatedGuidesSection({ guides, countryName }: Props) {
             variant="compact"
             title={guide.title}
             slug={guide.slug}
-            coverImage={guide.heroImage ?? guide.coverImage}
+            coverImage={resolveArticleCardImage(countryItemImage)}
             categoryName={guide.country?.name}
           />
         ))}

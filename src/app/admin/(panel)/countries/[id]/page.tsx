@@ -8,6 +8,12 @@ import {
   parseCountryNotesJson,
 } from "@/lib/country-detail";
 import { CountryDetailSectionsEditor } from "@/components/admin/country/CountryDetailSectionsEditor";
+import { CountryImagesFields } from "@/components/admin/country/CountryImagesFields";
+import {
+  VisualSlugProvider,
+  VisualTitleField,
+  VisualSlugField,
+} from "@/components/admin/VisualSlugProvider";
 import {
   AdminCheckbox,
   AdminCharCountField,
@@ -57,13 +63,17 @@ export default async function EditCountryPage({ params }: Props) {
         }
       />
 
-      <AdminActionForm action={saveCountryAction} className="max-w-3xl space-y-6">
-        {country && <input type="hidden" name="id" value={country.id} />}
+      <VisualSlugProvider
+        initialSlug={country?.slug ?? ""}
+        initialTitle={country?.name ?? ""}
+      >
+        <AdminActionForm action={saveCountryAction} className="max-w-3xl space-y-6">
+          {country && <input type="hidden" name="id" value={country.id} />}
 
-        <AdminFormSection title="Genel bilgiler">
-          <AdminField label="Ad" name="name" value={country?.name} required />
-          <AdminField label="Slug" name="slug" value={country?.slug} required />
-          <AdminField label="ISO2 (bayrak kodu)" name="iso2" value={country?.iso2} />
+          <AdminFormSection title="Genel bilgiler">
+            <VisualTitleField label="Ad" name="name" required />
+            <VisualSlugField cloudinaryPrefix="Countries" placeholder="amerika" />
+            <AdminField label="ISO2 (bayrak kodu)" name="iso2" value={country?.iso2} />
           <AdminCharCountField
             label="Kısa açıklama (hero alt metin)"
             name="shortDescription"
@@ -76,6 +86,16 @@ export default async function EditCountryPage({ params }: Props) {
             name="description"
             value={country?.description}
             rows={6}
+          />
+        </AdminFormSection>
+
+        <AdminFormSection
+          title="Ülke görselleri"
+          description="Bu ülkeye bağlı tüm içeriklerde hero ve kart kapakları için kullanılır. Boş bırakıldığında ilgili kaydın kendi görseli veya site varsayılanı gösterilir."
+        >
+          <CountryImagesFields
+            heroImage={country?.heroImage ?? ""}
+            itemImage={country?.itemImage ?? ""}
           />
         </AdminFormSection>
 
@@ -184,7 +204,8 @@ export default async function EditCountryPage({ params }: Props) {
         </AdminFormSection>
 
         <AdminSubmitButton>Kaydet</AdminSubmitButton>
-      </AdminActionForm>
+        </AdminActionForm>
+      </VisualSlugProvider>
     </div>
   );
 }

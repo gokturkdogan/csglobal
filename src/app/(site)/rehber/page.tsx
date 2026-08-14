@@ -2,6 +2,7 @@ import { ArticleCard } from "@/components/home/ArticleCard";
 import { GuidesListCtaSection } from "@/components/domain/GuidesListCtaSection";
 import { GuidesListPageHero } from "@/components/domain/GuidesListPageHero";
 import { findPublishedArticles } from "@/lib/repositories/article.repository";
+import { resolveArticleCardImage } from "@/lib/country-item-image";
 import { getGuidesListPageContent } from "@/lib/guides-list-page";
 import { getSiteSettings } from "@/lib/settings";
 import { buildEntityMetadata } from "@/lib/services/seo.service";
@@ -49,7 +50,7 @@ export default async function RehberPage() {
                   title={article.title}
                   slug={article.slug}
                   excerpt={article.excerpt}
-                  coverImage={article.heroImage ?? article.coverImage}
+                  coverImage={resolveArticleCardImage(article.country?.itemImage)}
                   categoryName={article.country?.name}
                   publishedAt={article.publishedAt}
                 />

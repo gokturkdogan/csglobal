@@ -2,7 +2,6 @@ import { normalizeRichTextContent } from "@/lib/rich-text";
 import { optimizeCloudinaryDeliveryUrl } from "@/lib/media";
 import { siteImages } from "@/lib/media";
 
-export const GUIDE_SECTIONS_MAX = 80;
 export const GUIDE_HERO_CROP_ASPECT = 3.2;
 export const GUIDE_FEATURE_IMAGE_TITLE_MAX = 35;
 export const GUIDE_FEATURE_IMAGE_TEXT_MAX = 450;
@@ -59,8 +58,7 @@ export function parseGuideSectionsJson(json: string | null | undefined): GuideSe
         if (!title || !content) return null;
         return { title, content };
       })
-      .filter((item): item is GuideSection => item !== null)
-      .slice(0, GUIDE_SECTIONS_MAX);
+      .filter((item): item is GuideSection => item !== null);
   } catch {
     return [];
   }
@@ -72,8 +70,7 @@ export function serializeGuideSections(sections: GuideSection[]): string {
       title: section.title.trim(),
       content: normalizeRichTextContent(section.content) ?? "",
     }))
-    .filter((section) => section.title && section.content)
-    .slice(0, GUIDE_SECTIONS_MAX);
+    .filter((section) => section.title && section.content);
 
   return JSON.stringify(valid);
 }
@@ -89,14 +86,7 @@ export function resolveGuideFeatureImage(url: string | null | undefined): string
   return trimmed || null;
 }
 
-export function resolveGuideCardImage(
-  heroImage: string | null | undefined,
-  coverImage: string | null | undefined,
-): string {
-  const hero = heroImage?.trim();
-  if (hero) return optimizeCloudinaryDeliveryUrl(hero, 1200);
-  const cover = coverImage?.trim();
-  if (cover) return optimizeCloudinaryDeliveryUrl(cover, 1200);
+export function resolveGuideCardImage(): string {
   return siteImages.article;
 }
 

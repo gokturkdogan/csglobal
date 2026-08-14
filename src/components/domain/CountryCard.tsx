@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FlagImage } from "@/components/ui/FlagImage";
 import { SiteImage } from "@/components/ui/SiteImage";
-import { siteImages } from "@/lib/media";
+import { resolveCountryGridItemImage } from "@/lib/country-item-image";
 
 export function CountryCard({
   name,
@@ -9,15 +9,16 @@ export function CountryCard({
   shortDescription,
   serviceCount,
   flag,
-  heroImage,
+  itemImage,
 }: {
   name: string;
   slug: string;
   shortDescription?: string | null;
   serviceCount: number;
   flag?: string | null;
-  heroImage?: string | null;
+  itemImage?: string | null;
 }) {
+  const cardImage = resolveCountryGridItemImage(itemImage);
   return (
     <Link
       href={`/${slug}`}
@@ -25,7 +26,7 @@ export function CountryCard({
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-slate-200">
         <SiteImage
-          src={heroImage || siteImages.country}
+          src={cardImage}
           alt={name}
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
@@ -64,7 +65,7 @@ export function CountryGrid({
     slug: string;
     shortDescription?: string | null;
     flag?: string | null;
-    heroImage?: string | null;
+    itemImage?: string | null;
     services: { id: string }[];
   }>;
 }) {
@@ -78,7 +79,7 @@ export function CountryGrid({
           shortDescription={c.shortDescription}
           serviceCount={c.services.length}
           flag={c.flag}
-          heroImage={c.heroImage}
+          itemImage={c.itemImage}
         />
       ))}
     </div>

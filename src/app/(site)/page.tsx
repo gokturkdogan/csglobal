@@ -14,6 +14,7 @@ import { findActiveCountries } from "@/lib/repositories/country.repository";
 import { findFeaturedServices } from "@/lib/repositories/service.repository";
 import { findPublishedArticles } from "@/lib/repositories/article.repository";
 import { findHomepageFaqs } from "@/lib/repositories/faq.repository";
+import { resolveServiceCardImage } from "@/lib/country-item-image";
 import { getSiteSettings } from "@/lib/settings";
 import { buildHomepageContent, HOMEPAGE_FAQ_MAX } from "@/lib/homepage";
 import {
@@ -74,7 +75,7 @@ export default async function HomePage() {
     countryName: s.country.name,
     shortDescription: s.shortDescription,
     processingTime: s.processingTime,
-    heroImage: s.heroImage,
+    heroImage: resolveServiceCardImage(s.country.itemImage),
   }));
 
   const faqJsonLd = buildFaqJsonLd(content.faqs);

@@ -234,11 +234,17 @@ async function resolveCategoryId(slug: string): Promise<string> {
   return category.id;
 }
 
-async function upsertService(
-  countryId: string,
-  heroImage: string,
-  service: ServiceSeed,
-): Promise<void> {
+async function upsertCountryImages(countryId: string, imageUrl: string): Promise<void> {
+  await prisma.country.update({
+    where: { id: countryId },
+    data: {
+      heroImage: imageUrl,
+      itemImage: imageUrl,
+    },
+  });
+}
+
+async function upsertService(countryId: string, service: ServiceSeed): Promise<void> {
   const categoryId = await resolveCategoryId(service.categorySlug);
   const sections = loadSections(service.slug);
   const sectionsJson = serializeServiceSections(sections);
@@ -253,7 +259,6 @@ async function upsertService(
       name: service.name,
       slug: service.slug,
       shortDescription: service.shortDescription,
-      heroImage: heroImage || null,
       heroTitle: service.heroTitle ?? service.name,
       sectionsJson,
       isActive: true,
@@ -263,7 +268,6 @@ async function upsertService(
       categoryId,
       name: service.name,
       shortDescription: service.shortDescription,
-      heroImage: heroImage || undefined,
       heroTitle: service.heroTitle ?? service.name,
       sectionsJson,
       isActive: true,
@@ -274,7 +278,7 @@ async function upsertService(
   console.log(`Hizmet kaydedildi: ${service.name}`);
 }
 
-async function upsertYenilemeArticle(countryId: string, heroImage: string): Promise<void> {
+async function upsertYenilemeArticle(countryId: string): Promise<void> {
   const sections = loadSections(ARTICLE_YENILEME.slug) as GuideSection[];
   const sectionsJson = serializeGuideSections(sections);
   const categoryId = await resolveCategoryId(ARTICLE_YENILEME.categorySlug);
@@ -288,7 +292,6 @@ async function upsertYenilemeArticle(countryId: string, heroImage: string): Prom
       excerpt: ARTICLE_YENILEME.excerpt,
       content: "",
       heroTitle: ARTICLE_YENILEME.heroTitle,
-      heroImage: heroImage || null,
       sectionsJson,
       isPublished: true,
       publishedAt: new Date(),
@@ -299,7 +302,6 @@ async function upsertYenilemeArticle(countryId: string, heroImage: string): Prom
       title: ARTICLE_YENILEME.title,
       excerpt: ARTICLE_YENILEME.excerpt,
       heroTitle: ARTICLE_YENILEME.heroTitle,
-      heroImage: heroImage || undefined,
       sectionsJson,
       isPublished: true,
       publishedAt: new Date(),
@@ -324,7 +326,8 @@ async function main() {
     throw new Error("Amerika ülke kaydı bulunamadı.");
   }
 
-  const heroImage = await uploadSharedHero();
+  const heroImageUrl = await uploadSharedHero();
+  await upsertCountryImages(country.id, heroImageUrl);
   const allServices = [
     ...STUDENT_SERVICES,
     ...GREEN_CARD_SERVICES,
@@ -332,10 +335,10 @@ async function main() {
   ];
 
   for (const service of allServices) {
-    await upsertService(country.id, heroImage, service);
+    await upsertService(country.id, service);
   }
 
-  await upsertYenilemeArticle(country.id, heroImage);
+  await upsertYenilemeArticle(country.id);
 
   console.log("Amerika EAGVS içerik aktarımı tamamlandı.");
 }

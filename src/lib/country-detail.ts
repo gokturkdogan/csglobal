@@ -2,7 +2,6 @@ import { normalizeRichTextContent } from "@/lib/rich-text";
 
 export const COUNTRY_NOTES_MAX = 10;
 export const COUNTRY_FAQ_MAX = 5;
-export const COUNTRY_DETAIL_SECTIONS_MAX = 15;
 export const COUNTRY_SHORT_DESCRIPTION_MAX = 100;
 
 export type CountryDetailSection = {
@@ -100,7 +99,6 @@ export function parseCountryDetailSectionsJson(
       );
       if (!title || !content) continue;
       sections.push({ title, content });
-      if (sections.length >= COUNTRY_DETAIL_SECTIONS_MAX) break;
     }
     return sections;
   } catch {

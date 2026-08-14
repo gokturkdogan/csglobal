@@ -17,6 +17,7 @@ export type CountryDetailViewModel = {
   name: string;
   slug: string;
   flag: string | null;
+  heroImage?: string | null;
   shortDescription: string | null;
   visaRegion: string | null;
   requiresAppointment: boolean;
@@ -86,6 +87,7 @@ export function CountryDetailPage({
         name={country.name}
         shortDescription={country.shortDescription}
         flag={country.flag}
+        heroImage={country.heroImage}
         serviceCount={serviceCount}
         categoryCount={categoryCount}
         badge={heroBadge}

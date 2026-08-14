@@ -16,7 +16,7 @@ export function HomeCountriesSection({
     slug: string;
     shortDescription?: string | null;
     flag?: string | null;
-    heroImage?: string | null;
+    itemImage?: string | null;
     services: { id: string }[];
   }>;
 }) {

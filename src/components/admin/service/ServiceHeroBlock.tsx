@@ -1,12 +1,8 @@
 "use client";
 
-import { AdminManagedImageField } from "@/components/admin/AdminManagedImageField";
 import { AdminField, AdminTextArea } from "@/components/admin/AdminForm";
-import { serviceHeroImageSlot } from "@/lib/service-image-slots";
-import { VisualSlugGate } from "@/components/admin/VisualSlugProvider";
 
 type Props = {
-  heroImage: string;
   heroTitle?: string | null;
   heroSubtitle?: string | null;
   defaultTitle?: string | null;
@@ -14,7 +10,6 @@ type Props = {
 };
 
 export function ServiceHeroBlock({
-  heroImage,
   heroTitle,
   heroSubtitle,
   defaultTitle,
@@ -22,18 +17,9 @@ export function ServiceHeroBlock({
 }: Props) {
   return (
     <div className="space-y-5">
-      <VisualSlugGate>
-        {(slug) => (
-          <AdminManagedImageField
-            name="heroImage"
-            defaultValue={heroImage}
-            slot={serviceHeroImageSlot(slug)}
-            previewVariant="hero"
-            imageClassName="object-cover object-center md:object-[center_30%]"
-          />
-        )}
-      </VisualSlugGate>
-
+      <p className="text-sm text-slate-600">
+        Banner görseli ülke ayarlarındaki hero görselinden gelir.
+      </p>
       <AdminField
         label="Banner başlık"
         name="heroTitle"

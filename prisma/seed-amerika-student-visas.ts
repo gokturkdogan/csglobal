@@ -119,7 +119,15 @@ async function main() {
   }
 
   const categoryId = await resolveCategoryId();
-  const heroImage = await uploadSharedHero();
+  const heroImageUrl = await uploadSharedHero();
+
+  await prisma.country.update({
+    where: { id: country.id },
+    data: {
+      heroImage: heroImageUrl,
+      itemImage: heroImageUrl,
+    },
+  });
 
   for (const service of SERVICES) {
     const sections = loadEagvsSections(service.slug);
@@ -137,7 +145,6 @@ async function main() {
         name: service.name,
         slug: service.slug,
         shortDescription: service.shortDescription,
-        heroImage: heroImage || null,
         heroTitle: service.heroTitle,
         sectionsJson,
         isActive: true,
@@ -147,7 +154,6 @@ async function main() {
         categoryId,
         name: service.name,
         shortDescription: service.shortDescription,
-        heroImage: heroImage || undefined,
         heroTitle: service.heroTitle,
         sectionsJson,
         isActive: true,

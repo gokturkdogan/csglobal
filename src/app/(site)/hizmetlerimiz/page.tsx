@@ -1,6 +1,7 @@
 import { FeaturedServiceCard } from "@/components/home/FeaturedServiceCard";
 import { ServicesPageHero } from "@/components/domain/ServicesPageHero";
 import { findAllServicesForListing } from "@/lib/repositories/service.repository";
+import { resolveServiceCardImage } from "@/lib/country-item-image";
 import { buildEntityMetadata } from "@/lib/services/seo.service";
 
 export async function generateMetadata() {
@@ -36,7 +37,7 @@ export default async function ServicesListingPage() {
                   countryName={service.country.name}
                   shortDescription={service.shortDescription}
                   processingTime={service.processingTime}
-                  heroImage={service.heroImage}
+                  heroImage={resolveServiceCardImage(service.country.itemImage)}
                 />
               ))}
             </div>

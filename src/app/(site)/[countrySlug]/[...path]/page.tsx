@@ -21,6 +21,9 @@ import {
 import { findPublishedArticlesByCountryId } from "@/lib/repositories/article.repository";
 import { findServiceByCountrySlug } from "@/lib/repositories/service.repository";
 import { RelatedGuidesSection } from "@/components/domain/RelatedGuidesSection";
+import {
+  resolveServicePageHeroImage,
+} from "@/lib/country-item-image";
 import { findCountryBySlug } from "@/lib/repositories/country.repository";
 import {
   buildEntityMetadata,
@@ -127,7 +130,7 @@ export default async function CountryPathPage({ params }: Props) {
     return (
       <>
         <ServicePageHero
-          heroImage={service.heroImage}
+          heroImage={resolveServicePageHeroImage(country.heroImage)}
           title={heroTitle}
           subtitle={heroSubtitle}
           badge={service.category.name}
@@ -205,7 +208,11 @@ export default async function CountryPathPage({ params }: Props) {
                 </section>
               )}
 
-              <RelatedGuidesSection guides={countryGuides} countryName={country.name} />
+              <RelatedGuidesSection
+                guides={countryGuides}
+                countryName={country.name}
+                countryItemImage={country.itemImage}
+              />
 
               <div className="mt-12">
                 <ContactCTA

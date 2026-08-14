@@ -45,7 +45,6 @@ export async function findServicesByCountryAndCategory(
       slug: true,
       shortDescription: true,
       processingTime: true,
-      heroImage: true,
     },
   });
 }
@@ -61,8 +60,7 @@ export async function findFeaturedServices(limit?: number) {
       slug: true,
       shortDescription: true,
       processingTime: true,
-      heroImage: true,
-      country: { select: { name: true, slug: true } },
+      country: { select: { name: true, slug: true, itemImage: true, heroImage: true } },
     },
   });
 }
@@ -93,8 +91,7 @@ export async function findAllServicesForListing() {
       slug: true,
       shortDescription: true,
       processingTime: true,
-      heroImage: true,
-      country: { select: { name: true, slug: true } },
+      country: { select: { name: true, slug: true, itemImage: true, heroImage: true } },
       category: { select: { name: true, slug: true } },
     },
   });
@@ -130,7 +127,7 @@ export async function listServicesForAdmin(options?: { skip?: number; take?: num
       sortOrder: true,
       countryId: true,
       categoryId: true,
-      country: { select: { name: true, slug: true } },
+      country: { select: { name: true, slug: true, itemImage: true, heroImage: true } },
       category: { select: { name: true } },
     },
   });

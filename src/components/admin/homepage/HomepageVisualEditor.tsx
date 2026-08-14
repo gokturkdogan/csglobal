@@ -40,7 +40,7 @@ type PreviewData = {
     slug: string;
     shortDescription?: string | null;
     flag?: string | null;
-    heroImage?: string | null;
+    itemImage?: string | null;
     services: { id: string }[];
   }>;
   articles: Array<{
@@ -48,10 +48,8 @@ type PreviewData = {
     title: string;
     slug: string;
     excerpt: string | null;
-    coverImage: string | null;
-    heroImage?: string | null;
     publishedAt: Date | null;
-    country: { name: string } | null;
+    country: { name: string; itemImage?: string | null } | null;
   }>;
   settings: SiteSettingsMap;
 };

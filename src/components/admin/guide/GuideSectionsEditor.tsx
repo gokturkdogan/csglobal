@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import {
-  GUIDE_SECTIONS_MAX,
   type GuideSection,
   parseGuideSectionsJson,
   serializeGuideSections,
@@ -23,7 +22,6 @@ export function GuideSectionsEditor({ initialJson }: Props) {
   const serialized = useMemo(() => serializeGuideSections(sections), [sections]);
 
   const addSection = () => {
-    if (sections.length >= GUIDE_SECTIONS_MAX) return;
     setSections((prev) => [...prev, { title: "", content: "" }]);
   };
 
@@ -99,13 +97,10 @@ export function GuideSectionsEditor({ initialJson }: Props) {
       <button
         type="button"
         onClick={addSection}
-        disabled={sections.length >= GUIDE_SECTIONS_MAX}
-        className="cursor-pointer rounded-lg border border-dashed border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:border-csg-blue hover:text-csg-blue disabled:cursor-not-allowed disabled:opacity-50"
+        className="cursor-pointer rounded-lg border border-dashed border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:border-csg-blue hover:text-csg-blue"
       >
         + Bölüm ekle
-        {sections.length > 0
-          ? ` (${sections.length}/${GUIDE_SECTIONS_MAX})`
-          : ""}
+        {sections.length > 0 ? ` (${sections.length})` : ""}
       </button>
     </div>
   );

@@ -61,6 +61,7 @@ model Country {
   shortDescription String?  @map("short_description") @db.Text
   description      String?  @db.Text
   heroImage        String?  @map("hero_image")
+  itemImage        String?  @map("item_image")
   visaRegion              String?  @map("visa_region")
   requiresAppointment     Boolean  @default(false) @map("requires_appointment")
   averageProcessingTime   String?  @map("average_processing_time")
@@ -115,7 +116,6 @@ model Service {
   shortTitle          String?  @map("short_title")
   shortDescription    String?  @map("short_description") @db.Text
   description         String?  @db.Text
-  heroImage           String?  @map("hero_image")
   heroTitle           String?  @map("hero_title")
   heroSubtitle        String?  @map("hero_subtitle") @db.Text
   sectionsJson        String?  @map("sections_json") @db.Text
@@ -271,12 +271,10 @@ model Article {
   content           String    @default("") @db.Text
   heroTitle         String?   @map("hero_title")
   heroSubtitle      String?   @map("hero_subtitle") @db.Text
-  heroImage         String?   @map("hero_image")
   sectionsJson      String?   @map("sections_json") @db.Text
   featureImage      String?   @map("feature_image")
   featureImageTitle String?   @map("feature_image_title")
   featureImageText  String?   @map("feature_image_text") @db.Text
-  coverImage        String?   @map("cover_image")
   publishedAt       DateTime? @map("published_at")
   isPublished       Boolean   @default(false) @map("is_published")
   showInCategoryPanel Boolean @default(false) @map("show_in_category_panel")
@@ -299,7 +297,6 @@ model Consulate {
   name         String
   slug         String
   heroTitle    String?  @map("hero_title")
-  heroImage    String?  @map("hero_image")
   sectionsJson String?  @map("sections_json") @db.Text
   mapEmbedUrl  String?  @map("map_embed_url") @db.Text
   mapAddress   String?  @map("map_address") @db.Text

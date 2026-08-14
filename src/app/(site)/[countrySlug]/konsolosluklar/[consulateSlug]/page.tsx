@@ -14,6 +14,7 @@ import {
 } from "@/lib/repositories/consulate.repository";
 import { getSiteSettings } from "@/lib/settings";
 import { buildEntityMetadata } from "@/lib/services/seo.service";
+import { resolveConsulatePageHeroImage } from "@/lib/country-item-image";
 import { SeoEntityType } from "@/generated/prisma/client";
 
 type Props = {
@@ -55,7 +56,7 @@ export default async function ConsulateDetailPage({ params }: Props) {
   return (
     <>
       <ConsulatePageHero
-        heroImage={consulate.heroImage}
+        heroImage={resolveConsulatePageHeroImage(consulate.country.heroImage)}
         title={heroTitle}
         badge={consulate.country.name}
       />

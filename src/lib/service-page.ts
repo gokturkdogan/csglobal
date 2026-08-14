@@ -1,7 +1,6 @@
 import { normalizeRichTextContent } from "@/lib/rich-text";
 import { optimizeCloudinaryDeliveryUrl, siteImages } from "@/lib/media";
 
-export const SERVICE_SECTIONS_MAX = 80;
 export const SERVICE_HERO_CROP_ASPECT = 3.2;
 export const SERVICE_FEATURE_TITLE_MAX = 35;
 export const SERVICE_FEATURE_TEXT_MAX = 450;
@@ -80,8 +79,7 @@ export function parseServiceSectionsJson(json: string | null | undefined): Servi
         if (!title || !content) return null;
         return { title, content };
       })
-      .filter((item): item is ServiceContentSection => item !== null)
-      .slice(0, SERVICE_SECTIONS_MAX);
+      .filter((item): item is ServiceContentSection => item !== null);
   } catch {
     return [];
   }
@@ -93,8 +91,7 @@ export function serializeServiceSections(sections: ServiceContentSection[]): str
       title: section.title.trim(),
       content: normalizeRichTextContent(section.content) ?? "",
     }))
-    .filter((section) => section.title && section.content)
-    .slice(0, SERVICE_SECTIONS_MAX);
+    .filter((section) => section.title && section.content);
 
   return JSON.stringify(valid);
 }

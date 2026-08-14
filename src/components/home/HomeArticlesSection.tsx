@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { resolveArticleCardImage } from "@/lib/country-item-image";
 import { ArticleCard } from "@/components/home/ArticleCard";
 import type { HomepageContent } from "@/lib/homepage";
 import { HomeEditableField } from "@/components/admin/homepage/HomeEditableField";
@@ -16,10 +17,8 @@ export function HomeArticlesSection({
     title: string;
     slug: string;
     excerpt: string | null;
-    coverImage: string | null;
-    heroImage?: string | null;
     publishedAt: Date | null;
-    country: { name: string } | null;
+    country: { name: string; itemImage?: string | null } | null;
   }>;
 }) {
   const edit = useHomepageEdit();
@@ -51,7 +50,7 @@ export function HomeArticlesSection({
               title={a.title}
               slug={a.slug}
               excerpt={a.excerpt}
-              coverImage={a.heroImage ?? a.coverImage}
+              coverImage={resolveArticleCardImage(a.country?.itemImage)}
               categoryName={a.country?.name}
               publishedAt={a.publishedAt}
             />

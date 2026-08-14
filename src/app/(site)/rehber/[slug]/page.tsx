@@ -10,6 +10,7 @@ import { loadCountryCategoryPanelData } from "@/lib/country-page/load-category-p
 import { getGuideSectionNavItems } from "@/lib/guide";
 import { getSiteSettings } from "@/lib/settings";
 import { buildEntityMetadata } from "@/lib/services/seo.service";
+import { resolveGuidePageHeroImage } from "@/lib/country-item-image";
 import { SeoEntityType } from "@/generated/prisma/client";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -55,7 +56,7 @@ export default async function ArticlePage({ params }: Props) {
   return (
     <>
       <GuidePageHero
-        heroImage={article.heroImage}
+        heroImage={resolveGuidePageHeroImage(article.country.heroImage)}
         title={heroTitle}
         subtitle={heroSubtitle}
         badge={article.country?.name ?? "Rehber"}

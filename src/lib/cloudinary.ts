@@ -4,6 +4,7 @@ import { parseHomeImagePublicId } from "@/lib/cloudinary/home-folder";
 import { parseHerosImagePublicId } from "@/lib/cloudinary/heros-folder";
 import { parseDocumentPublicId } from "@/lib/cloudinary/documents-folder";
 import { parseConsulateImagePublicId } from "@/lib/cloudinary/consulates-folder";
+import { parseCountryImagePublicId } from "@/lib/cloudinary/countries-folder";
 import { parseGuidesImagePublicId } from "@/lib/cloudinary/guides-folder";
 import { parseServiceImagePublicId } from "@/lib/cloudinary/services-folder";
 
@@ -229,6 +230,11 @@ export async function uploadHomeImageToCloudinary(
 
   if (fullPublicId.startsWith("Consulates/")) {
     const { folder, assetName } = parseConsulateImagePublicId(fullPublicId);
+    return uploadWithFolder(file, folder, assetName, mimeType);
+  }
+
+  if (fullPublicId.startsWith("Countries/")) {
+    const { folder, assetName } = parseCountryImagePublicId(fullPublicId);
     return uploadWithFolder(file, folder, assetName, mimeType);
   }
 

@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import {
-  COUNTRY_DETAIL_SECTIONS_MAX,
   type CountryDetailSection,
   parseCountryDetailSectionsJson,
 } from "@/lib/country-detail";
@@ -22,8 +21,7 @@ function serializeSections(sections: CountryDetailSection[]): string {
       title: section.title.trim(),
       content: normalizeRichTextContent(section.content) ?? "",
     }))
-    .filter((section) => section.title && section.content)
-    .slice(0, COUNTRY_DETAIL_SECTIONS_MAX);
+    .filter((section) => section.title && section.content);
 
   return JSON.stringify(valid);
 }
@@ -35,7 +33,6 @@ export function CountryDetailSectionsEditor({ initialJson }: Props) {
   const serialized = useMemo(() => serializeSections(sections), [sections]);
 
   const addSection = () => {
-    if (sections.length >= COUNTRY_DETAIL_SECTIONS_MAX) return;
     setSections((prev) => [...prev, { title: "", content: "" }]);
   };
 
@@ -111,13 +108,10 @@ export function CountryDetailSectionsEditor({ initialJson }: Props) {
       <button
         type="button"
         onClick={addSection}
-        disabled={sections.length >= COUNTRY_DETAIL_SECTIONS_MAX}
-        className="cursor-pointer rounded-lg border border-dashed border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:border-csg-blue hover:text-csg-blue disabled:cursor-not-allowed disabled:opacity-50"
+        className="cursor-pointer rounded-lg border border-dashed border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:border-csg-blue hover:text-csg-blue"
       >
         + Bölüm ekle
-        {sections.length > 0
-          ? ` (${sections.length}/${COUNTRY_DETAIL_SECTIONS_MAX})`
-          : ""}
+        {sections.length > 0 ? ` (${sections.length})` : ""}
       </button>
     </div>
   );

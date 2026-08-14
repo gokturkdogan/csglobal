@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { FlagImage } from "@/components/ui/FlagImage";
 import { SiteImage } from "@/components/ui/SiteImage";
-import { siteImages } from "@/lib/media";
+import { resolveCountryPageHeroImage } from "@/lib/country-item-image";
 
 type CountryPageHeroProps = {
   name: string;
   shortDescription?: string | null;
   flag?: string | null;
+  heroImage?: string | null;
   serviceCount: number;
   categoryCount: number;
   badge?: string;
@@ -19,6 +20,7 @@ export function CountryPageHero({
   name,
   shortDescription,
   flag,
+  heroImage,
   serviceCount,
   categoryCount,
   badge,
@@ -27,12 +29,13 @@ export function CountryPageHero({
   secondaryCta,
 }: CountryPageHeroProps) {
   const displaySubtitle = subtitle ?? shortDescription;
+  const heroSrc = resolveCountryPageHeroImage(heroImage);
 
   return (
     <section className="relative overflow-hidden border-b border-slate-200 bg-slate-900">
       <div className="absolute inset-0">
         <SiteImage
-          src={siteImages.countryDetailHero}
+          src={heroSrc}
           alt=""
           fill
           priority

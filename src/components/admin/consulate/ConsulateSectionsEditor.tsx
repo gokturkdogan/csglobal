@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import {
-  CONSULATE_SECTIONS_MAX,
   type ConsulateSection,
   parseConsulateSectionsJson,
   serializeConsulateSections,
@@ -23,7 +22,6 @@ export function ConsulateSectionsEditor({ initialJson }: Props) {
   const serialized = useMemo(() => serializeConsulateSections(sections), [sections]);
 
   const addSection = () => {
-    if (sections.length >= CONSULATE_SECTIONS_MAX) return;
     setSections((prev) => [...prev, { title: "", content: "" }]);
   };
 
@@ -98,13 +96,10 @@ export function ConsulateSectionsEditor({ initialJson }: Props) {
       <button
         type="button"
         onClick={addSection}
-        disabled={sections.length >= CONSULATE_SECTIONS_MAX}
-        className="cursor-pointer rounded-lg border border-dashed border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:border-csg-blue hover:text-csg-blue disabled:cursor-not-allowed disabled:opacity-50"
+        className="cursor-pointer rounded-lg border border-dashed border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:border-csg-blue hover:text-csg-blue"
       >
         + Bölüm ekle
-        {sections.length > 0
-          ? ` (${sections.length}/${CONSULATE_SECTIONS_MAX})`
-          : ""}
+        {sections.length > 0 ? ` (${sections.length})` : ""}
       </button>
     </div>
   );

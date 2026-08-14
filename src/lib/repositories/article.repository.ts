@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 
 const articleListInclude = {
-  country: { select: { name: true, slug: true } },
+  country: { select: { name: true, slug: true, itemImage: true, heroImage: true } },
   linkedCategories: { select: { categoryId: true } },
 } as const;
 
@@ -11,7 +11,7 @@ export async function findPublishedArticles(limit?: number) {
     orderBy: { publishedAt: "desc" },
     take: limit,
     include: {
-      country: { select: { name: true, slug: true } },
+      country: { select: { name: true, slug: true, itemImage: true, heroImage: true } },
     },
   });
 }
@@ -42,8 +42,6 @@ export async function findPublishedArticlesByCountryId(countryId: string) {
       title: true,
       slug: true,
       excerpt: true,
-      heroImage: true,
-      coverImage: true,
       publishedAt: true,
       country: { select: { name: true } },
     },

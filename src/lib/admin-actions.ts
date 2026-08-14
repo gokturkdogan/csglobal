@@ -237,6 +237,11 @@ export async function uploadCloudinaryHomeImageAction(formData: FormData) {
       "@/lib/cloudinary/consulates-folder"
     );
     parseConsulateImagePublicId(publicId);
+  } else if (publicId.startsWith("Countries/")) {
+    const { parseCountryImagePublicId } = await import(
+      "@/lib/cloudinary/countries-folder"
+    );
+    parseCountryImagePublicId(publicId);
   } else {
     parseHomeImagePublicId(publicId);
   }
@@ -272,6 +277,8 @@ export async function saveCountryAction(formData: FormData): Promise<AdminAction
     flag: iso2Raw,
     shortDescription: normalizeCountryShortDescription(shortDescriptionRaw),
     description: (formData.get("description") as string) || null,
+    heroImage: ((formData.get("heroImage") as string) || "").trim() || null,
+    itemImage: ((formData.get("itemImage") as string) || "").trim() || null,
     visaRegion: ((formData.get("visaRegion") as string) || "").trim() || null,
     requiresAppointment: formData.get("requiresAppointment") === "on",
     averageProcessingTime:
@@ -395,7 +402,6 @@ export async function saveServiceAction(formData: FormData): Promise<AdminAction
     slug: formData.get("slug") as string,
     shortDescription: (formData.get("shortDescription") as string) || null,
     processingTime: (formData.get("processingTime") as string) || null,
-    heroImage: (formData.get("heroImage") as string) || null,
     heroTitle: (formData.get("heroTitle") as string) || null,
     heroSubtitle: (formData.get("heroSubtitle") as string) || null,
     sectionsJson: sectionsRaw.trim() || null,
@@ -509,7 +515,6 @@ export async function saveArticleAction(formData: FormData): Promise<AdminAction
     content: (formData.get("content") as string) || "",
     heroTitle: (formData.get("heroTitle") as string) || null,
     heroSubtitle: (formData.get("heroSubtitle") as string) || null,
-    heroImage: (formData.get("heroImage") as string) || null,
     sectionsJson: sectionsRaw.trim() || null,
     featureImage: (formData.get("featureImage") as string) || null,
     featureImageTitle: normalizeGuideFeatureImageTitle(
@@ -518,7 +523,6 @@ export async function saveArticleAction(formData: FormData): Promise<AdminAction
     featureImageText: normalizeGuideFeatureImageText(
       formData.get("featureImageText") as string,
     ),
-    coverImage: (formData.get("coverImage") as string) || null,
     countryId,
     isPublished,
     showInCategoryPanel: formData.get("showInCategoryPanel") === "on",
@@ -614,7 +618,6 @@ export async function saveConsulateAction(formData: FormData): Promise<AdminActi
     name: formData.get("name") as string,
     slug: formData.get("slug") as string,
     heroTitle: (formData.get("heroTitle") as string) || null,
-    heroImage: (formData.get("heroImage") as string) || null,
     sectionsJson: sectionsRaw.trim() || null,
     mapEmbedUrl: (formData.get("mapEmbedUrl") as string) || null,
     mapAddress: (formData.get("mapAddress") as string) || null,

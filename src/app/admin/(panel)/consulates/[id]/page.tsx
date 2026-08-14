@@ -52,7 +52,7 @@ export default async function EditConsulatePage({ params }: Props) {
       >
         <AdminPageHeader
           title={consulate ? consulate.name : "Yeni Konsolosluk"}
-          description="Hero, içerik bölümleri ve harita konumu."
+          description="Banner metinleri, içerik bölümleri ve harita. Görsel ülke ayarlarından gelir."
           publicUrl={
             <AdminConsulatePublicUrl
               countries={countries}
@@ -99,11 +99,10 @@ export default async function EditConsulatePage({ params }: Props) {
           </AdminFormSection>
 
           <AdminFormSection
-            title="Hero"
-            description="Banner görseli ve başlık. Alt metin alanı yok."
+            title="Banner"
+            description="Banner başlık. Görsel ülke ayarlarından gelir."
           >
             <ConsulateHeroBlock
-              heroImage={consulate?.heroImage ?? ""}
               heroTitle={consulate?.heroTitle}
               defaultTitle={consulate?.name}
             />

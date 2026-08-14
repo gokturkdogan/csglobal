@@ -54,6 +54,7 @@ export default async function CountryPage({ params }: Props) {
           name: country.name,
           slug: country.slug,
           flag: country.flag,
+          heroImage: country.heroImage,
           shortDescription: country.shortDescription,
           visaRegion: country.visaRegion,
           requiresAppointment: country.requiresAppointment,

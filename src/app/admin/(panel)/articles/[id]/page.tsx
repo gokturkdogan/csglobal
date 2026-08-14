@@ -55,7 +55,7 @@ export default async function EditArticlePage({ params }: Props) {
       >
         <AdminPageHeader
           title={article ? article.title : "Yeni Rehber"}
-          description="Ülkeye bağlı rehber içeriği, hero görseli ve kategori ilişkileri."
+          description="Ülkeye bağlı rehber içeriği ve kategori ilişkileri."
           publicUrl={
             <AdminSlugPublicUrl
               prefix="/rehber"
@@ -89,11 +89,10 @@ export default async function EditArticlePage({ params }: Props) {
           </AdminFormSection>
 
           <AdminFormSection
-            title="Hero"
-            description="Banner görseli ve üzerindeki metinler birlikte düzenlenir."
+            title="Banner"
+            description="Banner metinleri. Görsel ülke ayarlarından gelir."
           >
             <GuideHeroBlock
-              heroImage={article?.heroImage ?? ""}
               heroTitle={article?.heroTitle}
               heroSubtitle={article?.heroSubtitle}
               defaultTitle={article?.title}

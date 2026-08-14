@@ -2,7 +2,6 @@ import { normalizeRichTextContent } from "@/lib/rich-text";
 import { optimizeCloudinaryDeliveryUrl } from "@/lib/media";
 import { siteImages } from "@/lib/media";
 
-export const CONSULATE_SECTIONS_MAX = 15;
 export const CONSULATE_HERO_CROP_ASPECT = 3.2;
 
 export type ConsulateSection = {
@@ -28,8 +27,7 @@ export function parseConsulateSectionsJson(
         if (!title || !content) return null;
         return { title, content };
       })
-      .filter((item): item is ConsulateSection => item !== null)
-      .slice(0, CONSULATE_SECTIONS_MAX);
+      .filter((item): item is ConsulateSection => item !== null);
   } catch {
     return [];
   }
@@ -41,8 +39,7 @@ export function serializeConsulateSections(sections: ConsulateSection[]): string
       title: section.title.trim(),
       content: normalizeRichTextContent(section.content) ?? "",
     }))
-    .filter((section) => section.title && section.content)
-    .slice(0, CONSULATE_SECTIONS_MAX);
+    .filter((section) => section.title && section.content);
 
   return JSON.stringify(valid);
 }
