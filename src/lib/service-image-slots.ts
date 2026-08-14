@@ -4,7 +4,7 @@ import { buildServiceImagePublicId } from "@/lib/cloudinary/services-folder";
 export function serviceHeroImageSlot(slug: string) {
   return {
     publicId: buildServiceImagePublicId(slug, "hero"),
-    label: "Hizmet banner görseli",
+    label: "Program banner görseli",
     aspectRatio: SERVICE_HERO_CROP_ASPECT,
     cropHint:
       "Banner alanı (~3.2:1). Görseli sürükleyip yakınlaştırarak hangi bölümün görüneceğini seçin.",

@@ -4,10 +4,10 @@ export const SERVICES_CLOUDINARY_FOLDER = "Services";
 export function buildServiceImagePublicId(slug: string, assetName: string): string {
   const safeSlug = slug.trim().replace(/^\/+|\/+$/g, "");
   if (!safeSlug || safeSlug.includes("/")) {
-    throw new Error("Geçersiz hizmet slug");
+    throw new Error("Geçersiz program slug");
   }
   if (!assetName || assetName.includes("/")) {
-    throw new Error("Geçersiz hizmet görsel adı");
+    throw new Error("Geçersiz program görsel adı");
   }
   return `${SERVICES_CLOUDINARY_FOLDER}/${safeSlug}/${assetName}`;
 }

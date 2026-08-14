@@ -31,9 +31,9 @@ export default async function AdminServicesPage({ searchParams }: Props) {
   return (
     <div className="space-y-6">
       <AdminPageHeader
-        title="Hizmetler"
-        description="Vize ve göçmenlik hizmetlerini, bölümlerini ve öne çıkan işaretini yönetin."
-        actions={<AdminButtonLink href="/admin/services/new">+ Yeni Hizmet</AdminButtonLink>}
+        title="Programlar"
+        description="Vize ve göçmenlik programlarını, bölümlerini ve öne çıkan işaretini yönetin."
+        actions={<AdminButtonLink href="/admin/services/new">+ Yeni Program</AdminButtonLink>}
       />
 
       <AdminTable

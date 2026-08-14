@@ -44,7 +44,7 @@ export function CountryCard({
           <h3 className="text-lg font-semibold text-white">{name}</h3>
         </div>
         <span className="absolute right-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold text-slate-700 backdrop-blur-sm">
-          {serviceCount} hizmet
+          {serviceCount} program
         </span>
       </div>
       {shortDescription && (

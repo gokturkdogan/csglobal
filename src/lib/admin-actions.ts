@@ -435,7 +435,7 @@ export async function saveServiceAction(formData: FormData): Promise<AdminAction
       revalidatePath("/");
       revalidatePath(`/${service.country.slug}/${service.slug}`);
       revalidatePath("/admin/services");
-      return adminSuccess("Hizmet başarıyla güncellendi.", `/admin/services/${id}`);
+      return adminSuccess("Program başarıyla güncellendi.", `/admin/services/${id}`);
     }
 
     const service = await prisma.service.create({
@@ -446,12 +446,12 @@ export async function saveServiceAction(formData: FormData): Promise<AdminAction
     revalidatePath(`/${service.country.slug}/${service.slug}`);
     revalidatePath("/admin/services");
     return adminSuccess(
-      "Hizmet başarıyla oluşturuldu.",
+      "Program başarıyla oluşturuldu.",
       `/admin/services/${service.id}`,
     );
   } catch (error) {
     return adminFailure(
-      adminErrorMessage(error, "Hizmet kaydedilemedi. Lütfen tekrar deneyin."),
+      adminErrorMessage(error, "Program kaydedilemedi. Lütfen tekrar deneyin."),
     );
   }
 }
@@ -477,17 +477,17 @@ export async function saveServiceSectionAction(
       await prisma.serviceSection.update({ where: { id }, data });
       revalidatePath("/");
       return adminSuccess(
-        "Hizmet bölümü güncellendi.",
+        "Program bölümü güncellendi.",
         `/admin/services/${serviceId}`,
       );
     }
 
     await prisma.serviceSection.create({ data });
     revalidatePath("/");
-    return adminSuccess("Hizmet bölümü eklendi.", `/admin/services/${serviceId}`);
+    return adminSuccess("Program bölümü eklendi.", `/admin/services/${serviceId}`);
   } catch (error) {
     return adminFailure(
-      adminErrorMessage(error, "Hizmet bölümü kaydedilemedi. Lütfen tekrar deneyin."),
+      adminErrorMessage(error, "Program bölümü kaydedilemedi. Lütfen tekrar deneyin."),
     );
   }
 }

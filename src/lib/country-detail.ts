@@ -48,7 +48,7 @@ export function buildCountryQuickStats(country: {
   });
 
   stats.push({
-    label: "Hizmet alanı",
+    label: "Program alanı",
     value: `${country.categoryCount} kategori`,
   });
 

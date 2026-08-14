@@ -60,7 +60,7 @@ export default async function EditServicePage({ params }: Props) {
         initialTitle={service?.name ?? ""}
       >
         <AdminPageHeader
-          title={service ? `${service.name} Düzenle` : "Yeni Hizmet"}
+          title={service ? `${service.name} Düzenle` : "Yeni Program"}
           description="Banner, içerik bölümleri ve görselli alanlar."
           publicUrl={
             <AdminServicePublicUrl
@@ -100,7 +100,7 @@ export default async function EditServicePage({ params }: Props) {
           </AdminSelect>
         </AdminFormSection>
 
-        <AdminFormSection title="Hizmet bilgileri">
+        <AdminFormSection title="Program bilgileri">
           <VisualTitleField label="Başlık" name="name" required />
           <VisualSlugField cloudinaryPrefix="Services" placeholder="turistik-vize" />
           <AdminTextArea

@@ -27,7 +27,7 @@ export default async function AdminCategoriesPage() {
         <AdminTableHead>
           <th className="px-5 py-3">Ad</th>
           <th className="px-5 py-3">Slug</th>
-          <th className="px-5 py-3">Hizmetler</th>
+          <th className="px-5 py-3">Programlar</th>
           <th className="px-5 py-3">Durum</th>
           <th className="px-5 py-3 text-right">İşlem</th>
         </AdminTableHead>

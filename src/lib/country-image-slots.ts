@@ -9,7 +9,7 @@ export function countryHeroImageSlot(slug: string) {
     label: "Hero görseli",
     aspectRatio: SERVICE_HERO_CROP_ASPECT,
     cropHint:
-      "Üst banner alanı (~3.2:1). Bu ülkeye bağlı hizmet, rehber, konsolosluk ve ülke detay hero alanında kullanılır.",
+      "Üst banner alanı (~3.2:1). Bu ülkeye bağlı program, rehber, konsolosluk ve ülke detay hero alanında kullanılır.",
   };
 }
 

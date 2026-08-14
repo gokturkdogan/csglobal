@@ -271,7 +271,7 @@ export default async function CountryPathPage({ params }: Props) {
         </div>
       ) : (
         <p className="mt-10 text-sm text-slate-500">
-          Bu kategoride {data.country.name} için henüz hizmet eklenmemiş.
+          Bu kategoride {data.country.name} için henüz program eklenmemiş.
         </p>
       )}
 

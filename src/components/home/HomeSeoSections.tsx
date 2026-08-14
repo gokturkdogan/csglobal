@@ -42,7 +42,7 @@ export function HomeSeoIntro({ content }: { content: HomepageContent }) {
             href="/ulkeler"
             className="mt-8 inline-flex text-sm font-semibold text-csg-blue hover:underline"
           >
-            Tüm ülke ve hizmetleri inceleyin →
+            Tüm ülke ve programları inceleyin →
           </Link>
         </div>
       </div>

@@ -9,7 +9,7 @@ export async function generateMetadata() {
     entityId: "ulkeler",
     path: "/ulkeler",
     fallbackTitle: "Tüm Ülkeler",
-    fallbackDescription: "CSGLOBAL vize ve göçmenlik hizmeti sunulan ülkeler.",
+    fallbackDescription: "CSGLOBAL vize ve göçmenlik programları kapsanan ülkeler.",
   });
 }
 

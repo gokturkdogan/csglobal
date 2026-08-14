@@ -18,13 +18,13 @@ export default async function AdminDashboardPage() {
     <div className="space-y-8">
       <AdminPageHeader
         title="Yönetim Paneli"
-        description="Tüm site içeriği veritabanı üzerinden yönetilir. Ülkeler, hizmetler, anasayfa ve SEO ayarlarını buradan düzenleyebilirsiniz."
+        description="Tüm site içeriği veritabanı üzerinden yönetilir. Ülkeler, programlar, anasayfa ve SEO ayarlarını buradan düzenleyebilirsiniz."
       />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <AdminStatCard label="Ülkeler" value={countries} href="/admin/countries" />
         <AdminStatCard label="Kategoriler" value={categories} href="/admin/categories" />
-        <AdminStatCard label="Hizmetler" value={services} href="/admin/services" />
+        <AdminStatCard label="Programlar" value={services} href="/admin/services" />
         <AdminStatCard label="Makaleler" value={articles} href="/admin/articles" />
       </div>
 
@@ -39,7 +39,7 @@ export default async function AdminDashboardPage() {
             </li>
             <li>
               <Link href="/admin/services" className="text-csg-blue hover:underline">
-                Hizmet ekle veya düzenle
+                Program ekle veya düzenle
               </Link>
             </li>
             <li>
@@ -53,8 +53,8 @@ export default async function AdminDashboardPage() {
         <AdminCard>
           <h2 className="text-base font-semibold text-slate-900">İçerik yapısı</h2>
           <p className="mt-2 text-sm leading-relaxed text-slate-600">
-            Ülke → Kategori (ağaç) → Hizmet → Bölümler, belgeler, ücretler ve SSS.
-            Öne çıkan hizmetler anasayfada carousel olarak listelenir.
+            Ülke → Kategori (ağaç) → Program → Bölümler, belgeler, ücretler ve SSS.
+            Öne çıkan programlar anasayfada carousel olarak listelenir.
           </p>
         </AdminCard>
       </div>

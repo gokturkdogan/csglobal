@@ -64,7 +64,7 @@ export type HomepageContent = {
 const defaultWhyUs: HomeWhyUsItem[] = [
   {
     title: "Uzman danışmanlık",
-    description: "Her ülke ve hizmet için güncel, doğrulanmış bilgi ve süreç desteği.",
+    description: "Her ülke ve program için güncel, doğrulanmış bilgi ve süreç desteği.",
   },
   {
     title: "Şeffaf süreç",
@@ -83,7 +83,7 @@ const defaultWhyUs: HomeWhyUsItem[] = [
 const defaultProcess: HomeProcessStep[] = [
   {
     step: "01",
-    title: "Hizmeti seçin",
+    title: "Programı seçin",
     description: "Ülke ve vize türünü inceleyin; gereksinimleri okuyun.",
   },
   {
@@ -105,7 +105,7 @@ const defaultProcess: HomeProcessStep[] = [
 
 const defaultStats: HomeStat[] = [
   { label: "Ülke", value: "20+" },
-  { label: "Hizmet", value: "100+" },
+  { label: "Program", value: "100+" },
   { label: "Deneyim", value: "15 yıl" },
   { label: "Memnuniyet", value: "98%" },
 ];
@@ -122,7 +122,7 @@ const defaultSeoBlocks: HomeSeoBlock[] = [
       "Turistik, ticari, transit ve aile ziyareti vizeleri için ülkeye özel evrak listeleri, konsolosluk ücretleri ve ortalama sonuçlanma süreleri. Almanya, Fransa, İtalya ve tüm Schengen bölgesi için güncel bilgiler.",
     image: siteImages.travel,
     linkHref: "/ulkeler",
-    linkLabel: "Vize hizmetlerini incele",
+    linkLabel: "Vize programlarını incele",
   },
   {
     title: "Oturum ve çalışma izni",
@@ -174,7 +174,7 @@ const defaultFaqs: HomeFaqItem[] = [
   },
   {
     id: "faq-2",
-    question: "Hangi ülkeler için hizmet veriyorsunuz?",
+    question: "Hangi ülkeler için danışmanlık sunuyorsunuz?",
     answer:
       "Sitemizdeki ülke listesi dinamik olarak güncellenir. Her ülkenin vize, oturum ve çalışma izni kategorileri farklı olabilir.",
   },
@@ -194,7 +194,7 @@ const defaultFaqs: HomeFaqItem[] = [
     id: "faq-5",
     question: "Danışmanlık ücreti nasıl belirlenir?",
     answer:
-      "Danışmanlık kapsamı ülke ve hizmet türüne göre değişir. İletişim kanallarımızdan ücretsiz ön bilgi alabilirsiniz.",
+      "Danışmanlık kapsamı ülke ve program türüne göre değişir. İletişim kanallarımızdan ücretsiz ön bilgi alabilirsiniz.",
   },
 ];
 
@@ -258,10 +258,10 @@ export function buildHomepageContent(settings: SiteSettingsMap): HomepageContent
     whyUsItems: parseJson(settings.homeWhyUsJson, defaultWhyUs),
     processTitle: settings.homeProcessTitle || "Nasıl çalışır?",
     processSteps: parseJson(settings.homeProcessJson, defaultProcess),
-    servicesTitle: settings.homeServicesTitle || "Öne çıkan hizmetler",
+    servicesTitle: settings.homeServicesTitle || "Öne çıkan programlar",
     servicesSubtitle:
       settings.homeServicesSubtitle ||
-      "En çok talep edilen vize ve oturum hizmetleri. Masaüstünde 6 hizmet görünür; fazlası için okları kullanın.",
+      "En çok talep edilen vize ve oturum programları. Masaüstünde 6 program görünür; fazlası için okları kullanın.",
     countriesTitle: settings.homeCountriesTitle || "Popüler ülkeler",
     articlesTitle: settings.homeArticlesTitle || "Son rehberler",
     ctaBannerTitle:
@@ -281,10 +281,10 @@ export function buildHomepageContent(settings: SiteSettingsMap): HomepageContent
       settings.homeSeoIntroJson,
       defaultSeoIntroParagraphs,
     ),
-    seoBlocksTitle: settings.homeSeoBlocksTitle || "Hizmet alanlarımız",
+    seoBlocksTitle: settings.homeSeoBlocksTitle || "Program alanlarımız",
     seoBlocks: parseJson(settings.homeSeoBlocksJson, defaultSeoBlocks),
     serviceAreasTitle:
-      settings.homeServiceAreasTitle || "Vize ve göçmenlik hizmet grupları",
+      settings.homeServiceAreasTitle || "Vize ve göçmenlik program grupları",
     serviceAreasSubtitle:
       settings.homeServiceAreasSubtitle ||
       "İhtiyacınıza uygun kategoriyi seçin; ülke sayfasında detaylı evrak ve ücret bilgilerine ulaşın.",

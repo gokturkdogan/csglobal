@@ -30,7 +30,7 @@ export default async function AdminCountriesPage() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Ülkeler"
-        description="Vize ve göçmenlik hizmetlerinin ülke bazlı yapısını yönetin."
+        description="Vize ve göçmenlik programlarının ülke bazlı yapısını yönetin."
         actions={<AdminButtonLink href="/admin/countries/new">+ Yeni Ülke</AdminButtonLink>}
       />
 
@@ -39,7 +39,7 @@ export default async function AdminCountriesPage() {
           <th className="px-5 py-3">Ad</th>
           <th className="px-5 py-3">Slug</th>
           <th className="px-5 py-3">Durum</th>
-          <th className="px-5 py-3">Hizmet</th>
+          <th className="px-5 py-3">Program</th>
           <th className="px-5 py-3 text-right">İşlem</th>
         </AdminTableHead>
         <tbody className="divide-y divide-slate-100">

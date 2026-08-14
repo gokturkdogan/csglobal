@@ -24,7 +24,7 @@ export function ServiceHeroBlock({
         label="Banner başlık"
         name="heroTitle"
         value={heroTitle ?? defaultTitle}
-        hint="Boş bırakılırsa hizmet başlığı kullanılır."
+        hint="Boş bırakılırsa program başlığı kullanılır."
       />
       <AdminTextArea
         label="Banner alt metin"

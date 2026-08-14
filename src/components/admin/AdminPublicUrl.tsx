@@ -47,7 +47,7 @@ export function AdminSlugPublicUrl({
 
 type CountryOption = { id: string; slug: string };
 
-/** Hizmet: /{ülke-slug}/{hizmet-slug} */
+/** Program: /{ülke-slug}/{program-slug} */
 export function AdminServicePublicUrl({
   countries,
   defaultCountryId,

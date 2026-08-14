@@ -40,15 +40,15 @@ export function CountryCategoryPanel({
   return (
     <nav
       id="kategoriler-panel"
-      aria-label="Hizmet kategorileri"
+      aria-label="Program kategorileri"
       className="country-panel-card scroll-mt-24 flex max-h-[inherit] flex-col overflow-hidden rounded-xl border border-slate-200/80 bg-white text-sm shadow-md shadow-csg-blue/[0.05] ring-1 ring-slate-900/[0.04]"
     >
       <div className="country-panel-header shrink-0 px-3.5 py-3">
         <h2 className="text-xs font-semibold tracking-wide text-white">
-          Hizmet kategorileri
+          Program kategorileri
         </h2>
         <p className="mt-0.5 text-[11px] leading-snug">
-          Kategori seçerek hizmetlere göz atın
+          Kategori seçerek programlara göz atın
         </p>
       </div>
 

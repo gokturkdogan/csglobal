@@ -27,10 +27,10 @@ export function ServicesPageHero({ serviceCount }: { serviceCount: number }) {
             Vize ve göçmenlik
           </p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white md:text-4xl lg:text-5xl">
-            Hizmetlerimiz
+            Programlar
           </h1>
           <p className="mt-4 text-base leading-relaxed text-slate-200 md:text-lg">
-            Tüm ülkelerde sunduğumuz vize, oturum ve göçmenlik hizmetlerini tek listede
+            Tüm ülkelerdeki vize, oturum ve göçmenlik programlarını tek listede
             inceleyin. Detay sayfasından süre, evrak ve ücret bilgilerine ulaşabilirsiniz.
           </p>
 
@@ -40,7 +40,7 @@ export function ServicesPageHero({ serviceCount }: { serviceCount: number }) {
                 className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm"
               >
                 <span className="text-lg font-semibold text-sky-200">{serviceCount}</span>
-                aktif hizmet
+                aktif program
               </span>
             </div>
           )}

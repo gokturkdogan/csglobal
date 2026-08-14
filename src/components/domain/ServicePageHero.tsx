@@ -23,7 +23,7 @@ export function ServicePageHero({
   heroImage,
   title,
   subtitle,
-  badge = "Hizmet detayı",
+  badge = "Program",
   quickInfo,
 }: Props) {
   const badges: Array<{ label: string; value: string; highlight?: boolean }> = [];

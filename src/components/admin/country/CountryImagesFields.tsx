@@ -21,14 +21,14 @@ export function CountryImagesFields({ heroImage, itemImage }: Props) {
             slot={countryHeroImageSlot(slug)}
             previewVariant="hero"
             imageClassName={serviceHeroImageClassName}
-            hint="Bu ülkeye bağlı tüm hizmet, rehber, konsolosluk ve ülke detay sayfalarının üst banner görseli."
+            hint="Bu ülkeye bağlı tüm program, rehber, konsolosluk ve ülke detay sayfalarının üst banner görseli."
           />
           <AdminManagedImageField
             name="itemImage"
             defaultValue={itemImage}
             slot={countryItemImageSlot(slug)}
             previewVariant="card"
-            hint="Bu ülkeye bağlı tüm kart ve liste kapak görselleri (öne çıkan hizmetler, rehberler, ülke kartları)."
+            hint="Bu ülkeye bağlı tüm kart ve liste kapak görselleri (öne çıkan programlar, rehberler, ülke kartları)."
           />
         </div>
       )}

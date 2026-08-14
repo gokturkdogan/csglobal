@@ -92,7 +92,7 @@ export function CountryDetailPage({
         categoryCount={categoryCount}
         badge={heroBadge}
         subtitle={country.shortDescription ?? undefined}
-        primaryCta={{ label: "Hizmet kategorileri", href: "#kategoriler-panel" }}
+        primaryCta={{ label: "Program kategorileri", href: "#kategoriler-panel" }}
         secondaryCta={{ label: "İletişim", href: "/iletisim" }}
       />
 

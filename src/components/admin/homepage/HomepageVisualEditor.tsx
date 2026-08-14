@@ -131,7 +131,7 @@ function HomepageEditorInner({
       </div>
 
       <p className="mt-4 text-sm text-slate-500">
-        Öne çıkan hizmetler, ülkeler ve rehber yazıları ilgili menülerden yönetilir. SSS soruları
+        Öne çıkan programlar, ülkeler ve rehber yazıları ilgili menülerden yönetilir. SSS soruları
         bu önizlemede düzenlenir; kaydettiğinizde anasayfaya yansır.
       </p>
 

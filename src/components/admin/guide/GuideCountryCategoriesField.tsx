@@ -72,10 +72,10 @@ export function GuideCountryCategoriesField({
 
       <div className="block">
         <span className="text-sm font-medium text-slate-700">
-          İlgili hizmet kategorileri (opsiyonel)
+          İlgili program kategorileri (opsiyonel)
         </span>
         <p className="mt-1 text-xs text-slate-500">
-          Tüm hizmet kategorileri listelenir (pasif veya hizmeti olmayanlar dahil).
+          Tüm program kategorileri listelenir (pasif veya programı olmayanlar dahil).
           Sol panelde ilgili kategori altında gösterilir.
         </p>
 
@@ -130,7 +130,7 @@ export function GuideCountryCategoriesField({
         />
         <span className="min-w-0">
           <span className="block text-sm font-medium text-slate-900">
-            Ülke sayfasında hizmet kategorisinde göster
+            Ülke sayfasında program kategorisinde göster
           </span>
           <span className="mt-1 block text-xs leading-relaxed text-slate-500">
             Bağlı kategorilerde sol panelde listelenir. Aynı kategoride yalnızca
