@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import Link from "next/link";
 import type { HomepageContent } from "@/lib/homepage";
@@ -8,7 +9,19 @@ import { updateHomepageEditorAction } from "@/lib/admin-actions";
 import { AdminLoadingButton } from "@/components/admin/AdminForm";
 import { useAdminToast } from "@/components/admin/AdminToast";
 import { HomepageEditProvider, useHomepageEdit } from "./HomepageEditContext";
-import { HomepageLivePreview } from "./HomepageLivePreview";
+
+const HomepageLivePreview = dynamic(
+  () =>
+    import("./HomepageLivePreview").then((module) => module.HomepageLivePreview),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex min-h-[320px] items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-500">
+        Önizleme yükleniyor…
+      </div>
+    ),
+  },
+);
 
 type PreviewData = {
   quickLinks: Array<{ name: string; slug: string; flag?: string | null }>;

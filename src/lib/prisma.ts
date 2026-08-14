@@ -19,7 +19,12 @@ function createPrismaClient() {
 
   const pool =
     globalForPrisma.pool ??
-    new Pool({ connectionString: resolvePgConnectionString(connectionString) });
+    new Pool({
+      connectionString: resolvePgConnectionString(connectionString),
+      max: Number(process.env.PG_POOL_MAX) || 10,
+      idleTimeoutMillis: 30_000,
+      connectionTimeoutMillis: 10_000,
+    });
   if (process.env.NODE_ENV !== "production") {
     globalForPrisma.pool = pool;
   }

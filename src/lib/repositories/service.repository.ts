@@ -39,6 +39,14 @@ export async function findServicesByCountryAndCategory(
   return prisma.service.findMany({
     where: { countryId, categoryId, ...active },
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      shortDescription: true,
+      processingTime: true,
+      heroImage: true,
+    },
   });
 }
 
@@ -47,7 +55,13 @@ export async function findFeaturedServices(limit?: number) {
     where: { isFeatured: true, ...active },
     orderBy: { sortOrder: "asc" },
     ...(limit ? { take: limit } : {}),
-    include: {
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      shortDescription: true,
+      processingTime: true,
+      heroImage: true,
       country: { select: { name: true, slug: true } },
     },
   });
@@ -73,7 +87,13 @@ export async function findAllServicesForListing() {
       { sortOrder: "asc" },
       { name: "asc" },
     ],
-    include: {
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      shortDescription: true,
+      processingTime: true,
+      heroImage: true,
       country: { select: { name: true, slug: true } },
       category: { select: { name: true, slug: true } },
     },
@@ -95,4 +115,27 @@ export async function findServiceById(id: string) {
       category: true,
     },
   });
+}
+
+export async function listServicesForAdmin(options?: { skip?: number; take?: number }) {
+  return prisma.service.findMany({
+    orderBy: [{ countryId: "asc" }, { sortOrder: "asc" }],
+    skip: options?.skip,
+    take: options?.take,
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      isActive: true,
+      sortOrder: true,
+      countryId: true,
+      categoryId: true,
+      country: { select: { name: true, slug: true } },
+      category: { select: { name: true } },
+    },
+  });
+}
+
+export async function countServicesForAdmin() {
+  return prisma.service.count();
 }

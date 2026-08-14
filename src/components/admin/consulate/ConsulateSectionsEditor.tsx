@@ -7,7 +7,7 @@ import {
   parseConsulateSectionsJson,
   serializeConsulateSections,
 } from "@/lib/consulate";
-import { AdminRichTextEditor } from "@/components/admin/AdminRichTextEditor";
+import { AdminRichTextEditor } from "@/components/admin/AdminRichTextEditorLazy";
 
 const inputClass =
   "mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-csg-blue focus:outline-none focus:ring-2 focus:ring-csg-blue/20";

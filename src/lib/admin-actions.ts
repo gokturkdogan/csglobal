@@ -39,6 +39,22 @@ import {
 } from "@/lib/paths";
 import { AdminRole } from "@/generated/prisma/client";
 
+async function upsertSiteSettingsBatch(
+  entries: Array<{ key: string; value: string }>,
+) {
+  if (entries.length === 0) return;
+
+  await prisma.$transaction(
+    entries.map(({ key, value }) =>
+      prisma.siteSetting.upsert({
+        where: { key },
+        create: { key, value },
+        update: { value },
+      }),
+    ),
+  );
+}
+
 async function requireAdmin() {
   const session = await auth();
   if (!session?.user) redirect("/admin/login");
@@ -68,17 +84,17 @@ export async function updateSettingsAction(formData: FormData): Promise<AdminAct
   ] as const;
 
   try {
-    for (const key of keys) {
-      const value = formData.get(key) as string | null;
-      if (value !== null) {
-        await prisma.siteSetting.upsert({
-          where: { key },
-          create: { key, value },
-          update: { value },
-        });
-      }
-    }
-    revalidatePath("/", "layout");
+    const entries = keys
+      .map((key) => {
+        const value = formData.get(key) as string | null;
+        return value !== null ? { key, value } : null;
+      })
+      .filter((entry): entry is { key: typeof keys[number]; value: string } => entry !== null);
+
+    await upsertSiteSettingsBatch(entries);
+    revalidatePath("/");
+    revalidatePath("/iletisim");
+    revalidatePath("/hakkimizda");
     return adminSuccess("Site ayarları kaydedildi.");
   } catch (error) {
     return adminFailure(
@@ -127,18 +143,18 @@ export async function updateHomepageAction(formData: FormData): Promise<AdminAct
   await requireAdmin();
 
   try {
-    for (const key of homepageKeys) {
-      const value = formData.get(key) as string | null;
-      if (value !== null) {
-        await prisma.siteSetting.upsert({
-          where: { key },
-          create: { key, value },
-          update: { value },
-        });
-      }
-    }
+    const entries = homepageKeys
+      .map((key) => {
+        const value = formData.get(key) as string | null;
+        return value !== null ? { key, value } : null;
+      })
+      .filter(
+        (entry): entry is { key: typeof homepageKeys[number]; value: string } =>
+          entry !== null,
+      );
 
-    revalidatePath("/", "layout");
+    await upsertSiteSettingsBatch(entries);
+    revalidatePath("/");
     return adminSuccess("Anasayfa ayarları kaydedildi.");
   } catch (error) {
     return adminFailure(
@@ -161,19 +177,18 @@ export async function updateHomepageEditorAction(
 
   try {
     const settings = serializeHomepageToSettings(content);
+    const entries = homepageKeys
+      .map((key) => {
+        const value = settings[key];
+        return value !== undefined ? { key, value } : null;
+      })
+      .filter(
+        (entry): entry is { key: typeof homepageKeys[number]; value: string } =>
+          entry !== null,
+      );
 
-    for (const key of homepageKeys) {
-      const value = settings[key];
-      if (value !== undefined) {
-        await prisma.siteSetting.upsert({
-          where: { key },
-          create: { key, value },
-          update: { value },
-        });
-      }
-    }
-
-    revalidatePath("/", "layout");
+    await upsertSiteSettingsBatch(entries);
+    revalidatePath("/");
     return adminSuccess("Anasayfa başarıyla güncellendi.");
   } catch (error) {
     return adminFailure(
@@ -712,7 +727,6 @@ export async function saveAboutPageAction(formData: FormData): Promise<AdminActi
       });
     });
 
-    revalidatePath("/", "layout");
     revalidatePath("/hakkimizda");
     return adminSuccess("Hakkımızda sayfası güncellendi.", "/admin/hakkimizda");
   } catch (error) {
@@ -759,9 +773,7 @@ export async function saveContactPageAction(formData: FormData): Promise<AdminAc
       }
     });
 
-    revalidatePath("/", "layout");
     revalidatePath("/iletisim");
-    revalidatePath("/hakkimizda");
     return adminSuccess("İletişim sayfası güncellendi.", "/admin/iletisim");
   } catch (error) {
     return adminFailure(
@@ -809,7 +821,6 @@ export async function saveGuidesListPageAction(formData: FormData): Promise<Admi
       });
     });
 
-    revalidatePath("/", "layout");
     revalidatePath("/rehber");
     return adminSuccess("Rehberlerimiz sayfası güncellendi.", "/admin/rehberlerimiz");
   } catch (error) {
@@ -863,6 +874,7 @@ export async function uploadSiteAssetAction(formData: FormData): Promise<AdminAc
 
     const uploaded: string[] = [];
     const failed: string[] = [];
+    const pathsToRevalidate = new Set<string>();
 
     for (const file of files) {
       if (file.size > SITE_ASSET_MAX_BYTES) {
@@ -911,7 +923,7 @@ export async function uploadSiteAssetAction(formData: FormData): Promise<AdminAc
           data: { fileUrl: publicUrl },
         });
 
-        revalidatePath(path);
+        pathsToRevalidate.add(path);
         uploaded.push(fileName);
       } catch (error) {
         const detail = adminErrorMessage(error, "");
@@ -921,6 +933,9 @@ export async function uploadSiteAssetAction(formData: FormData): Promise<AdminAc
       }
     }
 
+    for (const path of pathsToRevalidate) {
+      revalidatePath(path);
+    }
     revalidatePath("/admin/dokumanlar");
     revalidatePath(`/${country.slug}`);
 
@@ -1023,7 +1038,6 @@ export async function saveSitePageAction(formData: FormData): Promise<AdminActio
       },
     });
 
-    revalidatePath("/", "layout");
     revalidatePath(`/${page.slug}`);
     return adminSuccess("Sayfa başarıyla güncellendi.", `/admin/site-pages/${id}`);
   } catch (error) {

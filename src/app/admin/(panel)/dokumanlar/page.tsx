@@ -3,9 +3,14 @@ import {
   deleteSiteAssetAction,
   uploadSiteAssetAction,
 } from "@/lib/admin-actions";
-import { listSiteAssetsForAdmin } from "@/lib/repositories/site-asset.repository";
+import {
+  countSiteAssetsForAdmin,
+  listSiteAssetsForAdmin,
+} from "@/lib/repositories/site-asset.repository";
+import { logAdminListPerf, resolveAdminPagination } from "@/lib/admin-pagination";
 import { SiteAssetBulkUploadField } from "@/components/admin/SiteAssetBulkUploadField";
 import { SiteAssetShowInMenuField } from "@/components/admin/SiteAssetShowInMenuField";
+import { AdminPagination } from "@/components/admin/AdminPagination";
 import {
   AdminActionForm,
   AdminSelect,
@@ -23,8 +28,19 @@ function formatFileSize(bytes: number | null | undefined): string {
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminDocumentsPage() {
-  const assets = await listSiteAssetsForAdmin();
+type Props = {
+  searchParams: Promise<{ page?: string; pageSize?: string }>;
+};
+
+export default async function AdminDocumentsPage({ searchParams }: Props) {
+  const params = await searchParams;
+  const { page, pageSize, skip, take } = resolveAdminPagination(params);
+  const start = performance.now();
+  const [assets, totalCount] = await Promise.all([
+    listSiteAssetsForAdmin({ skip, take }),
+    countSiteAssetsForAdmin(),
+  ]);
+  logAdminListPerf("admin/dokumanlar", start, assets.length);
   const countries = await prisma.country.findMany({
     where: { isActive: true },
     orderBy: { name: "asc" },
@@ -66,7 +82,16 @@ export default async function AdminDocumentsPage() {
         <AdminSubmitButton loadingLabel="Yükleniyor…">Yükle</AdminSubmitButton>
       </AdminActionForm>
 
-      <AdminTable>
+      <AdminTable
+        footer={
+          <AdminPagination
+            basePath="/admin/dokumanlar"
+            page={page}
+            pageSize={pageSize}
+            totalCount={totalCount}
+          />
+        }
+      >
         <AdminTableHead>
           <th className="px-5 py-3">Dosya</th>
           <th className="px-5 py-3">Ülke</th>

@@ -1,6 +1,11 @@
-import { listArticlesForAdmin } from "@/lib/repositories/article.repository";
+import {
+  countArticlesForAdmin,
+  listArticlesForAdmin,
+} from "@/lib/repositories/article.repository";
+import { logAdminListPerf, resolveAdminPagination } from "@/lib/admin-pagination";
 import { formatPublicSitePath } from "@/lib/site-url";
 import { AdminButtonLink, AdminLink } from "@/components/admin/AdminForm";
+import { AdminPagination } from "@/components/admin/AdminPagination";
 import {
   AdminPageHeader,
   AdminStatusBadge,
@@ -8,8 +13,19 @@ import {
   AdminTableHead,
 } from "@/components/admin/AdminUi";
 
-export default async function AdminArticlesPage() {
-  const articles = await listArticlesForAdmin();
+type Props = {
+  searchParams: Promise<{ page?: string; pageSize?: string }>;
+};
+
+export default async function AdminArticlesPage({ searchParams }: Props) {
+  const params = await searchParams;
+  const { page, pageSize, skip, take } = resolveAdminPagination(params);
+  const start = performance.now();
+  const [articles, totalCount] = await Promise.all([
+    listArticlesForAdmin({ skip, take }),
+    countArticlesForAdmin(),
+  ]);
+  logAdminListPerf("admin/articles", start, articles.length);
 
   return (
     <div className="space-y-6">
@@ -19,7 +35,16 @@ export default async function AdminArticlesPage() {
         actions={<AdminButtonLink href="/admin/articles/new">+ Yeni Rehber</AdminButtonLink>}
       />
 
-      <AdminTable>
+      <AdminTable
+        footer={
+          <AdminPagination
+            basePath="/admin/articles"
+            page={page}
+            pageSize={pageSize}
+            totalCount={totalCount}
+          />
+        }
+      >
         <AdminTableHead>
           <th className="px-5 py-3">Başlık</th>
           <th className="px-5 py-3">Site URL</th>

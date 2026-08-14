@@ -1,9 +1,12 @@
-import {
-  buildConsulatePath,
-} from "@/lib/paths";
+import { buildConsulatePath } from "@/lib/paths";
 import { formatPublicSitePath } from "@/lib/site-url";
-import { listConsulatesForAdmin } from "@/lib/repositories/consulate.repository";
+import {
+  countConsulatesForAdmin,
+  listConsulatesForAdmin,
+} from "@/lib/repositories/consulate.repository";
+import { logAdminListPerf, resolveAdminPagination } from "@/lib/admin-pagination";
 import { AdminButtonLink, AdminLink } from "@/components/admin/AdminForm";
+import { AdminPagination } from "@/components/admin/AdminPagination";
 import {
   AdminPageHeader,
   AdminStatusBadge,
@@ -11,8 +14,19 @@ import {
   AdminTableHead,
 } from "@/components/admin/AdminUi";
 
-export default async function AdminConsulatesPage() {
-  const consulates = await listConsulatesForAdmin();
+type Props = {
+  searchParams: Promise<{ page?: string; pageSize?: string }>;
+};
+
+export default async function AdminConsulatesPage({ searchParams }: Props) {
+  const params = await searchParams;
+  const { page, pageSize, skip, take } = resolveAdminPagination(params);
+  const start = performance.now();
+  const [consulates, totalCount] = await Promise.all([
+    listConsulatesForAdmin({ skip, take }),
+    countConsulatesForAdmin(),
+  ]);
+  logAdminListPerf("admin/consulates", start, consulates.length);
 
   return (
     <div className="space-y-6">
@@ -24,7 +38,16 @@ export default async function AdminConsulatesPage() {
         }
       />
 
-      <AdminTable>
+      <AdminTable
+        footer={
+          <AdminPagination
+            basePath="/admin/consulates"
+            page={page}
+            pageSize={pageSize}
+            totalCount={totalCount}
+          />
+        }
+      >
         <AdminTableHead>
           <th className="px-5 py-3">Ad</th>
           <th className="px-5 py-3">Ülke</th>

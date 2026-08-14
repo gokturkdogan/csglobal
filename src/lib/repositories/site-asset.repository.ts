@@ -1,12 +1,25 @@
 import { prisma } from "@/lib/prisma";
 
-export async function listSiteAssetsForAdmin() {
+export async function listSiteAssetsForAdmin(options?: { skip?: number; take?: number }) {
   return prisma.siteAsset.findMany({
     orderBy: [{ country: { name: "asc" } }, { fileName: "asc" }],
-    include: {
+    skip: options?.skip,
+    take: options?.take,
+    select: {
+      id: true,
+      fileName: true,
+      fileUrl: true,
+      mimeType: true,
+      byteSize: true,
+      showInMenu: true,
+      updatedAt: true,
       country: { select: { id: true, name: true, slug: true } },
     },
   });
+}
+
+export async function countSiteAssetsForAdmin() {
+  return prisma.siteAsset.count();
 }
 
 export async function findSiteAssetsByCountryId(countryId: string) {

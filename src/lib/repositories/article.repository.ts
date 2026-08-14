@@ -37,7 +37,14 @@ export async function findPublishedArticlesByCountryId(countryId: string) {
       countryId,
     },
     orderBy: { publishedAt: "desc" },
-    include: {
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      excerpt: true,
+      heroImage: true,
+      coverImage: true,
+      publishedAt: true,
       country: { select: { name: true } },
     },
   });
@@ -90,14 +97,26 @@ export async function findArticleForAdmin(id: string) {
   });
 }
 
-export async function listArticlesForAdmin() {
+export async function listArticlesForAdmin(options?: { skip?: number; take?: number }) {
   return prisma.article.findMany({
     orderBy: { updatedAt: "desc" },
-    include: {
+    skip: options?.skip,
+    take: options?.take,
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      isPublished: true,
+      updatedAt: true,
+      countryId: true,
       country: { select: { name: true } },
       linkedCategories: { select: { categoryId: true } },
     },
   });
+}
+
+export async function countArticlesForAdmin() {
+  return prisma.article.count();
 }
 
 export async function listCategoriesForGuideAdmin() {

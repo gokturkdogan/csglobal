@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { saveGuidesListPageAction } from "@/lib/admin-actions";
 import { parseGuidesListPageEditableFromSettings } from "@/lib/guides-list-page";
-import { ensureGuidesListSitePage } from "@/lib/repositories/site.repository";
+import { findSitePageRecordBySlug } from "@/lib/repositories/site.repository";
 import { getSiteSettings } from "@/lib/settings";
 import {
   guidesListHeroImageClassName,
@@ -20,7 +20,17 @@ import {
 import { AdminPageHeader } from "@/components/admin/AdminUi";
 
 export default async function AdminGuidesListPage() {
-  const page = await ensureGuidesListSitePage();
+  const page = await findSitePageRecordBySlug("rehber");
+  if (!page) {
+    return (
+      <div className="space-y-4">
+        <AdminPageHeader title="Rehberlerimiz" />
+        <p className="text-sm text-slate-600">
+          Rehber liste sayfası kaydı bulunamadı. Veritabanı seed işlemini çalıştırın.
+        </p>
+      </div>
+    );
+  }
   const settings = await getSiteSettings();
   const content = parseGuidesListPageEditableFromSettings(settings);
 

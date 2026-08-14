@@ -38,13 +38,25 @@ export async function findConsulateForAdmin(id: string) {
   });
 }
 
-export async function listConsulatesForAdmin() {
+export async function listConsulatesForAdmin(options?: { skip?: number; take?: number }) {
   return prisma.consulate.findMany({
     orderBy: [{ countryId: "asc" }, { sortOrder: "asc" }, { name: "asc" }],
-    include: {
+    skip: options?.skip,
+    take: options?.take,
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      isActive: true,
+      sortOrder: true,
+      countryId: true,
       country: { select: { name: true, slug: true } },
     },
   });
+}
+
+export async function countConsulatesForAdmin() {
+  return prisma.consulate.count();
 }
 
 export async function findAllActiveConsulates() {

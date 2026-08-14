@@ -75,11 +75,11 @@ export default async function CountryPathPage({ params }: Props) {
     const service = await findServiceByCountrySlug(country.id, resolved.serviceSlug);
     if (!service) notFound();
 
-    const countryGuides = await findPublishedArticlesByCountryId(country.id);
-    const { panelCategories, consulates, documents } = await loadCountryCategoryPanelData(
-      country.id,
-      countrySlug,
-    );
+    const [countryGuides, panelData] = await Promise.all([
+      findPublishedArticlesByCountryId(country.id),
+      loadCountryCategoryPanelData(country.id, countrySlug),
+    ]);
+    const { panelCategories, consulates, documents } = panelData;
 
     const minFee = service.fees.length
       ? service.fees.reduce((min, f) =>
