@@ -1,4 +1,8 @@
 import { prisma } from "@/lib/prisma";
+import {
+  consulatePublicDetailSelect,
+  consulatePublicListSelect,
+} from "@/lib/repositories/public-selects";
 
 export async function findActiveConsulatesByCountrySlug(countrySlug: string) {
   return prisma.consulate.findMany({
@@ -7,9 +11,7 @@ export async function findActiveConsulatesByCountrySlug(countrySlug: string) {
       country: { slug: countrySlug, isActive: true },
     },
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
-    include: {
-      country: { select: { name: true, slug: true } },
-    },
+    select: consulatePublicListSelect,
   });
 }
 
@@ -23,9 +25,7 @@ export async function findConsulateByCountryAndSlug(
       isActive: true,
       country: { slug: countrySlug, isActive: true },
     },
-    include: {
-      country: true,
-    },
+    select: consulatePublicDetailSelect,
   });
 }
 

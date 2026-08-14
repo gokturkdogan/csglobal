@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { serviceCountryPanelSelect } from "@/lib/repositories/public-selects";
 
 const active = { isActive: true };
 
@@ -48,6 +49,7 @@ export async function findCategoriesWithCountryServices(countryId: string) {
       services: {
         where: { countryId, isActive: true },
         orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+        select: serviceCountryPanelSelect,
       },
     },
   });

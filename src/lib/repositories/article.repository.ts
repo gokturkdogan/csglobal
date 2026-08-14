@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { articlePublicDetailSelect } from "@/lib/repositories/public-selects";
 
 const articleListInclude = {
   country: { select: { name: true, slug: true, itemImage: true, heroImage: true } },
@@ -19,14 +20,7 @@ export async function findPublishedArticles(limit?: number) {
 export async function findArticleBySlug(slug: string) {
   return prisma.article.findFirst({
     where: { slug, isPublished: true },
-    include: {
-      country: true,
-      linkedCategories: {
-        include: {
-          category: { select: { id: true, name: true, slug: true } },
-        },
-      },
-    },
+    select: articlePublicDetailSelect,
   });
 }
 

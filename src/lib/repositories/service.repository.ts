@@ -1,27 +1,12 @@
 import { prisma } from "@/lib/prisma";
+import { servicePublicDetailSelect } from "@/lib/repositories/public-selects";
 
 const active = { isActive: true };
 
 export async function findServiceByCountrySlug(countryId: string, slug: string) {
   return prisma.service.findFirst({
     where: { countryId, slug, ...active },
-    include: {
-      country: true,
-      category: true,
-      sections: {
-        where: active,
-        orderBy: { sortOrder: "asc" },
-      },
-      fees: { where: { isActive: true } },
-      faqs: { where: active, orderBy: { sortOrder: "asc" } },
-      serviceDocuments: {
-        orderBy: { sortOrder: "asc" },
-        include: {
-          document: true,
-          applicantProfile: true,
-        },
-      },
-    },
+    select: servicePublicDetailSelect,
   });
 }
 
