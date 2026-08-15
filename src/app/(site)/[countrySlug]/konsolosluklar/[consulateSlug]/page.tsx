@@ -5,13 +5,11 @@ import { ContactMapSection } from "@/components/domain/ContactMapSection";
 import { ConsulateDetailContent } from "@/components/domain/ConsulateDetailContent";
 import { ConsulatePageHero } from "@/components/domain/ConsulatePageHero";
 import { ServiceTableOfContents } from "@/components/domain/ServiceTableOfContents";
-import {
-  buildConsulatePath,
-} from "@/lib/paths";
+import { CountryCategoryPanel } from "@/components/country/CountryCategoryPanel";
+import { buildConsulatePath } from "@/lib/paths";
 import { getGuideSectionNavItems } from "@/lib/guide";
-import {
-  findConsulateByCountryAndSlug,
-} from "@/lib/repositories/consulate.repository";
+import { findConsulateByCountryAndSlug } from "@/lib/repositories/consulate.repository";
+import { loadCountryCategoryPanelData } from "@/lib/country-page/load-category-panel";
 import { getSiteSettings } from "@/lib/settings";
 import { buildEntityMetadata } from "@/lib/services/seo.service";
 import { resolveConsulatePageHeroImage } from "@/lib/country-item-image";
@@ -51,7 +49,19 @@ export default async function ConsulateDetailPage({ params }: Props) {
   const mapEmbedUrl = consulate.mapEmbedUrl?.trim();
   const mapAddress = consulate.mapAddress?.trim();
   const sectionNav = getGuideSectionNavItems(consulate.sectionsJson);
-  const showSidebar = sectionNav.length > 0;
+  const showTocSidebar = sectionNav.length > 0;
+
+  const { panelCategories, consulates, documents } = await loadCountryCategoryPanelData(
+    consulate.countryId,
+    countrySlug,
+  );
+
+  const contentGridClass = showTocSidebar
+    ? "mt-8 grid gap-6 lg:grid-cols-[minmax(240px,280px)_minmax(0,1fr)_minmax(0,240px)] lg:items-start"
+    : "mt-8 grid gap-6 lg:grid-cols-[minmax(240px,280px)_minmax(0,1fr)] lg:items-start";
+
+  const tocStickyClass =
+    "lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100dvh-var(--site-header-height)-2rem)] lg:overflow-y-auto";
 
   return (
     <>
@@ -70,8 +80,17 @@ export default async function ConsulateDetailPage({ params }: Props) {
           ]}
         />
 
-        <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_280px] lg:items-start">
-          <div className="min-w-0">
+        <div className={contentGridClass}>
+          <aside className="order-2 country-panel-sticky min-w-0 lg:order-1 lg:z-30 lg:self-start">
+            <CountryCategoryPanel
+              countrySlug={countrySlug}
+              categories={panelCategories}
+              consulates={consulates}
+              documents={documents}
+            />
+          </aside>
+
+          <div className="order-1 min-w-0 lg:order-2">
             <ConsulateDetailContent sectionsJson={consulate.sectionsJson} />
 
             {mapEmbedUrl && (
@@ -105,10 +124,8 @@ export default async function ConsulateDetailPage({ params }: Props) {
             </div>
           </div>
 
-          {showSidebar && (
-            <aside
-              className="flex flex-col gap-6 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100dvh-var(--site-header-height)-2rem)]"
-            >
+          {showTocSidebar && (
+            <aside className={`order-3 min-w-0 lg:order-3 ${tocStickyClass}`}>
               <ServiceTableOfContents items={sectionNav} />
             </aside>
           )}

@@ -84,6 +84,7 @@ export const consulatePublicListSelect = {
 
 export const consulatePublicDetailSelect = {
   id: true,
+  countryId: true,
   name: true,
   slug: true,
   heroTitle: true,
