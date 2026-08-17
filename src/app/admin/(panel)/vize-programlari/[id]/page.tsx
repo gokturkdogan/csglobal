@@ -23,6 +23,9 @@ import {
   findVisaProgramById,
   listCategoriesForVisaProgramAdmin,
 } from "@/lib/repositories/visa-program.repository";
+import { SeoMetadataBlock } from "@/components/admin/SeoMetadataBlock";
+import { findSeoMetadata } from "@/lib/repositories/seo.repository";
+import { SeoEntityType } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 
 type Props = { params: Promise<{ id: string }> };
@@ -50,6 +53,11 @@ export default async function EditVisaProgramPage({ params }: Props) {
     (program?.categoryId ? [program.categoryId] : []);
 
   const defaultCountryId = program?.countryId ?? countries[0]?.id ?? "";
+
+  const seo =
+    program
+      ? await findSeoMetadata(SeoEntityType.VISA_PROGRAM, program.id)
+      : null;
 
   return (
     <div className="space-y-6">
@@ -169,6 +177,8 @@ export default async function EditVisaProgramPage({ params }: Props) {
               featureImageText={program?.featureImage2Text}
             />
           </AdminFormSection>
+
+          <SeoMetadataBlock seo={seo} />
 
           <AdminSubmitButton>Kaydet</AdminSubmitButton>
         </AdminActionForm>

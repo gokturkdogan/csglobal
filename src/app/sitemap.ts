@@ -1,11 +1,15 @@
 import type { MetadataRoute } from "next";
 import { siteUrl } from "@/lib/services/seo.service";
-import { findActiveCountries } from "@/lib/repositories/country.repository";
-import { findAllActivePrograms } from "@/lib/repositories/visa-program.repository";
-import { findAllActiveCategories } from "@/lib/repositories/category.repository";
+import {
+  findCountriesForSitemap,
+  findProgramsForSitemap,
+  findCountryCategoryPairsForSitemap,
+} from "@/lib/repositories/sitemap.repository";
 import { findAllActiveConsulates } from "@/lib/repositories/consulate.repository";
 import { buildCategoryPath, buildVisaProgramPath } from "@/lib/services/path-resolver.service";
 import { buildConsulatePath } from "@/lib/paths";
+
+export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteUrl;
@@ -18,37 +22,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   try {
-    const [countries, programs, categories, consulates] = await Promise.all([
-      findActiveCountries(),
-      findAllActivePrograms(),
-      findAllActiveCategories(),
+    const [countries, programs, categoryPairs, consulates] = await Promise.all([
+      findCountriesForSitemap(),
+      findProgramsForSitemap(),
+      findCountryCategoryPairsForSitemap(),
       findAllActiveConsulates(),
     ]);
 
     const countryRoutes = countries.map((c) => ({
       url: `${base}/${c.slug}`,
+      lastModified: c.updatedAt,
       changeFrequency: "weekly" as const,
       priority: 0.85,
     }));
 
-    const programRoutes = programs
-      .filter((p) => p.country.isActive)
-      .map((p) => ({
-        url: `${base}${buildVisaProgramPath(p.country.slug, p.slug)}`,
-        changeFrequency: "weekly" as const,
-        priority: 0.8,
-      }));
+    const programRoutes = programs.map((p) => ({
+      url: `${base}${buildVisaProgramPath(p.country.slug, p.slug)}`,
+      lastModified: p.updatedAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    }));
 
-    const categoryRoutes = countries.flatMap((country) =>
-      categories.map((cat) => ({
-        url: `${base}${buildCategoryPath(country.slug, [cat.slug])}`,
-        changeFrequency: "weekly" as const,
-        priority: 0.75,
-      })),
-    );
+    const categoryRoutes = categoryPairs.map((pair) => ({
+      url: `${base}${buildCategoryPath(pair.countrySlug, [pair.categorySlug])}`,
+      lastModified: pair.updatedAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.75,
+    }));
 
     const consulateRoutes = consulates.map((c) => ({
       url: `${base}${buildConsulatePath(c.country.slug, c.slug)}`,
+      lastModified: c.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.7,
     }));

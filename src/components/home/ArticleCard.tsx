@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { buildVisaProgramPath } from "@/lib/paths";
 import { siteImages } from "@/lib/media";
 import { SiteImage } from "@/components/ui/SiteImage";
 
 export function ArticleCard({
   title,
   slug,
+  countrySlug,
   excerpt,
   coverImage,
   categoryName,
@@ -13,6 +15,7 @@ export function ArticleCard({
 }: {
   title: string;
   slug: string;
+  countrySlug: string;
   excerpt?: string | null;
   coverImage?: string | null;
   categoryName?: string;
@@ -23,7 +26,7 @@ export function ArticleCard({
 
   return (
     <Link
-      href={`/rehber/${slug}`}
+      href={buildVisaProgramPath(countrySlug, slug)}
       className={`group flex cursor-pointer flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:border-csg-blue/40 hover:shadow-md ${
         isCompact ? "rounded-lg" : ""
       }`}

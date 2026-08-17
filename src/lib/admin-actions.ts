@@ -5,6 +5,9 @@ import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { auth, signIn, signOut } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { SeoEntityType } from "@/generated/prisma/client";
+import { upsertSeoFromForm } from "@/lib/admin-seo";
+import { revalidateSitemap } from "@/lib/sitemap-revalidate";
 import {
   adminErrorMessage,
   adminFailure,
@@ -326,6 +329,7 @@ export async function saveCountryAction(formData: FormData): Promise<AdminAction
       });
       revalidatePath("/");
       revalidatePath(`/${data.slug}`);
+      revalidateSitemap();
       return adminSuccess("Ülke başarıyla güncellendi.", `/admin/countries/${id}`);
     }
 
@@ -346,6 +350,7 @@ export async function saveCountryAction(formData: FormData): Promise<AdminAction
     });
     revalidatePath("/");
     revalidatePath(`/${country.slug}`);
+    revalidateSitemap();
     return adminSuccess(
       "Ülke başarıyla oluşturuldu.",
       `/admin/countries/${country.id}`,
@@ -374,11 +379,13 @@ export async function saveCategoryAction(formData: FormData): Promise<AdminActio
     if (id) {
       await prisma.category.update({ where: { id }, data });
       revalidatePath("/");
+      revalidateSitemap();
       return adminSuccess("Kategori başarıyla güncellendi.", `/admin/categories/${id}`);
     }
 
     const category = await prisma.category.create({ data });
     revalidatePath("/");
+    revalidateSitemap();
     return adminSuccess(
       "Kategori başarıyla oluşturuldu.",
       `/admin/categories/${category.id}`,
@@ -482,10 +489,12 @@ export async function saveVisaProgramAction(formData: FormData): Promise<AdminAc
         return updated;
       });
 
+      await upsertSeoFromForm(formData, SeoEntityType.VISA_PROGRAM, id);
       revalidatePath("/");
       revalidatePath(`/${program.country.slug}/${program.slug}`);
       revalidatePath("/admin/vize-programlari");
       revalidatePath(`/${program.country.slug}`);
+      revalidateSitemap();
       return adminSuccess(
         "Vize programı başarıyla güncellendi.",
         `/admin/vize-programlari/${id}`,
@@ -504,10 +513,12 @@ export async function saveVisaProgramAction(formData: FormData): Promise<AdminAc
       return created;
     });
 
+    await upsertSeoFromForm(formData, SeoEntityType.VISA_PROGRAM, program.id);
     revalidatePath("/");
     revalidatePath(`/${program.country.slug}/${program.slug}`);
     revalidatePath("/admin/vize-programlari");
     revalidatePath(`/${program.country.slug}`);
+    revalidateSitemap();
     return adminSuccess(
       "Vize programı başarıyla oluşturuldu.",
       `/admin/vize-programlari/${program.id}`,
@@ -539,6 +550,7 @@ export async function saveVisaProgramSectionAction(
     if (id) {
       await prisma.visaProgramSection.update({ where: { id }, data });
       revalidatePath("/");
+      revalidateSitemap();
       return adminSuccess(
         "Program bölümü güncellendi.",
         `/admin/vize-programlari/${visaProgramId}`,
@@ -547,6 +559,7 @@ export async function saveVisaProgramSectionAction(
 
     await prisma.visaProgramSection.create({ data });
     revalidatePath("/");
+    revalidateSitemap();
     return adminSuccess(
       "Program bölümü eklendi.",
       `/admin/vize-programlari/${visaProgramId}`,
@@ -591,6 +604,7 @@ export async function saveConsulateAction(formData: FormData): Promise<AdminActi
       revalidatePath("/admin/consulates");
       revalidatePath(`/${consulate.country.slug}`);
       revalidatePath(buildConsulatePath(consulate.country.slug, consulate.slug));
+      revalidateSitemap();
       return adminSuccess(
         "Konsolosluk başarıyla güncellendi.",
         `/admin/consulates/${id}`,
@@ -604,6 +618,7 @@ export async function saveConsulateAction(formData: FormData): Promise<AdminActi
     revalidatePath("/admin/consulates");
     revalidatePath(`/${consulate.country.slug}`);
     revalidatePath(buildConsulatePath(consulate.country.slug, consulate.slug));
+    revalidateSitemap();
     return adminSuccess(
       "Konsolosluk başarıyla oluşturuldu.",
       `/admin/consulates/${consulate.id}`,

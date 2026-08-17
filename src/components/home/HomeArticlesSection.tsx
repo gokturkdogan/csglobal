@@ -18,7 +18,7 @@ export function HomeArticlesSection({
     slug: string;
     excerpt: string | null;
     publishedAt: Date | null;
-    country: { name: string; itemImage?: string | null } | null;
+    country: { name: string; slug: string; itemImage?: string | null } | null;
   }>;
 }) {
   const edit = useHomepageEdit();
@@ -38,8 +38,8 @@ export function HomeArticlesSection({
           {edit?.editing ? (
             <span className="text-sm font-medium text-slate-400">Tüm rehberler</span>
           ) : (
-            <Link href="/rehber" className="cursor-pointer text-sm font-medium text-csg-blue hover:underline">
-              Tüm rehberler
+            <Link href="/hizmetlerimiz" className="cursor-pointer text-sm font-medium text-csg-blue hover:underline">
+              Tüm programlar
             </Link>
           )}
         </div>
@@ -49,6 +49,7 @@ export function HomeArticlesSection({
               key={a.id}
               title={a.title}
               slug={a.slug}
+              countrySlug={a.country?.slug ?? ""}
               excerpt={a.excerpt}
               coverImage={resolveArticleCardImage(a.country?.itemImage)}
               categoryName={a.country?.name}

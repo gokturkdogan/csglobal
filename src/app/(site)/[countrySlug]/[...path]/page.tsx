@@ -27,6 +27,7 @@ import {
   buildEntityMetadata,
   buildBreadcrumbJsonLd,
   buildFaqJsonLd,
+  findEntityStructuredDataJsonLd,
   siteUrl,
 } from "@/lib/services/seo.service";
 import { SeoEntityType } from "@/generated/prisma/client";
@@ -76,9 +77,10 @@ export default async function CountryPathPage({ params }: Props) {
     const program = await findVisaProgramByCountryAndSlug(country.id, resolved.programSlug);
     if (!program) notFound();
 
-    const [countryPrograms, panelData] = await Promise.all([
+    const [countryPrograms, panelData, seoStructuredData] = await Promise.all([
       findPublishedProgramsByCountryId(country.id),
       loadCountryCategoryPanelData(country.id, countrySlug),
+      findEntityStructuredDataJsonLd(SeoEntityType.VISA_PROGRAM, program.id),
     ]);
     const { panelCategories, consulates, documents } = panelData;
 
@@ -105,6 +107,7 @@ export default async function CountryPathPage({ params }: Props) {
         })),
       ),
       buildFaqJsonLd(program.faqs),
+      ...seoStructuredData,
     ].filter(Boolean);
 
     const heroTitle = program.heroTitle?.trim() || program.name;

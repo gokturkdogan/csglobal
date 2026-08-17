@@ -5,6 +5,33 @@ import { getSiteSettings } from "@/lib/settings";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://csglobal.com";
 
+export function parseStructuredDataJsonLd(raw: string | null | undefined): Record<string, unknown>[] {
+  if (!raw?.trim()) return [];
+  try {
+    const parsed = JSON.parse(raw) as unknown;
+    if (Array.isArray(parsed)) {
+      return parsed.filter(
+        (item): item is Record<string, unknown> =>
+          item !== null && typeof item === "object" && !Array.isArray(item),
+      );
+    }
+    if (parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)) {
+      return [parsed as Record<string, unknown>];
+    }
+    return [];
+  } catch {
+    return [];
+  }
+}
+
+export async function findEntityStructuredDataJsonLd(
+  entityType: SeoEntityType,
+  entityId: string,
+): Promise<Record<string, unknown>[]> {
+  const seo = await findSeoMetadata(entityType, entityId);
+  return parseStructuredDataJsonLd(seo?.structuredData);
+}
+
 export async function buildEntityMetadata({
   entityType,
   entityId,
@@ -28,6 +55,9 @@ export async function buildEntityMetadata({
   const description =
     seo?.metaDescription ?? fallbackDescription ?? settings.siteDescription;
   const url = seo?.canonicalUrl ?? `${siteUrl}${path.startsWith("/") ? path : `/${path}`}`;
+  const ogTitle = seo?.ogTitle ?? fullTitle;
+  const ogDescription = seo?.ogDescription ?? description;
+  const ogImages = seo?.ogImage ? [{ url: seo.ogImage }] : undefined;
 
   return {
     title: fullTitle,
@@ -35,13 +65,19 @@ export async function buildEntityMetadata({
     metadataBase: new URL(siteUrl),
     alternates: { canonical: url },
     openGraph: {
-      title: seo?.ogTitle ?? fullTitle,
-      description: seo?.ogDescription ?? description,
+      title: ogTitle,
+      description: ogDescription,
       url,
       siteName: settings.siteName,
       locale: "tr_TR",
       type: "website",
-      images: seo?.ogImage ? [{ url: seo.ogImage }] : undefined,
+      images: ogImages,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: ogTitle,
+      description: ogDescription,
+      images: seo?.ogImage ? [seo.ogImage] : undefined,
     },
     robots: {
       index: seo?.robotsIndex ?? true,

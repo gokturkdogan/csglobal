@@ -12,12 +12,14 @@ type GuideItem = {
 type Props = {
   guides: GuideItem[];
   countryName: string;
+  countrySlug: string;
   countryItemImage?: string | null;
 };
 
 export function RelatedGuidesSection({
   guides,
   countryName,
+  countrySlug,
   countryItemImage,
 }: Props) {
   if (guides.length === 0) return null;
@@ -34,10 +36,10 @@ export function RelatedGuidesSection({
           </p>
         </div>
         <Link
-          href="/rehber"
+          href={`/${countrySlug}`}
           className="text-xs font-medium text-csg-blue hover:text-csg-blue/80"
         >
-          Tüm rehberler
+          Tüm programlar
         </Link>
       </div>
 
@@ -48,6 +50,7 @@ export function RelatedGuidesSection({
             variant="compact"
             title={guide.title}
             slug={guide.slug}
+            countrySlug={countrySlug}
             coverImage={resolveArticleCardImage(countryItemImage)}
             categoryName={guide.country?.name}
           />
