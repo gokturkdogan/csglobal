@@ -349,6 +349,7 @@ export function AdminRichTextEditor({
         codeBlock: false,
         code: false,
         horizontalRule: false,
+        link: false,
       }),
       AdminEditorLink.configure({
         openOnClick: false,
