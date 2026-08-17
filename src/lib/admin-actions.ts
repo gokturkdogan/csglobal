@@ -38,6 +38,8 @@ import {
   normalizeServiceFeatureTitle,
 } from "@/lib/service-page";
 import {
+  buildBlogListPath,
+  buildBlogPath,
   buildConsulatePath,
 } from "@/lib/paths";
 import { AdminRole } from "@/generated/prisma/client";
@@ -526,6 +528,104 @@ export async function saveVisaProgramAction(formData: FormData): Promise<AdminAc
   } catch (error) {
     return adminFailure(
       adminErrorMessage(error, "Vize programı kaydedilemedi. Lütfen tekrar deneyin."),
+    );
+  }
+}
+
+export async function saveBlogPostAction(formData: FormData): Promise<AdminActionResult> {
+  await requireAdmin();
+  const id = formData.get("id") as string | null;
+  const sectionsRaw = (formData.get("sectionsJson") as string) || "";
+  const countryIdRaw = (formData.get("countryId") as string)?.trim();
+  const countryId = countryIdRaw || null;
+  const isActive = formData.get("isActive") === "on";
+
+  const data = {
+    title: (formData.get("title") as string)?.trim(),
+    slug: (formData.get("slug") as string)?.trim(),
+    excerpt: ((formData.get("excerpt") as string) || "").trim() || null,
+    content: (formData.get("content") as string) || "",
+    heroTitle: ((formData.get("heroTitle") as string) || "").trim() || null,
+    heroSubtitle: ((formData.get("heroSubtitle") as string) || "").trim() || null,
+    sectionsJson: sectionsRaw.trim() || null,
+    coverImage: ((formData.get("coverImage") as string) || "").trim() || null,
+    featureImage1: ((formData.get("featureImage1") as string) || "").trim() || null,
+    featureImage1Title: normalizeServiceFeatureTitle(
+      formData.get("featureImage1Title") as string,
+    ),
+    featureImage1Text: normalizeServiceFeatureText(
+      formData.get("featureImage1Text") as string,
+    ),
+    featureImage2: ((formData.get("featureImage2") as string) || "").trim() || null,
+    featureImage2Title: normalizeServiceFeatureTitle(
+      formData.get("featureImage2Title") as string,
+    ),
+    featureImage2Text: normalizeServiceFeatureText(
+      formData.get("featureImage2Text") as string,
+    ),
+    countryId,
+    isFeatured: formData.get("isFeatured") === "on",
+    isActive,
+    sortOrder: Number(formData.get("sortOrder") || 0),
+  };
+
+  if (!data.title || !data.slug) {
+    return adminFailure("Başlık ve slug zorunludur.");
+  }
+
+  try {
+    if (id) {
+      const existing = await prisma.blogPost.findUnique({
+        where: { id },
+        select: { publishedAt: true },
+      });
+
+      const post = await prisma.blogPost.update({
+        where: { id },
+        data: {
+          ...data,
+          publishedAt: isActive ? (existing?.publishedAt ?? new Date()) : null,
+        },
+      });
+
+      await upsertSeoFromForm(formData, SeoEntityType.BLOG_POST, id);
+      revalidatePath(buildBlogListPath());
+      revalidatePath(buildBlogPath(post.slug));
+      revalidatePath("/admin/bloglar");
+      if (post.countryId) {
+        const country = await prisma.country.findUnique({
+          where: { id: post.countryId },
+          select: { slug: true },
+        });
+        if (country) revalidatePath(`/${country.slug}`);
+      }
+      revalidateSitemap();
+      return adminSuccess("Blog başarıyla güncellendi.", `/admin/bloglar/${id}`);
+    }
+
+    const post = await prisma.blogPost.create({
+      data: {
+        ...data,
+        publishedAt: isActive ? new Date() : null,
+      },
+    });
+
+    await upsertSeoFromForm(formData, SeoEntityType.BLOG_POST, post.id);
+    revalidatePath(buildBlogListPath());
+    revalidatePath(buildBlogPath(post.slug));
+    revalidatePath("/admin/bloglar");
+    if (post.countryId) {
+      const country = await prisma.country.findUnique({
+        where: { id: post.countryId },
+        select: { slug: true },
+      });
+      if (country) revalidatePath(`/${country.slug}`);
+    }
+    revalidateSitemap();
+    return adminSuccess("Blog başarıyla oluşturuldu.", `/admin/bloglar/${post.id}`);
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Blog kaydedilemedi. Lütfen tekrar deneyin."),
     );
   }
 }

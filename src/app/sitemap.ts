@@ -5,9 +5,10 @@ import {
   findProgramsForSitemap,
   findCountryCategoryPairsForSitemap,
 } from "@/lib/repositories/sitemap.repository";
+import { findBlogPostsForSitemap } from "@/lib/repositories/blog.repository";
 import { findAllActiveConsulates } from "@/lib/repositories/consulate.repository";
 import { buildCategoryPath, buildVisaProgramPath } from "@/lib/services/path-resolver.service";
-import { buildConsulatePath } from "@/lib/paths";
+import { buildBlogListPath, buildBlogPath, buildConsulatePath } from "@/lib/paths";
 
 export const dynamic = "force-dynamic";
 
@@ -17,16 +18,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: base, changeFrequency: "weekly", priority: 1 },
     { url: `${base}/ulkeler`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/hizmetlerimiz`, changeFrequency: "weekly", priority: 0.85 },
+    { url: `${base}${buildBlogListPath()}`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/hakkimizda`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/iletisim`, changeFrequency: "monthly", priority: 0.8 },
   ];
 
   try {
-    const [countries, programs, categoryPairs, consulates] = await Promise.all([
+    const [countries, programs, categoryPairs, consulates, blogPosts] = await Promise.all([
       findCountriesForSitemap(),
       findProgramsForSitemap(),
       findCountryCategoryPairsForSitemap(),
       findAllActiveConsulates(),
+      findBlogPostsForSitemap(),
     ]);
 
     const countryRoutes = countries.map((c) => ({
@@ -57,12 +60,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }));
 
+    const blogRoutes = blogPosts.map((post) => ({
+      url: `${base}${buildBlogPath(post.slug)}`,
+      lastModified: post.updatedAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.75,
+    }));
+
     return [
       ...staticRoutes,
       ...countryRoutes,
       ...programRoutes,
       ...categoryRoutes,
       ...consulateRoutes,
+      ...blogRoutes,
     ];
   } catch {
     return staticRoutes;

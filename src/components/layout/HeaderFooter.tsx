@@ -8,6 +8,7 @@ import { WhatsAppIcon, whatsappButtonClass } from "@/components/ui/WhatsAppIcon"
 const navItems = [
   { href: "/ulkeler", label: "Ülkeler" },
   { href: "/hizmetlerimiz", label: "Vize Programları" },
+  { href: "/bloglar", label: "Bloglar" },
   { href: "/hakkimizda", label: "Hakkımızda" },
   { href: "/iletisim", label: "İletişim" },
 ];

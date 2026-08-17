@@ -1,3 +1,11 @@
+export function buildBlogPath(slug: string) {
+  return `/bloglar/${slug}`;
+}
+
+export function buildBlogListPath() {
+  return "/bloglar";
+}
+
 export function buildVisaProgramPath(countrySlug: string, programSlug: string) {
   return `/${countrySlug}/${programSlug}`;
 }

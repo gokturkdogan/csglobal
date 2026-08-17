@@ -19,6 +19,7 @@ enum SeoEntityType {
   SERVICE
   ARTICLE
   VISA_PROGRAM
+  BLOG_POST
   SITE_PAGE
   CONSULATE
 }
@@ -76,6 +77,7 @@ model Country {
   updatedAt        DateTime @updatedAt @map("updated_at")
 
   visaPrograms         VisaProgram[]
+  blogPosts            BlogPost[]
   faqs                 Faq[]
   consulates           Consulate[]
   feesAsNationality    Fee[]      @relation("FeeNationality")
@@ -155,6 +157,37 @@ model VisaProgram {
   @@index([isActive, publishedAt])
   @@index([countryId, isActive])
   @@map("visa_programs")
+}
+
+model BlogPost {
+  id                  String    @id @default(cuid())
+  slug                String    @unique
+  title               String
+  excerpt             String?   @db.Text
+  content             String    @default("") @db.Text
+  heroTitle           String?   @map("hero_title")
+  heroSubtitle        String?   @map("hero_subtitle") @db.Text
+  sectionsJson        String?   @map("sections_json") @db.Text
+  coverImage          String?   @map("cover_image")
+  featureImage1       String?   @map("feature_image_1")
+  featureImage1Title  String?   @map("feature_image_1_title")
+  featureImage1Text   String?   @map("feature_image_1_text") @db.Text
+  featureImage2       String?   @map("feature_image_2")
+  featureImage2Title  String?   @map("feature_image_2_title")
+  featureImage2Text   String?   @map("feature_image_2_text") @db.Text
+  countryId           String?   @map("country_id")
+  isFeatured          Boolean   @default(false) @map("is_featured")
+  isActive            Boolean   @default(true) @map("is_active")
+  sortOrder           Int       @default(0) @map("sort_order")
+  publishedAt         DateTime? @map("published_at")
+  createdAt           DateTime  @default(now()) @map("created_at")
+  updatedAt           DateTime  @updatedAt @map("updated_at")
+
+  country Country? @relation(fields: [countryId], references: [id], onDelete: SetNull)
+
+  @@index([isActive, publishedAt])
+  @@index([countryId])
+  @@map("blog_posts")
 }
 
 model VisaProgramSection {
