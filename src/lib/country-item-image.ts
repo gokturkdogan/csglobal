@@ -69,3 +69,10 @@ export function resolveArticleCardImage(
   if (country) return country;
   return siteImages.article;
 }
+
+/** Blog kartı: ülke item görseli veya site varsayılanı. */
+export function resolveBlogCardImage(
+  countryItemImage: string | null | undefined,
+): string {
+  return resolveArticleCardImage(countryItemImage);
+}

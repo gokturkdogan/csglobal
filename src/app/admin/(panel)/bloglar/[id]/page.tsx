@@ -26,21 +26,39 @@ import { SeoEntityType } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { buildBlogPath } from "@/lib/paths";
 
+export const dynamic = "force-dynamic";
+
 type Props = { params: Promise<{ id: string }> };
 
 export default async function EditBlogPostPage({ params }: Props) {
   const { id } = await params;
   const isNew = id === "new";
 
-  const post = isNew ? null : await findBlogPostById(id);
-  if (!isNew && !post) notFound();
+  let post: Awaited<ReturnType<typeof findBlogPostById>> = null;
+  if (!isNew) {
+    try {
+      post = await findBlogPostById(id);
+    } catch (error) {
+      console.error("[admin/bloglar/edit] load failed:", error);
+      throw error;
+    }
+    if (!post) notFound();
+  }
 
   const countries = await prisma.country.findMany({
     orderBy: { name: "asc" },
     select: { id: true, name: true, slug: true },
   });
 
-  const seo = post ? await findSeoMetadata(SeoEntityType.BLOG_POST, post.id) : null;
+  const seo = post
+    ? await (async () => {
+        try {
+          return await findSeoMetadata(SeoEntityType.BLOG_POST, post.id);
+        } catch {
+          return null;
+        }
+      })()
+    : null;
   const initialPath = post ? buildBlogPath(post.slug) : null;
 
   return (
@@ -74,13 +92,6 @@ export default async function EditBlogPostPage({ params }: Props) {
               hint="Blog listesinde ve arama sonuçlarında görünür."
             />
             <AdminField
-              label="Kapak görseli URL"
-              name="coverImage"
-              value={post?.coverImage}
-              placeholder="https://..."
-              hint="Liste kartı ve banner yedek görseli."
-            />
-            <AdminField
               label="Sıra"
               name="sortOrder"
               type="number"
@@ -100,7 +111,7 @@ export default async function EditBlogPostPage({ params }: Props) {
 
           <AdminFormSection
             title="Banner"
-            description="Banner metinleri. Görsel ülke veya kapak görselinden gelir."
+            description="Banner metinleri. Görsel bağlı ülkenin hero görselinden gelir; ülke yoksa site varsayılanı kullanılır."
           >
             <ServiceHeroBlock
               heroTitle={post?.heroTitle}

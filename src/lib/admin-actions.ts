@@ -548,7 +548,7 @@ export async function saveBlogPostAction(formData: FormData): Promise<AdminActio
     heroTitle: ((formData.get("heroTitle") as string) || "").trim() || null,
     heroSubtitle: ((formData.get("heroSubtitle") as string) || "").trim() || null,
     sectionsJson: sectionsRaw.trim() || null,
-    coverImage: ((formData.get("coverImage") as string) || "").trim() || null,
+    coverImage: null,
     featureImage1: ((formData.get("featureImage1") as string) || "").trim() || null,
     featureImage1Title: normalizeServiceFeatureTitle(
       formData.get("featureImage1Title") as string,

@@ -13,9 +13,8 @@ export async function findActiveBlogPosts(options?: { skip?: number; take?: numb
       title: true,
       slug: true,
       excerpt: true,
-      coverImage: true,
       publishedAt: true,
-      country: { select: { name: true, slug: true, itemImage: true } },
+      country: { select: { name: true, slug: true, itemImage: true, heroImage: true } },
     },
   });
 }
@@ -66,5 +65,27 @@ export async function findBlogPostsForSitemap() {
     where: active,
     select: { slug: true, updatedAt: true },
     orderBy: { updatedAt: "desc" },
+  });
+}
+
+/** Aynı ülkeye bağlı diğer aktif bloglar (mevcut yazı hariç). */
+export async function findRelatedBlogPostsByCountry(
+  countryId: string,
+  excludePostId: string,
+  limit = 8,
+) {
+  return prisma.blogPost.findMany({
+    where: {
+      ...active,
+      countryId,
+      id: { not: excludePostId },
+    },
+    orderBy: [{ sortOrder: "asc" }, { publishedAt: "desc" }, { updatedAt: "desc" }],
+    take: limit,
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+    },
   });
 }

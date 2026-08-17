@@ -1,7 +1,7 @@
 import { BlogsPageHero } from "@/components/blog/BlogsPageHero";
 import { BlogCard } from "@/components/blog/BlogCard";
 import { findActiveBlogPosts } from "@/lib/repositories/blog.repository";
-import { resolveArticleCardImage } from "@/lib/country-item-image";
+import { resolveBlogCardImage } from "@/lib/country-item-image";
 import { buildEntityMetadata } from "@/lib/services/seo.service";
 
 export async function generateMetadata() {
@@ -34,10 +34,7 @@ export default async function BlogListPage() {
                   title={post.title}
                   slug={post.slug}
                   excerpt={post.excerpt}
-                  coverImage={
-                    post.coverImage ??
-                    resolveArticleCardImage(post.country?.itemImage)
-                  }
+                  coverImage={resolveBlogCardImage(post.country?.itemImage)}
                   countryName={post.country?.name}
                   publishedAt={post.publishedAt}
                 />

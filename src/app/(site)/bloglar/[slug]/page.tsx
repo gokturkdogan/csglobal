@@ -5,11 +5,14 @@ import { ServiceDetailContent } from "@/components/domain/ServiceDetailContent";
 import { ServiceTableOfContents } from "@/components/domain/ServiceTableOfContents";
 import { GuidePageHero } from "@/components/domain/GuidePageHero";
 import { CountryCategoryPanel } from "@/components/country/CountryCategoryPanel";
+import { RelatedBlogsPanel } from "@/components/blog/RelatedBlogsPanel";
 import { getServiceSectionNavItems } from "@/lib/service-page";
 import { loadCountryCategoryPanelData } from "@/lib/country-page/load-category-panel";
 import { getSiteSettings } from "@/lib/settings";
-import { findBlogPostBySlug } from "@/lib/repositories/blog.repository";
-import { resolveGuideHeroImage } from "@/lib/guide";
+import {
+  findBlogPostBySlug,
+  findRelatedBlogPostsByCountry,
+} from "@/lib/repositories/blog.repository";
 import {
   buildEntityMetadata,
   buildBreadcrumbJsonLd,
@@ -49,6 +52,11 @@ export default async function BlogDetailPage({ params }: Props) {
       ? await loadCountryCategoryPanelData(country.id, countrySlug)
       : null;
 
+  const relatedBlogs =
+    country
+      ? await findRelatedBlogPostsByCountry(country.id, post.id)
+      : [];
+
   const seoStructuredData = await findEntityStructuredDataJsonLd(
     SeoEntityType.BLOG_POST,
     post.id,
@@ -72,14 +80,14 @@ export default async function BlogDetailPage({ params }: Props) {
 
   const heroTitle = post.heroTitle?.trim() || post.title;
   const heroSubtitle = post.heroSubtitle?.trim() || post.excerpt;
-  const heroImage =
-    post.coverImage ?? country?.heroImage ?? null;
 
   const sectionNav = getServiceSectionNavItems(post.sectionsJson, []);
   const showTocSidebar = sectionNav.length > 0;
   const showCountryPanel = Boolean(country && countrySlug && panelData);
+  const showRelatedBlogs = relatedBlogs.length > 0;
+  const showLeftSidebar = showCountryPanel || showRelatedBlogs;
 
-  const contentGridClass = showCountryPanel
+  const contentGridClass = showLeftSidebar
     ? showTocSidebar
       ? "mt-8 grid gap-6 lg:grid-cols-[minmax(240px,280px)_minmax(0,1fr)_minmax(0,240px)] lg:items-start"
       : "mt-8 grid gap-6 lg:grid-cols-[minmax(240px,280px)_minmax(0,1fr)] lg:items-start"
@@ -95,7 +103,7 @@ export default async function BlogDetailPage({ params }: Props) {
   return (
     <>
       <GuidePageHero
-        heroImage={resolveGuideHeroImage(heroImage)}
+        heroImage={country?.heroImage}
         title={heroTitle}
         subtitle={heroSubtitle}
         badge={badge}
@@ -113,18 +121,23 @@ export default async function BlogDetailPage({ params }: Props) {
         <Breadcrumb items={breadcrumbItems} />
 
         <div className={contentGridClass}>
-          {showCountryPanel && panelData && (
-            <aside className="order-2 country-panel-sticky min-w-0 lg:order-1 lg:z-30 lg:self-start">
-              <CountryCategoryPanel
-                countrySlug={countrySlug!}
-                categories={panelData.panelCategories}
-                consulates={panelData.consulates}
-                documents={panelData.documents}
-              />
+          {showLeftSidebar && (
+            <aside className="order-2 country-panel-sticky min-w-0 space-y-4 lg:order-1 lg:z-30 lg:self-start">
+              {showCountryPanel && panelData && (
+                <CountryCategoryPanel
+                  countrySlug={countrySlug!}
+                  categories={panelData.panelCategories}
+                  consulates={panelData.consulates}
+                  documents={panelData.documents}
+                />
+              )}
+              {showRelatedBlogs && (
+                <RelatedBlogsPanel countryName={country!.name} posts={relatedBlogs} />
+              )}
             </aside>
           )}
 
-          <div className={`order-1 min-w-0 ${showCountryPanel ? "lg:order-2" : ""}`}>
+          <div className={`order-1 min-w-0 ${showLeftSidebar ? "lg:order-2" : ""}`}>
             <ServiceDetailContent
               sectionsJson={post.sectionsJson}
               legacySections={[]}
@@ -149,7 +162,7 @@ export default async function BlogDetailPage({ params }: Props) {
 
           {showTocSidebar && (
             <aside
-              className={`order-3 min-w-0 ${showCountryPanel ? "lg:order-3" : ""} ${tocStickyClass}`}
+              className={`order-3 min-w-0 ${showLeftSidebar ? "lg:order-3" : ""} ${tocStickyClass}`}
             >
               <ServiceTableOfContents items={sectionNav} />
             </aside>
