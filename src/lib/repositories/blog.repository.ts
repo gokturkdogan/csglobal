@@ -1,5 +1,11 @@
 import { cache } from "react";
 import { prisma } from "@/lib/prisma";
+import {
+  BLOG_TOPIC_CATEGORY_VALUES,
+  BLOG_TOPIC_CATEGORY_LABELS,
+  type BlogTopicCategoryValue,
+} from "@/lib/blog-topic-categories";
+import type { BlogTopicCategory } from "@/generated/prisma/client";
 
 const active = { isActive: true };
 
@@ -23,6 +29,7 @@ export async function findActiveBlogPosts(options?: { skip?: number; take?: numb
       excerpt: true,
       publishedAt: true,
       country: { select: { name: true, slug: true, itemImage: true, heroImage: true } },
+      topicCategory: true,
     },
   });
 }
@@ -60,6 +67,7 @@ export async function listBlogPostsForAdmin(options?: { skip?: number; take?: nu
       sortOrder: true,
       publishedAt: true,
       country: { select: { name: true, slug: true } },
+      topicCategory: true,
     },
   });
 }
@@ -97,3 +105,39 @@ export async function findRelatedBlogPostsByCountry(
     },
   });
 }
+
+export type BlogTopicCategoryPanelData = {
+  category: BlogTopicCategory;
+  label: string;
+  posts: { id: string; title: string; slug: string }[];
+}[];
+
+/** Ülkeye bağlı olmayan bloglar için sabit kategori paneli verisi. */
+export const loadBlogTopicCategoryPanelData = cache(async (): Promise<BlogTopicCategoryPanelData> => {
+  const posts = await prisma.blogPost.findMany({
+    where: {
+      ...active,
+      countryId: null,
+      topicCategory: { not: null },
+    },
+    orderBy: [{ sortOrder: "asc" }, { publishedAt: "desc" }, { updatedAt: "desc" }],
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      topicCategory: true,
+    },
+  });
+
+  return BLOG_TOPIC_CATEGORY_VALUES.map((category) => ({
+    category: category as BlogTopicCategory,
+    label: BLOG_TOPIC_CATEGORY_LABELS[category],
+    posts: posts
+      .filter((post) => post.topicCategory === category)
+      .map((post) => ({
+        id: post.id,
+        title: post.title,
+        slug: post.slug,
+      })),
+  }));
+});

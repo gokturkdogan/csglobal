@@ -3,7 +3,7 @@ import { saveBlogPostAction } from "@/lib/admin-actions";
 import { ServiceFeatureBlock } from "@/components/admin/service/ServiceFeatureBlock";
 import { ServiceHeroBlock } from "@/components/admin/service/ServiceHeroBlock";
 import { ServiceSectionsEditor } from "@/components/admin/service/ServiceSectionsEditor";
-import { AdminBlogCountryField } from "@/components/admin/blog/AdminBlogCountryField";
+import { AdminBlogPlacementFields } from "@/components/admin/blog/AdminBlogPlacementFields";
 import {
   VisualSlugField,
   VisualSlugProvider,
@@ -76,9 +76,10 @@ export default async function EditBlogPostPage({ params }: Props) {
           {post && <input type="hidden" name="id" value={post.id} />}
 
           <AdminFormSection title="Konum">
-            <AdminBlogCountryField
+            <AdminBlogPlacementFields
               countries={countries}
               initialCountryId={post?.countryId}
+              initialTopicCategory={post?.topicCategory}
             />
           </AdminFormSection>
 

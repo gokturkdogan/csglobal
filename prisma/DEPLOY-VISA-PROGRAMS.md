@@ -19,10 +19,10 @@ Rehber (`articles`) ve program (`services`) tabloları `visa_programs` altında 
 ## Deploy sırası
 
 1. `npx prisma migrate deploy`
-2. `npm run db:migrate-visa-programs`
-3. `npm run db:verify-visa-programs`
+2. `tsx prisma/archive/migrate-to-visa-programs.ts` (tek seferlik; bkz. `prisma/archive/README.md`)
+3. `tsx prisma/archive/verify-visa-program-merge.ts`
 4. Uygulama deploy (build + start)
-5. `npm run db:verify-visa-programs` (tekrar)
+5. `tsx prisma/archive/verify-visa-program-merge.ts` (tekrar)
 
 ## Deploy sonrası SQL
 

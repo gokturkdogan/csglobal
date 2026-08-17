@@ -3,6 +3,7 @@ import {
   listBlogPostsForAdmin,
 } from "@/lib/repositories/blog.repository";
 import { logAdminListPerf, resolveAdminPagination } from "@/lib/admin-pagination";
+import { getBlogTopicCategoryLabel } from "@/lib/blog-topic-categories";
 import { buildBlogPath } from "@/lib/paths";
 import { formatPublicSitePath } from "@/lib/site-url";
 import { AdminButtonLink, AdminLink } from "@/components/admin/AdminForm";
@@ -76,7 +77,7 @@ export default async function AdminBlogPostsPage({ searchParams }: Props) {
       >
         <AdminTableHead>
           <th className="px-5 py-3">Başlık</th>
-          <th className="px-5 py-3">Ülke</th>
+          <th className="px-5 py-3">Ülke / Kategori</th>
           <th className="px-5 py-3">Site URL</th>
           <th className="px-5 py-3">Durum</th>
           <th className="px-5 py-3 text-right">İşlem</th>
@@ -94,7 +95,8 @@ export default async function AdminBlogPostsPage({ searchParams }: Props) {
             <tr key={post.id} className="hover:bg-slate-50/80">
               <td className="px-5 py-3.5 font-medium text-slate-900">{post.title}</td>
               <td className="px-5 py-3.5 text-slate-600">
-                {post.country?.name ?? "-"}
+                {post.country?.name ??
+                  (post.topicCategory ? getBlogTopicCategoryLabel(post.topicCategory) : "-")}
               </td>
               <td className="px-5 py-3.5">
                 <code className="text-xs text-slate-600 select-all break-all">

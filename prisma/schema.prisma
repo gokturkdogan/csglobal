@@ -41,6 +41,12 @@ enum FeeType {
   OTHER
 }
 
+enum BlogTopicCategory {
+  VIZE
+  PASSAPORT
+  EK_HIZMETLER
+}
+
 model User {
   id           String    @id @default(cuid())
   email        String    @unique
@@ -175,8 +181,9 @@ model BlogPost {
   featureImage2       String?   @map("feature_image_2")
   featureImage2Title  String?   @map("feature_image_2_title")
   featureImage2Text   String?   @map("feature_image_2_text") @db.Text
-  countryId           String?   @map("country_id")
-  isFeatured          Boolean   @default(false) @map("is_featured")
+  countryId           String?            @map("country_id")
+  topicCategory         BlogTopicCategory? @map("topic_category")
+  isFeatured          Boolean            @default(false) @map("is_featured")
   isActive            Boolean   @default(true) @map("is_active")
   sortOrder           Int       @default(0) @map("sort_order")
   publishedAt         DateTime? @map("published_at")
@@ -187,6 +194,7 @@ model BlogPost {
 
   @@index([isActive, publishedAt])
   @@index([countryId])
+  @@index([topicCategory])
   @@map("blog_posts")
 }
 

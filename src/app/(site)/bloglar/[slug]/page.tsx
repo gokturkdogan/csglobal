@@ -5,11 +5,13 @@ import { ServiceDetailContent } from "@/components/domain/ServiceDetailContent";
 import { ServiceTableOfContents } from "@/components/domain/ServiceTableOfContents";
 import { GuidePageHero } from "@/components/domain/GuidePageHero";
 import { RelatedBlogsPanel } from "@/components/blog/RelatedBlogsPanel";
+import { BlogTopicCategoryPanel } from "@/components/blog/BlogTopicCategoryPanel";
 import { getServiceSectionNavItems } from "@/lib/service-page";
 import { getSiteSettings } from "@/lib/settings";
 import {
   findBlogPostBySlug,
   findRelatedBlogPostsByCountry,
+  loadBlogTopicCategoryPanelData,
 } from "@/lib/repositories/blog.repository";
 import {
   buildEntityMetadata,
@@ -19,6 +21,8 @@ import {
 } from "@/lib/services/seo.service";
 import { SeoEntityType } from "@/generated/prisma/client";
 import { buildBlogListPath, buildBlogPath } from "@/lib/paths";
+import { resolveBlogPageHeroImage } from "@/lib/country-item-image";
+import { getBlogTopicCategoryLabel, type BlogTopicCategoryValue } from "@/lib/blog-topic-categories";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -42,12 +46,14 @@ export default async function BlogDetailPage({ params }: Props) {
   if (!post) notFound();
 
   const country = post.country;
+  const topicCategory = post.topicCategory;
 
-  const [settings, relatedBlogs, seoStructuredData] = await Promise.all([
+  const [settings, relatedBlogs, topicCategoryPanel, seoStructuredData] = await Promise.all([
     getSiteSettings(),
     country
       ? findRelatedBlogPostsByCountry(country.id, post.id)
       : Promise.resolve([]),
+    !country ? loadBlogTopicCategoryPanelData() : Promise.resolve([]),
     findEntityStructuredDataJsonLd(SeoEntityType.BLOG_POST, post.id),
   ]);
 
@@ -73,7 +79,8 @@ export default async function BlogDetailPage({ params }: Props) {
   const sectionNav = getServiceSectionNavItems(post.sectionsJson, []);
   const showTocSidebar = sectionNav.length > 0;
   const showRelatedBlogs = relatedBlogs.length > 0;
-  const showLeftSidebar = showRelatedBlogs;
+  const showTopicCategoryPanel = !country;
+  const showLeftSidebar = showRelatedBlogs || showTopicCategoryPanel;
 
   const contentGridClass = showLeftSidebar
     ? showTocSidebar
@@ -86,12 +93,14 @@ export default async function BlogDetailPage({ params }: Props) {
   const tocStickyClass =
     "lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100dvh-var(--site-header-height)-2rem)] lg:overflow-y-auto";
 
-  const badge = country?.name ?? "Blog";
+  const badge =
+    country?.name ??
+    (topicCategory ? getBlogTopicCategoryLabel(topicCategory as BlogTopicCategoryValue) : "Blog");
 
   return (
     <>
       <GuidePageHero
-        heroImage={country?.heroImage}
+        heroImage={resolveBlogPageHeroImage(country)}
         title={heroTitle}
         subtitle={heroSubtitle}
         badge={badge}
@@ -111,7 +120,15 @@ export default async function BlogDetailPage({ params }: Props) {
         <div className={contentGridClass}>
           {showLeftSidebar && (
             <aside className="order-2 country-panel-sticky min-w-0 lg:order-1 lg:z-30 lg:self-start">
-              <RelatedBlogsPanel countryName={country!.name} posts={relatedBlogs} />
+              {showTopicCategoryPanel ? (
+                <BlogTopicCategoryPanel
+                  categories={topicCategoryPanel}
+                  activeCategory={topicCategory as BlogTopicCategoryValue | null}
+                  currentPostId={post.id}
+                />
+              ) : (
+                <RelatedBlogsPanel countryName={country!.name} posts={relatedBlogs} />
+              )}
             </aside>
           )}
 

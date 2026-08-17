@@ -25,7 +25,7 @@ export function BlogCard({
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
         <SiteImage
-          src={coverImage || siteImages.article}
+          src={coverImage || siteImages.blogCardDefault}
           alt={title}
           fill
           sizes="(max-width: 768px) 100vw, 33vw"

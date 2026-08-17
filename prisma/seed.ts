@@ -124,12 +124,6 @@ async function main() {
     data: { isActive: false },
   });
 
-  const guideCat = await prisma.articleCategory.upsert({
-    where: { slug: "ulke-rehberleri" },
-    create: { slug: "ulke-rehberleri", name: "Ülke Rehberleri" },
-    update: {},
-  });
-
   const profiles = [
     { slug: "calisan", name: "Çalışan" },
     { slug: "ogrenci", name: "Öğrenci" },
@@ -254,70 +248,6 @@ async function main() {
   await wipeServicesAndCategories(prisma);
   await seedGlobalVisaCategories(prisma);
 
-  const guideSections = JSON.stringify([
-    {
-      title: "Başvuru sürecine genel bakış",
-      content:
-        "<p>Almanya vizesi için evrak hazırlığı, randevu planlaması ve başvuru merkezi süreçleri ülkeye özeldir.</p><ul><li><strong>Evrak listesi</strong> vize türüne göre değişir.</li><li><strong>Randevu</strong> yoğun dönemlerde erken planlama gerektirir.</li></ul>",
-    },
-  ]);
-
-  const ticariCategory = await prisma.category.findUnique({
-    where: { slug: "ticari-vizeler" },
-  });
-
-  const guideProgram = await prisma.visaProgram.upsert({
-    where: {
-      countryId_slug: {
-        countryId: germany.id,
-        slug: "almanya-vize-rehberi",
-      },
-    },
-    create: {
-      slug: "almanya-vize-rehberi",
-      name: "Almanya Vize Başvuru Rehberi",
-      excerpt: "Almanya vizesi için temel adımlar ve evrak hazırlığı.",
-      heroTitle: "Almanya Vize Başvuru Rehberi",
-      heroSubtitle:
-        "Evrak, randevu ve başvuru merkezi süreçlerine ülkeye özel özet.",
-      content: "",
-      sectionsJson: guideSections,
-      featureImage1Title: "Doğru evrak, doğru zamanlama",
-      featureImage1Text:
-        "Almanya vizesi için belgelerin eksiksiz ve güncel olması sürecin en kritik adımıdır. Uzman danışmanımız profilinize uygun evrak listesini netleştirir.",
-      articleCategoryId: guideCat.id,
-      countryId: germany.id,
-      categoryId: ticariCategory?.id ?? (await prisma.category.findFirst())!.id,
-      isActive: true,
-      showInCategoryPanel: true,
-      publishedAt: new Date(),
-    },
-    update: {
-      countryId: germany.id,
-      sectionsJson: guideSections,
-      heroTitle: "Almanya Vize Başvuru Rehberi",
-      heroSubtitle:
-        "Evrak, randevu ve başvuru merkezi süreçlerine ülkeye özel özet.",
-      showInCategoryPanel: true,
-    },
-  });
-
-  if (ticariCategory) {
-    await prisma.visaProgramCategoryLink.upsert({
-      where: {
-        visaProgramId_categoryId: {
-          visaProgramId: guideProgram.id,
-          categoryId: ticariCategory.id,
-        },
-      },
-      create: {
-        visaProgramId: guideProgram.id,
-        categoryId: ticariCategory.id,
-      },
-      update: {},
-    });
-  }
-
   const homeFaqs = [
     {
       question: "Online başvuru yapabilir miyim?",
@@ -354,7 +284,7 @@ async function main() {
     await prisma.faq.create({ data: { ...f, isActive: true } });
   }
 
-  console.log("Seed tamamlandı: Almanya + Fransa (global kategoriler, hizmetler boş)");
+  console.log("Seed tamamlandı: Almanya + Fransa (global kategoriler, programlar boş)");
   console.log("Admin: admin@csglobal.com / admin123");
 }
 

@@ -71,4 +71,6 @@ export const siteImages = {
   guidesListHero: optimizeCloudinaryDeliveryUrl(
     `https://res.cloudinary.com/${CLOUD}/image/upload/Guides/list-hero`,
   ),
+  /** Ülkesi olmayan blog kartları kapak görseli */
+  blogCardDefault: "/images/hero-banner.png",
 } as const;

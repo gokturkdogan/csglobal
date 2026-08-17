@@ -70,9 +70,21 @@ export function resolveArticleCardImage(
   return siteImages.article;
 }
 
-/** Blog kartı: ülke item görseli veya site varsayılanı. */
+/** Blog kartı: ülke item görseli veya varsayılan hero banner. */
 export function resolveBlogCardImage(
   countryItemImage: string | null | undefined,
 ): string {
-  return resolveArticleCardImage(countryItemImage);
+  const country = resolveCountryItemCardImage(countryItemImage);
+  if (country) return country;
+  return siteImages.blogCardDefault;
+}
+
+/** Blog detay hero: ülke hero görseli; ülke yoksa varsayılan hero banner. */
+export function resolveBlogPageHeroImage(
+  country: { heroImage?: string | null } | null | undefined,
+): string {
+  if (!country) return siteImages.blogCardDefault;
+  const hero = resolveCountryHeroImageUrl(country.heroImage);
+  if (hero) return hero;
+  return siteImages.article;
 }

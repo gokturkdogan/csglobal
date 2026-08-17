@@ -19,7 +19,7 @@ Production deploy ve `db:seed-seo-metadata` sonrası bu adımları tamamlayın.
 
 - [ ] Search Console > Sayfa dizine ekleme: kritik hatalar gözden geçirildi
 - [ ] `/rehber/*` için 404 bekleniyor (yönlendirme yok). GSC'te 404 sayısı izleniyor
-- [ ] Eski `/rehber/` iç linkler: `npm run db:audit-rehber-links` ile kontrol, gerekirse `db:fix-rehber-links`
+- [ ] Eski `/rehber/` iç linkler: `tsx prisma/archive/audit-internal-rehber-links.ts` ile kontrol, gerekirse `--fix`
 
 ## 4. Metadata kalitesi
 
@@ -48,6 +48,6 @@ Production deploy ve `db:seed-seo-metadata` sonrası bu adımları tamamlayın.
 
 ```bash
 npm run db:seed-seo-metadata
-npm run db:audit-rehber-links
-npm run db:fix-rehber-links   # yalnızca eşleşen slug'ları günceller
+tsx prisma/archive/audit-internal-rehber-links.ts
+tsx prisma/archive/audit-internal-rehber-links.ts --fix
 ```
