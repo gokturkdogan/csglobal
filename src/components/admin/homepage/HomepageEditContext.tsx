@@ -8,12 +8,13 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { HomepageContent } from "@/lib/homepage";
+import type { HomepageContent, HomeCountryOption } from "@/lib/homepage";
 import { HOMEPAGE_FAQ_MAX } from "@/lib/homepage";
 
 type HomepageEditContextValue = {
   editing: boolean;
   content: HomepageContent;
+  countryOptions: HomeCountryOption[];
   updateField: <K extends keyof HomepageContent>(key: K, value: HomepageContent[K]) => void;
   updateWhyUsItem: (index: number, field: "title" | "description", value: string) => void;
   updateProcessStep: (
@@ -34,6 +35,7 @@ type HomepageEditContextValue = {
     value: string,
   ) => void;
   updateFaq: (index: number, field: "question" | "answer", value: string) => void;
+  updateHeroQuickLinkSlug: (index: number, slug: string) => void;
   addFaq: () => void;
   removeFaq: (index: number) => void;
 };
@@ -42,9 +44,11 @@ const HomepageEditContext = createContext<HomepageEditContextValue | null>(null)
 
 export function HomepageEditProvider({
   initialContent,
+  countryOptions,
   children,
 }: {
   initialContent: HomepageContent;
+  countryOptions: HomeCountryOption[];
   children: ReactNode;
 }) {
   const [content, setContent] = useState<HomepageContent>(initialContent);
@@ -152,10 +156,20 @@ export function HomepageEditProvider({
     }));
   }, []);
 
+  const updateHeroQuickLinkSlug = useCallback((index: number, slug: string) => {
+    setContent((prev) => ({
+      ...prev,
+      heroQuickLinkSlugs: prev.heroQuickLinkSlugs.map((item, i) =>
+        i === index ? slug : item,
+      ),
+    }));
+  }, []);
+
   const value = useMemo(
     () => ({
       editing: true,
       content,
+      countryOptions,
       updateField,
       updateWhyUsItem,
       updateProcessStep,
@@ -164,11 +178,13 @@ export function HomepageEditProvider({
       updateSeoBlock,
       updateServiceArea,
       updateFaq,
+      updateHeroQuickLinkSlug,
       addFaq,
       removeFaq,
     }),
     [
       content,
+      countryOptions,
       updateField,
       updateWhyUsItem,
       updateProcessStep,
@@ -179,6 +195,7 @@ export function HomepageEditProvider({
       updateFaq,
       addFaq,
       removeFaq,
+      updateHeroQuickLinkSlug,
     ],
   );
 

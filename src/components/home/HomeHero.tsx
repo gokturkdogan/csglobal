@@ -1,21 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import type { HomepageContent } from "@/lib/homepage";
+import type { HomepageContent, HomeCountryOption } from "@/lib/homepage";
+import { resolveHeroQuickLinks } from "@/lib/homepage";
 import { FlagImage } from "@/components/ui/FlagImage";
 import { SiteImage } from "@/components/ui/SiteImage";
 import { HomeEditableField, HomeEditableImage } from "@/components/admin/homepage/HomeEditableField";
+import { HomeEditableCountryBadges } from "@/components/admin/homepage/HomeEditableCountryBadges";
 import { useHomepageEdit } from "@/components/admin/homepage/HomepageEditContext";
 
 export function HomeHero({
   content,
-  countryQuickLinks,
+  countryOptions,
 }: {
   content: HomepageContent;
-  countryQuickLinks: Array<{ name: string; slug: string; flag?: string | null }>;
+  countryOptions: HomeCountryOption[];
 }) {
   const edit = useHomepageEdit();
   const preview = edit?.editing;
+
+  const quickLinkSlugs = edit?.content.heroQuickLinkSlugs ?? content.heroQuickLinkSlugs;
+  const quickLinks = resolveHeroQuickLinks(quickLinkSlugs, countryOptions);
 
   return (
     <section className="relative overflow-hidden border-b border-slate-200 bg-slate-900">
@@ -102,21 +107,25 @@ export function HomeHero({
           </div>
         </div>
 
-        {countryQuickLinks.length > 0 && (
-          <div className="mt-12 flex flex-wrap gap-2">
-            {countryQuickLinks.map((c) => (
-              <Link
-                key={c.slug}
-                href={`/${c.slug}`}
-                className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/20"
-              >
-                {c.flag && (
-                  <FlagImage flag={c.flag} displayWidth={20} className="rounded-sm" />
-                )}
-                {c.name}
-              </Link>
-            ))}
-          </div>
+        {preview ? (
+          <HomeEditableCountryBadges />
+        ) : (
+          quickLinks.length > 0 && (
+            <div className="mt-12 flex flex-wrap gap-2">
+              {quickLinks.map((country) => (
+                <Link
+                  key={country.slug}
+                  href={`/${country.slug}`}
+                  className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/20"
+                >
+                  {country.flag && (
+                    <FlagImage flag={country.flag} displayWidth={20} className="rounded-sm" />
+                  )}
+                  {country.name}
+                </Link>
+              ))}
+            </div>
+          )
         )}
       </div>
     </section>

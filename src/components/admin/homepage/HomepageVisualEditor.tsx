@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import Link from "next/link";
-import type { HomepageContent } from "@/lib/homepage";
+import type { HomepageContent, HomeCountryOption } from "@/lib/homepage";
 import type { SiteSettingsMap } from "@/lib/site-settings.shared";
 import { updateHomepageEditorAction } from "@/lib/admin-actions";
 import { AdminLoadingButton } from "@/components/admin/AdminForm";
@@ -24,7 +24,7 @@ const HomepageLivePreview = dynamic(
 );
 
 type PreviewData = {
-  quickLinks: Array<{ name: string; slug: string; flag?: string | null }>;
+  countryOptions: HomeCountryOption[];
   featuredItems: Array<{
     id: string;
     name: string;
@@ -181,7 +181,10 @@ export function HomepageVisualEditor({
   previewData: PreviewData;
 }) {
   return (
-    <HomepageEditProvider initialContent={initialContent}>
+    <HomepageEditProvider
+      initialContent={initialContent}
+      countryOptions={previewData.countryOptions}
+    >
       <HomepageEditorInner initialContent={initialContent} previewData={previewData} />
     </HomepageEditProvider>
   );

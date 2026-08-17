@@ -116,6 +116,7 @@ const homepageKeys = [
   "homeHeroImage",
   "homeHeroCtaPrimary",
   "homeHeroCtaSecondary",
+  "homeHeroQuickLinksJson",
   "homeAboutTitle",
   "homeAboutText",
   "homeAboutImage",

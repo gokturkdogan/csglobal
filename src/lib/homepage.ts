@@ -24,6 +24,19 @@ export type HomeFaqItem = {
 };
 
 export const HOMEPAGE_FAQ_MAX = 10;
+export const HOMEPAGE_HERO_QUICK_LINK_MAX = 5;
+
+export type HomeHeroQuickLink = {
+  name: string;
+  slug: string;
+  flag?: string | null;
+};
+
+export type HomeCountryOption = {
+  name: string;
+  slug: string;
+  flag?: string | null;
+};
 
 export type HomepageContent = {
   heroBadge: string;
@@ -32,6 +45,7 @@ export type HomepageContent = {
   heroImage: string;
   heroCtaPrimary: string;
   heroCtaSecondary: string;
+  heroQuickLinkSlugs: string[];
   aboutTitle: string;
   aboutText: string;
   aboutImage: string;
@@ -237,6 +251,42 @@ function resolveHeroImage(url: string | undefined): string {
   return trimmed;
 }
 
+/** Hero altındaki ülke rozetleri için slug listesini 5 slota normalize eder. */
+export function normalizeHeroQuickLinkSlugs(
+  slugs: string[],
+  countries: HomeCountryOption[],
+): string[] {
+  const validSlugs = new Set(countries.map((country) => country.slug));
+  const picked: string[] = [];
+
+  for (const slug of slugs) {
+    if (!slug || !validSlugs.has(slug) || picked.includes(slug)) continue;
+    picked.push(slug);
+    if (picked.length >= HOMEPAGE_HERO_QUICK_LINK_MAX) break;
+  }
+
+  for (const country of countries) {
+    if (picked.length >= HOMEPAGE_HERO_QUICK_LINK_MAX) break;
+    if (!picked.includes(country.slug)) picked.push(country.slug);
+  }
+
+  while (picked.length < HOMEPAGE_HERO_QUICK_LINK_MAX) {
+    picked.push("");
+  }
+
+  return picked.slice(0, HOMEPAGE_HERO_QUICK_LINK_MAX);
+}
+
+export function resolveHeroQuickLinks(
+  slugs: string[],
+  countries: HomeCountryOption[],
+): HomeHeroQuickLink[] {
+  const bySlug = new Map(countries.map((country) => [country.slug, country]));
+  return slugs
+    .map((slug) => bySlug.get(slug))
+    .filter((country): country is HomeCountryOption => country != null);
+}
+
 export function buildHomepageContent(settings: SiteSettingsMap): HomepageContent {
   return {
     heroBadge: settings.homeHeroBadge || "Kurumsal vize danışmanlığı",
@@ -248,6 +298,7 @@ export function buildHomepageContent(settings: SiteSettingsMap): HomepageContent
     heroImage: resolveHeroImage(settings.homeHeroImage),
     heroCtaPrimary: settings.homeHeroCtaPrimary || "Ülkeleri incele",
     heroCtaSecondary: settings.homeHeroCtaSecondary || "Danışmanlık al",
+    heroQuickLinkSlugs: parseJson(settings.homeHeroQuickLinksJson, [] as string[]),
     aboutTitle: settings.homeAboutTitle || "CSGLOBAL ile güvenilir göçmenlik danışmanlığı",
     aboutText:
       settings.homeAboutText ||
@@ -306,6 +357,9 @@ export function serializeHomepageToSettings(content: HomepageContent): Record<st
     homeHeroImage: content.heroImage,
     homeHeroCtaPrimary: content.heroCtaPrimary,
     homeHeroCtaSecondary: content.heroCtaSecondary,
+    homeHeroQuickLinksJson: JSON.stringify(
+      content.heroQuickLinkSlugs.filter((slug) => slug.trim()),
+    ),
     homeAboutTitle: content.aboutTitle,
     homeAboutText: content.aboutText,
     homeAboutImage: content.aboutImage,

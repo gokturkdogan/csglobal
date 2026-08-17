@@ -1,6 +1,6 @@
 "use client";
 
-import type { HomepageContent } from "@/lib/homepage";
+import type { HomepageContent, HomeCountryOption } from "@/lib/homepage";
 import type { SiteSettingsMap } from "@/lib/site-settings.shared";
 import { HomeHero } from "@/components/home/HomeHero";
 import { HomeAbout } from "@/components/home/HomeAbout";
@@ -16,7 +16,7 @@ import { HomeProgramsSection } from "@/components/home/HomeProgramsSection";
 import { useHomepageEdit } from "./HomepageEditContext";
 
 type PreviewData = {
-  quickLinks: Array<{ name: string; slug: string; flag?: string | null }>;
+  countryOptions: HomeCountryOption[];
   featuredItems: Array<{
     id: string;
     name: string;
@@ -66,7 +66,7 @@ export function HomepageLivePreview({
         }
       }}
     >
-      <HomeHero content={content} countryQuickLinks={previewData.quickLinks} />
+      <HomeHero content={content} countryOptions={previewData.countryOptions} />
       <HomeSeoIntro content={content} />
       <HomeAbout content={content} />
       <HomeServiceAreas content={content} />

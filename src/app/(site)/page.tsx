@@ -15,7 +15,7 @@ import { findFeaturedPrograms, findLatestPublishedPrograms } from "@/lib/reposit
 import { findHomepageFaqs } from "@/lib/repositories/faq.repository";
 import { resolveServiceCardImage } from "@/lib/country-item-image";
 import { getSiteSettings } from "@/lib/settings";
-import { buildHomepageContent, HOMEPAGE_FAQ_MAX } from "@/lib/homepage";
+import { buildHomepageContent, HOMEPAGE_FAQ_MAX, normalizeHeroQuickLinkSlugs } from "@/lib/homepage";
 import {
   buildEntityMetadata,
   buildFaqJsonLd,
@@ -74,12 +74,18 @@ export default async function HomePage() {
     }
   }
 
-  const popular = countries.slice(0, 6);
-  const quickLinks = countries.slice(0, 5).map((c) => ({
-    name: c.name,
-    slug: c.slug,
-    flag: c.flag,
+  const countryOptions = countries.map((country) => ({
+    name: country.name,
+    slug: country.slug,
+    flag: country.flag,
   }));
+
+  content = {
+    ...content,
+    heroQuickLinkSlugs: normalizeHeroQuickLinkSlugs(content.heroQuickLinkSlugs, countryOptions),
+  };
+
+  const popular = countries.slice(0, 6);
 
   const featuredItems = featured.map((s) => ({
     id: s.id,
@@ -110,7 +116,7 @@ export default async function HomePage() {
         />
       )}
 
-      <HomeHero content={content} countryQuickLinks={quickLinks} />
+      <HomeHero content={content} countryOptions={countryOptions} />
       <HomeSeoIntro content={content} />
       <HomeAbout content={content} />
       <HomeServiceAreas content={content} />
