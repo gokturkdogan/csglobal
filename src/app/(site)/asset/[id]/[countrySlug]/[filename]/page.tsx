@@ -14,17 +14,24 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { id, countrySlug, filename } = await params;
   const assetId = Number.parseInt(id, 10);
   if (!Number.isFinite(assetId)) {
-    return { title: "Döküman" };
+    return {
+      title: "Döküman",
+      robots: { index: false, follow: false },
+    };
   }
 
   const asset = await findSiteAssetForPublicView(assetId, countrySlug, filename);
   if (!asset) {
-    return { title: "Döküman" };
+    return {
+      title: "Döküman",
+      robots: { index: false, follow: false },
+    };
   }
 
   return {
     title: asset.fileName,
     description: `${asset.country.name} dökümanı: ${asset.fileName}`,
+    robots: { index: false, follow: false },
   };
 }
 

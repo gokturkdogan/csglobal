@@ -38,20 +38,25 @@ export async function buildEntityMetadata({
   path,
   fallbackTitle,
   fallbackDescription,
+  openGraphType = "website",
+  publishedTime,
 }: {
   entityType: SeoEntityType;
   entityId: string;
   path: string;
   fallbackTitle: string;
   fallbackDescription?: string;
+  openGraphType?: "website" | "article";
+  publishedTime?: string | null;
 }): Promise<Metadata> {
   const settings = await getSiteSettings();
   const seo = await findSeoMetadata(entityType, entityId);
 
-  const title = seo?.metaTitle ?? fallbackTitle;
-  const fullTitle = title.includes(settings.siteName)
-    ? title
-    : `${title} | ${settings.siteName}`;
+  const rawTitle = seo?.metaTitle ?? fallbackTitle;
+  const siteSuffix = ` | ${settings.siteName}`;
+  const fullTitle = rawTitle.includes(settings.siteName)
+    ? rawTitle
+    : `${rawTitle}${siteSuffix}`;
   const description =
     seo?.metaDescription ?? fallbackDescription ?? settings.siteDescription;
   const url = seo?.canonicalUrl ?? `${siteUrl}${path.startsWith("/") ? path : `/${path}`}`;
@@ -59,8 +64,12 @@ export async function buildEntityMetadata({
   const ogDescription = seo?.ogDescription ?? description;
   const ogImages = seo?.ogImage ? [{ url: seo.ogImage }] : undefined;
 
+  const titleMetadata: Metadata["title"] = rawTitle.includes(settings.siteName)
+    ? { absolute: fullTitle }
+    : rawTitle;
+
   return {
-    title: fullTitle,
+    title: titleMetadata,
     description,
     metadataBase: new URL(siteUrl),
     alternates: { canonical: url },
@@ -70,7 +79,8 @@ export async function buildEntityMetadata({
       url,
       siteName: settings.siteName,
       locale: "tr_TR",
-      type: "website",
+      type: openGraphType,
+      publishedTime: openGraphType === "article" ? publishedTime ?? undefined : undefined,
       images: ogImages,
     },
     twitter: {

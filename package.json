@@ -15,6 +15,7 @@
     "db:seed-countries": "tsx prisma/seed-countries.ts",
     "db:reseed-visa": "tsx prisma/reseed-visa-structure.ts",
     "db:seed-seo-metadata": "tsx prisma/seed-seo-metadata.ts",
+    "db:upsert-site-pages": "tsx prisma/upsert-site-pages.ts",
     "db:seed-almanya-detail": "tsx prisma/seed-country-detail-almanya.ts",
     "db:studio": "prisma studio"
   },

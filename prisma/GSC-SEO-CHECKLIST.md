@@ -2,6 +2,19 @@
 
 Production deploy ve `db:seed-seo-metadata` sonrası bu adımları tamamlayın.
 
+## 0. Deploy sonrası veritabanı (yeni site sayfaları)
+
+Performans/SEO güncellemesi sonrası production'da bir kez çalıştırın:
+
+```bash
+npx prisma migrate deploy
+npm run db:seed-seo-metadata
+```
+
+`db:seed` (tam seed) production'da çalıştırmayın; yalnızca `db:seed-seo-metadata` yeterli.
+
+Yeni `site_pages` kayıtları (`home`, `ulkeler`, `hizmetlerimiz`) için `seed.ts` güncellemesi yalnızca tam seed ile gelir. Production'da bu sayfalar yoksa metadata fallback çalışır; SEO DB satırları için `db:seed-seo-metadata` sonrası `site_pages` tablosunda slug'lar mevcut olmalı (admin veya tek seferlik upsert).
+
 ## 1. Sitemap
 
 - [ ] `https://csglobal.com/sitemap.xml` açılıyor ve aktif program URL'leri listeleniyor
@@ -14,6 +27,7 @@ Production deploy ve `db:seed-seo-metadata` sonrası bu adımları tamamlayın.
 - [ ] `NEXT_PUBLIC_SITE_URL` production'da tek canonical domain (www veya non-www, tutarlı)
 - [ ] Örnek program sayfasında `rel=canonical` doğru `/{ülke}/{program}` yolunu gösteriyor
 - [ ] `seo_metadata.canonical_url` değerleri aynı domain ile uyumlu
+- [ ] Anasayfa `<title>` içinde site adı yalnızca bir kez görünüyor (çift `CSGLOBAL` yok)
 
 ## 3. Coverage ve 404 izleme
 
@@ -26,19 +40,38 @@ Production deploy ve `db:seed-seo-metadata` sonrası bu adımları tamamlayın.
 - [ ] `npm run db:seed-seo-metadata` çalıştırıldı (711+ VISA_PROGRAM kaydı)
 - [ ] Örnek 5 program: title ve description Google önizlemesine uygun uzunlukta
 - [ ] Open Graph ve Twitter kartları sosyal önizlemede doğru görünüyor
+- [ ] `/ulkeler` ve `/hizmetlerimiz` title DB'den geliyor (view-source)
+- [ ] Blog detay: `og:type` article (view-source veya sosyal önizleme)
 
 ## 5. Yapısal veri
 
 - [ ] Anasayfa: Organization + FAQ JSON-LD hatasız (Rich Results Test)
 - [ ] Program sayfası: BreadcrumbList + FAQPage (varsa) geçerli
+- [ ] Ülke detay: BreadcrumbList JSON-LD
+- [ ] Kategori sayfası: BreadcrumbList JSON-LD
+- [ ] Konsolosluk sayfası: BreadcrumbList JSON-LD
 - [ ] Admin'den eklenen `structuredData` JSON-LD sayfada render ediliyor
 
-## 6. robots.txt
+## 6. robots.txt ve index hijyeni
 
 - [ ] `https://csglobal.com/robots.txt` sitemap satırını içeriyor
 - [ ] `/admin` ve `/api` disallow aktif
+- [ ] Asset/döküman URL'leri `noindex` (view-source `robots` meta)
 
-## 7. Periyodik izleme (aylık)
+## 7. Performans izleme (Neon / hosting)
+
+- [ ] Neon dashboard: ortalama query süresi ve connection timeout izleniyor
+- [ ] Program sayfası response time (ör. `/{ülke}/{program}`) kabul edilebilir
+- [ ] Blog listesi ve `sitemap.xml` response time kontrol edildi
+- [ ] `PG_POOL_MAX` ve Neon pooler ayarları dokümante (varsayılan pool max: 10)
+
+## 8. Fonksiyonel regresyon (deploy smoke)
+
+- [ ] Ülkeye bağlı blog: sol panel benzer içerikler çalışıyor
+- [ ] Ülkesiz blog: kategori paneli (VİZE / PASSAPORT / EK HİZMETLER) çalışıyor
+- [ ] Admin içerik kaydı sonrası public sayfa güncelleniyor
+
+## 9. Periyodik izleme (aylık)
 
 - [ ] GSC 404 raporu: beklenmeyen URL kalıpları
 - [ ] Sitemap URL sayısı ile aktif program sayısı uyumlu
@@ -47,6 +80,7 @@ Production deploy ve `db:seed-seo-metadata` sonrası bu adımları tamamlayın.
 ## Komutlar
 
 ```bash
+npx prisma migrate deploy
 npm run db:seed-seo-metadata
 tsx prisma/archive/audit-internal-rehber-links.ts
 tsx prisma/archive/audit-internal-rehber-links.ts --fix

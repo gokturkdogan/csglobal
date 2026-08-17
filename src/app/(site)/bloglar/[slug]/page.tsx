@@ -37,6 +37,8 @@ export async function generateMetadata({ params }: Props) {
     path: buildBlogPath(post.slug),
     fallbackTitle: post.title,
     fallbackDescription: post.excerpt ?? undefined,
+    openGraphType: "article",
+    publishedTime: post.publishedAt?.toISOString(),
   });
 }
 

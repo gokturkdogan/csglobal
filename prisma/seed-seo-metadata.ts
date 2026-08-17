@@ -195,13 +195,23 @@ async function main() {
   });
 
   const staticDescriptions: Record<string, string> = {
+    home: "CSGLOBAL vize ve göçmenlik danışmanlığı. Uzman ekibimizle vize süreçlerinizi yönetin.",
     hakkimizda: "CSGLOBAL vize ve göçmenlik danışmanlığı hakkında bilgi edinin.",
     iletisim:
       "Vize ve göçmenlik danışmanlığı için telefon, WhatsApp veya e-posta ile CSGLOBAL uzman ekibine ulaşın.",
+    ulkeler: "CSGLOBAL vize ve göçmenlik programları kapsanan ülkeler.",
+    hizmetlerimiz:
+      "CSGLOBAL vize, oturum ve göçmenlik programları. Tüm ülkelerdeki programları tek listede inceleyin.",
+    bloglar: "Vize, oturum ve göçmenlik süreçlerine dair blog yazıları.",
   };
 
   for (const page of sitePages) {
-    const path = page.slug === "rehberlerimiz" ? null : `/${page.slug}`;
+    const path =
+      page.slug === "home"
+        ? "/"
+        : page.slug === "rehberlerimiz"
+          ? null
+          : `/${page.slug}`;
     const metaTitle = `${page.title} | ${SITE_NAME}`;
     const metaDescription = truncate(
       staticDescriptions[page.slug] ?? page.content?.replace(/<[^>]+>/g, " "),

@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 import {
   consulatePublicDetailSelect,
@@ -15,10 +16,10 @@ export async function findActiveConsulatesByCountrySlug(countrySlug: string) {
   });
 }
 
-export async function findConsulateByCountryAndSlug(
+export const findConsulateByCountryAndSlug = cache(async (
   countrySlug: string,
   consulateSlug: string,
-) {
+) => {
   return prisma.consulate.findFirst({
     where: {
       slug: consulateSlug,
@@ -27,7 +28,7 @@ export async function findConsulateByCountryAndSlug(
     },
     select: consulatePublicDetailSelect,
   });
-}
+});
 
 export async function findConsulateForAdmin(id: string) {
   return prisma.consulate.findUnique({

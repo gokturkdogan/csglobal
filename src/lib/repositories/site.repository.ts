@@ -1,10 +1,11 @@
+import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 
-export async function findSitePageBySlug(slug: string) {
+export const findSitePageBySlug = cache(async (slug: string) => {
   return prisma.sitePage.findFirst({
     where: { slug, isActive: true },
   });
-}
+});
 
 export async function findSitePageRecordBySlug(slug: string) {
   return prisma.sitePage.findFirst({

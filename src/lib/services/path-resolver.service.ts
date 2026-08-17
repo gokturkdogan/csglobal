@@ -1,6 +1,6 @@
 import { findCountryBySlug } from "@/lib/repositories/country.repository";
 import { findCategoryBySlug } from "@/lib/repositories/category.repository";
-import { findVisaProgramByCountryAndSlug } from "@/lib/repositories/visa-program.repository";
+import { findVisaProgramSlugExists } from "@/lib/repositories/visa-program.repository";
 import { buildCategoryPath, buildVisaProgramPath } from "@/lib/paths";
 
 export { buildCategoryPath, buildVisaProgramPath, buildServicePath } from "@/lib/paths";
@@ -22,7 +22,7 @@ export async function resolveCountryPath(
   }
 
   const lastSegment = pathSegments[pathSegments.length - 1];
-  const program = await findVisaProgramByCountryAndSlug(country.id, lastSegment);
+  const program = await findVisaProgramSlugExists(country.id, lastSegment);
   if (program) {
     return { type: "program", countrySlug, programSlug: lastSegment };
   }

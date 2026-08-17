@@ -21,16 +21,31 @@ import {
   buildFaqJsonLd,
   buildOrganizationJsonLd,
 } from "@/lib/services/seo.service";
+import { findSitePageBySlug } from "@/lib/repositories/site.repository";
+import { SeoEntityType } from "@/generated/prisma/client";
 
 export async function generateMetadata() {
   const settings = await getSiteSettings();
   const content = buildHomepageContent(settings);
+  const page = await findSitePageBySlug("home");
+
+  if (!page) {
+    return buildEntityMetadata({
+      entityType: SeoEntityType.SITE_PAGE,
+      entityId: "home",
+      path: "/",
+      fallbackTitle:
+        content.seoTitle || `${settings.siteName} | Vize ve Göçmenlik Danışmanlığı`,
+      fallbackDescription: content.seoDescription || settings.siteDescription,
+    });
+  }
+
   return buildEntityMetadata({
-    entityType: "SITE_PAGE",
-    entityId: "home",
+    entityType: SeoEntityType.SITE_PAGE,
+    entityId: page.id,
     path: "/",
     fallbackTitle:
-      content.seoTitle || `${settings.siteName} | Vize ve Göçmenlik Danışmanlığı`,
+      content.seoTitle || page.title || `${settings.siteName} | Vize ve Göçmenlik Danışmanlığı`,
     fallbackDescription: content.seoDescription || settings.siteDescription,
   });
 }

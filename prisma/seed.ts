@@ -119,6 +119,39 @@ async function main() {
     },
   });
 
+  await prisma.sitePage.upsert({
+    where: { slug: "ulkeler" },
+    create: {
+      slug: "ulkeler",
+      title: "Tüm Ülkeler",
+      content: "CSGLOBAL vize ve göçmenlik programları kapsanan ülkeler.",
+      isActive: true,
+    },
+    update: {},
+  });
+
+  await prisma.sitePage.upsert({
+    where: { slug: "hizmetlerimiz" },
+    create: {
+      slug: "hizmetlerimiz",
+      title: "Vize Programları",
+      content: "Tüm ülkelerdeki vize, oturum ve göçmenlik programları.",
+      isActive: true,
+    },
+    update: {},
+  });
+
+  await prisma.sitePage.upsert({
+    where: { slug: "home" },
+    create: {
+      slug: "home",
+      title: "Anasayfa",
+      content: "CSGLOBAL vize ve göçmenlik danışmanlığı.",
+      isActive: true,
+    },
+    update: {},
+  });
+
   await prisma.sitePage.updateMany({
     where: { slug: "rehber" },
     data: { isActive: false },

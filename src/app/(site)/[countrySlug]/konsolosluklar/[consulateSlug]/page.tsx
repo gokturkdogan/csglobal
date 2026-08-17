@@ -11,7 +11,7 @@ import { getGuideSectionNavItems } from "@/lib/guide";
 import { findConsulateByCountryAndSlug } from "@/lib/repositories/consulate.repository";
 import { loadCountryCategoryPanelData } from "@/lib/country-page/load-category-panel";
 import { getSiteSettings } from "@/lib/settings";
-import { buildEntityMetadata } from "@/lib/services/seo.service";
+import { buildEntityMetadata, buildBreadcrumbJsonLd, siteUrl } from "@/lib/services/seo.service";
 import { resolveConsulatePageHeroImage } from "@/lib/country-item-image";
 import { SeoEntityType } from "@/generated/prisma/client";
 
@@ -63,8 +63,21 @@ export default async function ConsulateDetailPage({ params }: Props) {
   const tocStickyClass =
     "lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100dvh-var(--site-header-height)-2rem)] lg:overflow-y-auto";
 
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Anasayfa", url: `${siteUrl}/` },
+    { name: consulate.country.name, url: `${siteUrl}/${consulate.country.slug}` },
+    {
+      name: consulate.name,
+      url: `${siteUrl}${buildConsulatePath(countrySlug, consulateSlug)}`,
+    },
+  ]);
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <ConsulatePageHero
         heroImage={resolveConsulatePageHeroImage(consulate.country.heroImage)}
         title={heroTitle}

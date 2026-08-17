@@ -1,15 +1,32 @@
 import { buildEntityMetadata } from "@/lib/services/seo.service";
 import { findActiveCountries } from "@/lib/repositories/country.repository";
+import { findSitePageBySlug } from "@/lib/repositories/site.repository";
 import { CountryGrid } from "@/components/domain/CountryCard";
 import { CountriesPageHero } from "@/components/domain/CountriesPageHero";
+import { SeoEntityType } from "@/generated/prisma/client";
+
+const FALLBACK_TITLE = "Tüm Ülkeler";
+const FALLBACK_DESCRIPTION =
+  "CSGLOBAL vize ve göçmenlik programları kapsanan ülkeler.";
 
 export async function generateMetadata() {
+  const page = await findSitePageBySlug("ulkeler");
+  if (!page) {
+    return buildEntityMetadata({
+      entityType: SeoEntityType.SITE_PAGE,
+      entityId: "ulkeler",
+      path: "/ulkeler",
+      fallbackTitle: FALLBACK_TITLE,
+      fallbackDescription: FALLBACK_DESCRIPTION,
+    });
+  }
+
   return buildEntityMetadata({
-    entityType: "SITE_PAGE",
-    entityId: "ulkeler",
+    entityType: SeoEntityType.SITE_PAGE,
+    entityId: page.id,
     path: "/ulkeler",
-    fallbackTitle: "Tüm Ülkeler",
-    fallbackDescription: "CSGLOBAL vize ve göçmenlik programları kapsanan ülkeler.",
+    fallbackTitle: page.title,
+    fallbackDescription: FALLBACK_DESCRIPTION,
   });
 }
 

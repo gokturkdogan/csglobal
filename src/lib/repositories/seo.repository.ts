@@ -1,13 +1,14 @@
+import { cache } from "react";
 import type { SeoEntityType } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 
-export async function findSeoMetadata(entityType: SeoEntityType, entityId: string) {
+export const findSeoMetadata = cache(async (entityType: SeoEntityType, entityId: string) => {
   return prisma.seoMetadata.findUnique({
     where: {
       entityType_entityId: { entityType, entityId },
     },
   });
-}
+});
 
 export type SeoMetadataUpsertInput = {
   entityType: SeoEntityType;

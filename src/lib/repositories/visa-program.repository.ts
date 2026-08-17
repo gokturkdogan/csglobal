@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 import { visaProgramPublicDetailSelect } from "@/lib/repositories/public-selects";
 
@@ -8,12 +9,20 @@ const programListInclude = {
   categoryLinks: { select: { categoryId: true } },
 } as const;
 
-export async function findVisaProgramByCountryAndSlug(countryId: string, slug: string) {
+/** Path çözümleme için hafif slug kontrolü (tam detay yüklemez). */
+export const findVisaProgramSlugExists = cache(async (countryId: string, slug: string) => {
+  return prisma.visaProgram.findFirst({
+    where: { countryId, slug, ...active },
+    select: { id: true, slug: true },
+  });
+});
+
+export const findVisaProgramByCountryAndSlug = cache(async (countryId: string, slug: string) => {
   return prisma.visaProgram.findFirst({
     where: { countryId, slug, ...active },
     select: visaProgramPublicDetailSelect,
   });
-}
+});
 
 export async function findProgramsByCategory(categoryId: string) {
   return prisma.visaProgram.findMany({

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { CountryDetailPage } from "@/components/country/CountryDetailPage";
 import { findCountryPageBySlug } from "@/lib/repositories/country.repository";
 import { loadCountryCategoryPanelData } from "@/lib/country-page/load-category-panel";
-import { buildEntityMetadata, buildFaqJsonLd } from "@/lib/services/seo.service";
+import { buildEntityMetadata, buildBreadcrumbJsonLd, buildFaqJsonLd, siteUrl } from "@/lib/services/seo.service";
 import { getSiteSettings } from "@/lib/settings";
 import { SeoEntityType } from "@/generated/prisma/client";
 
@@ -39,9 +39,17 @@ export default async function CountryPage({ params }: Props) {
     answer: f.answer,
   }));
   const faqJsonLd = buildFaqJsonLd(faqs);
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Anasayfa", url: `${siteUrl}/` },
+    { name: country.name, url: `${siteUrl}/${countrySlug}` },
+  ]);
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       {faqJsonLd && (
         <script
           type="application/ld+json"

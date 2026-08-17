@@ -1,17 +1,33 @@
 import { FeaturedServiceCard } from "@/components/home/FeaturedServiceCard";
 import { ServicesPageHero } from "@/components/domain/ServicesPageHero";
 import { findAllProgramsForListing } from "@/lib/repositories/visa-program.repository";
+import { findSitePageBySlug } from "@/lib/repositories/site.repository";
 import { resolveServiceCardImage } from "@/lib/country-item-image";
 import { buildEntityMetadata } from "@/lib/services/seo.service";
+import { SeoEntityType } from "@/generated/prisma/client";
+
+const FALLBACK_TITLE = "Vize Programları";
+const FALLBACK_DESCRIPTION =
+  "CSGLOBAL vize, oturum ve göçmenlik programları. Tüm ülkelerdeki programları tek listede inceleyin.";
 
 export async function generateMetadata() {
+  const page = await findSitePageBySlug("hizmetlerimiz");
+  if (!page) {
+    return buildEntityMetadata({
+      entityType: SeoEntityType.SITE_PAGE,
+      entityId: "hizmetlerimiz",
+      path: "/hizmetlerimiz",
+      fallbackTitle: FALLBACK_TITLE,
+      fallbackDescription: FALLBACK_DESCRIPTION,
+    });
+  }
+
   return buildEntityMetadata({
-    entityType: "SITE_PAGE",
-    entityId: "hizmetlerimiz",
+    entityType: SeoEntityType.SITE_PAGE,
+    entityId: page.id,
     path: "/hizmetlerimiz",
-    fallbackTitle: "Vize Programları",
-    fallbackDescription:
-      "CSGLOBAL vize, oturum ve göçmenlik programları. Tüm ülkelerdeki programları tek listede inceleyin.",
+    fallbackTitle: page.title,
+    fallbackDescription: FALLBACK_DESCRIPTION,
   });
 }
 

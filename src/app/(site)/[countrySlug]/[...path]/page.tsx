@@ -252,8 +252,20 @@ export default async function CountryPathPage({ params }: Props) {
     { label: data.category.name },
   ];
 
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd(
+    breadcrumbItems.map((item) => ({
+      name: item.label,
+      url: item.href ? `${siteUrl}${item.href}` : `${siteUrl}${buildCategoryPath(countrySlug, [data.category.slug])}`,
+    })),
+  );
+
   return (
-    <div className="site-container py-10">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <div className="site-container py-10">
       <Breadcrumb items={breadcrumbItems} />
 
       <h1 className="text-2xl font-semibold text-slate-900 md:text-3xl">
@@ -286,5 +298,6 @@ export default async function CountryPathPage({ params }: Props) {
         <ContactCTA settings={settings} context={data.category.name} />
       </div>
     </div>
+    </>
   );
 }
