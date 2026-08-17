@@ -9,10 +9,9 @@ import { HomeServiceAreas } from "@/components/home/HomeServiceAreas";
 import { HomeFaqPreview } from "@/components/home/HomeFaqPreview";
 import { HomeFeaturedSection } from "@/components/home/HomeFeaturedSection";
 import { HomeCountriesSection } from "@/components/home/HomeCountriesSection";
-import { HomeArticlesSection } from "@/components/home/HomeArticlesSection";
+import { HomeProgramsSection } from "@/components/home/HomeProgramsSection";
 import { findActiveCountries } from "@/lib/repositories/country.repository";
-import { findFeaturedServices } from "@/lib/repositories/service.repository";
-import { findPublishedArticles } from "@/lib/repositories/article.repository";
+import { findFeaturedPrograms, findLatestPublishedPrograms } from "@/lib/repositories/visa-program.repository";
 import { findHomepageFaqs } from "@/lib/repositories/faq.repository";
 import { resolveServiceCardImage } from "@/lib/country-item-image";
 import { getSiteSettings } from "@/lib/settings";
@@ -40,10 +39,10 @@ export default async function HomePage() {
   const settings = await getSiteSettings();
   let content = buildHomepageContent(settings);
 
-  const [countries, featured, articles] = await Promise.all([
+  const [countries, featured, latestPrograms] = await Promise.all([
     findActiveCountries(),
-    findFeaturedServices(),
-    findPublishedArticles(3),
+    findFeaturedPrograms(),
+    findLatestPublishedPrograms(3),
   ]);
 
   if (!settings.homeFaqJson?.trim()) {
@@ -106,7 +105,7 @@ export default async function HomePage() {
       <HomeProcess content={content} />
       <HomeCountriesSection content={content} countries={popular} />
       <HomeFaqPreview content={content} />
-      <HomeArticlesSection content={content} articles={articles} />
+      <HomeProgramsSection content={content} programs={latestPrograms} />
       <HomeCtaBanner content={content} settings={settings} />
     </>
   );

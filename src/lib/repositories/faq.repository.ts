@@ -6,7 +6,7 @@ export async function findHomepageFaqs(limit = 6) {
       isActive: true,
       countryId: null,
       categoryId: null,
-      serviceId: null,
+      visaProgramId: null,
     },
     orderBy: { sortOrder: "asc" },
     take: limit,

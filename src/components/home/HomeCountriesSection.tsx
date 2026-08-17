@@ -17,7 +17,7 @@ export function HomeCountriesSection({
     shortDescription?: string | null;
     flag?: string | null;
     itemImage?: string | null;
-    services: { id: string }[];
+    visaPrograms: { id: string }[];
   }>;
 }) {
   const edit = useHomepageEdit();

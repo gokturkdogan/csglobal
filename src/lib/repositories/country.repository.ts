@@ -7,7 +7,7 @@ export async function findActiveCountries() {
     where: activeCountry,
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     include: {
-      services: {
+      visaPrograms: {
         where: { isActive: true },
         select: { id: true },
       },
@@ -29,7 +29,7 @@ export async function findCountryPageBySlug(slug: string) {
       faqs: {
         where: {
           isActive: true,
-          serviceId: null,
+          visaProgramId: null,
           categoryId: null,
         },
         orderBy: { sortOrder: "asc" },
@@ -45,7 +45,7 @@ export async function findCountryById(id: string) {
     where: { id },
     include: {
       faqs: {
-        where: { serviceId: null, categoryId: null },
+        where: { visaProgramId: null, categoryId: null },
         orderBy: { sortOrder: "asc" },
         take: 5,
       },

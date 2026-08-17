@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { serviceCountryPanelSelect } from "@/lib/repositories/public-selects";
+import { visaProgramCountryPanelSelect } from "@/lib/repositories/public-selects";
 
 const active = { isActive: true };
 
@@ -20,23 +20,23 @@ export async function findCategoryById(id: string) {
   return prisma.category.findUnique({ where: { id } });
 }
 
-/** Global kategoriler + belirli ülkeye bağlı hizmetler veya panel rehberleri */
-export async function findCategoriesWithCountryServices(countryId: string) {
+/** Global kategoriler + belirli ülkeye bağlı vize programları */
+export async function findCategoriesWithCountryPrograms(countryId: string) {
   return prisma.category.findMany({
     where: {
       isActive: true,
       OR: [
         {
-          services: {
+          visaPrograms: {
             some: { countryId, isActive: true },
           },
         },
         {
-          articleLinks: {
+          programLinks: {
             some: {
-              article: {
+              visaProgram: {
                 countryId,
-                isPublished: true,
+                isActive: true,
                 showInCategoryPanel: true,
               },
             },
@@ -46,10 +46,10 @@ export async function findCategoriesWithCountryServices(countryId: string) {
     },
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     include: {
-      services: {
+      visaPrograms: {
         where: { countryId, isActive: true },
         orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
-        select: serviceCountryPanelSelect,
+        select: visaProgramCountryPanelSelect,
       },
     },
   });

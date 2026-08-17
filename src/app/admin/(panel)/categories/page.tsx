@@ -11,7 +11,7 @@ export default async function AdminCategoriesPage() {
   const categories = await prisma.category.findMany({
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     include: {
-      _count: { select: { services: true } },
+      _count: { select: { visaPrograms: true } },
     },
   });
 
@@ -36,7 +36,7 @@ export default async function AdminCategoriesPage() {
             <tr key={c.id} className="hover:bg-slate-50/80">
               <td className="px-5 py-3.5 font-medium text-slate-900">{c.name}</td>
               <td className="px-5 py-3.5 text-slate-500">{c.slug}</td>
-              <td className="px-5 py-3.5 text-slate-600">{c._count.services}</td>
+              <td className="px-5 py-3.5 text-slate-600">{c._count.visaPrograms}</td>
               <td className="px-5 py-3.5">
                 <AdminStatusBadge active={c.isActive} />
               </td>

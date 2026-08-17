@@ -32,7 +32,7 @@ export default async function CountryPage({ params }: Props) {
     country.id,
     countrySlug,
   );
-  const serviceCount = panelCategories.reduce((n, cat) => n + cat.services.length, 0);
+  const programCount = panelCategories.reduce((n, cat) => n + cat.programs.length, 0);
   const categoryCount = panelCategories.length;
   const faqs = country.faqs.map((f) => ({
     question: f.question,
@@ -66,7 +66,7 @@ export default async function CountryPage({ params }: Props) {
           faqs,
         }}
         settings={settings}
-        serviceCount={serviceCount}
+        serviceCount={programCount}
         categoryCount={categoryCount}
         categories={panelCategories}
         consulates={consulates}

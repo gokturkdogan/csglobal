@@ -135,7 +135,7 @@ async function main() {
     const parsedCount = JSON.parse(sectionsJson).length;
     console.log(`${service.slug}: ${sections.length} bölüm kaynak, ${parsedCount} bölüm kaydedildi`);
 
-    await prisma.service.upsert({
+    const program = await prisma.visaProgram.upsert({
       where: {
         countryId_slug: { countryId: country.id, slug: service.slug },
       },
@@ -148,6 +148,7 @@ async function main() {
         heroTitle: service.heroTitle,
         sectionsJson,
         isActive: true,
+        showInCategoryPanel: true,
         sortOrder: service.sortOrder,
       },
       update: {
@@ -157,8 +158,20 @@ async function main() {
         heroTitle: service.heroTitle,
         sectionsJson,
         isActive: true,
+        showInCategoryPanel: true,
         sortOrder: service.sortOrder,
       },
+    });
+
+    await prisma.visaProgramCategoryLink.upsert({
+      where: {
+        visaProgramId_categoryId: {
+          visaProgramId: program.id,
+          categoryId,
+        },
+      },
+      create: { visaProgramId: program.id, categoryId },
+      update: {},
     });
 
     console.log(`Hizmet kaydedildi: ${service.name}`);

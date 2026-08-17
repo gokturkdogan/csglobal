@@ -1,6 +1,5 @@
 import { findActiveCountries } from "@/lib/repositories/country.repository";
-import { findFeaturedServices } from "@/lib/repositories/service.repository";
-import { findPublishedArticles } from "@/lib/repositories/article.repository";
+import { findFeaturedPrograms, findLatestPublishedPrograms } from "@/lib/repositories/visa-program.repository";
 import { findHomepageFaqs } from "@/lib/repositories/faq.repository";
 import { resolveServiceCardImage } from "@/lib/country-item-image";
 import { getSiteSettings } from "@/lib/settings";
@@ -26,10 +25,10 @@ export default async function AdminHomepagePage() {
     }
   }
 
-  const [countries, featured, articles] = await Promise.all([
+  const [countries, featured, latestPrograms] = await Promise.all([
     findActiveCountries(),
-    findFeaturedServices(),
-    findPublishedArticles(3),
+    findFeaturedPrograms(),
+    findLatestPublishedPrograms(3),
   ]);
 
   const popular = countries.slice(0, 6);
@@ -57,7 +56,7 @@ export default async function AdminHomepagePage() {
         quickLinks,
         featuredItems,
         popularCountries: popular,
-        articles,
+        programs: latestPrograms,
         settings,
       }}
     />

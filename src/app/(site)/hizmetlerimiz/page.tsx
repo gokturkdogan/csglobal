@@ -1,6 +1,6 @@
 import { FeaturedServiceCard } from "@/components/home/FeaturedServiceCard";
 import { ServicesPageHero } from "@/components/domain/ServicesPageHero";
-import { findAllServicesForListing } from "@/lib/repositories/service.repository";
+import { findAllProgramsForListing } from "@/lib/repositories/visa-program.repository";
 import { resolveServiceCardImage } from "@/lib/country-item-image";
 import { buildEntityMetadata } from "@/lib/services/seo.service";
 
@@ -9,35 +9,35 @@ export async function generateMetadata() {
     entityType: "SITE_PAGE",
     entityId: "hizmetlerimiz",
     path: "/hizmetlerimiz",
-    fallbackTitle: "Programlar",
+    fallbackTitle: "Vize Programları",
     fallbackDescription:
       "CSGLOBAL vize, oturum ve göçmenlik programları. Tüm ülkelerdeki programları tek listede inceleyin.",
   });
 }
 
 export default async function ServicesListingPage() {
-  const services = await findAllServicesForListing();
+  const programs = await findAllProgramsForListing();
 
   return (
     <>
-      <ServicesPageHero serviceCount={services.length} />
+      <ServicesPageHero serviceCount={programs.length} />
 
       <section className="home-band-soft border-b border-slate-200/60">
         <div className="site-container py-12 md:py-16">
-          {services.length === 0 ? (
+          {programs.length === 0 ? (
             <p className="text-sm text-slate-500">Henüz listelenecek aktif program yok.</p>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {services.map((service) => (
+              {programs.map((program) => (
                 <FeaturedServiceCard
-                  key={service.id}
-                  name={service.name}
-                  slug={service.slug}
-                  countrySlug={service.country.slug}
-                  countryName={service.country.name}
-                  shortDescription={service.shortDescription}
-                  processingTime={service.processingTime}
-                  heroImage={resolveServiceCardImage(service.country.itemImage)}
+                  key={program.id}
+                  name={program.name}
+                  slug={program.slug}
+                  countrySlug={program.country.slug}
+                  countryName={program.country.name}
+                  shortDescription={program.shortDescription}
+                  processingTime={program.processingTime}
+                  heroImage={resolveServiceCardImage(program.country.itemImage)}
                 />
               ))}
             </div>

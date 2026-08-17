@@ -1,12 +1,12 @@
 import { findCountryBySlug } from "@/lib/repositories/country.repository";
 import { findCategoryBySlug } from "@/lib/repositories/category.repository";
-import { findServiceByCountrySlug } from "@/lib/repositories/service.repository";
-import { buildCategoryPath, buildServicePath } from "@/lib/paths";
+import { findVisaProgramByCountryAndSlug } from "@/lib/repositories/visa-program.repository";
+import { buildCategoryPath, buildVisaProgramPath } from "@/lib/paths";
 
-export { buildCategoryPath, buildServicePath };
+export { buildCategoryPath, buildVisaProgramPath, buildServicePath } from "@/lib/paths";
 
 export type ResolvedPath =
-  | { type: "service"; countrySlug: string; serviceSlug: string }
+  | { type: "program"; countrySlug: string; programSlug: string }
   | { type: "category"; countrySlug: string; categorySlug: string }
   | { type: "not_found" };
 
@@ -22,9 +22,9 @@ export async function resolveCountryPath(
   }
 
   const lastSegment = pathSegments[pathSegments.length - 1];
-  const service = await findServiceByCountrySlug(country.id, lastSegment);
-  if (service) {
-    return { type: "service", countrySlug, serviceSlug: lastSegment };
+  const program = await findVisaProgramByCountryAndSlug(country.id, lastSegment);
+  if (program) {
+    return { type: "program", countrySlug, programSlug: lastSegment };
   }
 
   if (pathSegments.length === 1) {
@@ -49,10 +49,10 @@ export async function loadCategoryPageData(
   const category = await findCategoryBySlug(pathSegments[0]);
   if (!category) return null;
 
-  const { findServicesByCountryAndCategory } = await import(
-    "@/lib/repositories/service.repository"
+  const { findProgramsByCountryAndCategory } = await import(
+    "@/lib/repositories/visa-program.repository"
   );
-  const services = await findServicesByCountryAndCategory(country.id, category.id);
+  const programs = await findProgramsByCountryAndCategory(country.id, category.id);
 
-  return { country, category, services };
+  return { country, category, programs };
 }

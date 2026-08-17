@@ -195,7 +195,7 @@ async function main() {
   });
 
   await prisma.faq.deleteMany({
-    where: { countryId: germany.id, serviceId: null, categoryId: null },
+    where: { countryId: germany.id, visaProgramId: null, categoryId: null },
   });
   await prisma.faq.createMany({
     data: [
@@ -255,23 +255,34 @@ async function main() {
     },
   ]);
 
-  await prisma.article.upsert({
-    where: { slug: "almanya-vize-rehberi" },
+  const ticariCategory = await prisma.category.findUnique({
+    where: { slug: "ticari-vizeler" },
+  });
+
+  const guideProgram = await prisma.visaProgram.upsert({
+    where: {
+      countryId_slug: {
+        countryId: germany.id,
+        slug: "almanya-vize-rehberi",
+      },
+    },
     create: {
       slug: "almanya-vize-rehberi",
-      title: "Almanya Vize Başvuru Rehberi",
+      name: "Almanya Vize Başvuru Rehberi",
       excerpt: "Almanya vizesi için temel adımlar ve evrak hazırlığı.",
       heroTitle: "Almanya Vize Başvuru Rehberi",
       heroSubtitle:
         "Evrak, randevu ve başvuru merkezi süreçlerine ülkeye özel özet.",
       content: "",
       sectionsJson: guideSections,
-      featureImageTitle: "Doğru evrak, doğru zamanlama",
-      featureImageText:
+      featureImage1Title: "Doğru evrak, doğru zamanlama",
+      featureImage1Text:
         "Almanya vizesi için belgelerin eksiksiz ve güncel olması sürecin en kritik adımıdır. Uzman danışmanımız profilinize uygun evrak listesini netleştirir.",
       articleCategoryId: guideCat.id,
       countryId: germany.id,
-      isPublished: true,
+      categoryId: ticariCategory?.id ?? (await prisma.category.findFirst())!.id,
+      isActive: true,
+      showInCategoryPanel: true,
       publishedAt: new Date(),
     },
     update: {
@@ -280,8 +291,25 @@ async function main() {
       heroTitle: "Almanya Vize Başvuru Rehberi",
       heroSubtitle:
         "Evrak, randevu ve başvuru merkezi süreçlerine ülkeye özel özet.",
+      showInCategoryPanel: true,
     },
   });
+
+  if (ticariCategory) {
+    await prisma.visaProgramCategoryLink.upsert({
+      where: {
+        visaProgramId_categoryId: {
+          visaProgramId: guideProgram.id,
+          categoryId: ticariCategory.id,
+        },
+      },
+      create: {
+        visaProgramId: guideProgram.id,
+        categoryId: ticariCategory.id,
+      },
+      update: {},
+    });
+  }
 
   const homeFaqs = [
     {

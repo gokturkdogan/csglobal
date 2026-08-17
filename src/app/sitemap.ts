@@ -1,14 +1,11 @@
 import type { MetadataRoute } from "next";
 import { siteUrl } from "@/lib/services/seo.service";
 import { findActiveCountries } from "@/lib/repositories/country.repository";
-import { findAllActiveServices } from "@/lib/repositories/service.repository";
+import { findAllActivePrograms } from "@/lib/repositories/visa-program.repository";
 import { findAllActiveCategories } from "@/lib/repositories/category.repository";
-import { findAllPublishedArticles } from "@/lib/repositories/article.repository";
 import { findAllActiveConsulates } from "@/lib/repositories/consulate.repository";
-import { buildCategoryPath, buildServicePath } from "@/lib/services/path-resolver.service";
-import {
-  buildConsulatePath,
-} from "@/lib/paths";
+import { buildCategoryPath, buildVisaProgramPath } from "@/lib/services/path-resolver.service";
+import { buildConsulatePath } from "@/lib/paths";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteUrl;
@@ -16,17 +13,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: base, changeFrequency: "weekly", priority: 1 },
     { url: `${base}/ulkeler`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/hizmetlerimiz`, changeFrequency: "weekly", priority: 0.85 },
-    { url: `${base}/rehber`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/hakkimizda`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/iletisim`, changeFrequency: "monthly", priority: 0.8 },
   ];
 
   try {
-    const [countries, services, categories, articles, consulates] = await Promise.all([
+    const [countries, programs, categories, consulates] = await Promise.all([
       findActiveCountries(),
-      findAllActiveServices(),
+      findAllActivePrograms(),
       findAllActiveCategories(),
-      findAllPublishedArticles(),
       findAllActiveConsulates(),
     ]);
 
@@ -36,10 +31,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.85,
     }));
 
-    const serviceRoutes = services
-      .filter((s) => s.country.isActive)
-      .map((s) => ({
-        url: `${base}${buildServicePath(s.country.slug, s.slug)}`,
+    const programRoutes = programs
+      .filter((p) => p.country.isActive)
+      .map((p) => ({
+        url: `${base}${buildVisaProgramPath(p.country.slug, p.slug)}`,
         changeFrequency: "weekly" as const,
         priority: 0.8,
       }));
@@ -52,12 +47,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })),
     );
 
-    const articleRoutes = articles.map((a) => ({
-      url: `${base}/rehber/${a.slug}`,
-      changeFrequency: "monthly" as const,
-      priority: 0.7,
-    }));
-
     const consulateRoutes = consulates.map((c) => ({
       url: `${base}${buildConsulatePath(c.country.slug, c.slug)}`,
       changeFrequency: "monthly" as const,
@@ -67,9 +56,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return [
       ...staticRoutes,
       ...countryRoutes,
-      ...serviceRoutes,
+      ...programRoutes,
       ...categoryRoutes,
-      ...articleRoutes,
       ...consulateRoutes,
     ];
   } catch {

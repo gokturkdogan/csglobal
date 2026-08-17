@@ -41,15 +41,15 @@ type PreviewData = {
     shortDescription?: string | null;
     flag?: string | null;
     itemImage?: string | null;
-    services: { id: string }[];
+    visaPrograms: { id: string }[];
   }>;
-  articles: Array<{
+  programs: Array<{
     id: string;
-    title: string;
+    name: string;
     slug: string;
     excerpt: string | null;
     publishedAt: Date | null;
-    country: { name: string; itemImage?: string | null } | null;
+    country: { name: string; slug: string; itemImage?: string | null } | null;
   }>;
   settings: SiteSettingsMap;
 };

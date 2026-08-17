@@ -2,10 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
-import {
-  buildConsulatePath,
-  buildServicePath,
-} from "@/lib/paths";
+import { buildConsulatePath, buildVisaProgramPath } from "@/lib/paths";
 import { buildSiteAssetPath } from "@/lib/site-asset";
 import {
   COUNTRY_PANEL_CONSULATES_SLUG,
@@ -55,9 +52,8 @@ export function CountryCategoryPanel({
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-white">
         {(categories ?? []).map((category) => {
           const isOpen = openSlug === category.slug;
-          const services = category.services ?? [];
-          const guides = category.guides ?? [];
-          const itemCount = services.length + guides.length;
+          const programs = category.programs ?? [];
+          const itemCount = programs.length;
           const meta = `${itemCount} öğe`;
 
           return (
@@ -75,27 +71,14 @@ export function CountryCategoryPanel({
                 </p>
               ) : (
                 <ul className="space-y-0.5">
-                  {services.map((service) => (
-                    <li key={`service-${service.slug}`}>
+                  {programs.map((program) => (
+                    <li key={`program-${program.slug}`}>
                       <Link
-                        href={buildServicePath(countrySlug, service.slug)}
+                        href={buildVisaProgramPath(countrySlug, program.slug)}
                         className="group flex cursor-pointer items-center justify-between gap-1.5 rounded-md border border-transparent px-2 py-2 text-xs transition hover:border-csg-blue/15 hover:bg-csg-blue/[0.04]"
                       >
                         <span className="min-w-0 font-medium leading-snug text-slate-900 group-hover:text-csg-blue line-clamp-2">
-                          {service.name}
-                        </span>
-                        <ArrowIcon />
-                      </Link>
-                    </li>
-                  ))}
-                  {guides.map((guide) => (
-                    <li key={`guide-${guide.slug}`}>
-                      <Link
-                        href={`/rehber/${guide.slug}`}
-                        className="group flex cursor-pointer items-center justify-between gap-1.5 rounded-md border border-transparent px-2 py-2 text-xs transition hover:border-csg-blue/15 hover:bg-csg-blue/[0.04]"
-                      >
-                        <span className="min-w-0 font-medium leading-snug text-slate-900 group-hover:text-csg-blue line-clamp-2">
-                          {guide.title}
+                          {program.name}
                         </span>
                         <ArrowIcon />
                       </Link>

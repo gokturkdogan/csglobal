@@ -66,7 +66,7 @@ export function CountryGrid({
     shortDescription?: string | null;
     flag?: string | null;
     itemImage?: string | null;
-    services: { id: string }[];
+    visaPrograms: { id: string }[];
   }>;
 }) {
   return (
@@ -77,7 +77,7 @@ export function CountryGrid({
           name={c.name}
           slug={c.slug}
           shortDescription={c.shortDescription}
-          serviceCount={c.services.length}
+          serviceCount={c.visaPrograms.length}
           flag={c.flag}
           itemImage={c.itemImage}
         />

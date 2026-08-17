@@ -1,13 +1,8 @@
-export type CountryCategoryServiceItem = {
+export type CountryCategoryProgramItem = {
   slug: string;
   name: string;
   shortDescription?: string | null;
   processingTime?: string | null;
-};
-
-export type CountryCategoryGuideItem = {
-  slug: string;
-  title: string;
 };
 
 export type CountryPanelConsulateItem = {
@@ -18,8 +13,7 @@ export type CountryPanelConsulateItem = {
 export type CountryCategoryPanelItem = {
   slug: string;
   name: string;
-  services: CountryCategoryServiceItem[];
-  guides: CountryCategoryGuideItem[];
+  programs: CountryCategoryProgramItem[];
 };
 
 export type CountryConsulatePanelItem = {
@@ -43,7 +37,7 @@ export function mapCategoriesForCountryPanel(
   categories: Array<{
     slug: string;
     name: string;
-    services: Array<{
+    visaPrograms: Array<{
       slug: string;
       name: string;
       shortDescription?: string | null;
@@ -54,55 +48,76 @@ export function mapCategoriesForCountryPanel(
   return (categories ?? []).map((category) => ({
     slug: category.slug,
     name: category.name,
-    services: (category.services ?? []).map((service) => ({
-      slug: service.slug,
-      name: service.name,
-      shortDescription: service.shortDescription,
-      processingTime: service.processingTime,
+    programs: (category.visaPrograms ?? []).map((program) => ({
+      slug: program.slug,
+      name: program.name,
+      shortDescription: program.shortDescription,
+      processingTime: program.processingTime,
     })),
-    guides: [],
   }));
 }
 
-type CategoryPanelGuideRecord = {
+type PanelProgramRecord = {
   slug: string;
-  title: string;
-  linkedCategories: Array<{ categoryId: string }>;
+  name: string;
+  shortDescription?: string | null;
+  processingTime?: string | null;
+  categoryId: string;
+  categoryLinks: Array<{ categoryId: string }>;
 };
 
-/** Kategori panelinde gösterilecek rehberleri kategori slug'ına dağıtır (kategori içinde tekilleştirilmiş). */
-export function attachGuidesToCategoryPanel(
+/** Junction üzerinden gelen programları kategori slug'ına dağıtır ve birleştirir. */
+export function attachLinkedProgramsToCategoryPanel(
   categories: CountryCategoryPanelItem[],
-  guides: CategoryPanelGuideRecord[],
+  programs: PanelProgramRecord[],
   categoryIdToSlug: Map<string, string>,
 ): CountryCategoryPanelItem[] {
-  const guidesByCategorySlug = new Map<string, CountryCategoryGuideItem[]>();
+  const programsByCategorySlug = new Map<string, CountryCategoryProgramItem[]>();
 
-  for (const guide of guides) {
-    for (const link of guide.linkedCategories) {
-      const categorySlug = categoryIdToSlug.get(link.categoryId);
+  for (const program of programs) {
+    const categoryIds = new Set<string>();
+    if (program.categoryId) categoryIds.add(program.categoryId);
+    for (const link of program.categoryLinks) {
+      categoryIds.add(link.categoryId);
+    }
+
+    for (const categoryId of categoryIds) {
+      const categorySlug = categoryIdToSlug.get(categoryId);
       if (!categorySlug) continue;
 
-      const list = guidesByCategorySlug.get(categorySlug) ?? [];
-      if (list.some((item) => item.slug === guide.slug)) continue;
+      const list = programsByCategorySlug.get(categorySlug) ?? [];
+      if (list.some((item) => item.slug === program.slug)) continue;
 
-      list.push({ slug: guide.slug, title: guide.title });
-      guidesByCategorySlug.set(categorySlug, list);
+      list.push({
+        slug: program.slug,
+        name: program.name,
+        shortDescription: program.shortDescription,
+        processingTime: program.processingTime,
+      });
+      programsByCategorySlug.set(categorySlug, list);
     }
   }
 
-  return categories.map((category) => ({
-    ...category,
-    guides: guidesByCategorySlug.get(category.slug) ?? [],
-  }));
+  return categories.map((category) => {
+    const linked = programsByCategorySlug.get(category.slug) ?? [];
+    const merged = [...category.programs];
+
+    for (const item of linked) {
+      if (!merged.some((p) => p.slug === item.slug)) {
+        merged.push(item);
+      }
+    }
+
+    return {
+      ...category,
+      programs: merged,
+    };
+  });
 }
 
-/** Yalnızca en az bir hizmet veya rehber içeren kategoriler */
+/** Yalnızca en az bir program içeren kategoriler */
 export function filterPopulatedCountryCategories(
   categories: CountryCategoryPanelItem[],
 ): CountryCategoryPanelItem[] {
-  return categories.filter(
-    (category) =>
-      (category.services?.length ?? 0) > 0 || (category.guides?.length ?? 0) > 0,
-  );
+  return categories.filter((category) => (category.programs?.length ?? 0) > 0);
 }

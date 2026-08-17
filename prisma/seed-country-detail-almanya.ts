@@ -73,7 +73,7 @@ async function main() {
   });
 
   await prisma.faq.deleteMany({
-    where: { countryId: germany.id, serviceId: null, categoryId: null },
+    where: { countryId: germany.id, visaProgramId: null, categoryId: null },
   });
   await prisma.faq.createMany({
     data: faqs.map((f) => ({

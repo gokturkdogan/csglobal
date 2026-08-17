@@ -5,63 +5,75 @@ import {
   VISA_ROOT_CATEGORIES,
 } from "../data/visa-categories";
 
-export async function wipeArticlesOnly(prisma: PrismaClient) {
-  const articleIds = (
-    await prisma.article.findMany({ select: { id: true } })
-  ).map((a) => a.id);
+export async function wipeVisaProgramsOnly(prisma: PrismaClient) {
+  const programIds = (
+    await prisma.visaProgram.findMany({ select: { id: true } })
+  ).map((p) => p.id);
 
-  if (articleIds.length === 0) {
+  if (programIds.length === 0) {
     return { deleted: 0 };
   }
 
   await prisma.seoMetadata.deleteMany({
-    where: { entityType: SeoEntityType.ARTICLE, entityId: { in: articleIds } },
+    where: {
+      entityType: { in: [SeoEntityType.VISA_PROGRAM, SeoEntityType.SERVICE, SeoEntityType.ARTICLE] },
+      entityId: { in: programIds },
+    },
   });
-  await prisma.articleCategoryLink.deleteMany({
-    where: { articleId: { in: articleIds } },
+  await prisma.faq.deleteMany({ where: { visaProgramId: { in: programIds } } });
+  await prisma.fee.deleteMany({ where: { visaProgramId: { in: programIds } } });
+  await prisma.visaProgramSection.deleteMany({
+    where: { visaProgramId: { in: programIds } },
   });
-  const result = await prisma.article.deleteMany();
+  await prisma.visaProgramDocument.deleteMany({
+    where: { visaProgramId: { in: programIds } },
+  });
+  await prisma.visaProgramCategoryLink.deleteMany({
+    where: { visaProgramId: { in: programIds } },
+  });
+  const result = await prisma.visaProgram.deleteMany();
 
   return { deleted: result.count };
 }
 
+/** @deprecated wipeVisaProgramsOnly kullanın */
 export async function wipeServicesOnly(prisma: PrismaClient) {
-  const serviceIds = (
-    await prisma.service.findMany({ select: { id: true } })
-  ).map((s) => s.id);
+  return wipeVisaProgramsOnly(prisma);
+}
 
-  if (serviceIds.length === 0) {
-    return { deleted: 0 };
-  }
-
-  await prisma.seoMetadata.deleteMany({
-    where: { entityType: SeoEntityType.SERVICE, entityId: { in: serviceIds } },
-  });
-  await prisma.faq.deleteMany({ where: { serviceId: { in: serviceIds } } });
-  await prisma.fee.deleteMany({ where: { serviceId: { in: serviceIds } } });
-  await prisma.serviceSection.deleteMany({ where: { serviceId: { in: serviceIds } } });
-  await prisma.serviceDocument.deleteMany({ where: { serviceId: { in: serviceIds } } });
-  const result = await prisma.service.deleteMany();
-
-  return { deleted: result.count };
+/** @deprecated Birleşik tabloda rehber ayrımı yok */
+export async function wipeArticlesOnly(prisma: PrismaClient) {
+  return { deleted: 0 };
 }
 
 export async function wipeServicesAndCategories(prisma: PrismaClient) {
-  const serviceIds = (
-    await prisma.service.findMany({ select: { id: true } })
-  ).map((s) => s.id);
+  const programIds = (
+    await prisma.visaProgram.findMany({ select: { id: true } })
+  ).map((p) => p.id);
   const categoryIds = (
     await prisma.category.findMany({ select: { id: true } })
   ).map((c) => c.id);
 
-  if (serviceIds.length > 0) {
+  if (programIds.length > 0) {
     await prisma.seoMetadata.deleteMany({
-      where: { entityType: SeoEntityType.SERVICE, entityId: { in: serviceIds } },
+      where: {
+        entityType: {
+          in: [SeoEntityType.VISA_PROGRAM, SeoEntityType.SERVICE, SeoEntityType.ARTICLE],
+        },
+        entityId: { in: programIds },
+      },
     });
-    await prisma.faq.deleteMany({ where: { serviceId: { in: serviceIds } } });
-    await prisma.fee.deleteMany({ where: { serviceId: { in: serviceIds } } });
-    await prisma.serviceSection.deleteMany({ where: { serviceId: { in: serviceIds } } });
-    await prisma.serviceDocument.deleteMany({ where: { serviceId: { in: serviceIds } } });
+    await prisma.faq.deleteMany({ where: { visaProgramId: { in: programIds } } });
+    await prisma.fee.deleteMany({ where: { visaProgramId: { in: programIds } } });
+    await prisma.visaProgramSection.deleteMany({
+      where: { visaProgramId: { in: programIds } },
+    });
+    await prisma.visaProgramDocument.deleteMany({
+      where: { visaProgramId: { in: programIds } },
+    });
+    await prisma.visaProgramCategoryLink.deleteMany({
+      where: { visaProgramId: { in: programIds } },
+    });
   }
 
   if (categoryIds.length > 0) {
@@ -69,12 +81,12 @@ export async function wipeServicesAndCategories(prisma: PrismaClient) {
       where: { entityType: SeoEntityType.CATEGORY, entityId: { in: categoryIds } },
     });
     await prisma.faq.deleteMany({ where: { categoryId: { in: categoryIds } } });
-    await prisma.articleCategoryLink.deleteMany({
+    await prisma.visaProgramCategoryLink.deleteMany({
       where: { categoryId: { in: categoryIds } },
     });
   }
 
-  await prisma.service.deleteMany();
+  await prisma.visaProgram.deleteMany();
   await prisma.category.deleteMany();
 }
 
@@ -116,7 +128,7 @@ export async function seedCountryTicariServices(
   }
 
   for (const [i, svc] of TICARI_SAMPLE_SERVICES.entries()) {
-    await prisma.service.upsert({
+    const program = await prisma.visaProgram.upsert({
       where: {
         countryId_slug: {
           countryId,
@@ -132,6 +144,7 @@ export async function seedCountryTicariServices(
         processingTime: svc.processingTime,
         isFeatured: featuredTicari && svc.isFeatured,
         isActive: true,
+        showInCategoryPanel: true,
         requiresAppointment: true,
         sortOrder: i + 1,
       },
@@ -142,8 +155,23 @@ export async function seedCountryTicariServices(
         processingTime: svc.processingTime,
         isFeatured: featuredTicari && svc.isFeatured,
         isActive: true,
+        showInCategoryPanel: true,
         sortOrder: i + 1,
       },
+    });
+
+    await prisma.visaProgramCategoryLink.upsert({
+      where: {
+        visaProgramId_categoryId: {
+          visaProgramId: program.id,
+          categoryId: ticariCategory.id,
+        },
+      },
+      create: {
+        visaProgramId: program.id,
+        categoryId: ticariCategory.id,
+      },
+      update: {},
     });
   }
 }
@@ -152,11 +180,11 @@ export async function seedVisaDataOnly(prisma: PrismaClient) {
   await seedGlobalVisaCategories(prisma);
 
   const globalCategoryCount = await prisma.category.count();
-  const totalServices = await prisma.service.count();
+  const totalPrograms = await prisma.visaProgram.count();
 
   return {
     globalCategories: globalCategoryCount,
-    totalServices,
+    totalServices: totalPrograms,
   };
 }
 

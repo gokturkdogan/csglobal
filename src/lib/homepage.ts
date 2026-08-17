@@ -137,8 +137,8 @@ const defaultSeoBlocks: HomeSeoBlock[] = [
     content:
       "Vatandaşlık başvurusu, çifte vatandaşlık ve uzun vadeli göçmenlik planları için ülke bazlı rehberler. Süreç, şartlar ve gerekli belgeler admin panelden güncellenir.",
     image: siteImages.ctaBanner,
-    linkHref: "/rehber",
-    linkLabel: "Rehber yazılarını oku",
+    linkHref: "/hizmetlerimiz",
+    linkLabel: "Vize programlarını incele",
   },
 ];
 

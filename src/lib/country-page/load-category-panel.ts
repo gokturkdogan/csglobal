@@ -1,8 +1,8 @@
 import { findActiveConsulatesByCountrySlug } from "@/lib/repositories/consulate.repository";
-import { findCategoriesWithCountryServices } from "@/lib/repositories/category.repository";
-import { findCategoryPanelArticlesByCountry } from "@/lib/repositories/article.repository";
+import { findCategoriesWithCountryPrograms } from "@/lib/repositories/category.repository";
+import { findPanelProgramsByCountry } from "@/lib/repositories/visa-program.repository";
 import {
-  attachGuidesToCategoryPanel,
+  attachLinkedProgramsToCategoryPanel,
   filterPopulatedCountryCategories,
   mapCategoriesForCountryPanel,
   type CountryCategoryPanelItem,
@@ -20,13 +20,13 @@ export async function loadCountryCategoryPanelData(
   consulates: CountryConsulatePanelItem[];
   documents: CountryDocumentPanelItem[];
 }> {
-  const categories = (await findCategoriesWithCountryServices(countryId)) ?? [];
+  const categories = (await findCategoriesWithCountryPrograms(countryId)) ?? [];
   const categoryIdToSlug = new Map(categories.map((cat) => [cat.id, cat.slug]));
-  const panelGuides = await findCategoryPanelArticlesByCountry(countryId);
+  const panelPrograms = await findPanelProgramsByCountry(countryId);
   const panelCategories = filterPopulatedCountryCategories(
-    attachGuidesToCategoryPanel(
+    attachLinkedProgramsToCategoryPanel(
       mapCategoriesForCountryPanel(categories),
-      panelGuides,
+      panelPrograms,
       categoryIdToSlug,
     ),
   );

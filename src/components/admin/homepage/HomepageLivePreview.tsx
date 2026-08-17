@@ -12,7 +12,7 @@ import { HomeServiceAreas } from "@/components/home/HomeServiceAreas";
 import { HomeFaqPreview } from "@/components/home/HomeFaqPreview";
 import { HomeFeaturedSection } from "@/components/home/HomeFeaturedSection";
 import { HomeCountriesSection } from "@/components/home/HomeCountriesSection";
-import { HomeArticlesSection } from "@/components/home/HomeArticlesSection";
+import { HomeProgramsSection } from "@/components/home/HomeProgramsSection";
 import { useHomepageEdit } from "./HomepageEditContext";
 
 type PreviewData = {
@@ -33,15 +33,15 @@ type PreviewData = {
     shortDescription?: string | null;
     flag?: string | null;
     itemImage?: string | null;
-    services: { id: string }[];
+    visaPrograms: { id: string }[];
   }>;
-  articles: Array<{
+  programs: Array<{
     id: string;
-    title: string;
+    name: string;
     slug: string;
     excerpt: string | null;
     publishedAt: Date | null;
-    country: { name: string; itemImage?: string | null } | null;
+    country: { name: string; slug: string; itemImage?: string | null } | null;
   }>;
   settings: SiteSettingsMap;
 };
@@ -76,7 +76,7 @@ export function HomepageLivePreview({
       <HomeProcess content={content} />
       <HomeCountriesSection content={content} countries={previewData.popularCountries} />
       <HomeFaqPreview content={content} />
-      <HomeArticlesSection content={content} articles={previewData.articles} />
+      <HomeProgramsSection content={content} programs={previewData.programs} />
       <HomeCtaBanner content={content} settings={previewData.settings} />
     </div>
   );

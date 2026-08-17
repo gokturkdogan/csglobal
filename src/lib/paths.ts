@@ -1,5 +1,10 @@
+export function buildVisaProgramPath(countrySlug: string, programSlug: string) {
+  return `/${countrySlug}/${programSlug}`;
+}
+
+/** @deprecated buildVisaProgramPath kullanın */
 export function buildServicePath(countrySlug: string, serviceSlug: string) {
-  return `/${countrySlug}/${serviceSlug}`;
+  return buildVisaProgramPath(countrySlug, serviceSlug);
 }
 
 export function buildConsulatePath(countrySlug: string, consulateSlug: string) {

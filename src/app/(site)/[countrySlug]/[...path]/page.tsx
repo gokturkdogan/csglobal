@@ -16,14 +16,12 @@ import {
   resolveCountryPath,
   loadCategoryPageData,
   buildCategoryPath,
-  buildServicePath,
+  buildVisaProgramPath,
 } from "@/lib/services/path-resolver.service";
-import { findPublishedArticlesByCountryId } from "@/lib/repositories/article.repository";
-import { findServiceByCountrySlug } from "@/lib/repositories/service.repository";
-import { RelatedGuidesSection } from "@/components/domain/RelatedGuidesSection";
-import {
-  resolveServicePageHeroImage,
-} from "@/lib/country-item-image";
+import { findPublishedProgramsByCountryId } from "@/lib/repositories/visa-program.repository";
+import { findVisaProgramByCountryAndSlug } from "@/lib/repositories/visa-program.repository";
+import { RelatedProgramsSection } from "@/components/domain/RelatedProgramsSection";
+import { resolveServicePageHeroImage } from "@/lib/country-item-image";
 import { findCountryBySlug } from "@/lib/repositories/country.repository";
 import {
   buildEntityMetadata,
@@ -40,17 +38,17 @@ export async function generateMetadata({ params }: Props) {
   const resolved = await resolveCountryPath(countrySlug, path);
   if (resolved.type === "not_found") return {};
 
-  if (resolved.type === "service") {
+  if (resolved.type === "program") {
     const country = await findCountryBySlug(countrySlug);
     if (!country) return {};
-    const service = await findServiceByCountrySlug(country.id, resolved.serviceSlug);
-    if (!service) return {};
+    const program = await findVisaProgramByCountryAndSlug(country.id, resolved.programSlug);
+    if (!program) return {};
     return buildEntityMetadata({
-      entityType: SeoEntityType.SERVICE,
-      entityId: service.id,
-      path: buildServicePath(countrySlug, service.slug),
-      fallbackTitle: service.name,
-      fallbackDescription: service.shortDescription ?? undefined,
+      entityType: SeoEntityType.VISA_PROGRAM,
+      entityId: program.id,
+      path: buildVisaProgramPath(countrySlug, program.slug),
+      fallbackTitle: program.name,
+      fallbackDescription: program.shortDescription ?? program.excerpt ?? undefined,
     });
   }
 
@@ -72,50 +70,50 @@ export default async function CountryPathPage({ params }: Props) {
 
   if (resolved.type === "not_found") notFound();
 
-  if (resolved.type === "service") {
+  if (resolved.type === "program") {
     const country = await findCountryBySlug(countrySlug);
     if (!country) notFound();
-    const service = await findServiceByCountrySlug(country.id, resolved.serviceSlug);
-    if (!service) notFound();
+    const program = await findVisaProgramByCountryAndSlug(country.id, resolved.programSlug);
+    if (!program) notFound();
 
-    const [countryGuides, panelData] = await Promise.all([
-      findPublishedArticlesByCountryId(country.id),
+    const [countryPrograms, panelData] = await Promise.all([
+      findPublishedProgramsByCountryId(country.id),
       loadCountryCategoryPanelData(country.id, countrySlug),
     ]);
     const { panelCategories, consulates, documents } = panelData;
 
-    const minFee = service.fees.length
-      ? service.fees.reduce((min, f) =>
+    const minFee = program.fees.length
+      ? program.fees.reduce((min, f) =>
           Number(f.amount) < Number(min.amount) ? f : min,
-        service.fees[0])
+        program.fees[0])
       : null;
 
-    const generalDocs = service.serviceDocuments.filter((d) => !d.applicantProfileId);
-    const profileDocs = service.serviceDocuments.filter((d) => d.applicantProfileId);
+    const generalDocs = program.programDocuments.filter((d) => !d.applicantProfileId);
+    const profileDocs = program.programDocuments.filter((d) => d.applicantProfileId);
 
     const breadcrumbItems = [
       { label: "Anasayfa", href: "/" },
       { label: country.name, href: `/${countrySlug}` },
-      { label: service.name },
+      { label: program.name },
     ];
 
     const jsonLd = [
       buildBreadcrumbJsonLd(
         breadcrumbItems.map((b) => ({
           name: b.label,
-          url: b.href ? `${siteUrl}${b.href}` : `${siteUrl}/${countrySlug}/${service.slug}`,
+          url: b.href ? `${siteUrl}${b.href}` : `${siteUrl}/${countrySlug}/${program.slug}`,
         })),
       ),
-      buildFaqJsonLd(service.faqs),
+      buildFaqJsonLd(program.faqs),
     ].filter(Boolean);
 
-    const heroTitle = service.heroTitle?.trim() || service.name;
+    const heroTitle = program.heroTitle?.trim() || program.name;
     const heroSubtitle =
-      service.heroSubtitle?.trim() || service.shortDescription;
+      program.heroSubtitle?.trim() || program.shortDescription || program.excerpt;
 
     const sectionNav = getServiceSectionNavItems(
-      service.sectionsJson,
-      service.sections,
+      program.sectionsJson,
+      program.sections,
     );
 
     const showTocSidebar = sectionNav.length > 0;
@@ -127,16 +125,21 @@ export default async function CountryPathPage({ params }: Props) {
     const tocStickyClass =
       "lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100dvh-var(--site-header-height)-2rem)] lg:overflow-y-auto";
 
+    const categoryLabel =
+      program.category?.name ??
+      program.categoryLinks[0]?.category?.name ??
+      "Vize programı";
+
     return (
       <>
         <ServicePageHero
           heroImage={resolveServicePageHeroImage(country.heroImage)}
           title={heroTitle}
           subtitle={heroSubtitle}
-          badge={service.category.name}
+          badge={categoryLabel}
           quickInfo={{
-            processingTime: service.processingTime,
-            requiresAppointment: service.requiresAppointment,
+            processingTime: program.processingTime,
+            requiresAppointment: program.requiresAppointment,
             feeAmount: minFee?.amount.toString(),
             feeCurrency: minFee?.currency,
           }}
@@ -165,14 +168,14 @@ export default async function CountryPathPage({ params }: Props) {
 
             <div className="order-1 min-w-0 lg:order-2">
               <ServiceDetailContent
-                sectionsJson={service.sectionsJson}
-                legacySections={service.sections}
-                featureImage1={service.featureImage1}
-                featureImage1Title={service.featureImage1Title}
-                featureImage1Text={service.featureImage1Text}
-                featureImage2={service.featureImage2}
-                featureImage2Title={service.featureImage2Title}
-                featureImage2Text={service.featureImage2Text}
+                sectionsJson={program.sectionsJson}
+                legacySections={program.sections}
+                featureImage1={program.featureImage1}
+                featureImage1Title={program.featureImage1Title}
+                featureImage1Text={program.featureImage1Text}
+                featureImage2={program.featureImage2}
+                featureImage2Title={program.featureImage2Title}
+                featureImage2Text={program.featureImage2Text}
               />
 
               {generalDocs.length > 0 && (
@@ -190,35 +193,36 @@ export default async function CountryPathPage({ params }: Props) {
                 </section>
               )}
 
-              {service.fees.length > 0 && (
+              {program.fees.length > 0 && (
                 <section className="mt-12">
                   <h2 className="text-xl font-semibold text-slate-900">Ücretler</h2>
                   <div className="mt-4">
-                    <FeeTable fees={service.fees} />
+                    <FeeTable fees={program.fees} />
                   </div>
                 </section>
               )}
 
-              {service.faqs.length > 0 && (
+              {program.faqs.length > 0 && (
                 <section className="mt-12">
                   <h2 className="text-xl font-semibold text-slate-900">Sık sorulan sorular</h2>
                   <div className="mt-4">
-                    <FaqAccordion items={service.faqs} />
+                    <FaqAccordion items={program.faqs} />
                   </div>
                 </section>
               )}
 
-              <RelatedGuidesSection
-                guides={countryGuides}
+              <RelatedProgramsSection
+                programs={countryPrograms.filter((p) => p.id !== program.id)}
                 countryName={country.name}
+                countrySlug={countrySlug}
                 countryItemImage={country.itemImage}
               />
 
               <div className="mt-12">
                 <ContactCTA
                   settings={settings}
-                  context={`${country.name} - ${service.name}`}
-                  title={`${service.name} için uzman danışmanlık`}
+                  context={`${country.name} - ${program.name}`}
+                  title={`${program.name} için uzman danışmanlık`}
                   subtitle="Online başvuru veya belge yükleme yok. WhatsApp veya telefon ile doğrudan uzman ekibimize ulaşın."
                   variant="country"
                 />
@@ -256,16 +260,16 @@ export default async function CountryPathPage({ params }: Props) {
         <p className="mt-3 text-slate-600">{data.category.shortDescription}</p>
       )}
 
-      {data.services.length > 0 ? (
+      {data.programs.length > 0 ? (
         <div className="mt-10 grid gap-3 sm:grid-cols-2">
-          {data.services.map((s) => (
+          {data.programs.map((p) => (
             <ServiceCard
-              key={s.id}
-              name={s.name}
-              slug={s.slug}
+              key={p.id}
+              name={p.name}
+              slug={p.slug}
               countrySlug={countrySlug}
-              shortDescription={s.shortDescription}
-              processingTime={s.processingTime}
+              shortDescription={p.shortDescription}
+              processingTime={p.processingTime}
             />
           ))}
         </div>

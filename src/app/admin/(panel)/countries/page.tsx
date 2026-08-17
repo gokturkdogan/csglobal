@@ -20,7 +20,7 @@ export default async function AdminCountriesPage() {
       isActive: true,
       _count: {
         select: {
-          services: { where: { isActive: true } },
+          visaPrograms: { where: { isActive: true } },
         },
       },
     },
@@ -50,7 +50,7 @@ export default async function AdminCountriesPage() {
               <td className="px-5 py-3.5">
                 <AdminStatusBadge active={c.isActive} />
               </td>
-              <td className="px-5 py-3.5 text-slate-600">{c._count.services}</td>
+              <td className="px-5 py-3.5 text-slate-600">{c._count.visaPrograms}</td>
               <td className="px-5 py-3.5 text-right">
                 <AdminLink href={`/admin/countries/${c.id}`}>Düzenle</AdminLink>
                 <span className="mx-2 text-slate-300">|</span>

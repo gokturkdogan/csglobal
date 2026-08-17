@@ -37,7 +37,7 @@ export default async function EditCountryPage({ params }: Props) {
           where: { id },
           include: {
             faqs: {
-              where: { serviceId: null, categoryId: null },
+              where: { visaProgramId: null, categoryId: null },
               orderBy: { sortOrder: "asc" },
               take: COUNTRY_FAQ_MAX,
             },

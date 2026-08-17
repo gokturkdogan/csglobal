@@ -1,6 +1,6 @@
-import type { ApplicantProfile, Document, ServiceDocument } from "@/generated/prisma/client";
+import type { ApplicantProfile, Document, VisaProgramDocument } from "@/generated/prisma/client";
 
-type ServiceDocumentWithRelations = ServiceDocument & {
+type ProgramDocumentWithRelations = VisaProgramDocument & {
   document: Document;
   applicantProfile: ApplicantProfile | null;
 };
@@ -9,7 +9,7 @@ export function DocumentList({
   documents,
   title,
 }: {
-  documents: ServiceDocumentWithRelations[];
+  documents: ProgramDocumentWithRelations[];
   title?: string;
 }) {
   if (documents.length === 0) return null;
@@ -49,8 +49,8 @@ export function DocumentList({
   );
 }
 
-function groupByProfile(items: ServiceDocumentWithRelations[]) {
-  const map = new Map<string, ServiceDocumentWithRelations[]>();
+function groupByProfile(items: ProgramDocumentWithRelations[]) {
+  const map = new Map<string, ProgramDocumentWithRelations[]>();
   for (const item of items) {
     const label = item.applicantProfile?.name ?? "Genel belgeler";
     const list = map.get(label) ?? [];

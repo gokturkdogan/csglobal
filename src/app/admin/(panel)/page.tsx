@@ -7,11 +7,10 @@ import {
 } from "@/components/admin/AdminUi";
 
 export default async function AdminDashboardPage() {
-  const [countries, categories, services, articles] = await Promise.all([
+  const [countries, categories, visaPrograms] = await Promise.all([
     prisma.country.count(),
     prisma.category.count(),
-    prisma.service.count(),
-    prisma.article.count(),
+    prisma.visaProgram.count(),
   ]);
 
   return (
@@ -24,8 +23,7 @@ export default async function AdminDashboardPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <AdminStatCard label="Ülkeler" value={countries} href="/admin/countries" />
         <AdminStatCard label="Kategoriler" value={categories} href="/admin/categories" />
-        <AdminStatCard label="Programlar" value={services} href="/admin/services" />
-        <AdminStatCard label="Makaleler" value={articles} href="/admin/articles" />
+        <AdminStatCard label="Vize Programları" value={visaPrograms} href="/admin/vize-programlari" />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
@@ -38,8 +36,8 @@ export default async function AdminDashboardPage() {
               </Link>
             </li>
             <li>
-              <Link href="/admin/services" className="text-csg-blue hover:underline">
-                Program ekle veya düzenle
+              <Link href="/admin/vize-programlari" className="text-csg-blue hover:underline">
+                Vize programı ekle veya düzenle
               </Link>
             </li>
             <li>

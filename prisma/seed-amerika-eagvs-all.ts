@@ -251,7 +251,7 @@ async function upsertService(countryId: string, service: ServiceSeed): Promise<v
   const savedCount = JSON.parse(sectionsJson).length;
   console.log(`${service.slug}: ${sections.length} kaynak, ${savedCount} kaydedilen bölüm`);
 
-  await prisma.service.upsert({
+  const program = await prisma.visaProgram.upsert({
     where: { countryId_slug: { countryId, slug: service.slug } },
     create: {
       countryId,
@@ -262,6 +262,7 @@ async function upsertService(countryId: string, service: ServiceSeed): Promise<v
       heroTitle: service.heroTitle ?? service.name,
       sectionsJson,
       isActive: true,
+      showInCategoryPanel: true,
       sortOrder: service.sortOrder,
     },
     update: {
@@ -271,11 +272,23 @@ async function upsertService(countryId: string, service: ServiceSeed): Promise<v
       heroTitle: service.heroTitle ?? service.name,
       sectionsJson,
       isActive: true,
+      showInCategoryPanel: true,
       sortOrder: service.sortOrder,
     },
   });
 
-  console.log(`Hizmet kaydedildi: ${service.name}`);
+  await prisma.visaProgramCategoryLink.upsert({
+    where: {
+      visaProgramId_categoryId: {
+        visaProgramId: program.id,
+        categoryId,
+      },
+    },
+    create: { visaProgramId: program.id, categoryId },
+    update: {},
+  });
+
+  console.log(`Program kaydedildi: ${service.name}`);
 }
 
 async function upsertYenilemeArticle(countryId: string): Promise<void> {
@@ -283,38 +296,51 @@ async function upsertYenilemeArticle(countryId: string): Promise<void> {
   const sectionsJson = serializeGuideSections(sections);
   const categoryId = await resolveCategoryId(ARTICLE_YENILEME.categorySlug);
 
-  const article = await prisma.article.upsert({
-    where: { slug: ARTICLE_YENILEME.slug },
+  const program = await prisma.visaProgram.upsert({
+    where: {
+      countryId_slug: {
+        countryId,
+        slug: ARTICLE_YENILEME.slug,
+      },
+    },
     create: {
       countryId,
-      title: ARTICLE_YENILEME.title,
+      categoryId,
+      name: ARTICLE_YENILEME.title,
       slug: ARTICLE_YENILEME.slug,
       excerpt: ARTICLE_YENILEME.excerpt,
       content: "",
       heroTitle: ARTICLE_YENILEME.heroTitle,
       sectionsJson,
-      isPublished: true,
+      isActive: true,
       publishedAt: new Date(),
       showInCategoryPanel: true,
     },
     update: {
       countryId,
-      title: ARTICLE_YENILEME.title,
+      name: ARTICLE_YENILEME.title,
       excerpt: ARTICLE_YENILEME.excerpt,
       heroTitle: ARTICLE_YENILEME.heroTitle,
       sectionsJson,
-      isPublished: true,
+      isActive: true,
       publishedAt: new Date(),
       showInCategoryPanel: true,
+      categoryId,
     },
   });
 
-  await prisma.articleCategoryLink.deleteMany({ where: { articleId: article.id } });
-  await prisma.articleCategoryLink.create({
-    data: { articleId: article.id, categoryId },
+  await prisma.visaProgramCategoryLink.upsert({
+    where: {
+      visaProgramId_categoryId: {
+        visaProgramId: program.id,
+        categoryId,
+      },
+    },
+    create: { visaProgramId: program.id, categoryId },
+    update: {},
   });
 
-  console.log(`Rehber kaydedildi: ${ARTICLE_YENILEME.title} (${sections.length} bölüm)`);
+  console.log(`Program kaydedildi: ${ARTICLE_YENILEME.title} (${sections.length} bölüm)`);
 }
 
 async function main() {

@@ -2,10 +2,7 @@ import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 import { PrismaClient } from "../src/generated/prisma/client";
-import {
-  wipeArticlesOnly,
-  wipeServicesOnly,
-} from "./lib/visa-structure-seed";
+import { wipeVisaProgramsOnly } from "./lib/visa-structure-seed";
 import { resolvePgConnectionString } from "../src/lib/pg-connection";
 
 const pool = new Pool({
@@ -14,10 +11,8 @@ const pool = new Pool({
 const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
 
 async function main() {
-  const articles = await wipeArticlesOnly(prisma);
-  const services = await wipeServicesOnly(prisma);
-  console.log(`Rehber (articles): ${articles.deleted} kayıt silindi.`);
-  console.log(`Hizmet (services): ${services.deleted} kayıt silindi.`);
+  const { deleted } = await wipeVisaProgramsOnly(prisma);
+  console.log(`Vize programları tablosu temizlendi: ${deleted} kayıt silindi.`);
 }
 
 main()

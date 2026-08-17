@@ -18,6 +18,7 @@ enum SeoEntityType {
   CATEGORY
   SERVICE
   ARTICLE
+  VISA_PROGRAM
   SITE_PAGE
   CONSULATE
 }
@@ -74,9 +75,8 @@ model Country {
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @updatedAt @map("updated_at")
 
-  services             Service[]
+  visaPrograms         VisaProgram[]
   faqs                 Faq[]
-  articles             Article[]
   consulates           Consulate[]
   feesAsNationality    Fee[]      @relation("FeeNationality")
   siteAssets           SiteAsset[]
@@ -99,45 +99,52 @@ model Category {
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @updatedAt @map("updated_at")
 
-  services Service[]
-  faqs     Faq[]
-  articleLinks ArticleCategoryLink[]
+  visaPrograms VisaProgram[]
+  faqs         Faq[]
+  programLinks VisaProgramCategoryLink[]
 
   @@index([isActive, sortOrder])
   @@map("categories")
 }
 
-model Service {
-  id                  String   @id @default(cuid())
-  countryId           String   @map("country_id")
-  categoryId          String   @map("category_id")
+model VisaProgram {
+  id                  String    @id @default(cuid())
+  countryId           String    @map("country_id")
+  categoryId          String    @map("category_id")
+  articleCategoryId   String?   @map("article_category_id")
   name                String
   slug                String
-  shortTitle          String?  @map("short_title")
-  shortDescription    String?  @map("short_description") @db.Text
-  description         String?  @db.Text
-  heroTitle           String?  @map("hero_title")
-  heroSubtitle        String?  @map("hero_subtitle") @db.Text
-  sectionsJson        String?  @map("sections_json") @db.Text
-  featureImage1       String?  @map("feature_image_1")
-  featureImage1Title  String?  @map("feature_image_1_title")
-  featureImage1Text   String?  @map("feature_image_1_text") @db.Text
-  featureImage2       String?  @map("feature_image_2")
-  featureImage2Title  String?  @map("feature_image_2_title")
-  featureImage2Text   String?  @map("feature_image_2_text") @db.Text
+  shortTitle          String?   @map("short_title")
+  shortDescription    String?   @map("short_description") @db.Text
+  description         String?   @db.Text
+  excerpt             String?   @db.Text
+  content             String    @default("") @db.Text
+  heroTitle           String?   @map("hero_title")
+  heroSubtitle        String?   @map("hero_subtitle") @db.Text
+  sectionsJson        String?   @map("sections_json") @db.Text
+  featureImage1       String?   @map("feature_image_1")
+  featureImage1Title  String?   @map("feature_image_1_title")
+  featureImage1Text   String?   @map("feature_image_1_text") @db.Text
+  featureImage2       String?   @map("feature_image_2")
+  featureImage2Title  String?   @map("feature_image_2_title")
+  featureImage2Text   String?   @map("feature_image_2_text") @db.Text
   icon                String?
-  isFeatured          Boolean  @default(false) @map("is_featured")
-  isActive            Boolean  @default(true) @map("is_active")
-  sortOrder           Int      @default(0) @map("sort_order")
-  processingTime      String?  @map("processing_time")
-  requiresAppointment Boolean  @default(false) @map("requires_appointment")
-  createdAt           DateTime @default(now()) @map("created_at")
-  updatedAt           DateTime @updatedAt @map("updated_at")
+  isFeatured          Boolean   @default(false) @map("is_featured")
+  isActive            Boolean   @default(true) @map("is_active")
+  showInCategoryPanel Boolean   @default(false) @map("show_in_category_panel")
+  sortOrder           Int       @default(0) @map("sort_order")
+  processingTime      String?   @map("processing_time")
+  requiresAppointment Boolean   @default(false) @map("requires_appointment")
+  publishedAt         DateTime? @map("published_at")
+  createdAt           DateTime  @default(now()) @map("created_at")
+  updatedAt           DateTime  @updatedAt @map("updated_at")
 
-  country          Country           @relation(fields: [countryId], references: [id], onDelete: Restrict)
-  category         Category          @relation(fields: [categoryId], references: [id], onDelete: Restrict)
-  sections         ServiceSection[]
-  serviceDocuments ServiceDocument[]
+  country          Country                   @relation(fields: [countryId], references: [id], onDelete: Restrict)
+  category         Category                  @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  articleCategory  ArticleCategory?          @relation(fields: [articleCategoryId], references: [id], onDelete: SetNull)
+  categoryLinks    VisaProgramCategoryLink[]
+  sections         VisaProgramSection[]
+  programDocuments VisaProgramDocument[]
   fees             Fee[]
   faqs             Faq[]
 
@@ -145,25 +152,27 @@ model Service {
   @@index([countryId])
   @@index([categoryId])
   @@index([countryId, isActive, isFeatured])
-  @@map("services")
+  @@index([isActive, publishedAt])
+  @@index([countryId, isActive])
+  @@map("visa_programs")
 }
 
-model ServiceSection {
-  id          String      @id @default(cuid())
-  serviceId   String      @map("service_id")
-  title       String
-  slug        String
-  sectionType SectionType @default(CUSTOM) @map("section_type")
-  content     String      @db.Text
-  sortOrder   Int         @default(0) @map("sort_order")
-  isActive    Boolean     @default(true) @map("is_active")
-  createdAt   DateTime    @default(now()) @map("created_at")
-  updatedAt   DateTime    @updatedAt @map("updated_at")
+model VisaProgramSection {
+  id            String      @id @default(cuid())
+  visaProgramId String      @map("visa_program_id")
+  title         String
+  slug          String
+  sectionType   SectionType @default(CUSTOM) @map("section_type")
+  content       String      @db.Text
+  sortOrder     Int         @default(0) @map("sort_order")
+  isActive      Boolean     @default(true) @map("is_active")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
 
-  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  visaProgram VisaProgram @relation(fields: [visaProgramId], references: [id], onDelete: Cascade)
 
-  @@unique([serviceId, slug])
-  @@index([serviceId, sortOrder])
+  @@unique([visaProgramId, slug])
+  @@index([visaProgramId, sortOrder])
   @@map("service_sections")
 }
 
@@ -175,7 +184,7 @@ model Document {
   documentType String? @map("document_type")
   isActive     Boolean @default(true) @map("is_active")
 
-  serviceDocuments ServiceDocument[]
+  programDocuments VisaProgramDocument[]
 
   @@map("documents")
 }
@@ -186,32 +195,32 @@ model ApplicantProfile {
   slug     String  @unique
   isActive Boolean @default(true) @map("is_active")
 
-  serviceDocuments ServiceDocument[]
+  programDocuments VisaProgramDocument[]
 
   @@map("applicant_profiles")
 }
 
-model ServiceDocument {
-  id                 String  @id @default(cuid())
-  serviceId          String  @map("service_id")
-  documentId         String  @map("document_id")
-  applicantProfileId String? @map("applicant_profile_id")
-  isRequired         Boolean @default(true) @map("is_required")
+model VisaProgramDocument {
+  id                  String  @id @default(cuid())
+  visaProgramId       String  @map("visa_program_id")
+  documentId          String  @map("document_id")
+  applicantProfileId  String? @map("applicant_profile_id")
+  isRequired          Boolean @default(true) @map("is_required")
   descriptionOverride String? @map("description_override") @db.Text
-  sortOrder          Int     @default(0) @map("sort_order")
+  sortOrder           Int     @default(0) @map("sort_order")
 
-  service          Service           @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  visaProgram      VisaProgram       @relation(fields: [visaProgramId], references: [id], onDelete: Cascade)
   document         Document          @relation(fields: [documentId], references: [id], onDelete: Restrict)
   applicantProfile ApplicantProfile? @relation(fields: [applicantProfileId], references: [id], onDelete: SetNull)
 
-  @@unique([serviceId, documentId, applicantProfileId])
-  @@index([serviceId])
+  @@unique([visaProgramId, documentId, applicantProfileId])
+  @@index([visaProgramId])
   @@map("service_documents")
 }
 
 model Fee {
   id                   String    @id @default(cuid())
-  serviceId            String    @map("service_id")
+  visaProgramId        String    @map("visa_program_id")
   name                 String
   feeType              FeeType   @map("fee_type")
   amount               Decimal   @db.Decimal(12, 2)
@@ -224,30 +233,30 @@ model Fee {
   description          String?   @db.Text
   isActive             Boolean   @default(true) @map("is_active")
 
-  service            Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  nationalityCountry Country? @relation("FeeNationality", fields: [nationalityCountryId], references: [id], onDelete: SetNull)
+  visaProgram        VisaProgram @relation(fields: [visaProgramId], references: [id], onDelete: Cascade)
+  nationalityCountry Country?    @relation("FeeNationality", fields: [nationalityCountryId], references: [id], onDelete: SetNull)
 
-  @@index([serviceId])
+  @@index([visaProgramId])
   @@map("fees")
 }
 
 model Faq {
-  id         String  @id @default(cuid())
-  countryId  String? @map("country_id")
-  categoryId String? @map("category_id")
-  serviceId  String? @map("service_id")
-  question   String
-  answer     String  @db.Text
-  sortOrder  Int     @default(0) @map("sort_order")
-  isActive   Boolean @default(true) @map("is_active")
+  id            String  @id @default(cuid())
+  countryId     String? @map("country_id")
+  categoryId    String? @map("category_id")
+  visaProgramId String? @map("visa_program_id")
+  question      String
+  answer        String  @db.Text
+  sortOrder     Int     @default(0) @map("sort_order")
+  isActive      Boolean @default(true) @map("is_active")
 
-  country  Country?  @relation(fields: [countryId], references: [id], onDelete: SetNull)
-  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  service  Service?  @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  country     Country?     @relation(fields: [countryId], references: [id], onDelete: SetNull)
+  category    Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  visaProgram VisaProgram? @relation(fields: [visaProgramId], references: [id], onDelete: SetNull)
 
   @@index([countryId])
   @@index([categoryId])
-  @@index([serviceId])
+  @@index([visaProgramId])
   @@map("faqs")
 }
 
@@ -256,39 +265,9 @@ model ArticleCategory {
   name String
   slug String @unique
 
-  articles Article[]
+  visaPrograms VisaProgram[]
 
   @@map("article_categories")
-}
-
-model Article {
-  id                String    @id @default(cuid())
-  countryId         String    @map("country_id")
-  articleCategoryId String?   @map("article_category_id")
-  title             String
-  slug              String    @unique
-  excerpt           String?   @db.Text
-  content           String    @default("") @db.Text
-  heroTitle         String?   @map("hero_title")
-  heroSubtitle      String?   @map("hero_subtitle") @db.Text
-  sectionsJson      String?   @map("sections_json") @db.Text
-  featureImage      String?   @map("feature_image")
-  featureImageTitle String?   @map("feature_image_title")
-  featureImageText  String?   @map("feature_image_text") @db.Text
-  publishedAt       DateTime? @map("published_at")
-  isPublished       Boolean   @default(false) @map("is_published")
-  showInCategoryPanel Boolean @default(false) @map("show_in_category_panel")
-  createdAt         DateTime  @default(now()) @map("created_at")
-  updatedAt         DateTime  @updatedAt @map("updated_at")
-
-  country         Country          @relation(fields: [countryId], references: [id], onDelete: Restrict)
-  articleCategory ArticleCategory? @relation(fields: [articleCategoryId], references: [id], onDelete: SetNull)
-  linkedCategories ArticleCategoryLink[]
-
-  @@index([isPublished, publishedAt])
-  @@index([countryId])
-  @@index([countryId, isPublished])
-  @@map("articles")
 }
 
 model Consulate {
@@ -312,18 +291,18 @@ model Consulate {
   @@map("consulates")
 }
 
-model ArticleCategoryLink {
-  id         String   @id @default(cuid())
-  articleId  String   @map("article_id")
-  categoryId String   @map("category_id")
-  createdAt  DateTime @default(now()) @map("created_at")
+model VisaProgramCategoryLink {
+  id            String   @id @default(cuid())
+  visaProgramId String   @map("visa_program_id")
+  categoryId    String   @map("category_id")
+  createdAt     DateTime @default(now()) @map("created_at")
 
-  article  Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
-  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  visaProgram VisaProgram @relation(fields: [visaProgramId], references: [id], onDelete: Cascade)
+  category    Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
-  @@unique([articleId, categoryId])
+  @@unique([visaProgramId, categoryId])
   @@index([categoryId])
-  @@map("article_category_links")
+  @@map("visa_program_category_links")
 }
 
 model SeoMetadata {

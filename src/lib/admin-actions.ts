@@ -310,7 +310,7 @@ export async function saveCountryAction(formData: FormData): Promise<AdminAction
       await prisma.$transaction(async (tx) => {
         await tx.country.update({ where: { id }, data });
         await tx.faq.deleteMany({
-          where: { countryId: id, serviceId: null, categoryId: null },
+          where: { countryId: id, visaProgramId: null, categoryId: null },
         });
         if (faqItems.length > 0) {
           await tx.faq.createMany({
@@ -390,16 +390,35 @@ export async function saveCategoryAction(formData: FormData): Promise<AdminActio
   }
 }
 
-export async function saveServiceAction(formData: FormData): Promise<AdminActionResult> {
+export async function saveVisaProgramAction(formData: FormData): Promise<AdminActionResult> {
   await requireAdmin();
   const id = formData.get("id") as string | null;
   const sectionsRaw = (formData.get("sectionsJson") as string) || "";
+  const countryId = (formData.get("countryId") as string)?.trim();
+  const isActive = formData.get("isActive") === "on";
+
+  if (!countryId) {
+    return adminFailure("Ülke seçimi zorunludur.");
+  }
+
+  const categoryIds = formData
+    .getAll("categoryIds")
+    .map((value) => String(value).trim())
+    .filter(Boolean);
+
+  if (categoryIds.length === 0) {
+    return adminFailure("En az bir program kategorisi seçin.");
+  }
+
+  const primaryCategoryId = categoryIds[0];
 
   const data = {
-    countryId: formData.get("countryId") as string,
-    categoryId: formData.get("categoryId") as string,
+    countryId,
+    categoryId: primaryCategoryId,
     name: formData.get("name") as string,
     slug: formData.get("slug") as string,
+    excerpt: (formData.get("excerpt") as string) || null,
+    content: (formData.get("content") as string) || "",
     shortDescription: (formData.get("shortDescription") as string) || null,
     processingTime: (formData.get("processingTime") as string) || null,
     heroTitle: (formData.get("heroTitle") as string) || null,
@@ -421,50 +440,94 @@ export async function saveServiceAction(formData: FormData): Promise<AdminAction
     ),
     requiresAppointment: formData.get("requiresAppointment") === "on",
     isFeatured: formData.get("isFeatured") === "on",
-    isActive: formData.get("isActive") === "on",
+    isActive,
+    showInCategoryPanel: formData.get("showInCategoryPanel") === "on",
     sortOrder: Number(formData.get("sortOrder") || 0),
+    publishedAt: isActive ? new Date() : null,
+  };
+
+  const syncCategoryLinks = async (
+    tx: Parameters<Parameters<typeof prisma.$transaction>[0]>[0],
+    programId: string,
+  ) => {
+    await tx.visaProgramCategoryLink.deleteMany({ where: { visaProgramId: programId } });
+    if (categoryIds.length > 0) {
+      await tx.visaProgramCategoryLink.createMany({
+        data: categoryIds.map((categoryId) => ({
+          visaProgramId: programId,
+          categoryId,
+        })),
+        skipDuplicates: true,
+      });
+    }
   };
 
   try {
     if (id) {
-      const service = await prisma.service.update({
+      const existing = await prisma.visaProgram.findUnique({
         where: { id },
-        data,
-        include: { country: { select: { slug: true } } },
+        select: { publishedAt: true, isActive: true },
       });
+
+      const program = await prisma.$transaction(async (tx) => {
+        const updated = await tx.visaProgram.update({
+          where: { id },
+          data: {
+            ...data,
+            publishedAt: isActive ? (existing?.publishedAt ?? new Date()) : null,
+          },
+          include: { country: { select: { slug: true } } },
+        });
+        await syncCategoryLinks(tx, id);
+        return updated;
+      });
+
       revalidatePath("/");
-      revalidatePath(`/${service.country.slug}/${service.slug}`);
-      revalidatePath("/admin/services");
-      return adminSuccess("Program başarıyla güncellendi.", `/admin/services/${id}`);
+      revalidatePath(`/${program.country.slug}/${program.slug}`);
+      revalidatePath("/admin/vize-programlari");
+      revalidatePath(`/${program.country.slug}`);
+      return adminSuccess(
+        "Vize programı başarıyla güncellendi.",
+        `/admin/vize-programlari/${id}`,
+      );
     }
 
-    const service = await prisma.service.create({
-      data,
-      include: { country: { select: { slug: true } } },
+    const program = await prisma.$transaction(async (tx) => {
+      const created = await tx.visaProgram.create({
+        data: {
+          ...data,
+          publishedAt: isActive ? new Date() : null,
+        },
+        include: { country: { select: { slug: true } } },
+      });
+      await syncCategoryLinks(tx, created.id);
+      return created;
     });
+
     revalidatePath("/");
-    revalidatePath(`/${service.country.slug}/${service.slug}`);
-    revalidatePath("/admin/services");
+    revalidatePath(`/${program.country.slug}/${program.slug}`);
+    revalidatePath("/admin/vize-programlari");
+    revalidatePath(`/${program.country.slug}`);
     return adminSuccess(
-      "Program başarıyla oluşturuldu.",
-      `/admin/services/${service.id}`,
+      "Vize programı başarıyla oluşturuldu.",
+      `/admin/vize-programlari/${program.id}`,
     );
   } catch (error) {
     return adminFailure(
-      adminErrorMessage(error, "Program kaydedilemedi. Lütfen tekrar deneyin."),
+      adminErrorMessage(error, "Vize programı kaydedilemedi. Lütfen tekrar deneyin."),
     );
   }
 }
 
-export async function saveServiceSectionAction(
+export async function saveVisaProgramSectionAction(
   formData: FormData,
 ): Promise<AdminActionResult> {
   await requireAdmin();
-  const serviceId = formData.get("serviceId") as string;
+  const visaProgramId = formData.get("visaProgramId") as string;
   const id = formData.get("id") as string | null;
 
   const data = {
-    serviceId,
+    visaProgramId,
     title: formData.get("title") as string,
     slug: formData.get("slug") as string,
     content: formData.get("content") as string,
@@ -474,17 +537,20 @@ export async function saveServiceSectionAction(
 
   try {
     if (id) {
-      await prisma.serviceSection.update({ where: { id }, data });
+      await prisma.visaProgramSection.update({ where: { id }, data });
       revalidatePath("/");
       return adminSuccess(
         "Program bölümü güncellendi.",
-        `/admin/services/${serviceId}`,
+        `/admin/vize-programlari/${visaProgramId}`,
       );
     }
 
-    await prisma.serviceSection.create({ data });
+    await prisma.visaProgramSection.create({ data });
     revalidatePath("/");
-    return adminSuccess("Program bölümü eklendi.", `/admin/services/${serviceId}`);
+    return adminSuccess(
+      "Program bölümü eklendi.",
+      `/admin/vize-programlari/${visaProgramId}`,
+    );
   } catch (error) {
     return adminFailure(
       adminErrorMessage(error, "Program bölümü kaydedilemedi. Lütfen tekrar deneyin."),
@@ -492,116 +558,6 @@ export async function saveServiceSectionAction(
   }
 }
 
-export async function saveArticleAction(formData: FormData): Promise<AdminActionResult> {
-  await requireAdmin();
-  const id = formData.get("id") as string | null;
-  const isPublished = formData.get("isPublished") === "on";
-  const countryId = (formData.get("countryId") as string)?.trim();
-
-  if (!countryId) {
-    return adminFailure("Ülke seçimi zorunludur.");
-  }
-
-  const categoryIds = formData
-    .getAll("categoryIds")
-    .map((value) => String(value).trim())
-    .filter(Boolean);
-
-  const sectionsRaw = (formData.get("sectionsJson") as string) || "";
-  const data = {
-    title: formData.get("title") as string,
-    slug: formData.get("slug") as string,
-    excerpt: (formData.get("excerpt") as string) || null,
-    content: (formData.get("content") as string) || "",
-    heroTitle: (formData.get("heroTitle") as string) || null,
-    heroSubtitle: (formData.get("heroSubtitle") as string) || null,
-    sectionsJson: sectionsRaw.trim() || null,
-    featureImage: (formData.get("featureImage") as string) || null,
-    featureImageTitle: normalizeGuideFeatureImageTitle(
-      formData.get("featureImageTitle") as string,
-    ),
-    featureImageText: normalizeGuideFeatureImageText(
-      formData.get("featureImageText") as string,
-    ),
-    countryId,
-    isPublished,
-    showInCategoryPanel: formData.get("showInCategoryPanel") === "on",
-    publishedAt: isPublished ? new Date() : null,
-  };
-
-  try {
-    if (id) {
-      const existing = await prisma.article.findUnique({
-        where: { id },
-        select: { publishedAt: true },
-      });
-
-      await prisma.$transaction(async (tx) => {
-        await tx.article.update({
-          where: { id },
-          data: {
-            ...data,
-            publishedAt:
-              isPublished
-                ? existing?.publishedAt ?? new Date()
-                : null,
-          },
-        });
-
-        await tx.articleCategoryLink.deleteMany({ where: { articleId: id } });
-        if (categoryIds.length > 0) {
-          await tx.articleCategoryLink.createMany({
-            data: categoryIds.map((categoryId) => ({
-              articleId: id,
-              categoryId,
-            })),
-            skipDuplicates: true,
-          });
-        }
-      });
-
-      revalidatePath("/rehber");
-      revalidatePath(`/rehber/${data.slug}`);
-      revalidatePath("/admin/articles");
-      const country = await prisma.country.findUnique({
-        where: { id: countryId },
-        select: { slug: true },
-      });
-      if (country) revalidatePath(`/${country.slug}`);
-      return adminSuccess("Rehber başarıyla güncellendi.", `/admin/articles/${id}`);
-    }
-
-    const article = await prisma.$transaction(async (tx) => {
-      const created = await tx.article.create({ data });
-      if (categoryIds.length > 0) {
-        await tx.articleCategoryLink.createMany({
-          data: categoryIds.map((categoryId) => ({
-            articleId: created.id,
-            categoryId,
-          })),
-          skipDuplicates: true,
-        });
-      }
-      return created;
-    });
-
-    revalidatePath("/rehber");
-    revalidatePath("/admin/articles");
-    const country = await prisma.country.findUnique({
-      where: { id: countryId },
-      select: { slug: true },
-    });
-    if (country) revalidatePath(`/${country.slug}`);
-    return adminSuccess(
-      "Rehber başarıyla oluşturuldu.",
-      `/admin/articles/${article.id}`,
-    );
-  } catch (error) {
-    return adminFailure(
-      adminErrorMessage(error, "Rehber kaydedilemedi. Lütfen tekrar deneyin."),
-    );
-  }
-}
 
 export async function saveConsulateAction(formData: FormData): Promise<AdminActionResult> {
   await requireAdmin();
