@@ -15,6 +15,7 @@ export type AdminNavIcon =
   | "guides"
   | "consulates"
   | "documents"
+  | "import"
   | "about"
   | "contact"
   | "settings";
@@ -27,8 +28,12 @@ export const adminNav: AdminNavItem[] = [
   { href: "/admin/vize-programlari", label: "Vize Programları", icon: "briefcase" },
   { href: "/admin/bloglar", label: "Bloglar", icon: "article" },
   { href: "/admin/consulates", label: "Konsolosluklar", icon: "consulates" },
-  { href: "/admin/rehberlerimiz", label: "Rehberlerimiz", icon: "guides" },
+  { href: "/admin/bloglarimiz", label: "Bloglarımız", icon: "guides" },
   { href: "/admin/dokumanlar", label: "Dökümanlar", icon: "documents" },
+  { href: "/admin/eagvs-import", label: "EAGVS İçe Aktarma", icon: "import" },
+  { href: "/admin/eagvs-blog-import", label: "EAGVS Blog İçe Aktarma", icon: "import" },
+  { href: "/admin/eagvs-country-sync", label: "EAGVS Ülke Senkron", icon: "import" },
+  { href: "/admin/eagvs-consulate-import", label: "EAGVS Konsolosluk", icon: "consulates" },
   { href: "/admin/hakkimizda", label: "Hakkımızda", icon: "about" },
   { href: "/admin/iletisim", label: "İletişim", icon: "contact" },
   { href: "/admin/settings", label: "Ayarlar", icon: "settings" },

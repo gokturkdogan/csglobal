@@ -105,3 +105,14 @@ export function parseCountryDetailSectionsJson(
     return [];
   }
 }
+
+export function serializeCountryDetailSections(sections: CountryDetailSection[]): string {
+  const valid = sections
+    .map((section) => ({
+      title: section.title.trim(),
+      content: normalizeRichTextContent(section.content) ?? "",
+    }))
+    .filter((section) => section.title && section.content);
+
+  return JSON.stringify(valid);
+}

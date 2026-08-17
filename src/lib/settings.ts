@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 import {
   defaultSiteSettings,
@@ -8,7 +9,7 @@ import {
 export type { SiteSettingsMap };
 export { buildWhatsAppUrl };
 
-export async function getSiteSettings(): Promise<SiteSettingsMap> {
+export const getSiteSettings = cache(async (): Promise<SiteSettingsMap> => {
   try {
     const rows = await prisma.siteSetting.findMany();
     const map = { ...defaultSiteSettings };
@@ -22,4 +23,4 @@ export async function getSiteSettings(): Promise<SiteSettingsMap> {
   } catch {
     return defaultSiteSettings;
   }
-}
+});

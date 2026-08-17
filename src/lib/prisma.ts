@@ -23,11 +23,11 @@ function createPrismaClient() {
       connectionString: resolvePgConnectionString(connectionString),
       max: Number(process.env.PG_POOL_MAX) || 10,
       idleTimeoutMillis: 30_000,
-      connectionTimeoutMillis: 10_000,
+      connectionTimeoutMillis:
+        Number(process.env.PG_CONNECTION_TIMEOUT_MS) ||
+        (process.env.NODE_ENV === "development" ? 20_000 : 10_000),
     });
-  if (process.env.NODE_ENV !== "production") {
-    globalForPrisma.pool = pool;
-  }
+  globalForPrisma.pool = pool;
 
   const adapter = new PrismaPg(pool);
   return new PrismaClient({

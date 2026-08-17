@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { findActiveConsulatesByCountrySlug } from "@/lib/repositories/consulate.repository";
 import { findCategoriesWithCountryPrograms } from "@/lib/repositories/category.repository";
 import { findPanelProgramsByCountry } from "@/lib/repositories/visa-program.repository";
@@ -12,17 +13,23 @@ import {
 import { findSiteAssetsByCountryId } from "@/lib/repositories/site-asset.repository";
 import { formatSiteAssetDisplayName } from "@/lib/site-asset";
 
-export async function loadCountryCategoryPanelData(
+export const loadCountryCategoryPanelData = cache(async (
   countryId: string,
   countrySlug: string,
 ): Promise<{
   panelCategories: CountryCategoryPanelItem[];
   consulates: CountryConsulatePanelItem[];
   documents: CountryDocumentPanelItem[];
-}> {
-  const categories = (await findCategoriesWithCountryPrograms(countryId)) ?? [];
+}> => {
+  const [categoriesRaw, panelPrograms, consulateRows, assetRows] = await Promise.all([
+    findCategoriesWithCountryPrograms(countryId),
+    findPanelProgramsByCountry(countryId),
+    findActiveConsulatesByCountrySlug(countrySlug),
+    findSiteAssetsByCountryId(countryId),
+  ]);
+
+  const categories = categoriesRaw ?? [];
   const categoryIdToSlug = new Map(categories.map((cat) => [cat.id, cat.slug]));
-  const panelPrograms = await findPanelProgramsByCountry(countryId);
   const panelCategories = filterPopulatedCountryCategories(
     attachLinkedProgramsToCategoryPanel(
       mapCategoriesForCountryPanel(categories),
@@ -30,13 +37,11 @@ export async function loadCountryCategoryPanelData(
       categoryIdToSlug,
     ),
   );
-  const consulateRows = await findActiveConsulatesByCountrySlug(countrySlug);
   const consulates = consulateRows.map((c) => ({
     name: c.name,
     slug: c.slug,
   }));
 
-  const assetRows = await findSiteAssetsByCountryId(countryId);
   const documents = assetRows.map((asset) => ({
     id: asset.id,
     fileName: asset.fileName,
@@ -44,4 +49,4 @@ export async function loadCountryCategoryPanelData(
   }));
 
   return { panelCategories, consulates, documents };
-}
+});

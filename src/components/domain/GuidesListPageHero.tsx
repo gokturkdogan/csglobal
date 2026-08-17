@@ -49,7 +49,7 @@ export function GuidesListPageHero({ content, articleCount }: Props) {
                 className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm"
               >
                 <span className="text-lg font-semibold text-sky-200">{articleCount}</span>
-                yayınlanan rehber
+                yayınlanan yazı
               </span>
             </div>
           )}

@@ -1,6 +1,14 @@
+import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 
 const active = { isActive: true };
+
+const blogCountrySelect = {
+  id: true,
+  name: true,
+  slug: true,
+  heroImage: true,
+};
 
 export async function findActiveBlogPosts(options?: { skip?: number; take?: number }) {
   return prisma.blogPost.findMany({
@@ -23,14 +31,14 @@ export async function countActiveBlogPosts() {
   return prisma.blogPost.count({ where: active });
 }
 
-export async function findBlogPostBySlug(slug: string) {
+export const findBlogPostBySlug = cache(async (slug: string) => {
   return prisma.blogPost.findFirst({
     where: { slug, ...active },
     include: {
-      country: true,
+      country: { select: blogCountrySelect },
     },
   });
-}
+});
 
 export async function findBlogPostById(id: string) {
   return prisma.blogPost.findUnique({

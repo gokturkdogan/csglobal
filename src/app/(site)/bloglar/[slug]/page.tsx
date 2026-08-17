@@ -4,10 +4,8 @@ import { ContactCTA } from "@/components/domain/ContactCTA";
 import { ServiceDetailContent } from "@/components/domain/ServiceDetailContent";
 import { ServiceTableOfContents } from "@/components/domain/ServiceTableOfContents";
 import { GuidePageHero } from "@/components/domain/GuidePageHero";
-import { CountryCategoryPanel } from "@/components/country/CountryCategoryPanel";
 import { RelatedBlogsPanel } from "@/components/blog/RelatedBlogsPanel";
 import { getServiceSectionNavItems } from "@/lib/service-page";
-import { loadCountryCategoryPanelData } from "@/lib/country-page/load-category-panel";
 import { getSiteSettings } from "@/lib/settings";
 import {
   findBlogPostBySlug,
@@ -43,24 +41,15 @@ export default async function BlogDetailPage({ params }: Props) {
   const post = await findBlogPostBySlug(slug);
   if (!post) notFound();
 
-  const settings = await getSiteSettings();
   const country = post.country;
-  const countrySlug = country?.slug;
 
-  const panelData =
-    country && countrySlug
-      ? await loadCountryCategoryPanelData(country.id, countrySlug)
-      : null;
-
-  const relatedBlogs =
+  const [settings, relatedBlogs, seoStructuredData] = await Promise.all([
+    getSiteSettings(),
     country
-      ? await findRelatedBlogPostsByCountry(country.id, post.id)
-      : [];
-
-  const seoStructuredData = await findEntityStructuredDataJsonLd(
-    SeoEntityType.BLOG_POST,
-    post.id,
-  );
+      ? findRelatedBlogPostsByCountry(country.id, post.id)
+      : Promise.resolve([]),
+    findEntityStructuredDataJsonLd(SeoEntityType.BLOG_POST, post.id),
+  ]);
 
   const breadcrumbItems = [
     { label: "Anasayfa", href: "/" },
@@ -83,9 +72,8 @@ export default async function BlogDetailPage({ params }: Props) {
 
   const sectionNav = getServiceSectionNavItems(post.sectionsJson, []);
   const showTocSidebar = sectionNav.length > 0;
-  const showCountryPanel = Boolean(country && countrySlug && panelData);
   const showRelatedBlogs = relatedBlogs.length > 0;
-  const showLeftSidebar = showCountryPanel || showRelatedBlogs;
+  const showLeftSidebar = showRelatedBlogs;
 
   const contentGridClass = showLeftSidebar
     ? showTocSidebar
@@ -122,18 +110,8 @@ export default async function BlogDetailPage({ params }: Props) {
 
         <div className={contentGridClass}>
           {showLeftSidebar && (
-            <aside className="order-2 country-panel-sticky min-w-0 space-y-4 lg:order-1 lg:z-30 lg:self-start">
-              {showCountryPanel && panelData && (
-                <CountryCategoryPanel
-                  countrySlug={countrySlug!}
-                  categories={panelData.panelCategories}
-                  consulates={panelData.consulates}
-                  documents={panelData.documents}
-                />
-              )}
-              {showRelatedBlogs && (
-                <RelatedBlogsPanel countryName={country!.name} posts={relatedBlogs} />
-              )}
+            <aside className="order-2 country-panel-sticky min-w-0 lg:order-1 lg:z-30 lg:self-start">
+              <RelatedBlogsPanel countryName={country!.name} posts={relatedBlogs} />
             </aside>
           )}
 

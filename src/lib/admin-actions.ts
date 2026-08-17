@@ -43,6 +43,10 @@ import {
   buildConsulatePath,
 } from "@/lib/paths";
 import { AdminRole } from "@/generated/prisma/client";
+import { importEagvsPage, importEagvsPages, type EagvsContentType } from "@/lib/eagvs-import";
+import { importEagvsBlogPages } from "@/lib/eagvs-blog-import";
+import { importEagvsConsulates } from "@/lib/eagvs-consulate-import";
+import { importEagvsCountryHub } from "@/lib/eagvs-country-sync";
 
 async function upsertSiteSettingsBatch(
   entries: Array<{ key: string; value: string }>,
@@ -877,9 +881,15 @@ export async function saveGuidesListPageAction(formData: FormData): Promise<Admi
 
   try {
     await prisma.$transaction(async (tx) => {
+      const existing = await tx.sitePage.findUnique({
+        where: { id },
+        select: { slug: true },
+      });
+
       await tx.sitePage.update({
         where: { id },
         data: {
+          ...(existing?.slug === "rehber" ? { slug: "bloglar" } : {}),
           title: editable.heroTitle,
           isActive: formData.get("isActive") === "on",
         },
@@ -895,13 +905,15 @@ export async function saveGuidesListPageAction(formData: FormData): Promise<Admi
       });
     });
 
-    revalidatePath("/rehber");
-    return adminSuccess("Rehberlerimiz sayfası güncellendi.", "/admin/rehberlerimiz");
+    revalidatePath("/bloglar");
+    revalidatePath("/admin/bloglarimiz");
+    revalidateSitemap();
+    return adminSuccess("Bloglarımız sayfası güncellendi.", "/admin/bloglarimiz");
   } catch (error) {
     return adminFailure(
       adminErrorMessage(
         error,
-        "Rehberlerimiz sayfası kaydedilemedi. Lütfen tekrar deneyin.",
+        "Bloglarımız sayfası kaydedilemedi. Lütfen tekrar deneyin.",
       ),
     );
   }
@@ -1093,6 +1105,256 @@ export async function deleteSiteAssetAction(formData: FormData): Promise<AdminAc
   } catch (error) {
     return adminFailure(
       adminErrorMessage(error, "Döküman silinemedi. Lütfen tekrar deneyin."),
+    );
+  }
+}
+
+export async function importEagvsPageAction(formData: FormData): Promise<AdminActionResult> {
+  await requireAdmin();
+
+  const urls = formData
+    .getAll("urls")
+    .map((value) => String(value).trim())
+    .filter(Boolean);
+  const countryId = (formData.get("countryId") as string)?.trim();
+  const categoryId = (formData.get("categoryId") as string)?.trim();
+  const preferFormCategory = formData.get("categoryManual") === "on";
+  const contentTypeRaw = (formData.get("contentType") as string)?.trim().toLowerCase();
+
+  if (urls.length === 0) {
+    return adminFailure("En az bir EAGVS linki girin.");
+  }
+
+  if (contentTypeRaw !== "program") {
+    return adminFailure("Geçersiz içerik türü.");
+  }
+
+  const contentType: EagvsContentType = "program";
+
+  try {
+    const batch = await importEagvsPages({
+      urls,
+      countryId: countryId || undefined,
+      categoryId: categoryId || undefined,
+      preferFormCategory,
+      contentType,
+    });
+
+    const countrySlugs = new Set<string>();
+    for (const result of batch.succeeded) {
+      countrySlugs.add(result.countrySlug);
+      revalidatePath("/hizmetlerimiz");
+      revalidatePath(result.publicPath);
+    }
+
+    revalidatePath("/admin/vize-programlari");
+
+    for (const slug of countrySlugs) {
+      revalidatePath(`/${slug}`);
+    }
+    revalidatePath("/admin/eagvs-import");
+    revalidateSitemap();
+
+    const successLines = batch.succeeded.map(
+      (result) => `${result.title} (${result.sectionCount} bölüm)`,
+    );
+    const failNote =
+      batch.failed.length > 0
+        ? ` ${batch.failed.length} link başarısız: ${batch.failed
+            .map((item) => item.message)
+            .join("; ")}`
+        : "";
+
+    return adminSuccess(
+      `${batch.succeeded.length} program içe aktarıldı: ${successLines.join(
+        "; ",
+      )}.${failNote}`,
+      "/admin/eagvs-import",
+    );
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "EAGVS içe aktarma başarısız. Lütfen tekrar deneyin."),
+    );
+  }
+}
+
+export async function importEagvsBlogPageAction(formData: FormData): Promise<AdminActionResult> {
+  await requireAdmin();
+
+  const urls = formData
+    .getAll("urls")
+    .map((value) => String(value).trim())
+    .filter(Boolean);
+  const countryId = (formData.get("countryId") as string)?.trim();
+
+  if (urls.length === 0) {
+    return adminFailure("En az bir EAGVS linki girin.");
+  }
+
+  try {
+    const batch = await importEagvsBlogPages({
+      urls,
+      countryId: countryId || undefined,
+    });
+
+    const countrySlugs = new Set<string>();
+    for (const result of batch.succeeded) {
+      if (result.countrySlug) {
+        countrySlugs.add(result.countrySlug);
+        revalidatePath(`/${result.countrySlug}`);
+      }
+      revalidatePath(buildBlogListPath());
+      revalidatePath(result.publicPath);
+    }
+
+    revalidatePath("/admin/bloglar");
+    revalidatePath("/admin/eagvs-blog-import");
+    revalidateSitemap();
+
+    const successLines = batch.succeeded.map(
+      (result) => `${result.title} (${result.sectionCount} bölüm)`,
+    );
+    const failNote =
+      batch.failed.length > 0
+        ? ` ${batch.failed.length} link başarısız: ${batch.failed
+            .map((item) => item.message)
+            .join("; ")}`
+        : "";
+
+    return adminSuccess(
+      `${batch.succeeded.length} blog içe aktarıldı: ${successLines.join("; ")}.${failNote}`,
+      "/admin/eagvs-blog-import",
+    );
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "EAGVS blog içe aktarma başarısız. Lütfen tekrar deneyin."),
+    );
+  }
+}
+
+export async function importEagvsConsulateAction(formData: FormData): Promise<AdminActionResult> {
+  await requireAdmin();
+
+  const urls = formData
+    .getAll("urls")
+    .map((value) => String(value).trim())
+    .filter(Boolean);
+  const countryId = (formData.get("countryId") as string)?.trim();
+
+  if (urls.length === 0) {
+    return adminFailure("En az bir EAGVS konsolosluk linki girin.");
+  }
+
+  try {
+    const batch = await importEagvsConsulates({
+      urls,
+      countryId: countryId || undefined,
+    });
+
+    const countrySlugs = new Set<string>();
+    for (const result of batch.succeeded) {
+      countrySlugs.add(result.countrySlug);
+      revalidatePath(result.publicPath);
+    }
+
+    revalidatePath("/admin/consulates");
+    for (const slug of countrySlugs) {
+      revalidatePath(`/${slug}`);
+    }
+    revalidatePath("/admin/eagvs-consulate-import");
+
+    const successLines = batch.succeeded.map((result) => {
+      const mapNote = result.mapEmbedUrl ? "harita var" : "harita yok";
+      return `${result.name} (${result.sectionCount} bölüm, ${mapNote})`;
+    });
+    const failNote =
+      batch.failed.length > 0
+        ? ` ${batch.failed.length} link başarısız: ${batch.failed
+            .map((item) => item.message)
+            .join("; ")}`
+        : "";
+
+    return adminSuccess(
+      `${batch.succeeded.length} konsolosluk içe aktarıldı: ${successLines.join("; ")}.${failNote}`,
+      "/admin/eagvs-consulate-import",
+    );
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Konsolosluk içe aktarma başarısız. Lütfen tekrar deneyin."),
+    );
+  }
+}
+
+export async function importEagvsCountrySyncAction(formData: FormData): Promise<AdminActionResult> {
+  await requireAdmin();
+
+  const url = (formData.get("url") as string)?.trim();
+  const countryId = (formData.get("countryId") as string)?.trim();
+
+  if (!url) {
+    return adminFailure("EAGVS ülke ana sayfa linki girin.");
+  }
+
+  if (!countryId) {
+    return adminFailure("Ülke seçin veya linkten otomatik eşleşmesini bekleyin.");
+  }
+
+  try {
+    const result = await importEagvsCountryHub({
+      url,
+      countryId,
+    });
+
+    revalidatePath(`/${result.countrySlug}`);
+    revalidatePath("/admin/countries");
+    revalidatePath(`/admin/countries/${result.countryId}`);
+    revalidatePath("/admin/bloglar");
+    revalidatePath("/bloglar");
+    revalidatePath("/admin/consulates");
+    revalidatePath(`/${result.countrySlug}/konsolosluklar`);
+    revalidatePath("/admin/eagvs-country-sync");
+    revalidateSitemap();
+
+    for (const blog of result.blogs) {
+      revalidatePath(`/bloglar/${blog.slug}`);
+    }
+
+    for (const consulate of result.consulates) {
+      revalidatePath(
+        `/${result.countrySlug}/konsolosluklar/${consulate.slug}`,
+      );
+    }
+
+    const blogNote =
+      result.blogs.length > 0
+        ? ` ${result.blogs.length} blog: ${result.blogs
+            .map((item) => item.title)
+            .join(", ")}.`
+        : "";
+    const consulateNote =
+      result.consulates.length > 0
+        ? ` ${result.consulates.length} konsolosluk: ${result.consulates
+            .map((item) => item.name)
+            .join(", ")}.`
+        : "";
+    const skippedNote =
+      result.skipped.length > 0
+        ? ` ${result.skipped.length} link atlandı.`
+        : "";
+    const failedNote =
+      result.failed.length > 0
+        ? ` ${result.failed.length} hata: ${result.failed
+            .map((item) => item.message)
+            .join("; ")}.`
+        : "";
+
+    return adminSuccess(
+      `${result.countryName}: ${result.detailSectionCount} detay bölümü güncellendi.${blogNote}${consulateNote}${skippedNote}${failedNote}`,
+      "/admin/eagvs-country-sync",
+    );
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Ülke senkronizasyonu başarısız. Lütfen tekrar deneyin."),
     );
   }
 }

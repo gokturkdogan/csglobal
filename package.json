@@ -21,9 +21,12 @@
     "db:fix-rehber-links": "tsx prisma/audit-internal-rehber-links.ts --fix",
     "db:wipe-visa-programs": "tsx prisma/wipe-guides-and-services.ts",
     "db:scrape-eagvs": "node prisma/scrape-eagvs-sections.mjs",
+    "db:import-eagvs": "tsx prisma/import-eagvs-page.ts",
     "db:seed-amerika-eagvs": "tsx prisma/seed-amerika-eagvs-all.ts",
     "db:seed-amerika-student-visas": "tsx prisma/seed-amerika-eagvs-all.ts",
     "db:seed-almanya-detail": "tsx prisma/seed-country-detail-almanya.ts",
+    "db:generate-country-heroes": "tsx prisma/generate-country-hero-images.ts",
+    "db:upload-country-item-images": "tsx prisma/upload-country-item-images.ts",
     "db:wipe-services": "tsx prisma/wipe-services.ts",
     "db:studio": "prisma studio"
   },
@@ -65,7 +68,9 @@
     "@types/sanitize-html": "^2.16.1",
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
+    "openai": "^7.4.0",
     "prisma": "^7.9.1",
+    "sharp": "^0.35.3",
     "tailwindcss": "^4",
     "tsx": "^4.23.12",
     "typescript": "^5"

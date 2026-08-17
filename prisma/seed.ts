@@ -107,14 +107,21 @@ async function main() {
   });
 
   await prisma.sitePage.upsert({
-    where: { slug: "rehber" },
+    where: { slug: "bloglar" },
     create: {
-      slug: "rehber",
-      title: "Rehberlerimiz",
-      content: "Ülkeye özel vize ve göçmenlik rehberleri.",
+      slug: "bloglar",
+      title: "Bloglarımız",
+      content: "Vize, oturum ve göçmenlik süreçlerine dair blog yazıları.",
       isActive: true,
     },
-    update: {},
+    update: {
+      title: "Bloglarımız",
+    },
+  });
+
+  await prisma.sitePage.updateMany({
+    where: { slug: "rehber" },
+    data: { isActive: false },
   });
 
   const guideCat = await prisma.articleCategory.upsert({

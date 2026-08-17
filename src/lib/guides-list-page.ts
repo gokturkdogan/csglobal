@@ -2,11 +2,19 @@ import { getSiteSettings } from "@/lib/settings";
 import type { SiteSettingsMap } from "@/lib/site-settings.shared";
 import { optimizeCloudinaryDeliveryUrl, siteImages } from "@/lib/media";
 import { linkUrlForEditor } from "@/lib/rich-text";
+import {
+  findSitePageBySlug,
+  findSitePageRecordBySlug,
+} from "@/lib/repositories/site.repository";
 
 export const guidesListPageSeo = {
-  title: "Rehber",
-  description: "Ülkeye özel vize ve göçmenlik rehberleri.",
+  title: "Bloglar",
+  description:
+    "Vize, oturum ve göçmenlik süreçlerine dair CSGLOBAL blog yazıları ve rehber içerikler.",
 };
+
+export const BLOG_LIST_SITE_PAGE_SLUG = "bloglar";
+const LEGACY_BLOG_LIST_SITE_PAGE_SLUG = "rehber";
 
 export type GuidesListPageEditable = {
   heroBadge: string;
@@ -24,12 +32,12 @@ export type GuidesListPageEditable = {
 export type GuidesListPageContent = GuidesListPageEditable;
 
 const defaultEditable: GuidesListPageEditable = {
-  heroBadge: "Ülke rehberleri",
-  heroTitle: "Rehberlerimiz",
+  heroBadge: "Blog",
+  heroTitle: "Bloglarımız",
   heroSubtitle:
-    "Ülkeye özel vize süreçleri, evrak hazırlığı ve başvuru adımları. Güncel içeriklerle sürecinizi planlayın.",
+    "Vize, oturum ve göçmenlik süreçlerine dair güncel yazılar ve rehber içerikler.",
   heroImage: "",
-  listIntro: "Ülke ve konu bazlı rehber yazılarımızı inceleyin.",
+  listIntro: "Ülke ve konu bazlı blog yazılarımızı inceleyin.",
   ctaTitle: "Ülkenize özel danışmanlık alın",
   ctaSubtitle:
     "Online başvuru veya belge yükleme yok. WhatsApp veya telefon ile doğrudan uzman ekibimize ulaşın.",
@@ -95,4 +103,16 @@ export function buildGuidesListPageContent(
 export async function getGuidesListPageContent(): Promise<GuidesListPageContent> {
   const settings = await getSiteSettings();
   return buildGuidesListPageContent(settings);
+}
+
+export async function findBlogListSitePage() {
+  const page = await findSitePageBySlug(BLOG_LIST_SITE_PAGE_SLUG);
+  if (page) return page;
+  return findSitePageBySlug(LEGACY_BLOG_LIST_SITE_PAGE_SLUG);
+}
+
+export async function findBlogListSitePageRecord() {
+  const page = await findSitePageRecordBySlug(BLOG_LIST_SITE_PAGE_SLUG);
+  if (page) return page;
+  return findSitePageRecordBySlug(LEGACY_BLOG_LIST_SITE_PAGE_SLUG);
 }

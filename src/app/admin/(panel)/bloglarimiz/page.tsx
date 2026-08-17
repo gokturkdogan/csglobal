@@ -1,12 +1,14 @@
-import { prisma } from "@/lib/prisma";
 import { saveGuidesListPageAction } from "@/lib/admin-actions";
-import { parseGuidesListPageEditableFromSettings } from "@/lib/guides-list-page";
-import { findSitePageRecordBySlug } from "@/lib/repositories/site.repository";
+import {
+  findBlogListSitePageRecord,
+  parseGuidesListPageEditableFromSettings,
+} from "@/lib/guides-list-page";
 import { getSiteSettings } from "@/lib/settings";
 import {
   guidesListHeroImageClassName,
   guidesListHeroImageSlot,
 } from "@/lib/guides-list-image-slot";
+import { buildBlogListPath } from "@/lib/paths";
 import { AdminManagedImageField } from "@/components/admin/AdminManagedImageField";
 import {
   AdminCheckbox,
@@ -19,14 +21,14 @@ import {
 } from "@/components/admin/AdminForm";
 import { AdminPageHeader } from "@/components/admin/AdminUi";
 
-export default async function AdminGuidesListPage() {
-  const page = await findSitePageRecordBySlug("rehber");
+export default async function AdminBlogsListPage() {
+  const page = await findBlogListSitePageRecord();
   if (!page) {
     return (
       <div className="space-y-4">
-        <AdminPageHeader title="Rehberlerimiz" />
+        <AdminPageHeader title="Bloglarımız" />
         <p className="text-sm text-slate-600">
-          Rehber liste sayfası kaydı bulunamadı. Veritabanı seed işlemini çalıştırın.
+          Blog liste sayfası kaydı bulunamadı. Veritabanı seed işlemini çalıştırın.
         </p>
       </div>
     );
@@ -37,11 +39,11 @@ export default async function AdminGuidesListPage() {
   return (
     <div className="space-y-6">
       <AdminPageHeader
-        title="Rehberlerimiz"
-        description="Rehber liste sayfası: hero, kart listesi üst metni ve alt CTA alanı."
-        publicPath="/rehber"
+        title="Bloglarımız"
+        description="Blog liste sayfası: hero, kart listesi üst metni ve alt CTA alanı."
+        publicPath={buildBlogListPath()}
         actions={
-          <AdminButtonLink href="/rehber" variant="secondary">
+          <AdminButtonLink href={buildBlogListPath()} variant="secondary">
             Sayfayı görüntüle
           </AdminButtonLink>
         }
@@ -52,7 +54,7 @@ export default async function AdminGuidesListPage() {
 
         <AdminFormSection
           title="Hero alanı"
-          description="Rehberlerimiz sayfasının üst banner bölümü."
+          description="Bloglarımız sayfasının üst banner bölümü."
         >
           <AdminField label="Üst etiket" name="heroBadge" value={content.heroBadge} />
           <AdminField
@@ -78,7 +80,7 @@ export default async function AdminGuidesListPage() {
           <AdminCheckbox label="Sayfa yayında" name="isActive" defaultChecked={page.isActive} />
         </AdminFormSection>
 
-        <AdminFormSection title="Rehber listesi">
+        <AdminFormSection title="Blog listesi">
           <AdminTextArea
             label="Liste üst metni"
             name="listIntro"
@@ -90,7 +92,7 @@ export default async function AdminGuidesListPage() {
 
         <AdminFormSection
           title="Alt CTA alanı"
-          description="Tüm rehberlerin altında koyu mavi gradient bölüm."
+          description="Tüm blogların altında koyu mavi gradient bölüm."
         >
           <AdminField label="Başlık" name="ctaTitle" value={content.ctaTitle} />
           <AdminTextArea
