@@ -21,6 +21,7 @@ export type SiteSettingsMap = {
   homeHeroCtaPrimary: string;
   homeHeroCtaSecondary: string;
   homeHeroQuickLinksJson: string;
+  homePopularCountrySlugsJson: string;
   homeAboutTitle: string;
   homeAboutText: string;
   homeAboutImage: string;
@@ -75,6 +76,7 @@ export const defaultSiteSettings: SiteSettingsMap = {
   homeHeroCtaPrimary: "",
   homeHeroCtaSecondary: "",
   homeHeroQuickLinksJson: "",
+  homePopularCountrySlugsJson: "",
   homeAboutTitle: "",
   homeAboutText: "",
   homeAboutImage: "",

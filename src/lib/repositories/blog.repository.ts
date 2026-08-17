@@ -38,6 +38,36 @@ export async function countActiveBlogPosts() {
   return prisma.blogPost.count({ where: active });
 }
 
+/** Anasayfa öne çıkan rehberler bölümü (isFeatured + aktif). */
+export async function findFeaturedBlogPostsForHomepage(
+  limit = 9,
+) {
+  return prisma.blogPost.findMany({
+    where: { ...active, isFeatured: true },
+    orderBy: [{ sortOrder: "asc" }, { publishedAt: "desc" }, { updatedAt: "desc" }],
+    take: limit,
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      excerpt: true,
+      publishedAt: true,
+      topicCategory: true,
+      country: { select: { name: true, slug: true, itemImage: true } },
+    },
+  });
+}
+
+export async function countFeaturedBlogPostsForHomepage(excludePostId?: string) {
+  return prisma.blogPost.count({
+    where: {
+      ...active,
+      isFeatured: true,
+      ...(excludePostId ? { id: { not: excludePostId } } : {}),
+    },
+  });
+}
+
 export const findBlogPostBySlug = cache(async (slug: string) => {
   return prisma.blogPost.findFirst({
     where: { slug, ...active },

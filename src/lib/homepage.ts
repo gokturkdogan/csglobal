@@ -25,6 +25,8 @@ export type HomeFaqItem = {
 
 export const HOMEPAGE_FAQ_MAX = 10;
 export const HOMEPAGE_HERO_QUICK_LINK_MAX = 5;
+export const HOMEPAGE_POPULAR_COUNTRIES_MAX = 6;
+export const HOMEPAGE_FEATURED_BLOGS_MAX = 9;
 
 export type HomeHeroQuickLink = {
   name: string;
@@ -38,6 +40,15 @@ export type HomeCountryOption = {
   flag?: string | null;
 };
 
+export type HomePopularCountry = {
+  name: string;
+  slug: string;
+  shortDescription?: string | null;
+  flag?: string | null;
+  itemImage?: string | null;
+  visaPrograms: { id: string }[];
+};
+
 export type HomepageContent = {
   heroBadge: string;
   heroTitle: string;
@@ -46,6 +57,7 @@ export type HomepageContent = {
   heroCtaPrimary: string;
   heroCtaSecondary: string;
   heroQuickLinkSlugs: string[];
+  popularCountrySlugs: string[];
   aboutTitle: string;
   aboutText: string;
   aboutImage: string;
@@ -277,6 +289,32 @@ export function normalizeHeroQuickLinkSlugs(
   return picked.slice(0, HOMEPAGE_HERO_QUICK_LINK_MAX);
 }
 
+/** Popüler ülkeler bölümü için slug listesini 6 slota normalize eder. */
+export function normalizePopularCountrySlugs(
+  slugs: string[],
+  countries: HomeCountryOption[],
+): string[] {
+  const validSlugs = new Set(countries.map((country) => country.slug));
+  const picked: string[] = [];
+
+  for (const slug of slugs) {
+    if (!slug || !validSlugs.has(slug) || picked.includes(slug)) continue;
+    picked.push(slug);
+    if (picked.length >= HOMEPAGE_POPULAR_COUNTRIES_MAX) break;
+  }
+
+  for (const country of countries) {
+    if (picked.length >= HOMEPAGE_POPULAR_COUNTRIES_MAX) break;
+    if (!picked.includes(country.slug)) picked.push(country.slug);
+  }
+
+  while (picked.length < HOMEPAGE_POPULAR_COUNTRIES_MAX) {
+    picked.push("");
+  }
+
+  return picked.slice(0, HOMEPAGE_POPULAR_COUNTRIES_MAX);
+}
+
 export function resolveHeroQuickLinks(
   slugs: string[],
   countries: HomeCountryOption[],
@@ -285,6 +323,16 @@ export function resolveHeroQuickLinks(
   return slugs
     .map((slug) => bySlug.get(slug))
     .filter((country): country is HomeCountryOption => country != null);
+}
+
+export function resolvePopularCountries(
+  slugs: string[],
+  countries: HomePopularCountry[],
+): HomePopularCountry[] {
+  const bySlug = new Map(countries.map((country) => [country.slug, country]));
+  return slugs
+    .map((slug) => bySlug.get(slug))
+    .filter((country): country is HomePopularCountry => country != null);
 }
 
 export function buildHomepageContent(settings: SiteSettingsMap): HomepageContent {
@@ -299,6 +347,7 @@ export function buildHomepageContent(settings: SiteSettingsMap): HomepageContent
     heroCtaPrimary: settings.homeHeroCtaPrimary || "Ülkeleri incele",
     heroCtaSecondary: settings.homeHeroCtaSecondary || "Danışmanlık al",
     heroQuickLinkSlugs: parseJson(settings.homeHeroQuickLinksJson, [] as string[]),
+    popularCountrySlugs: parseJson(settings.homePopularCountrySlugsJson, [] as string[]),
     aboutTitle: settings.homeAboutTitle || "CSGLOBAL ile güvenilir göçmenlik danışmanlığı",
     aboutText:
       settings.homeAboutText ||
@@ -309,12 +358,18 @@ export function buildHomepageContent(settings: SiteSettingsMap): HomepageContent
     whyUsItems: parseJson(settings.homeWhyUsJson, defaultWhyUs),
     processTitle: settings.homeProcessTitle || "Nasıl çalışır?",
     processSteps: parseJson(settings.homeProcessJson, defaultProcess),
-    servicesTitle: settings.homeServicesTitle || "Öne çıkan programlar",
+    servicesTitle:
+      settings.homeServicesTitle?.trim() === "Öne çıkan programlar" || !settings.homeServicesTitle?.trim()
+        ? "Popüler Vize İşlemleri"
+        : settings.homeServicesTitle,
     servicesSubtitle:
       settings.homeServicesSubtitle ||
       "En çok talep edilen vize ve oturum programları. Masaüstünde 6 program görünür; fazlası için okları kullanın.",
     countriesTitle: settings.homeCountriesTitle || "Popüler ülkeler",
-    articlesTitle: settings.homeArticlesTitle || "Son rehberler",
+    articlesTitle:
+      settings.homeArticlesTitle?.trim() === "Son rehberler" || !settings.homeArticlesTitle?.trim()
+        ? "Öne çıkan rehberler"
+        : settings.homeArticlesTitle,
     ctaBannerTitle:
       settings.homeCtaBannerTitle || "Sürecinizi birlikte planlayalım",
     ctaBannerSubtitle:
@@ -359,6 +414,9 @@ export function serializeHomepageToSettings(content: HomepageContent): Record<st
     homeHeroCtaSecondary: content.heroCtaSecondary,
     homeHeroQuickLinksJson: JSON.stringify(
       content.heroQuickLinkSlugs.filter((slug) => slug.trim()),
+    ),
+    homePopularCountrySlugsJson: JSON.stringify(
+      content.popularCountrySlugs.filter((slug) => slug.trim()),
     ),
     homeAboutTitle: content.aboutTitle,
     homeAboutText: content.aboutText,

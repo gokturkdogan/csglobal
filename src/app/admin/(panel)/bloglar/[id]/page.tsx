@@ -99,10 +99,13 @@ export default async function EditBlogPostPage({ params }: Props) {
               value={post?.sortOrder ?? 0}
             />
             <AdminCheckbox
-              label="Öne çıkan"
+              label="Anasayfada göster"
               name="isFeatured"
               defaultChecked={post?.isFeatured ?? false}
             />
+            <p className="text-sm text-slate-500">
+              Öne çıkan rehberler bölümünde listelenir. Anasayfada en fazla 9 rehber gösterilebilir.
+            </p>
             <AdminCheckbox
               label="Yayında (aktif)"
               name="isActive"

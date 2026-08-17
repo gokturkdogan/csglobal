@@ -2,27 +2,24 @@
 
 import Link from "next/link";
 import { CountryGrid } from "@/components/domain/CountryCard";
-import type { HomepageContent } from "@/lib/homepage";
+import type { HomepageContent, HomePopularCountry } from "@/lib/homepage";
+import { resolvePopularCountries } from "@/lib/homepage";
 import { HomeEditableField } from "@/components/admin/homepage/HomeEditableField";
+import { HomeEditablePopularCountries } from "@/components/admin/homepage/HomeEditablePopularCountries";
 import { useHomepageEdit } from "@/components/admin/homepage/HomepageEditContext";
 
 export function HomeCountriesSection({
   content,
-  countries,
+  countryCatalog,
 }: {
   content: HomepageContent;
-  countries: Array<{
-    name: string;
-    slug: string;
-    shortDescription?: string | null;
-    flag?: string | null;
-    itemImage?: string | null;
-    visaPrograms: { id: string }[];
-  }>;
+  countryCatalog: HomePopularCountry[];
 }) {
   const edit = useHomepageEdit();
+  const slugs = edit?.content.popularCountrySlugs ?? content.popularCountrySlugs;
+  const countries = resolvePopularCountries(slugs, countryCatalog);
 
-  if (countries.length === 0) return null;
+  if (!edit?.editing && countries.length === 0) return null;
 
   return (
     <section className="bg-white border-t border-slate-100">
@@ -37,13 +34,20 @@ export function HomeCountriesSection({
           {edit?.editing ? (
             <span className="text-sm font-medium text-slate-400">Tüm ülkeler</span>
           ) : (
-            <Link href="/ulkeler" className="cursor-pointer text-sm font-medium text-csg-blue hover:underline">
+            <Link
+              href="/ulkeler"
+              className="cursor-pointer text-sm font-medium text-csg-blue hover:underline"
+            >
               Tüm ülkeler
             </Link>
           )}
         </div>
         <div className="mt-10">
-          <CountryGrid countries={countries} />
+          {edit?.editing ? (
+            <HomeEditablePopularCountries countryCatalog={countryCatalog} />
+          ) : (
+            <CountryGrid countries={countries} />
+          )}
         </div>
       </div>
     </section>

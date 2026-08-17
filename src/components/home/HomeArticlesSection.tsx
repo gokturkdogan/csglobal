@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { resolveArticleCardImage } from "@/lib/country-item-image";
-import { ArticleCard } from "@/components/home/ArticleCard";
+import { BlogCard } from "@/components/blog/BlogCard";
+import { resolveBlogCardImage } from "@/lib/country-item-image";
+import { getBlogTopicCategoryLabel, type BlogTopicCategoryValue } from "@/lib/blog-topic-categories";
 import type { HomepageContent } from "@/lib/homepage";
 import { HomeEditableField } from "@/components/admin/homepage/HomeEditableField";
 import { useHomepageEdit } from "@/components/admin/homepage/HomepageEditContext";
@@ -18,6 +19,7 @@ export function HomeArticlesSection({
     slug: string;
     excerpt: string | null;
     publishedAt: Date | null;
+    topicCategory?: BlogTopicCategoryValue | null;
     country: { name: string; slug: string; itemImage?: string | null } | null;
   }>;
 }) {
@@ -38,22 +40,29 @@ export function HomeArticlesSection({
           {edit?.editing ? (
             <span className="text-sm font-medium text-slate-400">Tüm rehberler</span>
           ) : (
-            <Link href="/hizmetlerimiz" className="cursor-pointer text-sm font-medium text-csg-blue hover:underline">
-              Tüm programlar
+            <Link
+              href="/bloglar"
+              className="cursor-pointer text-sm font-medium text-csg-blue hover:underline"
+            >
+              Tüm rehberler
             </Link>
           )}
         </div>
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {articles.map((a) => (
-            <ArticleCard
-              key={a.id}
-              title={a.title}
-              slug={a.slug}
-              countrySlug={a.country?.slug ?? ""}
-              excerpt={a.excerpt}
-              coverImage={resolveArticleCardImage(a.country?.itemImage)}
-              categoryName={a.country?.name}
-              publishedAt={a.publishedAt}
+          {articles.map((article) => (
+            <BlogCard
+              key={article.id}
+              title={article.title}
+              slug={article.slug}
+              excerpt={article.excerpt}
+              coverImage={resolveBlogCardImage(article.country?.itemImage)}
+              countryName={
+                article.country?.name ??
+                (article.topicCategory
+                  ? getBlogTopicCategoryLabel(article.topicCategory)
+                  : null)
+              }
+              publishedAt={article.publishedAt}
             />
           ))}
         </div>

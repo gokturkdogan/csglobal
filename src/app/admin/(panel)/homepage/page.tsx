@@ -1,9 +1,10 @@
 import { findActiveCountries } from "@/lib/repositories/country.repository";
-import { findFeaturedPrograms, findLatestPublishedPrograms } from "@/lib/repositories/visa-program.repository";
+import { findFeaturedBlogPostsForHomepage } from "@/lib/repositories/blog.repository";
+import { findFeaturedPrograms } from "@/lib/repositories/visa-program.repository";
 import { findHomepageFaqs } from "@/lib/repositories/faq.repository";
 import { resolveServiceCardImage } from "@/lib/country-item-image";
 import { getSiteSettings } from "@/lib/settings";
-import { buildHomepageContent, HOMEPAGE_FAQ_MAX, normalizeHeroQuickLinkSlugs } from "@/lib/homepage";
+import { buildHomepageContent, HOMEPAGE_FAQ_MAX, normalizeHeroQuickLinkSlugs, normalizePopularCountrySlugs } from "@/lib/homepage";
 import { HomepageVisualEditor } from "@/components/admin/homepage/HomepageVisualEditor";
 
 export default async function AdminHomepagePage() {
@@ -25,10 +26,10 @@ export default async function AdminHomepagePage() {
     }
   }
 
-  const [countries, featured, latestPrograms] = await Promise.all([
+  const [countries, featured, featuredArticles] = await Promise.all([
     findActiveCountries(),
     findFeaturedPrograms(),
-    findLatestPublishedPrograms(3),
+    findFeaturedBlogPostsForHomepage(),
   ]);
 
   const countryOptions = countries.map((country) => ({
@@ -37,12 +38,23 @@ export default async function AdminHomepagePage() {
     flag: country.flag,
   }));
 
+  const countryCatalog = countries.map((country) => ({
+    name: country.name,
+    slug: country.slug,
+    shortDescription: country.shortDescription,
+    flag: country.flag,
+    itemImage: country.itemImage,
+    visaPrograms: country.visaPrograms,
+  }));
+
   content = {
     ...content,
     heroQuickLinkSlugs: normalizeHeroQuickLinkSlugs(content.heroQuickLinkSlugs, countryOptions),
+    popularCountrySlugs: normalizePopularCountrySlugs(
+      content.popularCountrySlugs,
+      countryOptions,
+    ),
   };
-
-  const popular = countries.slice(0, 6);
 
   const featuredItems = featured.map((s) => ({
     id: s.id,
@@ -60,9 +72,9 @@ export default async function AdminHomepagePage() {
       initialContent={content}
       previewData={{
         countryOptions,
+        countryCatalog,
         featuredItems,
-        popularCountries: popular,
-        programs: latestPrograms,
+        featuredArticles,
         settings,
       }}
     />

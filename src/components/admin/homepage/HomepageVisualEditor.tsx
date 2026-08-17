@@ -3,7 +3,8 @@
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import Link from "next/link";
-import type { HomepageContent, HomeCountryOption } from "@/lib/homepage";
+import type { BlogTopicCategoryValue } from "@/lib/blog-topic-categories";
+import type { HomepageContent, HomeCountryOption, HomePopularCountry } from "@/lib/homepage";
 import type { SiteSettingsMap } from "@/lib/site-settings.shared";
 import { updateHomepageEditorAction } from "@/lib/admin-actions";
 import { AdminLoadingButton } from "@/components/admin/AdminForm";
@@ -25,6 +26,7 @@ const HomepageLivePreview = dynamic(
 
 type PreviewData = {
   countryOptions: HomeCountryOption[];
+  countryCatalog: HomePopularCountry[];
   featuredItems: Array<{
     id: string;
     name: string;
@@ -35,20 +37,13 @@ type PreviewData = {
     processingTime: string | null;
     heroImage: string | null;
   }>;
-  popularCountries: Array<{
-    name: string;
-    slug: string;
-    shortDescription?: string | null;
-    flag?: string | null;
-    itemImage?: string | null;
-    visaPrograms: { id: string }[];
-  }>;
-  programs: Array<{
+  featuredArticles: Array<{
     id: string;
-    name: string;
+    title: string;
     slug: string;
     excerpt: string | null;
     publishedAt: Date | null;
+    topicCategory?: BlogTopicCategoryValue | null;
     country: { name: string; slug: string; itemImage?: string | null } | null;
   }>;
   settings: SiteSettingsMap;
@@ -131,8 +126,9 @@ function HomepageEditorInner({
       </div>
 
       <p className="mt-4 text-sm text-slate-500">
-        Öne çıkan programlar, ülkeler ve rehber yazıları ilgili menülerden yönetilir. SSS soruları
-        bu önizlemede düzenlenir; kaydettiğinizde anasayfaya yansır.
+        Öne çıkan programlar ve ülkeler ilgili menülerden yönetilir. Rehberler, blog düzenleme
+        sayfasındaki &quot;Anasayfada göster&quot; seçeneğiyle anasayfaya eklenir (en fazla 9).
+        SSS soruları bu önizlemede düzenlenir; kaydettiğinizde anasayfaya yansır.
       </p>
 
       <div className="mt-8 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">

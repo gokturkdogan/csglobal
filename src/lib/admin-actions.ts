@@ -6,6 +6,10 @@ import bcrypt from "bcryptjs";
 import { auth, signIn, signOut } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { BlogTopicCategory, SeoEntityType } from "@/generated/prisma/client";
+import {
+  countFeaturedBlogPostsForHomepage,
+} from "@/lib/repositories/blog.repository";
+import { HOMEPAGE_FEATURED_BLOGS_MAX } from "@/lib/homepage";
 import { isBlogTopicCategory } from "@/lib/blog-topic-categories";
 import { upsertSeoFromForm } from "@/lib/admin-seo";
 import { revalidateSitemap } from "@/lib/sitemap-revalidate";
@@ -117,6 +121,7 @@ const homepageKeys = [
   "homeHeroCtaPrimary",
   "homeHeroCtaSecondary",
   "homeHeroQuickLinksJson",
+  "homePopularCountrySlugsJson",
   "homeAboutTitle",
   "homeAboutText",
   "homeAboutImage",
@@ -586,6 +591,15 @@ export async function saveBlogPostAction(formData: FormData): Promise<AdminActio
     return adminFailure("Başlık ve slug zorunludur.");
   }
 
+  if (data.isFeatured) {
+    const featuredCount = await countFeaturedBlogPostsForHomepage(id ?? undefined);
+    if (featuredCount >= HOMEPAGE_FEATURED_BLOGS_MAX) {
+      return adminFailure(
+        `Anasayfada en fazla ${HOMEPAGE_FEATURED_BLOGS_MAX} rehber gösterilebilir. Başka bir rehberin "Anasayfada göster" seçeneğini kaldırın.`,
+      );
+    }
+  }
+
   try {
     if (id) {
       const existing = await prisma.blogPost.findUnique({
@@ -602,6 +616,7 @@ export async function saveBlogPostAction(formData: FormData): Promise<AdminActio
       });
 
       await upsertSeoFromForm(formData, SeoEntityType.BLOG_POST, id);
+      revalidatePath("/");
       revalidatePath(buildBlogListPath());
       revalidatePath(buildBlogPath(post.slug));
       revalidatePath("/admin/bloglar");
@@ -624,6 +639,7 @@ export async function saveBlogPostAction(formData: FormData): Promise<AdminActio
     });
 
     await upsertSeoFromForm(formData, SeoEntityType.BLOG_POST, post.id);
+    revalidatePath("/");
     revalidatePath(buildBlogListPath());
     revalidatePath(buildBlogPath(post.slug));
     revalidatePath("/admin/bloglar");

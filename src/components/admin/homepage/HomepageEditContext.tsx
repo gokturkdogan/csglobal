@@ -36,6 +36,7 @@ type HomepageEditContextValue = {
   ) => void;
   updateFaq: (index: number, field: "question" | "answer", value: string) => void;
   updateHeroQuickLinkSlug: (index: number, slug: string) => void;
+  updatePopularCountrySlug: (index: number, slug: string) => void;
   addFaq: () => void;
   removeFaq: (index: number) => void;
 };
@@ -165,6 +166,15 @@ export function HomepageEditProvider({
     }));
   }, []);
 
+  const updatePopularCountrySlug = useCallback((index: number, slug: string) => {
+    setContent((prev) => ({
+      ...prev,
+      popularCountrySlugs: prev.popularCountrySlugs.map((item, i) =>
+        i === index ? slug : item,
+      ),
+    }));
+  }, []);
+
   const value = useMemo(
     () => ({
       editing: true,
@@ -179,6 +189,7 @@ export function HomepageEditProvider({
       updateServiceArea,
       updateFaq,
       updateHeroQuickLinkSlug,
+      updatePopularCountrySlug,
       addFaq,
       removeFaq,
     }),
@@ -196,6 +207,7 @@ export function HomepageEditProvider({
       addFaq,
       removeFaq,
       updateHeroQuickLinkSlug,
+      updatePopularCountrySlug,
     ],
   );
 

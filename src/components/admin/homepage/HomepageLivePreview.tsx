@@ -1,6 +1,7 @@
 "use client";
 
-import type { HomepageContent, HomeCountryOption } from "@/lib/homepage";
+import type { BlogTopicCategoryValue } from "@/lib/blog-topic-categories";
+import type { HomepageContent, HomeCountryOption, HomePopularCountry } from "@/lib/homepage";
 import type { SiteSettingsMap } from "@/lib/site-settings.shared";
 import { HomeHero } from "@/components/home/HomeHero";
 import { HomeAbout } from "@/components/home/HomeAbout";
@@ -12,11 +13,12 @@ import { HomeServiceAreas } from "@/components/home/HomeServiceAreas";
 import { HomeFaqPreview } from "@/components/home/HomeFaqPreview";
 import { HomeFeaturedSection } from "@/components/home/HomeFeaturedSection";
 import { HomeCountriesSection } from "@/components/home/HomeCountriesSection";
-import { HomeProgramsSection } from "@/components/home/HomeProgramsSection";
+import { HomeArticlesSection } from "@/components/home/HomeArticlesSection";
 import { useHomepageEdit } from "./HomepageEditContext";
 
 type PreviewData = {
   countryOptions: HomeCountryOption[];
+  countryCatalog: HomePopularCountry[];
   featuredItems: Array<{
     id: string;
     name: string;
@@ -27,20 +29,13 @@ type PreviewData = {
     processingTime: string | null;
     heroImage: string | null;
   }>;
-  popularCountries: Array<{
-    name: string;
-    slug: string;
-    shortDescription?: string | null;
-    flag?: string | null;
-    itemImage?: string | null;
-    visaPrograms: { id: string }[];
-  }>;
-  programs: Array<{
+  featuredArticles: Array<{
     id: string;
-    name: string;
+    title: string;
     slug: string;
     excerpt: string | null;
     publishedAt: Date | null;
+    topicCategory?: BlogTopicCategoryValue | null;
     country: { name: string; slug: string; itemImage?: string | null } | null;
   }>;
   settings: SiteSettingsMap;
@@ -74,9 +69,9 @@ export function HomepageLivePreview({
       <HomeWhyUs content={content} />
       <HomeSeoBlocks content={content} />
       <HomeProcess content={content} />
-      <HomeCountriesSection content={content} countries={previewData.popularCountries} />
+      <HomeCountriesSection content={content} countryCatalog={previewData.countryCatalog} />
       <HomeFaqPreview content={content} />
-      <HomeProgramsSection content={content} programs={previewData.programs} />
+      <HomeArticlesSection content={content} articles={previewData.featuredArticles} />
       <HomeCtaBanner content={content} settings={previewData.settings} />
     </div>
   );

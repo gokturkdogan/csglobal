@@ -1,4 +1,3 @@
-import { CountryGrid } from "@/components/domain/CountryCard";
 import { HomeHero } from "@/components/home/HomeHero";
 import { HomeAbout } from "@/components/home/HomeAbout";
 import { HomeWhyUs } from "@/components/home/HomeWhyUs";
@@ -9,13 +8,14 @@ import { HomeServiceAreas } from "@/components/home/HomeServiceAreas";
 import { HomeFaqPreview } from "@/components/home/HomeFaqPreview";
 import { HomeFeaturedSection } from "@/components/home/HomeFeaturedSection";
 import { HomeCountriesSection } from "@/components/home/HomeCountriesSection";
-import { HomeProgramsSection } from "@/components/home/HomeProgramsSection";
+import { HomeArticlesSection } from "@/components/home/HomeArticlesSection";
 import { findActiveCountries } from "@/lib/repositories/country.repository";
-import { findFeaturedPrograms, findLatestPublishedPrograms } from "@/lib/repositories/visa-program.repository";
+import { findFeaturedBlogPostsForHomepage } from "@/lib/repositories/blog.repository";
+import { findFeaturedPrograms } from "@/lib/repositories/visa-program.repository";
 import { findHomepageFaqs } from "@/lib/repositories/faq.repository";
 import { resolveServiceCardImage } from "@/lib/country-item-image";
 import { getSiteSettings } from "@/lib/settings";
-import { buildHomepageContent, HOMEPAGE_FAQ_MAX, normalizeHeroQuickLinkSlugs } from "@/lib/homepage";
+import { buildHomepageContent, HOMEPAGE_FAQ_MAX, normalizeHeroQuickLinkSlugs, normalizePopularCountrySlugs } from "@/lib/homepage";
 import {
   buildEntityMetadata,
   buildFaqJsonLd,
@@ -54,10 +54,10 @@ export default async function HomePage() {
   const settings = await getSiteSettings();
   let content = buildHomepageContent(settings);
 
-  const [countries, featured, latestPrograms] = await Promise.all([
+  const [countries, featured, featuredArticles] = await Promise.all([
     findActiveCountries(),
     findFeaturedPrograms(),
-    findLatestPublishedPrograms(3),
+    findFeaturedBlogPostsForHomepage(),
   ]);
 
   if (!settings.homeFaqJson?.trim()) {
@@ -80,12 +80,23 @@ export default async function HomePage() {
     flag: country.flag,
   }));
 
+  const countryCatalog = countries.map((country) => ({
+    name: country.name,
+    slug: country.slug,
+    shortDescription: country.shortDescription,
+    flag: country.flag,
+    itemImage: country.itemImage,
+    visaPrograms: country.visaPrograms,
+  }));
+
   content = {
     ...content,
     heroQuickLinkSlugs: normalizeHeroQuickLinkSlugs(content.heroQuickLinkSlugs, countryOptions),
+    popularCountrySlugs: normalizePopularCountrySlugs(
+      content.popularCountrySlugs,
+      countryOptions,
+    ),
   };
-
-  const popular = countries.slice(0, 6);
 
   const featuredItems = featured.map((s) => ({
     id: s.id,
@@ -124,9 +135,9 @@ export default async function HomePage() {
       <HomeWhyUs content={content} />
       <HomeSeoBlocks content={content} />
       <HomeProcess content={content} />
-      <HomeCountriesSection content={content} countries={popular} />
+      <HomeCountriesSection content={content} countryCatalog={countryCatalog} />
       <HomeFaqPreview content={content} />
-      <HomeProgramsSection content={content} programs={latestPrograms} />
+      <HomeArticlesSection content={content} articles={featuredArticles} />
       <HomeCtaBanner content={content} settings={settings} />
     </>
   );
