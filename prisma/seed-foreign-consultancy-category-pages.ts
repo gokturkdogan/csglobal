@@ -18,8 +18,10 @@ import {
 
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://csglobal.com").replace(/\/$/, "");
 
-type CategoryPageSeed = typeof oturmaIzniCategoryPageSeed;
-type CategorySeo = typeof oturmaIzniCategorySeo;
+type CategoryPageSeed =
+  | typeof oturmaIzniCategoryPageSeed
+  | typeof calismaIzniCategoryPageSeed;
+type CategorySeo = typeof oturmaIzniCategorySeo | typeof calismaIzniCategorySeo;
 
 const CATEGORY_SEEDS: Array<{
   slug: string;
