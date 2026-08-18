@@ -53,9 +53,14 @@ export default async function AdminForeignConsultancyPage({ searchParams }: Prop
         title="Yabancı Danışmanlık İçerik"
         description="Oturma ve çalışma izni danışmanlık içeriklerini yönetin. Ülke modülünden bağımsızdır."
         actions={
-          <AdminButtonLink href="/admin/yabanci-danismanlik/new">
-            + Yeni İçerik
-          </AdminButtonLink>
+          <div className="flex flex-wrap items-center gap-2">
+            <AdminButtonLink href="/admin/yabanci-danismanlik/icerik-aktar" variant="secondary">
+              URL Aktar
+            </AdminButtonLink>
+            <AdminButtonLink href="/admin/yabanci-danismanlik/new">
+              + Yeni İçerik
+            </AdminButtonLink>
+          </div>
         }
       />
 

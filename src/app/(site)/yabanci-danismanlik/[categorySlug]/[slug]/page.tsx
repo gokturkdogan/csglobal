@@ -1,11 +1,15 @@
 import { notFound } from "next/navigation";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { ContactCTA } from "@/components/domain/ContactCTA";
+import { ForeignConsultancyContentsPanel } from "@/components/domain/ForeignConsultancyContentsPanel";
 import { ServiceDetailContent } from "@/components/domain/ServiceDetailContent";
 import { ServicePageHero } from "@/components/domain/ServicePageHero";
 import { ServiceTableOfContents } from "@/components/domain/ServiceTableOfContents";
 import { optimizeCloudinaryDeliveryUrl, siteImages } from "@/lib/media";
-import { findForeignConsultancyContentBySlug } from "@/lib/repositories/foreign-consultancy.repository";
+import {
+  findActiveForeignConsultancyContentsByCategorySlug,
+  findForeignConsultancyContentBySlug,
+} from "@/lib/repositories/foreign-consultancy.repository";
 import { getSiteSettings } from "@/lib/settings";
 import { getServiceSectionNavItems } from "@/lib/service-page";
 import {
@@ -65,7 +69,8 @@ export default async function ForeignConsultancyContentPage({ params }: Props) {
     ? optimizeCloudinaryDeliveryUrl(settings.contactHeroImage.trim())
     : siteImages.countryDetailHero;
 
-  const [seoStructuredData] = await Promise.all([
+  const [categoryContents, seoStructuredData] = await Promise.all([
+    findActiveForeignConsultancyContentsByCategorySlug(categorySlug),
     findEntityStructuredDataJsonLd(SeoEntityType.FOREIGN_CONSULTANCY, content.id),
   ]);
 
@@ -97,9 +102,16 @@ export default async function ForeignConsultancyContentPage({ params }: Props) {
 
   const sectionNav = getServiceSectionNavItems(content.sectionsJson, []);
   const showTocSidebar = sectionNav.length > 0;
-  const contentGridClass = showTocSidebar
-    ? "mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,240px)] lg:items-start"
-    : "mt-8";
+  const showLeftPanel = categoryContents.length > 0;
+
+  const contentGridClass = showLeftPanel
+    ? showTocSidebar
+      ? "mt-8 grid gap-6 lg:grid-cols-[minmax(240px,280px)_minmax(0,1fr)_minmax(0,240px)] lg:items-start"
+      : "mt-8 grid gap-6 lg:grid-cols-[minmax(240px,280px)_minmax(0,1fr)] lg:items-start"
+    : showTocSidebar
+      ? "mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,240px)] lg:items-start"
+      : "mt-8";
+
   const tocStickyClass =
     "lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100dvh-var(--site-header-height)-2rem)] lg:overflow-y-auto";
 
@@ -128,7 +140,24 @@ export default async function ForeignConsultancyContentPage({ params }: Props) {
         <Breadcrumb items={breadcrumbItems} />
 
         <div className={contentGridClass}>
-          <div className="min-w-0">
+          {showLeftPanel && (
+            <aside className="order-2 country-panel-sticky min-w-0 lg:order-1 lg:z-30 lg:self-start">
+              <ForeignConsultancyContentsPanel
+                categorySlug={categorySlug}
+                heading="Benzer içerikler"
+                subtitle={categoryLabel}
+                currentSlug={content.slug}
+                items={categoryContents.map((item) => ({
+                  id: item.id,
+                  name: item.name,
+                  slug: item.slug,
+                  category: item.category as ForeignConsultancyCategoryValue,
+                }))}
+              />
+            </aside>
+          )}
+
+          <div className={`order-1 min-w-0 ${showLeftPanel ? "lg:order-2" : ""}`}>
             <ServiceDetailContent
               sectionsJson={content.sectionsJson}
               legacySections={[]}
@@ -151,7 +180,7 @@ export default async function ForeignConsultancyContentPage({ params }: Props) {
           </div>
 
           {showTocSidebar && (
-            <aside className={`order-first min-w-0 lg:order-last ${tocStickyClass}`}>
+            <aside className={`order-3 min-w-0 lg:order-3 ${tocStickyClass}`}>
               <ServiceTableOfContents items={sectionNav} />
             </aside>
           )}
