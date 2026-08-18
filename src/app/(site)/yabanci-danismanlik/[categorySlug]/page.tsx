@@ -164,6 +164,7 @@ export default async function ForeignConsultancyCategoryPage({ params }: Props) 
                 featureImage2={displayPage.featureImage2}
                 featureImage2Title={displayPage.featureImage2Title}
                 featureImage2Text={displayPage.featureImage2Text}
+                featureImage1Priority
               />
             ) : (
               <p className="text-base leading-relaxed text-slate-600 md:text-lg">

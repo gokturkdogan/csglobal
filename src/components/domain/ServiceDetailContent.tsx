@@ -18,6 +18,7 @@ type FeatureBlock = {
   title?: string | null;
   text?: string | null;
   reverse?: boolean;
+  priority?: boolean;
 };
 
 function ServiceFeatureBlock({
@@ -25,6 +26,7 @@ function ServiceFeatureBlock({
   title,
   text,
   reverse = false,
+  priority = false,
 }: FeatureBlock) {
   const src = resolveServiceFeatureImage(image);
   if (!src || (!title?.trim() && !text?.trim())) return null;
@@ -43,6 +45,7 @@ function ServiceFeatureBlock({
             fill
             sizes="(max-width: 1024px) 100vw, 50vw"
             className="object-cover"
+            priority={priority}
           />
         </div>
         <div className="flex flex-col justify-center p-6 md:p-8 lg:p-10">
@@ -85,6 +88,7 @@ type Props = {
   featureImage2?: string | null;
   featureImage2Title?: string | null;
   featureImage2Text?: string | null;
+  featureImage1Priority?: boolean;
 };
 
 export function ServiceDetailContent({
@@ -96,6 +100,7 @@ export function ServiceDetailContent({
   featureImage2,
   featureImage2Title,
   featureImage2Text,
+  featureImage1Priority = false,
 }: Props) {
   const sections = resolveDisplaySections(sectionsJson, legacySections);
 
@@ -124,6 +129,7 @@ export function ServiceDetailContent({
         image={featureImage1}
         title={featureImage1Title}
         text={featureImage1Text}
+        priority={featureImage1Priority}
       />
 
       <ServiceFeatureBlock
