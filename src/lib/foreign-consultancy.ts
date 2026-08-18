@@ -16,8 +16,8 @@ export const FOREIGN_CONSULTANCY_OPTIONS = FOREIGN_CONSULTANCY_CATEGORY_SLUGS.ma
     title: getForeignConsultancyCategoryLabel(category),
     description:
       slug === "oturma-izni"
-        ? "Türkiye'de ikamet, aile birleşimi ve uzun süreli oturum başvuruları için danışmanlık."
-        : "Türkiye'de yabancı personel çalışma izni, işveren başvuruları ve süreç takibi.",
+        ? "Türkiye ikamet izni başvurusu, yenileme ve uzun dönem oturum için evrak listesi, randevu planı ve süreç takibi."
+        : "Türkiye çalışma izni başvurusu, yenileme ve işveren değişikliği için evrak listesi, başvuru planı ve süreç takibi.",
     category,
   };
 });

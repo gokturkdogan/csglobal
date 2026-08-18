@@ -2,9 +2,10 @@ import type { ServiceContentSection } from "../../src/lib/service-page";
 import { serializeServiceSections } from "../../src/lib/service-page";
 
 const IMG = {
-  office: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80&auto=format",
   travel: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1200&q=80&auto=format",
 };
+
+const EVRAK_KONTROLU_IMAGE = "/images/foreign-consultancy/evrak-listesi-kontrolu.png";
 
 export const OTURMA_IZNI_CATEGORY_PAGE_ID = "fc-cat-oturma-izni";
 
@@ -72,7 +73,7 @@ export const oturmaIzniCategoryPageSeed = {
   heroSubtitle:
     "Kısa dönem ikamet, aile birleşimi ve uzun dönem oturum başvurularında evrak ve randevu planını birlikte oluşturuyoruz.",
   sectionsJson: serializeServiceSections(sections),
-  featureImage1: IMG.office,
+  featureImage1: EVRAK_KONTROLU_IMAGE,
   featureImage1Title: "Evrak listesi ve dosya kontrolü",
   featureImage1Text:
     "İzin türüne göre evrak listesini çıkarıyoruz; pasaport, sigorta, adres ve destekleyici belgelerin uyumunu başvuru öncesinde kontrol ediyoruz. Eksik veya hatalı dosya nedeniyle randevu kaybı yaşanmaması için dosyayı birlikte gözden geçiriyoruz.",
