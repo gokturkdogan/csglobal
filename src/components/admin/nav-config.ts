@@ -27,7 +27,6 @@ export const adminNav: AdminNavItem[] = [
   { href: "/admin/categories", label: "Kategoriler", icon: "folder" },
   { href: "/admin/vize-programlari", label: "Vize Programları", icon: "briefcase" },
   { href: "/admin/yabanci-danismanlik", label: "Yabancı Danışmanlık İçerik", icon: "foreign" },
-  { href: "/admin/yabanci-danismanlik/icerik-aktar", label: "URL İçerik Aktar", icon: "foreign" },
   { href: "/admin/yabanci-danismanlik/kategori/oturma-izni", label: "Oturma İzni İçerik", icon: "foreign" },
   { href: "/admin/yabanci-danismanlik/kategori/calisma-izni", label: "Çalışma İzni İçerik", icon: "foreign" },
   { href: "/admin/bloglar", label: "Bloglar", icon: "article" },

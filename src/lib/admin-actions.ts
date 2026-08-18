@@ -15,11 +15,6 @@ import {
   buildForeignConsultancyCategoryPath,
 } from "@/lib/foreign-consultancy";
 import {
-  importForeignConsultancyFromUrl,
-  parseImportUrlList,
-  FOREIGN_CONSULTANCY_IMPORT_URL_LIMIT,
-} from "@/lib/foreign-consultancy-url-import";
-import {
   isForeignConsultancyCategoryValue,
   foreignConsultancyCategoryToSlug,
   foreignConsultancySlugToCategory,
@@ -658,93 +653,6 @@ export async function saveForeignConsultancyContentAction(
       adminErrorMessage(error, "İçerik kaydedilemedi. Lütfen tekrar deneyin."),
     );
   }
-}
-
-export async function importForeignConsultancyFromUrlsAction(
-  formData: FormData,
-): Promise<AdminActionResult> {
-  await requireAdmin();
-
-  const rawUrls: string[] = [];
-  for (let i = 1; i <= FOREIGN_CONSULTANCY_IMPORT_URL_LIMIT; i++) {
-    rawUrls.push((formData.get(`importUrl${i}`) as string) ?? "");
-  }
-  const urls = parseImportUrlList(rawUrls);
-
-  if (urls.length === 0) {
-    return adminFailure("En az bir URL girin.");
-  }
-
-  const category = ForeignConsultancyCategory.CALISMA_IZNI;
-  const createdIds: string[] = [];
-  const errors: string[] = [];
-
-  const revalidateImported = (slug: string) => {
-    const categorySlug = foreignConsultancyCategoryToSlug(category);
-    revalidatePath(FOREIGN_CONSULTANCY_BASE_PATH);
-    revalidatePath(`${FOREIGN_CONSULTANCY_BASE_PATH}/${categorySlug}`);
-    revalidatePath(buildForeignConsultancyContentPath(categorySlug, slug));
-    revalidatePath("/admin/yabanci-danismanlik");
-    revalidatePath("/admin/yabanci-danismanlik/icerik-aktar");
-  };
-
-  for (const url of urls) {
-    try {
-      const parsed = await importForeignConsultancyFromUrl(url);
-      const slugTaken = await prisma.foreignConsultancyContent.findUnique({
-        where: { slug: parsed.slug },
-        select: { id: true },
-      });
-
-      if (slugTaken) {
-        errors.push(`${url}: "${parsed.slug}" slug zaten kayıtlı.`);
-        continue;
-      }
-
-      const content = await prisma.foreignConsultancyContent.create({
-        data: {
-          category,
-          name: parsed.name,
-          slug: parsed.slug,
-          excerpt: parsed.excerpt,
-          shortDescription: parsed.shortDescription,
-          content: "",
-          heroTitle: parsed.heroTitle,
-          heroSubtitle: parsed.heroSubtitle,
-          sectionsJson: parsed.sectionsJson,
-          isActive: true,
-          sortOrder: 0,
-          publishedAt: new Date(),
-        },
-      });
-
-      createdIds.push(content.id);
-      revalidateImported(parsed.slug);
-    } catch (error) {
-      errors.push(
-        `${url}: ${adminErrorMessage(error, "İçerik aktarılamadı.")}`,
-      );
-    }
-  }
-
-  if (createdIds.length === 0) {
-    return adminFailure(
-      errors.length > 0
-        ? errors.join("\n")
-        : "Hiçbir içerik aktarılamadı.",
-    );
-  }
-
-  revalidateSitemap();
-
-  const summary = `${createdIds.length} içerik çalışma izni kategorisine aktarıldı ve yayına alındı.`;
-  const message =
-    errors.length > 0 ? `${summary}\n${errors.join("\n")}` : summary;
-
-  const redirectTo =
-    `/admin/yabanci-danismanlik/icerik-aktar?created=${createdIds.join(",")}`;
-
-  return adminSuccess(message, redirectTo);
 }
 
 export async function saveForeignConsultancyCategoryPageAction(
