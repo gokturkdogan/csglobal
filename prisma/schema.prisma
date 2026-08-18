@@ -22,6 +22,13 @@ enum SeoEntityType {
   BLOG_POST
   SITE_PAGE
   CONSULATE
+  FOREIGN_CONSULTANCY
+  FOREIGN_CONSULTANCY_CATEGORY
+}
+
+enum ForeignConsultancyCategory {
+  OTURMA_IZNI
+  CALISMA_IZNI
 }
 
 enum SectionType {
@@ -196,6 +203,58 @@ model BlogPost {
   @@index([countryId])
   @@index([topicCategory])
   @@map("blog_posts")
+}
+
+model ForeignConsultancyContent {
+  id                  String                     @id @default(cuid())
+  category            ForeignConsultancyCategory
+  name                String
+  slug                String                     @unique
+  excerpt             String?                    @db.Text
+  shortDescription    String?                    @map("short_description") @db.Text
+  content             String                     @default("") @db.Text
+  heroTitle           String?                    @map("hero_title")
+  heroSubtitle        String?                    @map("hero_subtitle") @db.Text
+  sectionsJson        String?                    @map("sections_json") @db.Text
+  featureImage1       String?                    @map("feature_image_1")
+  featureImage1Title  String?                    @map("feature_image_1_title")
+  featureImage1Text   String?                    @map("feature_image_1_text") @db.Text
+  featureImage2       String?                    @map("feature_image_2")
+  featureImage2Title  String?                    @map("feature_image_2_title")
+  featureImage2Text   String?                    @map("feature_image_2_text") @db.Text
+  processingTime      String?                    @map("processing_time")
+  requiresAppointment Boolean                    @default(false) @map("requires_appointment")
+  isActive            Boolean                    @default(true) @map("is_active")
+  sortOrder           Int                        @default(0) @map("sort_order")
+  publishedAt         DateTime?                  @map("published_at")
+  createdAt           DateTime                   @default(now()) @map("created_at")
+  updatedAt           DateTime                   @updatedAt @map("updated_at")
+
+  @@index([category, isActive, sortOrder])
+  @@map("foreign_consultancy_contents")
+}
+
+model ForeignConsultancyCategoryPage {
+  id                  String                     @id @default(cuid())
+  category            ForeignConsultancyCategory @unique
+  name                String
+  excerpt             String?                    @db.Text
+  shortDescription    String?                    @map("short_description") @db.Text
+  content             String                     @default("") @db.Text
+  heroTitle           String?                    @map("hero_title")
+  heroSubtitle        String?                    @map("hero_subtitle") @db.Text
+  sectionsJson        String?                    @map("sections_json") @db.Text
+  featureImage1       String?                    @map("feature_image_1")
+  featureImage1Title  String?                    @map("feature_image_1_title")
+  featureImage1Text   String?                    @map("feature_image_1_text") @db.Text
+  featureImage2       String?                    @map("feature_image_2")
+  featureImage2Title  String?                    @map("feature_image_2_title")
+  featureImage2Text   String?                    @map("feature_image_2_text") @db.Text
+  isActive            Boolean                    @default(true) @map("is_active")
+  updatedAt           DateTime                   @updatedAt @map("updated_at")
+  createdAt           DateTime                   @default(now()) @map("created_at")
+
+  @@map("foreign_consultancy_category_pages")
 }
 
 model VisaProgramSection {

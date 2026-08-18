@@ -1,5 +1,10 @@
 import { cache } from "react";
+import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import {
+  buildAdminStringSearchWhere,
+  normalizeAdminSearchQuery,
+} from "@/lib/admin-list-filters";
 import {
   consulatePublicDetailSelect,
   consulatePublicListSelect,
@@ -39,11 +44,37 @@ export async function findConsulateForAdmin(id: string) {
   });
 }
 
-export async function listConsulatesForAdmin(options?: { skip?: number; take?: number }) {
+export type AdminConsulateListFilters = {
+  q?: string;
+  countryId?: string;
+};
+
+function buildConsulateAdminWhere(
+  filters?: AdminConsulateListFilters,
+): Prisma.ConsulateWhereInput {
+  const and: Prisma.ConsulateWhereInput[] = [];
+  const q = normalizeAdminSearchQuery(filters?.q);
+  const searchWhere = buildAdminStringSearchWhere(q, ["name", "slug"]);
+  if (searchWhere) and.push(searchWhere);
+
+  if (filters?.countryId?.trim()) {
+    and.push({ countryId: filters.countryId.trim() });
+  }
+
+  if (and.length === 0) return {};
+  if (and.length === 1) return and[0];
+  return { AND: and };
+}
+
+export async function listConsulatesForAdmin(
+  options?: { skip?: number; take?: number } & AdminConsulateListFilters,
+) {
+  const { skip, take, q, countryId } = options ?? {};
   return prisma.consulate.findMany({
+    where: buildConsulateAdminWhere({ q, countryId }),
     orderBy: [{ countryId: "asc" }, { sortOrder: "asc" }, { name: "asc" }],
-    skip: options?.skip,
-    take: options?.take,
+    skip,
+    take,
     select: {
       id: true,
       name: true,
@@ -56,8 +87,8 @@ export async function listConsulatesForAdmin(options?: { skip?: number; take?: n
   });
 }
 
-export async function countConsulatesForAdmin() {
-  return prisma.consulate.count();
+export async function countConsulatesForAdmin(filters?: AdminConsulateListFilters) {
+  return prisma.consulate.count({ where: buildConsulateAdminWhere(filters) });
 }
 
 export async function findAllActiveConsulates() {

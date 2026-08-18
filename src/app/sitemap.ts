@@ -9,6 +9,13 @@ import { findBlogPostsForSitemap } from "@/lib/repositories/blog.repository";
 import { findAllActiveConsulates } from "@/lib/repositories/consulate.repository";
 import { buildCategoryPath, buildVisaProgramPath } from "@/lib/services/path-resolver.service";
 import { buildBlogListPath, buildBlogPath, buildConsulatePath } from "@/lib/paths";
+import {
+  FOREIGN_CONSULTANCY_OPTIONS,
+  buildForeignConsultancyCategoryPath,
+  buildForeignConsultancyContentPath,
+} from "@/lib/foreign-consultancy";
+import { findForeignConsultancyContentsForSitemap } from "@/lib/repositories/foreign-consultancy.repository";
+import { foreignConsultancyCategoryToSlug } from "@/lib/foreign-consultancy-categories";
 
 export const dynamic = "force-dynamic";
 
@@ -18,18 +25,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: base, changeFrequency: "weekly", priority: 1 },
     { url: `${base}/ulkeler`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/hizmetlerimiz`, changeFrequency: "weekly", priority: 0.85 },
+    { url: `${base}/yabanci-danismanlik`, changeFrequency: "weekly", priority: 0.85 },
+    ...FOREIGN_CONSULTANCY_OPTIONS.map((option) => ({
+      url: `${base}${buildForeignConsultancyCategoryPath(option.slug)}`,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    })),
     { url: `${base}${buildBlogListPath()}`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/hakkimizda`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/iletisim`, changeFrequency: "monthly", priority: 0.8 },
   ];
 
   try {
-    const [countries, programs, categoryPairs, consulates, blogPosts] = await Promise.all([
+    const [countries, programs, categoryPairs, consulates, blogPosts, foreignContents] =
+      await Promise.all([
       findCountriesForSitemap(),
       findProgramsForSitemap(),
       findCountryCategoryPairsForSitemap(),
       findAllActiveConsulates(),
       findBlogPostsForSitemap(),
+      findForeignConsultancyContentsForSitemap(),
     ]);
 
     const countryRoutes = countries.map((c) => ({
@@ -67,6 +82,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.75,
     }));
 
+    const foreignContentRoutes = foreignContents.map((item) => ({
+      url: `${base}${buildForeignConsultancyContentPath(
+        foreignConsultancyCategoryToSlug(item.category),
+        item.slug,
+      )}`,
+      lastModified: item.updatedAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.75,
+    }));
+
     return [
       ...staticRoutes,
       ...countryRoutes,
@@ -74,6 +99,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ...categoryRoutes,
       ...consulateRoutes,
       ...blogRoutes,
+      ...foreignContentRoutes,
     ];
   } catch {
     return staticRoutes;

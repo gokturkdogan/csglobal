@@ -4,6 +4,11 @@ import { useEffect, useState } from "react";
 import { formatPublicSitePath } from "@/lib/site-url";
 import { isValidSlug } from "@/lib/slug";
 import { useVisualSlug } from "@/components/admin/VisualSlugProvider";
+import {
+  foreignConsultancyCategoryToSlug,
+  type ForeignConsultancyCategoryValue,
+} from "@/lib/foreign-consultancy-categories";
+import { FOREIGN_CONSULTANCY_BASE_PATH } from "@/lib/foreign-consultancy";
 
 export function AdminPublicUrlDisplay({ path }: { path: string | null | undefined }) {
   if (!path?.trim()) return null;
@@ -86,6 +91,57 @@ export function AdminServicePublicUrl({
     if (!countrySlug) {
       return (
         <AdminPublicUrlPending message="Site yolu: ülke seçildiğinde görünür." />
+      );
+    }
+    return (
+      <AdminPublicUrlPending
+        message="Site yolu: geçerli slug girildiğinde görünür."
+      />
+    );
+  }
+
+  return <AdminPublicUrlDisplay path={path} />;
+}
+
+/** Yabancı danışmanlık: /yabanci-danismanlik/{kategori}/{slug} */
+export function AdminForeignConsultancyPublicUrl({
+  initialCategory,
+  initialPath,
+}: {
+  initialCategory?: ForeignConsultancyCategoryValue;
+  initialPath?: string | null;
+}) {
+  const { slug, slugReady } = useVisualSlug();
+  const [category, setCategory] = useState<ForeignConsultancyCategoryValue | "">(
+    initialCategory ?? "",
+  );
+
+  useEffect(() => {
+    const select = document.querySelector(
+      "select[name='category']",
+    ) as HTMLSelectElement | null;
+    if (!select) return;
+
+    const sync = () => {
+      const value = select.value;
+      setCategory(value as ForeignConsultancyCategoryValue | "");
+    };
+
+    sync();
+    select.addEventListener("change", sync);
+    return () => select.removeEventListener("change", sync);
+  }, []);
+
+  const livePath =
+    category && slugReady
+      ? `${FOREIGN_CONSULTANCY_BASE_PATH}/${foreignConsultancyCategoryToSlug(category)}/${slug}`
+      : null;
+  const path = livePath ?? initialPath;
+
+  if (!path) {
+    if (!category) {
+      return (
+        <AdminPublicUrlPending message="Site yolu: kategori seçildiğinde görünür." />
       );
     }
     return (

@@ -6,9 +6,16 @@ type Props = {
   page: number;
   pageSize: number;
   totalCount: number;
+  filters?: Record<string, string | undefined>;
 };
 
-export function AdminPagination({ basePath, page, pageSize, totalCount }: Props) {
+export function AdminPagination({
+  basePath,
+  page,
+  pageSize,
+  totalCount,
+  filters,
+}: Props) {
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
   if (totalCount <= pageSize) return null;
 
@@ -23,13 +30,19 @@ export function AdminPagination({ basePath, page, pageSize, totalCount }: Props)
       <span>{from}-{to} / {totalCount}</span>
       <div className="flex items-center gap-2">
         {page > 1 ? (
-          <Link href={buildAdminPageUrl(basePath, page - 1, pageSize)} className={linkClass}>
+          <Link
+            href={buildAdminPageUrl(basePath, page - 1, pageSize, filters)}
+            className={linkClass}
+          >
             Önceki
           </Link>
         ) : null}
         <span>Sayfa {page} / {totalPages}</span>
         {page < totalPages ? (
-          <Link href={buildAdminPageUrl(basePath, page + 1, pageSize)} className={linkClass}>
+          <Link
+            href={buildAdminPageUrl(basePath, page + 1, pageSize, filters)}
+            className={linkClass}
+          >
             Sonraki
           </Link>
         ) : null}

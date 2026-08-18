@@ -19,8 +19,15 @@ export function buildAdminPageUrl(
   basePath: string,
   page: number,
   pageSize: number,
+  filters?: Record<string, string | undefined>,
 ): string {
   const params = new URLSearchParams();
+  if (filters) {
+    for (const [key, value] of Object.entries(filters)) {
+      const trimmed = value?.trim();
+      if (trimmed) params.set(key, trimmed);
+    }
+  }
   if (page > 1) params.set("page", String(page));
   if (pageSize !== DEFAULT_ADMIN_PAGE_SIZE) {
     params.set("pageSize", String(pageSize));

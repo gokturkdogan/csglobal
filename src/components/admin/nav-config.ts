@@ -11,6 +11,7 @@ export type AdminNavIcon =
   | "globe"
   | "folder"
   | "briefcase"
+  | "foreign"
   | "article"
   | "guides"
   | "consulates"
@@ -25,6 +26,9 @@ export const adminNav: AdminNavItem[] = [
   { href: "/admin/countries", label: "Ülkeler", icon: "globe" },
   { href: "/admin/categories", label: "Kategoriler", icon: "folder" },
   { href: "/admin/vize-programlari", label: "Vize Programları", icon: "briefcase" },
+  { href: "/admin/yabanci-danismanlik", label: "Yabancı Danışmanlık İçerik", icon: "foreign" },
+  { href: "/admin/yabanci-danismanlik/kategori/oturma-izni", label: "Oturma İzni İçerik", icon: "foreign" },
+  { href: "/admin/yabanci-danismanlik/kategori/calisma-izni", label: "Çalışma İzni İçerik", icon: "foreign" },
   { href: "/admin/bloglar", label: "Bloglar", icon: "article" },
   { href: "/admin/consulates", label: "Konsolosluklar", icon: "consulates" },
   { href: "/admin/bloglarimiz", label: "Bloglarımız", icon: "guides" },

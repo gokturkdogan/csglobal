@@ -7,10 +7,17 @@ import {
   countSiteAssetsForAdmin,
   listSiteAssetsForAdmin,
 } from "@/lib/repositories/site-asset.repository";
+import {
+  ADMIN_LIST_COUNTRY_PARAM,
+  buildAdminListFilterQuery,
+  resolveAdminListFilters,
+  type AdminListSearchParams,
+} from "@/lib/admin-list-filters";
 import { logAdminListPerf, resolveAdminPagination } from "@/lib/admin-pagination";
 import { SiteAssetBulkUploadField } from "@/components/admin/SiteAssetBulkUploadField";
 import { SiteAssetShowInMenuField } from "@/components/admin/SiteAssetShowInMenuField";
 import { AdminPagination } from "@/components/admin/AdminPagination";
+import { AdminListFilters } from "@/components/admin/AdminListFilters";
 import {
   AdminActionForm,
   AdminSelect,
@@ -29,23 +36,27 @@ function formatFileSize(bytes: number | null | undefined): string {
 export const dynamic = "force-dynamic";
 
 type Props = {
-  searchParams: Promise<{ page?: string; pageSize?: string }>;
+  searchParams: Promise<AdminListSearchParams>;
 };
 
 export default async function AdminDocumentsPage({ searchParams }: Props) {
   const params = await searchParams;
+  const filters = resolveAdminListFilters(params);
   const { page, pageSize, skip, take } = resolveAdminPagination(params);
+  const listFilters = { q: filters.q, countryId: filters.countryId };
+  const filterQuery = buildAdminListFilterQuery(filters);
+
   const start = performance.now();
-  const [assets, totalCount] = await Promise.all([
-    listSiteAssetsForAdmin({ skip, take }),
-    countSiteAssetsForAdmin(),
+  const [assets, totalCount, countries] = await Promise.all([
+    listSiteAssetsForAdmin({ skip, take, ...listFilters }),
+    countSiteAssetsForAdmin(listFilters),
+    prisma.country.findMany({
+      where: { isActive: true },
+      orderBy: { name: "asc" },
+      select: { id: true, name: true },
+    }),
   ]);
   logAdminListPerf("admin/dokumanlar", start, assets.length);
-  const countries = await prisma.country.findMany({
-    where: { isActive: true },
-    orderBy: { name: "asc" },
-    select: { id: true, name: true },
-  });
 
   return (
     <div className="space-y-6">
@@ -82,6 +93,24 @@ export default async function AdminDocumentsPage({ searchParams }: Props) {
         <AdminSubmitButton loadingLabel="Yükleniyor…">Yükle</AdminSubmitButton>
       </AdminActionForm>
 
+      <AdminListFilters
+        basePath="/admin/dokumanlar"
+        filters={filters}
+        searchPlaceholder="Dosya adı ara…"
+        fields={[
+          {
+            name: ADMIN_LIST_COUNTRY_PARAM,
+            label: "Ülke",
+            value: filters.countryId,
+            options: countries.map((country) => ({
+              value: country.id,
+              label: country.name,
+            })),
+            emptyLabel: "Tüm ülkeler",
+          },
+        ]}
+      />
+
       <AdminTable
         footer={
           <AdminPagination
@@ -89,6 +118,7 @@ export default async function AdminDocumentsPage({ searchParams }: Props) {
             page={page}
             pageSize={pageSize}
             totalCount={totalCount}
+            filters={filterQuery}
           />
         }
       >
@@ -104,7 +134,9 @@ export default async function AdminDocumentsPage({ searchParams }: Props) {
           {assets.length === 0 ? (
             <tr>
               <td colSpan={6} className="px-5 py-8 text-center text-sm text-slate-500">
-                Henüz döküman yüklenmemiş.
+                {filters.q || filters.countryId
+                  ? "Filtrelere uygun döküman bulunamadı."
+                  : "Henüz döküman yüklenmemiş."}
               </td>
             </tr>
           ) : (

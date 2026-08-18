@@ -20,6 +20,12 @@ const PAGES = [
     content: "Tüm ülkelerdeki vize, oturum ve göçmenlik programları.",
   },
   {
+    slug: "yabanci-danismanlik",
+    title: "Yabancı Danışmanlık",
+    content:
+      "Türkiye'de çalışma izni, oturum izni ve yabancı personel süreçleri için kurumsal danışmanlık.",
+  },
+  {
     slug: "home",
     title: "Anasayfa",
     content: "CSGLOBAL vize ve göçmenlik danışmanlığı.",

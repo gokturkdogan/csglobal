@@ -5,10 +5,21 @@ import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { auth, signIn, signOut } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { BlogTopicCategory, SeoEntityType } from "@/generated/prisma/client";
+import { BlogTopicCategory, ForeignConsultancyCategory, SeoEntityType } from "@/generated/prisma/client";
 import {
   countFeaturedBlogPostsForHomepage,
 } from "@/lib/repositories/blog.repository";
+import {
+  FOREIGN_CONSULTANCY_BASE_PATH,
+  buildForeignConsultancyContentPath,
+  buildForeignConsultancyCategoryPath,
+} from "@/lib/foreign-consultancy";
+import {
+  isForeignConsultancyCategoryValue,
+  foreignConsultancyCategoryToSlug,
+  foreignConsultancySlugToCategory,
+  getForeignConsultancyCategoryLabel,
+} from "@/lib/foreign-consultancy-categories";
 import { HOMEPAGE_FEATURED_BLOGS_MAX } from "@/lib/homepage";
 import { isBlogTopicCategory } from "@/lib/blog-topic-categories";
 import { upsertSeoFromForm } from "@/lib/admin-seo";
@@ -535,6 +546,183 @@ export async function saveVisaProgramAction(formData: FormData): Promise<AdminAc
   } catch (error) {
     return adminFailure(
       adminErrorMessage(error, "Vize programı kaydedilemedi. Lütfen tekrar deneyin."),
+    );
+  }
+}
+
+export async function saveForeignConsultancyContentAction(
+  formData: FormData,
+): Promise<AdminActionResult> {
+  await requireAdmin();
+  const id = formData.get("id") as string | null;
+  const sectionsRaw = (formData.get("sectionsJson") as string) || "";
+  const isActive = formData.get("isActive") === "on";
+  const categoryRaw = (formData.get("category") as string)?.trim();
+
+  if (!categoryRaw || !isForeignConsultancyCategoryValue(categoryRaw)) {
+    return adminFailure("Oturma izni veya çalışma izni kategorisi seçin.");
+  }
+
+  const category = categoryRaw as ForeignConsultancyCategory;
+
+  const data = {
+    category,
+    name: (formData.get("name") as string)?.trim(),
+    slug: (formData.get("slug") as string)?.trim(),
+    excerpt: ((formData.get("excerpt") as string) || "").trim() || null,
+    content: (formData.get("content") as string) || "",
+    shortDescription: ((formData.get("shortDescription") as string) || "").trim() || null,
+    processingTime: ((formData.get("processingTime") as string) || "").trim() || null,
+    heroTitle: ((formData.get("heroTitle") as string) || "").trim() || null,
+    heroSubtitle: ((formData.get("heroSubtitle") as string) || "").trim() || null,
+    sectionsJson: sectionsRaw.trim() || null,
+    featureImage1: ((formData.get("featureImage1") as string) || "").trim() || null,
+    featureImage1Title: normalizeServiceFeatureTitle(
+      formData.get("featureImage1Title") as string,
+    ),
+    featureImage1Text: normalizeServiceFeatureText(
+      formData.get("featureImage1Text") as string,
+    ),
+    featureImage2: ((formData.get("featureImage2") as string) || "").trim() || null,
+    featureImage2Title: normalizeServiceFeatureTitle(
+      formData.get("featureImage2Title") as string,
+    ),
+    featureImage2Text: normalizeServiceFeatureText(
+      formData.get("featureImage2Text") as string,
+    ),
+    requiresAppointment: formData.get("requiresAppointment") === "on",
+    isActive,
+    sortOrder: Number(formData.get("sortOrder") || 0),
+    publishedAt: isActive ? new Date() : null,
+  };
+
+  if (!data.name || !data.slug) {
+    return adminFailure("Başlık ve slug zorunludur.");
+  }
+
+  const revalidateForeignConsultancy = (contentSlug: string, contentCategory: ForeignConsultancyCategory) => {
+    const categorySlug = foreignConsultancyCategoryToSlug(contentCategory);
+    revalidatePath(FOREIGN_CONSULTANCY_BASE_PATH);
+    revalidatePath(`${FOREIGN_CONSULTANCY_BASE_PATH}/${categorySlug}`);
+    revalidatePath(buildForeignConsultancyContentPath(categorySlug, contentSlug));
+    revalidatePath("/");
+  };
+
+  try {
+    if (id) {
+      const existing = await prisma.foreignConsultancyContent.findUnique({
+        where: { id },
+        select: { publishedAt: true },
+      });
+
+      const content = await prisma.foreignConsultancyContent.update({
+        where: { id },
+        data: {
+          ...data,
+          publishedAt: isActive ? (existing?.publishedAt ?? new Date()) : null,
+        },
+      });
+
+      await upsertSeoFromForm(formData, SeoEntityType.FOREIGN_CONSULTANCY, id);
+      revalidateForeignConsultancy(content.slug, content.category);
+      revalidatePath("/admin/yabanci-danismanlik");
+      revalidateSitemap();
+      return adminSuccess(
+        "Yabancı danışmanlık içeriği başarıyla güncellendi.",
+        `/admin/yabanci-danismanlik/${id}`,
+      );
+    }
+
+    const content = await prisma.foreignConsultancyContent.create({
+      data: {
+        ...data,
+        publishedAt: isActive ? new Date() : null,
+      },
+    });
+
+    await upsertSeoFromForm(formData, SeoEntityType.FOREIGN_CONSULTANCY, content.id);
+    revalidateForeignConsultancy(content.slug, content.category);
+    revalidatePath("/admin/yabanci-danismanlik");
+    revalidateSitemap();
+    return adminSuccess(
+      "Yabancı danışmanlık içeriği başarıyla oluşturuldu.",
+      `/admin/yabanci-danismanlik/${content.id}`,
+    );
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "İçerik kaydedilemedi. Lütfen tekrar deneyin."),
+    );
+  }
+}
+
+export async function saveForeignConsultancyCategoryPageAction(
+  formData: FormData,
+): Promise<AdminActionResult> {
+  await requireAdmin();
+  const id = (formData.get("id") as string)?.trim();
+  const categorySlug = (formData.get("categorySlug") as string)?.trim();
+  const sectionsRaw = (formData.get("sectionsJson") as string) || "";
+  const isActive = formData.get("isActive") === "on";
+
+  const categoryValue = foreignConsultancySlugToCategory(categorySlug);
+  if (!categoryValue || !isForeignConsultancyCategoryValue(categoryValue)) {
+    return adminFailure("Geçersiz kategori.");
+  }
+
+  const category = categoryValue as ForeignConsultancyCategory;
+
+  const data = {
+    category,
+    name: (formData.get("name") as string)?.trim(),
+    excerpt: ((formData.get("excerpt") as string) || "").trim() || null,
+    content: (formData.get("content") as string) || "",
+    shortDescription: ((formData.get("shortDescription") as string) || "").trim() || null,
+    heroTitle: ((formData.get("heroTitle") as string) || "").trim() || null,
+    heroSubtitle: ((formData.get("heroSubtitle") as string) || "").trim() || null,
+    sectionsJson: sectionsRaw.trim() || null,
+    featureImage1: ((formData.get("featureImage1") as string) || "").trim() || null,
+    featureImage1Title: normalizeServiceFeatureTitle(
+      formData.get("featureImage1Title") as string,
+    ),
+    featureImage1Text: normalizeServiceFeatureText(
+      formData.get("featureImage1Text") as string,
+    ),
+    featureImage2: ((formData.get("featureImage2") as string) || "").trim() || null,
+    featureImage2Title: normalizeServiceFeatureTitle(
+      formData.get("featureImage2Title") as string,
+    ),
+    featureImage2Text: normalizeServiceFeatureText(
+      formData.get("featureImage2Text") as string,
+    ),
+    isActive,
+  };
+
+  if (!data.name) {
+    return adminFailure("Başlık zorunludur.");
+  }
+
+  try {
+    const page = id
+      ? await prisma.foreignConsultancyCategoryPage.update({
+          where: { id },
+          data,
+        })
+      : await prisma.foreignConsultancyCategoryPage.create({
+          data,
+        });
+
+    await upsertSeoFromForm(formData, SeoEntityType.FOREIGN_CONSULTANCY_CATEGORY, page.id);
+    revalidatePath(FOREIGN_CONSULTANCY_BASE_PATH);
+    revalidatePath(buildForeignConsultancyCategoryPath(categorySlug));
+    revalidatePath(`/admin/yabanci-danismanlik/kategori/${categorySlug}`);
+    revalidateSitemap();
+    return adminSuccess(
+      `${getForeignConsultancyCategoryLabel(categoryValue)} kategori içeriği güncellendi.`,
+      `/admin/yabanci-danismanlik/kategori/${categorySlug}`,
+    );
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Kategori içeriği kaydedilemedi. Lütfen tekrar deneyin."),
     );
   }
 }

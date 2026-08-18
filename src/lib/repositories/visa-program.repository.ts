@@ -1,5 +1,10 @@
+import type { Prisma } from "@/generated/prisma/client";
 import { cache } from "react";
 import { prisma } from "@/lib/prisma";
+import {
+  buildAdminStringSearchWhere,
+  normalizeAdminSearchQuery,
+} from "@/lib/admin-list-filters";
 import { visaProgramPublicDetailSelect } from "@/lib/repositories/public-selects";
 
 const active = { isActive: true };
@@ -176,11 +181,45 @@ export async function findVisaProgramById(id: string) {
   });
 }
 
-export async function listVisaProgramsForAdmin(options?: { skip?: number; take?: number }) {
+export type AdminVisaProgramListFilters = {
+  q?: string;
+  countryId?: string;
+  categoryId?: string;
+};
+
+function buildVisaProgramAdminWhere(
+  filters?: AdminVisaProgramListFilters,
+): Prisma.VisaProgramWhereInput {
+  const and: Prisma.VisaProgramWhereInput[] = [];
+  const q = normalizeAdminSearchQuery(filters?.q);
+  const searchWhere = buildAdminStringSearchWhere(q, ["name", "slug"]);
+  if (searchWhere) and.push(searchWhere);
+
+  if (filters?.countryId?.trim()) {
+    and.push({ countryId: filters.countryId.trim() });
+  }
+
+  if (filters?.categoryId?.trim()) {
+    const categoryId = filters.categoryId.trim();
+    and.push({
+      OR: [{ categoryId }, { categoryLinks: { some: { categoryId } } }],
+    });
+  }
+
+  if (and.length === 0) return {};
+  if (and.length === 1) return and[0];
+  return { AND: and };
+}
+
+export async function listVisaProgramsForAdmin(
+  options?: { skip?: number; take?: number } & AdminVisaProgramListFilters,
+) {
+  const { skip, take, q, countryId, categoryId } = options ?? {};
   return prisma.visaProgram.findMany({
+    where: buildVisaProgramAdminWhere({ q, countryId, categoryId }),
     orderBy: [{ countryId: "asc" }, { sortOrder: "asc" }],
-    skip: options?.skip,
-    take: options?.take,
+    skip,
+    take,
     select: {
       id: true,
       name: true,
@@ -197,8 +236,10 @@ export async function listVisaProgramsForAdmin(options?: { skip?: number; take?:
   });
 }
 
-export async function countVisaProgramsForAdmin() {
-  return prisma.visaProgram.count();
+export async function countVisaProgramsForAdmin(filters?: AdminVisaProgramListFilters) {
+  return prisma.visaProgram.count({
+    where: buildVisaProgramAdminWhere(filters),
+  });
 }
 
 export async function listCategoriesForVisaProgramAdmin() {

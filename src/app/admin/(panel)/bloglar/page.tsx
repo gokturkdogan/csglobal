@@ -2,11 +2,21 @@ import {
   countBlogPostsForAdmin,
   listBlogPostsForAdmin,
 } from "@/lib/repositories/blog.repository";
+import { prisma } from "@/lib/prisma";
+import {
+  ADMIN_LIST_COUNTRY_PARAM,
+  ADMIN_LIST_TOPIC_CATEGORY_PARAM,
+  BLOG_TOPIC_CATEGORY_FILTER_OPTIONS,
+  buildAdminListFilterQuery,
+  resolveAdminListFilters,
+  type AdminListSearchParams,
+} from "@/lib/admin-list-filters";
 import { logAdminListPerf, resolveAdminPagination } from "@/lib/admin-pagination";
 import { getBlogTopicCategoryLabel } from "@/lib/blog-topic-categories";
 import { buildBlogPath } from "@/lib/paths";
 import { formatPublicSitePath } from "@/lib/site-url";
 import { AdminButtonLink, AdminLink } from "@/components/admin/AdminForm";
+import { AdminListFilters } from "@/components/admin/AdminListFilters";
 import { AdminPagination } from "@/components/admin/AdminPagination";
 import {
   AdminAlert,
@@ -19,22 +29,34 @@ import {
 export const dynamic = "force-dynamic";
 
 type Props = {
-  searchParams: Promise<{ page?: string; pageSize?: string }>;
+  searchParams: Promise<AdminListSearchParams>;
 };
 
 export default async function AdminBlogPostsPage({ searchParams }: Props) {
   const params = await searchParams;
+  const filters = resolveAdminListFilters(params);
   const { page, pageSize, skip, take } = resolveAdminPagination(params);
+  const listFilters = {
+    q: filters.q,
+    countryId: filters.countryId,
+    topicCategory: filters.topicCategory,
+  };
+  const filterQuery = buildAdminListFilterQuery(filters);
 
   let posts: Awaited<ReturnType<typeof listBlogPostsForAdmin>> = [];
   let totalCount = 0;
   let loadError: string | null = null;
+  let countries: { id: string; name: string }[] = [];
 
   const start = performance.now();
   try {
-    [posts, totalCount] = await Promise.all([
-      listBlogPostsForAdmin({ skip, take }),
-      countBlogPostsForAdmin(),
+    [posts, totalCount, countries] = await Promise.all([
+      listBlogPostsForAdmin({ skip, take, ...listFilters }),
+      countBlogPostsForAdmin(listFilters),
+      prisma.country.findMany({
+        orderBy: { name: "asc" },
+        select: { id: true, name: true },
+      }),
     ]);
     logAdminListPerf("admin/bloglar", start, posts.length);
   } catch (error) {
@@ -61,7 +83,32 @@ export default async function AdminBlogPostsPage({ searchParams }: Props) {
           </code>{" "}
           ve yeniden deploy deneyin.
         </AdminAlert>
-      ) : null}
+      ) : (
+        <AdminListFilters
+          basePath="/admin/bloglar"
+          filters={filters}
+          searchPlaceholder="Başlık veya slug ara…"
+          fields={[
+            {
+              name: ADMIN_LIST_COUNTRY_PARAM,
+              label: "Ülke",
+              value: filters.countryId,
+              options: countries.map((country) => ({
+                value: country.id,
+                label: country.name,
+              })),
+              emptyLabel: "Tüm ülkeler",
+            },
+            {
+              name: ADMIN_LIST_TOPIC_CATEGORY_PARAM,
+              label: "Kategori",
+              value: filters.topicCategory,
+              options: BLOG_TOPIC_CATEGORY_FILTER_OPTIONS,
+              emptyLabel: "Tüm kategoriler",
+            },
+          ]}
+        />
+      )}
 
       <AdminTable
         footer={
@@ -71,6 +118,7 @@ export default async function AdminBlogPostsPage({ searchParams }: Props) {
               page={page}
               pageSize={pageSize}
               totalCount={totalCount}
+              filters={filterQuery}
             />
           ) : null
         }
@@ -86,8 +134,12 @@ export default async function AdminBlogPostsPage({ searchParams }: Props) {
           {!loadError && posts.length === 0 ? (
             <tr>
               <td colSpan={5} className="px-5 py-10 text-center text-sm text-slate-500">
-                Henüz blog yazısı yok.{" "}
-                <AdminLink href="/admin/bloglar/new">İlk blogu oluşturun</AdminLink>
+                {filters.q || filters.countryId || filters.topicCategory
+                  ? "Filtrelere uygun blog bulunamadı."
+                  : "Henüz blog yazısı yok. "}
+                {!filters.q && !filters.countryId && !filters.topicCategory ? (
+                  <AdminLink href="/admin/bloglar/new">İlk blogu oluşturun</AdminLink>
+                ) : null}
               </td>
             </tr>
           ) : null}

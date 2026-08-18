@@ -1,10 +1,41 @@
+import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import {
+  buildAdminStringSearchWhere,
+  normalizeAdminSearchQuery,
+} from "@/lib/admin-list-filters";
 
-export async function listSiteAssetsForAdmin(options?: { skip?: number; take?: number }) {
+export type AdminSiteAssetListFilters = {
+  q?: string;
+  countryId?: string;
+};
+
+function buildSiteAssetAdminWhere(
+  filters?: AdminSiteAssetListFilters,
+): Prisma.SiteAssetWhereInput {
+  const and: Prisma.SiteAssetWhereInput[] = [];
+  const q = normalizeAdminSearchQuery(filters?.q);
+  const searchWhere = buildAdminStringSearchWhere(q, ["fileName"]);
+  if (searchWhere) and.push(searchWhere);
+
+  if (filters?.countryId?.trim()) {
+    and.push({ countryId: filters.countryId.trim() });
+  }
+
+  if (and.length === 0) return {};
+  if (and.length === 1) return and[0];
+  return { AND: and };
+}
+
+export async function listSiteAssetsForAdmin(
+  options?: { skip?: number; take?: number } & AdminSiteAssetListFilters,
+) {
+  const { skip, take, q, countryId } = options ?? {};
   return prisma.siteAsset.findMany({
+    where: buildSiteAssetAdminWhere({ q, countryId }),
     orderBy: [{ country: { name: "asc" } }, { fileName: "asc" }],
-    skip: options?.skip,
-    take: options?.take,
+    skip,
+    take,
     select: {
       id: true,
       fileName: true,
@@ -18,8 +49,8 @@ export async function listSiteAssetsForAdmin(options?: { skip?: number; take?: n
   });
 }
 
-export async function countSiteAssetsForAdmin() {
-  return prisma.siteAsset.count();
+export async function countSiteAssetsForAdmin(filters?: AdminSiteAssetListFilters) {
+  return prisma.siteAsset.count({ where: buildSiteAssetAdminWhere(filters) });
 }
 
 export async function findSiteAssetsByCountryId(countryId: string) {

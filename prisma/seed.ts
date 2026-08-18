@@ -142,6 +142,18 @@ async function main() {
   });
 
   await prisma.sitePage.upsert({
+    where: { slug: "yabanci-danismanlik" },
+    create: {
+      slug: "yabanci-danismanlik",
+      title: "Yabancı Danışmanlık",
+      content:
+        "Türkiye'de çalışma izni, oturum izni ve yabancı personel süreçleri için kurumsal danışmanlık.",
+      isActive: true,
+    },
+    update: {},
+  });
+
+  await prisma.sitePage.upsert({
     where: { slug: "home" },
     create: {
       slug: "home",

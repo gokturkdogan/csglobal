@@ -30,6 +30,7 @@ async function main() {
   let categoryCount = 0;
   let consulateCount = 0;
   let sitePageCount = 0;
+  let foreignConsultancyCategoryCount = 0;
 
   const programs = await prisma.visaProgram.findMany({
     where: { isActive: true, country: { isActive: true } },
@@ -189,6 +190,59 @@ async function main() {
     consulateCount++;
   }
 
+  const foreignConsultancyCategories = await prisma.foreignConsultancyCategoryPage.findMany({
+    where: { isActive: true },
+    select: {
+      id: true,
+      name: true,
+      excerpt: true,
+      shortDescription: true,
+      category: true,
+    },
+  });
+
+  const foreignCategoryPaths: Record<string, string> = {
+    OTURMA_IZNI: "/yabanci-danismanlik/oturma-izni",
+    CALISMA_IZNI: "/yabanci-danismanlik/calisma-izni",
+  };
+
+  for (const categoryPage of foreignConsultancyCategories) {
+    const path = foreignCategoryPaths[categoryPage.category];
+    if (!path) continue;
+
+    const metaTitle = `${categoryPage.name} | ${SITE_NAME}`;
+    const metaDescription = truncate(
+      categoryPage.excerpt ?? categoryPage.shortDescription,
+    );
+    const canonicalUrl = canonicalPath(path);
+
+    await prisma.seoMetadata.upsert({
+      where: {
+        entityType_entityId: {
+          entityType: SeoEntityType.FOREIGN_CONSULTANCY_CATEGORY,
+          entityId: categoryPage.id,
+        },
+      },
+      create: {
+        entityType: SeoEntityType.FOREIGN_CONSULTANCY_CATEGORY,
+        entityId: categoryPage.id,
+        metaTitle,
+        metaDescription,
+        canonicalUrl,
+        ogTitle: metaTitle,
+        ogDescription: metaDescription,
+      },
+      update: {
+        metaTitle,
+        metaDescription,
+        canonicalUrl,
+        ogTitle: metaTitle,
+        ogDescription: metaDescription,
+      },
+    });
+    foreignConsultancyCategoryCount++;
+  }
+
   const sitePages = await prisma.sitePage.findMany({
     where: { isActive: true },
     select: { id: true, slug: true, title: true, content: true },
@@ -250,6 +304,7 @@ async function main() {
   console.log(`  CATEGORY: ${categoryCount}`);
   console.log(`  CONSULATE: ${consulateCount}`);
   console.log(`  SITE_PAGE: ${sitePageCount}`);
+  console.log(`  FOREIGN_CONSULTANCY_CATEGORY: ${foreignConsultancyCategoryCount}`);
 
   await prisma.$disconnect();
   await pool.end();

@@ -1,5 +1,11 @@
 import { cache } from "react";
+import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import {
+  buildAdminStringSearchWhere,
+  normalizeAdminSearchQuery,
+  resolveBlogTopicCategoryFilter,
+} from "@/lib/admin-list-filters";
 import {
   BLOG_TOPIC_CATEGORY_VALUES,
   BLOG_TOPIC_CATEGORY_LABELS,
@@ -84,11 +90,41 @@ export async function findBlogPostById(id: string) {
   });
 }
 
-export async function listBlogPostsForAdmin(options?: { skip?: number; take?: number }) {
+export type AdminBlogListFilters = {
+  q?: string;
+  countryId?: string;
+  topicCategory?: string;
+};
+
+function buildBlogAdminWhere(filters?: AdminBlogListFilters): Prisma.BlogPostWhereInput {
+  const and: Prisma.BlogPostWhereInput[] = [];
+  const q = normalizeAdminSearchQuery(filters?.q);
+  const searchWhere = buildAdminStringSearchWhere(q, ["title", "slug"]);
+  if (searchWhere) and.push(searchWhere);
+
+  if (filters?.countryId?.trim()) {
+    and.push({ countryId: filters.countryId.trim() });
+  }
+
+  const topicCategory = resolveBlogTopicCategoryFilter(filters?.topicCategory ?? "");
+  if (topicCategory) {
+    and.push({ topicCategory });
+  }
+
+  if (and.length === 0) return {};
+  if (and.length === 1) return and[0];
+  return { AND: and };
+}
+
+export async function listBlogPostsForAdmin(
+  options?: { skip?: number; take?: number } & AdminBlogListFilters,
+) {
+  const { skip, take, q, countryId, topicCategory } = options ?? {};
   return prisma.blogPost.findMany({
+    where: buildBlogAdminWhere({ q, countryId, topicCategory }),
     orderBy: [{ sortOrder: "asc" }, { publishedAt: "desc" }, { title: "asc" }],
-    skip: options?.skip,
-    take: options?.take,
+    skip,
+    take,
     select: {
       id: true,
       title: true,
@@ -102,8 +138,8 @@ export async function listBlogPostsForAdmin(options?: { skip?: number; take?: nu
   });
 }
 
-export async function countBlogPostsForAdmin() {
-  return prisma.blogPost.count();
+export async function countBlogPostsForAdmin(filters?: AdminBlogListFilters) {
+  return prisma.blogPost.count({ where: buildBlogAdminWhere(filters) });
 }
 
 export async function findBlogPostsForSitemap() {
