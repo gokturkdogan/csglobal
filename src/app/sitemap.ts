@@ -8,6 +8,7 @@ import {
 import { findBlogPostsForSitemap } from "@/lib/repositories/blog.repository";
 import { findAllActiveConsulates } from "@/lib/repositories/consulate.repository";
 import { buildCategoryPath, buildVisaProgramPath } from "@/lib/services/path-resolver.service";
+import { buildToolPath, siteTools, TOOLS_LIST_PATH } from "@/lib/tools";
 import { buildBlogListPath, buildBlogPath, buildConsulatePath } from "@/lib/paths";
 import {
   FOREIGN_CONSULTANCY_OPTIONS,
@@ -32,6 +33,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     })),
     { url: `${base}${buildBlogListPath()}`, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${base}${TOOLS_LIST_PATH}`, changeFrequency: "monthly", priority: 0.75 },
+    ...siteTools.map((tool) => ({
+      url: `${base}${buildToolPath(tool.slug)}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
     { url: `${base}/hakkimizda`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/iletisim`, changeFrequency: "monthly", priority: 0.8 },
   ];

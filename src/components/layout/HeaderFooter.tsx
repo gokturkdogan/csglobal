@@ -10,6 +10,7 @@ const navItems = [
   { href: "/hizmetlerimiz", label: "Vize Programları" },
   { href: "/yabanci-danismanlik", label: "Yabancı Danışmanlık" },
   { href: "/bloglar", label: "Bloglar" },
+  { href: "/araclar", label: "Araçlar" },
   { href: "/hakkimizda", label: "Hakkımızda" },
   { href: "/iletisim", label: "İletişim" },
 ];
@@ -114,6 +115,7 @@ export function Footer({
             <li><Link href="/ulkeler" className="cursor-pointer hover:text-csg-blue">Ülkeler</Link></li>
             <li><Link href="/hizmetlerimiz" className="cursor-pointer hover:text-csg-blue">Vize Programları</Link></li>
             <li><Link href="/yabanci-danismanlik" className="cursor-pointer hover:text-csg-blue">Yabancı Danışmanlık</Link></li>
+            <li><Link href="/araclar" className="cursor-pointer hover:text-csg-blue">Araçlar</Link></li>
             <li><Link href="/hakkimizda" className="cursor-pointer hover:text-csg-blue">Hakkımızda</Link></li>
           </ul>
         </div>
