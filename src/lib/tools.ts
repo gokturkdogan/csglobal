@@ -13,6 +13,12 @@ export const siteTools: SiteTool[] = [
     description:
       "Türkiye'ye giriş yasağı süresini, çıkış şekli ve ihlal süresine göre tahmini olarak hesaplayın.",
   },
+  {
+    slug: "vize-cezasi-hesaplama",
+    name: "Vize Cezası Hesaplama",
+    description:
+      "Vize veya ikamet ihlali için tahmini idari para cezasını 2026 harç tarifesine göre hesaplayın.",
+  },
 ];
 
 export function getToolBySlug(slug: string): SiteTool | undefined {
