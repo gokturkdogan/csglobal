@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ToolPageHero } from "@/components/domain/ToolPageHero";
+import { DeportCalculator } from "@/components/tools/DeportCalculator";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { buildToolPath, getToolBySlug, TOOLS_LIST_PATH } from "@/lib/tools";
 import { buildEntityMetadata } from "@/lib/services/seo.service";
@@ -27,6 +28,8 @@ export default async function ToolDetailPage({ params }: Props) {
   const tool = getToolBySlug(slug);
   if (!tool) notFound();
 
+  const isDeportTool = tool.slug === "deport-hesaplama";
+
   return (
     <>
       <ToolPageHero title={tool.name} subtitle={tool.description} />
@@ -40,18 +43,22 @@ export default async function ToolDetailPage({ params }: Props) {
             ]}
           />
 
-          <div className="max-w-2xl rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
-            <p className="text-base font-medium text-slate-900">İçerik yakında eklenecek</p>
-            <p className="mt-2 text-sm leading-relaxed text-slate-600">
-              Bu aracın hesaplama ve form içeriği kısa süre içinde yayınlanacak.
-            </p>
-            <Link
-              href={TOOLS_LIST_PATH}
-              className="mt-6 inline-flex cursor-pointer text-sm font-semibold text-csg-blue hover:underline"
-            >
-              Tüm araçlara dön
-            </Link>
-          </div>
+          {isDeportTool ? (
+            <DeportCalculator />
+          ) : (
+            <div className="max-w-2xl rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
+              <p className="text-base font-medium text-slate-900">İçerik yakında eklenecek</p>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                Bu aracın hesaplama ve form içeriği kısa süre içinde yayınlanacak.
+              </p>
+              <Link
+                href={TOOLS_LIST_PATH}
+                className="mt-6 inline-flex cursor-pointer text-sm font-semibold text-csg-blue hover:underline"
+              >
+                Tüm araçlara dön
+              </Link>
+            </div>
+          )}
         </div>
       </section>
     </>

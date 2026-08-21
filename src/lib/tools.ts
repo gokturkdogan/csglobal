@@ -11,7 +11,7 @@ export const siteTools: SiteTool[] = [
     slug: "deport-hesaplama",
     name: "Deport Hesaplama Aracı",
     description:
-      "Deport süresi ve ilgili hesaplamalar için pratik bir araç. İçerik yakında eklenecek.",
+      "Türkiye'ye giriş yasağı süresini, çıkış şekli ve ihlal süresine göre tahmini olarak hesaplayın.",
   },
 ];
 
