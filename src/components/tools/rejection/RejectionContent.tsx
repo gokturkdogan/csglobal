@@ -162,38 +162,37 @@ export function RejectionContent({ reason, settings }: Props) {
   const ctaSection = reason.sections.find((s) => s.title.includes("Son Değildir"));
 
   return (
-    <div className="flex min-h-[520px] flex-col bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)]">
-      {/* Analiz paneli üst bar */}
-      <div className="border-b border-slate-200 bg-slate-900 px-5 py-4 text-white md:px-7">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="min-w-0 flex-1">
-            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">
-              Analiz paneli
-            </p>
-            <div className="mt-2 flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-md bg-csg-red px-2.5 py-1 text-xs font-bold">
-                <RejectionReasonIcon icon={reason.icon} className="h-3.5 w-3.5" />
-                Madde {reason.code}
-              </span>
-              <span className="rounded-md bg-white/10 px-2 py-1 text-[11px] font-medium text-white/85">
-                6458 sayılı kanun
-              </span>
+    <div className="flex min-h-[520px] min-w-0 flex-col">
+      <div className="flex-1 space-y-4 px-4 md:px-6">
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-900 text-white shadow-sm">
+          <div className="px-5 py-4 md:px-6">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="min-w-0 flex-1">
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">
+                  Analiz paneli
+                </p>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-md bg-csg-red px-2.5 py-1 text-xs font-bold">
+                    <RejectionReasonIcon icon={reason.icon} className="h-3.5 w-3.5" />
+                    Madde {reason.code}
+                  </span>
+                  <span className="rounded-md bg-white/10 px-2 py-1 text-[11px] font-medium text-white/85">
+                    6458 sayılı kanun
+                  </span>
+                </div>
+                <h2 className="mt-3 text-xl font-semibold tracking-tight md:text-2xl">{reason.title}</h2>
+              </div>
+              <div className="hidden shrink-0 sm:flex sm:h-14 sm:w-14 sm:items-center sm:justify-center sm:rounded-2xl sm:bg-white/10 sm:text-white">
+                <RejectionReasonIcon icon={reason.icon} className="h-7 w-7" />
+              </div>
             </div>
-            <h2 className="mt-3 text-xl font-semibold tracking-tight md:text-2xl">{reason.title}</h2>
-          </div>
-          <div className="hidden shrink-0 sm:flex sm:h-14 sm:w-14 sm:items-center sm:justify-center sm:rounded-2xl sm:bg-white/10 sm:text-white">
-            <RejectionReasonIcon icon={reason.icon} className="h-7 w-7" />
           </div>
         </div>
-      </div>
 
-      {/* Özet bandı */}
-      <div className="border-b border-csg-red/10 bg-csg-red/[0.04] px-5 py-3.5 md:px-7">
-        <p className="text-sm leading-relaxed text-slate-700">{reason.shortDescription}</p>
-      </div>
+        <div className="rounded-2xl border border-csg-red/20 bg-csg-red/[0.04] px-5 py-3.5 shadow-sm md:px-6">
+          <p className="text-sm leading-relaxed text-slate-700">{reason.shortDescription}</p>
+        </div>
 
-      {/* 2 sütun analiz grid */}
-      <div className="flex-1 p-4 md:p-6">
         <div className="grid gap-4 lg:grid-cols-2">
           {mainSections.map((section) => (
             <AnalysisSectionCard
@@ -205,16 +204,14 @@ export function RejectionContent({ reason, settings }: Props) {
         </div>
 
         {ctaSection ? (
-          <div className="mt-4">
-            <AnalysisSectionCard
-              section={ctaSection}
-              style={{ span: "full", accent: "cta" }}
-            />
-          </div>
+          <AnalysisSectionCard
+            section={ctaSection}
+            style={{ span: "full", accent: "cta" }}
+          />
         ) : null}
 
         {related.length > 0 ? (
-          <section className="mt-4 rounded-2xl border border-dashed border-slate-300 bg-white p-4 md:p-5">
+          <section className="rounded-2xl border border-dashed border-slate-300 bg-white p-4 md:p-5">
             <div className="flex items-center gap-2">
               <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-slate-900 text-white">
                 <RejectionSectionIcon title="Sık Görülen Nedenler" className="h-3.5 w-3.5" />
@@ -246,14 +243,12 @@ export function RejectionContent({ reason, settings }: Props) {
           </section>
         ) : null}
 
-        <div className="mt-5">
-          <ContactCTA
-            settings={settings}
-            title={rejectionGuideMeta.ctaTitle}
-            subtitle={rejectionGuideMeta.ctaSubtitle}
-            context={`${reason.title} ret gerekçesi`}
-          />
-        </div>
+        <ContactCTA
+          settings={settings}
+          title={rejectionGuideMeta.ctaTitle}
+          subtitle={rejectionGuideMeta.ctaSubtitle}
+          context={`${reason.title} ret gerekçesi`}
+        />
       </div>
     </div>
   );
@@ -268,50 +263,52 @@ export function RejectionEmptyState() {
   ];
 
   return (
-    <div className="flex min-h-[520px] flex-col bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)]">
-      <div className="border-b border-slate-200 bg-slate-900 px-5 py-4 text-white md:px-7">
-        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">
-          Analiz paneli
-        </p>
-        <h2 className="mt-2 text-xl font-semibold md:text-2xl">Analiz İçin Madde Seçin</h2>
-        <p className="mt-2 max-w-xl text-sm text-white/70">
-          Belgenizde yer alan maddeyi soldaki listeden seçerek çözüm yollarını görebilirsiniz.
-        </p>
-      </div>
-
-      <div className="flex flex-1 flex-col items-center justify-center px-5 py-10 md:px-8">
-        <div className="w-full max-w-2xl rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center shadow-sm md:p-8">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-csg-red/10 text-csg-red ring-1 ring-csg-red/15">
-            <RejectionSectionIcon title="Bu Ne Anlama Geliyor?" className="h-8 w-8" />
-          </div>
-          <p className="mt-5 text-lg font-semibold text-slate-900">{rejectionGuideMeta.emptyTitle}</p>
-          <p className="mt-2 text-sm leading-relaxed text-slate-600">
-            {rejectionGuideMeta.emptyDescription}
+    <div className="flex min-h-[520px] min-w-0 flex-col">
+      <div className="flex flex-1 flex-col space-y-4 px-4 md:px-6">
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-900 px-5 py-4 text-white shadow-sm md:px-6">
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">
+            Analiz paneli
+          </p>
+          <h2 className="mt-2 text-xl font-semibold md:text-2xl">Analiz İçin Madde Seçin</h2>
+          <p className="mt-2 max-w-xl text-sm text-white/70">
+            Belgenizde yer alan maddeyi soldaki listeden seçerek çözüm yollarını görebilirsiniz.
           </p>
         </div>
 
-        <div className="mt-8 w-full max-w-2xl">
-          <p className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">
-            Seçim sonrası analiz önizlemesi
-          </p>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {previewSections.map((item) => (
-              <div
-                key={item.title}
-                className="rounded-xl border border-slate-200 bg-white/80 p-4 opacity-60"
-              >
-                <span
-                  className={`inline-flex rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-600 ${item.accent}`}
+        <div className="flex flex-1 flex-col items-center justify-center">
+          <div className="w-full rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center shadow-sm md:p-8">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-csg-red/10 text-csg-red ring-1 ring-csg-red/15">
+              <RejectionSectionIcon title="Bu Ne Anlama Geliyor?" className="h-8 w-8" />
+            </div>
+            <p className="mt-5 text-lg font-semibold text-slate-900">{rejectionGuideMeta.emptyTitle}</p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">
+              {rejectionGuideMeta.emptyDescription}
+            </p>
+          </div>
+
+          <div className="mt-8 w-full">
+            <p className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">
+              Seçim sonrası analiz önizlemesi
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {previewSections.map((item) => (
+                <div
+                  key={item.title}
+                  className="rounded-xl border border-slate-200 bg-white/80 p-4 opacity-60"
                 >
-                  {item.label}
-                </span>
-                <p className="mt-2 text-sm font-semibold text-slate-800">{item.title}</p>
-                <div className="mt-3 space-y-2">
-                  <div className="h-2 rounded-full bg-slate-100" />
-                  <div className="h-2 w-4/5 rounded-full bg-slate-100" />
+                  <span
+                    className={`inline-flex rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-600 ${item.accent}`}
+                  >
+                    {item.label}
+                  </span>
+                  <p className="mt-2 text-sm font-semibold text-slate-800">{item.title}</p>
+                  <div className="mt-3 space-y-2">
+                    <div className="h-2 rounded-full bg-slate-100" />
+                    <div className="h-2 w-4/5 rounded-full bg-slate-100" />
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>

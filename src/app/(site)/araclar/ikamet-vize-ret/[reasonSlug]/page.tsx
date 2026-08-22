@@ -51,7 +51,7 @@ export default async function RejectionReasonPage({ params }: Props) {
   ]);
 
   return (
-    <section className="border-b border-slate-200/60 bg-[linear-gradient(180deg,#f8fafc_0%,#eef2f7_45%,#f8fafc_100%)]">
+    <section className="border-b border-slate-200/60">
       <div className="site-container py-8 md:py-12">
         <Breadcrumb
           items={[

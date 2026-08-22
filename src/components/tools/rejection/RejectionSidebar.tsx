@@ -19,7 +19,7 @@ type Props = {
   activeSlug?: string;
 };
 
-function MaddeTile({
+function MaddeListItem({
   item,
   href,
   active,
@@ -30,36 +30,44 @@ function MaddeTile({
   active: boolean;
   onClick?: () => void;
 }) {
-  const className = `group flex min-h-[88px] w-full cursor-pointer flex-col rounded-xl border px-3 py-3 text-left transition ${
+  const className = `group flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-left transition ${
     active
-      ? "border-csg-red bg-csg-red text-white shadow-md shadow-csg-red/25"
-      : "border-slate-200 bg-white text-slate-800 hover:border-csg-red/40 hover:bg-csg-red/[0.04]"
+      ? "bg-csg-red/[0.08] ring-1 ring-csg-red/25"
+      : "hover:bg-slate-50"
   }`;
 
   const inner = (
     <>
-      <div className="flex w-full items-start justify-between gap-2">
-        <span
-          className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
-            active ? "bg-white/15 text-white" : "bg-csg-red/10 text-csg-red"
-          }`}
-        >
-          <RejectionReasonIcon icon={item.icon} className="h-5 w-5" />
-        </span>
-        <span
-          className={`rounded-md px-1.5 py-0.5 text-[10px] font-bold tracking-wide ${
-            active ? "bg-white/15 text-white/90" : "bg-slate-100 text-slate-500"
-          }`}
-        >
-          {item.code}
-        </span>
-      </div>
       <span
-        className={`mt-2 line-clamp-2 text-xs font-semibold leading-snug ${
-          active ? "text-white" : "text-slate-900 group-hover:text-csg-red"
+        className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
+          active ? "bg-csg-red text-white" : "bg-csg-red/10 text-csg-red"
         }`}
       >
-        {item.title}
+        <RejectionReasonIcon icon={item.icon} className="h-4 w-4" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span
+          className={`block text-[10px] font-bold uppercase tracking-wide ${
+            active ? "text-csg-red" : "text-slate-400"
+          }`}
+        >
+          Madde {item.code}
+        </span>
+        <span
+          className={`mt-0.5 block text-sm font-medium leading-snug ${
+            active ? "text-csg-red" : "text-slate-800 group-hover:text-slate-950"
+          }`}
+        >
+          {item.title}
+        </span>
+      </span>
+      <span
+        aria-hidden
+        className={`shrink-0 text-sm transition ${
+          active ? "text-csg-red" : "text-slate-300 group-hover:text-slate-400"
+        }`}
+      >
+        →
       </span>
     </>
   );
@@ -83,34 +91,37 @@ export function RejectionSidebar({ reasons, activeSlug }: Props) {
   const pathname = usePathname();
 
   return (
-    <nav aria-label="Kanun maddeleri" className="flex h-full flex-col">
-      <div className="border-b border-slate-200/80 px-4 py-4 md:px-5">
-        <div className="flex items-center gap-2">
-          <span className="inline-flex h-6 items-center rounded bg-csg-red px-2 text-[10px] font-bold uppercase tracking-wide text-white">
-            Liste
-          </span>
-          <h2 className="text-sm font-semibold text-slate-900">Kanun Maddeleri</h2>
-        </div>
-        <p className="mt-2 text-xs leading-relaxed text-slate-500">
-          Karar belgenizdeki ret gerekçesi maddesini seçin
+    <nav
+      aria-label="Kanun maddeleri"
+      className="country-panel-card flex max-h-[inherit] flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm"
+    >
+      <div className="shrink-0 border-b border-slate-200 bg-slate-900 px-5 py-4 text-white md:px-7">
+        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">
+          Kanun maddeleri
+        </p>
+        <h2 className="mt-2 text-sm font-semibold md:text-base">Ret gerekçesi seçin</h2>
+        <p className="mt-1.5 text-xs leading-relaxed text-white/70">
+          Belgenizdeki madde numarasını listeden seçin
         </p>
       </div>
 
-      <div className="flex-1 p-3 md:p-4">
-        <ul className="grid grid-cols-2 gap-2.5">
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-2">
+        <ul className="space-y-1">
           {reasons.map((item) => {
             const href = buildRejectionReasonPath(item.slug);
             const active = activeSlug === item.slug || pathname === href;
             return (
               <li key={item.slug}>
-                <MaddeTile item={item} href={href} active={active} />
+                <MaddeListItem item={item} href={href} active={active} />
               </li>
             );
           })}
         </ul>
+      </div>
 
-        <p className="mt-4 rounded-lg bg-white px-3 py-2.5 text-[11px] leading-relaxed text-slate-500 ring-1 ring-slate-200/80">
-          Belgenizde yazan madde numarasını yukarıdaki listeden seçerek analizi açın.
+      <div className="shrink-0 border-t border-slate-100 px-3 py-2.5">
+        <p className="text-[11px] leading-relaxed text-slate-500">
+          Karar belgenizdeki ret gerekçesi maddesini seçerek analizi açın.
         </p>
       </div>
     </nav>
@@ -122,27 +133,25 @@ export function RejectionMobileSelector({ reasons, activeSlug }: Props) {
 
   return (
     <div className="border-t border-slate-200 bg-slate-50/70 p-4 lg:hidden">
-      <div className="mb-3 flex items-center gap-2">
-        <span className="inline-flex rounded-md bg-csg-red px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
-          Liste
-        </span>
-        <p className="text-sm font-semibold text-slate-900">Kanun Maddeleri</p>
-      </div>
-
-      <ul className="grid grid-cols-2 gap-2.5">
-        {reasons.map((item) => {
-          const active = activeSlug === item.slug;
-          return (
-            <li key={item.slug}>
-              <MaddeTile
-                item={item}
-                active={active}
-                onClick={() => router.push(buildRejectionReasonPath(item.slug))}
-              />
-            </li>
-          );
-        })}
-      </ul>
+      <label htmlFor="rejection-reason-select" className="mb-2 block text-sm font-semibold text-slate-900">
+        Ret gerekçesi seçin
+      </label>
+      <select
+        id="rejection-reason-select"
+        value={activeSlug ?? ""}
+        onChange={(event) => {
+          const value = event.target.value;
+          router.push(value ? buildRejectionReasonPath(value) : buildRejectionReasonPath());
+        }}
+        className="w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm font-medium text-slate-900 outline-none focus:border-csg-red focus:ring-2 focus:ring-csg-red/20"
+      >
+        <option value="">Madde seçin</option>
+        {reasons.map((item) => (
+          <option key={item.slug} value={item.slug}>
+            Madde {item.code}: {item.title}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
