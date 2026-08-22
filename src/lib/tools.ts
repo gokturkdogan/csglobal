@@ -19,6 +19,12 @@ export const siteTools: SiteTool[] = [
     description:
       "Vize veya ikamet ihlali için tahmini idari para cezasını 2026 harç tarifesine göre hesaplayın.",
   },
+  {
+    slug: "ikamet-vize-ret",
+    name: "İkamet & Vize Ret",
+    description:
+      "Ret kararınızdaki kanun maddesini seçerek gerekçeyi ve izlenebilecek süreci inceleyin.",
+  },
 ];
 
 export function getToolBySlug(slug: string): SiteTool | undefined {

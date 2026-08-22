@@ -24,6 +24,7 @@ enum SeoEntityType {
   CONSULATE
   FOREIGN_CONSULTANCY
   FOREIGN_CONSULTANCY_CATEGORY
+  REJECTION_REASON
 }
 
 enum ForeignConsultancyCategory {
