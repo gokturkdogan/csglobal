@@ -1,10 +1,20 @@
 import { notFound } from "next/navigation";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { ContactCTA } from "@/components/domain/ContactCTA";
-import { ForeignConsultancyContentsPanel } from "@/components/domain/ForeignConsultancyContentsPanel";
+import {
+  buildForeignConsultancyContactTitle,
+  ForeignConsultancyContentsPanel,
+} from "@/components/domain/ForeignConsultancyContentsPanel";
 import { ServiceDetailContent } from "@/components/domain/ServiceDetailContent";
 import { ServicePageHero } from "@/components/domain/ServicePageHero";
 import { ServiceTableOfContents } from "@/components/domain/ServiceTableOfContents";
+import { ForeignConsultancyTranslationNotice } from "@/components/foreign-consultancy/ForeignConsultancyTranslationNotice";
+import {
+  getForeignConsultancyCategoryMessages,
+  getForeignConsultancyMessages,
+  shouldUseForeignConsultancyStaticCopy,
+} from "@/lib/i18n/foreign-consultancy";
+import { getForeignConsultancyLocale } from "@/lib/i18n/foreign-consultancy/server";
 import { optimizeCloudinaryDeliveryUrl, siteImages } from "@/lib/media";
 import {
   findActiveForeignConsultancyContentsByCategorySlug,
@@ -23,27 +33,29 @@ import {
   buildForeignConsultancyCategoryPath,
   getForeignConsultancyOption,
 } from "@/lib/foreign-consultancy";
-import {
-  getForeignConsultancyCategoryLabel,
-  type ForeignConsultancyCategoryValue,
-} from "@/lib/foreign-consultancy-categories";
+import { type ForeignConsultancyCategoryValue } from "@/lib/foreign-consultancy-categories";
 import { SeoEntityType } from "@/generated/prisma/client";
 
 type Props = { params: Promise<{ categorySlug: string }> };
 
 export async function generateMetadata({ params }: Props) {
   const { categorySlug } = await params;
+  const locale = await getForeignConsultancyLocale();
+  const messages = getForeignConsultancyMessages(locale);
+  const categoryMessages = getForeignConsultancyCategoryMessages(messages, categorySlug);
   const option = getForeignConsultancyOption(categorySlug);
   if (!option) return {};
 
   const page = await findForeignConsultancyCategoryPageByCategorySlug(categorySlug);
-  if (!page) {
+  const useStaticCopy = shouldUseForeignConsultancyStaticCopy(locale);
+
+  if (useStaticCopy || !page) {
     return buildEntityMetadata({
       entityType: SeoEntityType.SITE_PAGE,
       entityId: `yabanci-danismanlik-${categorySlug}`,
       path: buildForeignConsultancyCategoryPath(categorySlug),
-      fallbackTitle: `${option.title} | Yabancı Danışmanlık`,
-      fallbackDescription: option.description,
+      fallbackTitle: `${categoryMessages.title} | ${messages.common.foreignConsultancy}`,
+      fallbackDescription: categoryMessages.description,
     });
   }
 
@@ -52,7 +64,7 @@ export async function generateMetadata({ params }: Props) {
     entityId: page.id,
     path: buildForeignConsultancyCategoryPath(categorySlug),
     fallbackTitle: page.name,
-    fallbackDescription: page.shortDescription ?? page.excerpt ?? option.description,
+    fallbackDescription: page.shortDescription ?? page.excerpt ?? categoryMessages.description,
   });
 }
 
@@ -60,6 +72,11 @@ export default async function ForeignConsultancyCategoryPage({ params }: Props) 
   const { categorySlug } = await params;
   const option = getForeignConsultancyOption(categorySlug);
   if (!option) notFound();
+
+  const locale = await getForeignConsultancyLocale();
+  const messages = getForeignConsultancyMessages(locale);
+  const categoryMessages = getForeignConsultancyCategoryMessages(messages, categorySlug);
+  const useStaticCopy = shouldUseForeignConsultancyStaticCopy(locale);
 
   const settings = await getSiteSettings();
   const heroImage = settings.contactHeroImage?.trim()
@@ -75,13 +92,13 @@ export default async function ForeignConsultancyCategoryPage({ params }: Props) 
       )
     : [];
 
-  const categoryLabel = getForeignConsultancyCategoryLabel(option.category);
   const displayPage = categoryPage?.isActive ? categoryPage : null;
+  const categoryLabel = categoryMessages.title;
 
   const breadcrumbItems = [
-    { label: "Anasayfa", href: "/" },
-    { label: "Yabancı Danışmanlık", href: FOREIGN_CONSULTANCY_BASE_PATH },
-    { label: displayPage?.name ?? categoryLabel },
+    { label: messages.common.home, href: "/" },
+    { label: messages.common.foreignConsultancy, href: FOREIGN_CONSULTANCY_BASE_PATH },
+    { label: useStaticCopy ? categoryLabel : (displayPage?.name ?? categoryLabel) },
   ];
 
   const categoryPath = buildForeignConsultancyCategoryPath(categorySlug);
@@ -96,12 +113,15 @@ export default async function ForeignConsultancyCategoryPage({ params }: Props) 
     ...seoStructuredData,
   ].filter(Boolean);
 
-  const heroTitle = displayPage?.heroTitle?.trim() || displayPage?.name || option.title;
-  const heroSubtitle =
-    displayPage?.heroSubtitle?.trim() ||
-    displayPage?.shortDescription ||
-    displayPage?.excerpt ||
-    option.description;
+  const heroTitle = useStaticCopy
+    ? categoryLabel
+    : displayPage?.heroTitle?.trim() || displayPage?.name || categoryLabel;
+  const heroSubtitle = useStaticCopy
+    ? categoryMessages.description
+    : displayPage?.heroSubtitle?.trim() ||
+      displayPage?.shortDescription ||
+      displayPage?.excerpt ||
+      categoryMessages.description;
 
   const sectionNav = getServiceSectionNavItems(displayPage?.sectionsJson ?? null, []);
   const showTocSidebar = sectionNav.length > 0;
@@ -118,6 +138,8 @@ export default async function ForeignConsultancyCategoryPage({ params }: Props) 
   const tocStickyClass =
     "lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100dvh-var(--site-header-height)-2rem)] lg:overflow-y-auto";
 
+  const contactName = useStaticCopy ? categoryLabel : (displayPage?.name ?? categoryLabel);
+
   return (
     <>
       <ServicePageHero
@@ -125,6 +147,7 @@ export default async function ForeignConsultancyCategoryPage({ params }: Props) 
         title={heroTitle}
         subtitle={heroSubtitle}
         badge={categoryLabel}
+        labels={messages.serviceHero}
       />
 
       <div className="site-container py-10">
@@ -143,6 +166,7 @@ export default async function ForeignConsultancyCategoryPage({ params }: Props) 
             <aside className="order-2 country-panel-sticky min-w-0 lg:order-1 lg:z-30 lg:self-start">
               <ForeignConsultancyContentsPanel
                 categorySlug={categorySlug}
+                messages={messages}
                 items={contents.map((item) => ({
                   id: item.id,
                   name: item.name,
@@ -154,6 +178,10 @@ export default async function ForeignConsultancyCategoryPage({ params }: Props) 
           )}
 
           <div className="order-1 min-w-0 lg:order-2">
+            {useStaticCopy && displayPage && (
+              <ForeignConsultancyTranslationNotice messages={messages} />
+            )}
+
             {displayPage ? (
               <ServiceDetailContent
                 sectionsJson={displayPage.sectionsJson}
@@ -168,23 +196,23 @@ export default async function ForeignConsultancyCategoryPage({ params }: Props) 
               />
             ) : (
               <p className="text-base leading-relaxed text-slate-600 md:text-lg">
-                {option.description}
+                {categoryMessages.description}
               </p>
             )}
 
             <div className="mt-12">
               <ContactCTA
                 settings={settings}
-                title={`${categoryLabel} için iletişime geçin`}
-                subtitle="Başvuru sürecinizi uzman danışmanlarımızla planlayın. Online başvuru yok."
-                context={categoryLabel}
+                title={buildForeignConsultancyContactTitle(messages, contactName)}
+                subtitle={messages.common.contactSubtitle}
+                context={contactName}
               />
             </div>
           </div>
 
           {showTocSidebar && (
             <aside className={`order-3 min-w-0 lg:order-3 ${tocStickyClass}`}>
-              <ServiceTableOfContents items={sectionNav} />
+              <ServiceTableOfContents items={sectionNav} labels={messages.tableOfContents} />
             </aside>
           )}
         </div>

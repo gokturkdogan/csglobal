@@ -1,4 +1,5 @@
 import { SiteImage } from "@/components/ui/SiteImage";
+import type { ServiceHeroLabels } from "@/lib/i18n/foreign-consultancy/types";
 import {
   resolveServiceHeroImage,
   serviceHeroImageClassName,
@@ -11,36 +12,59 @@ export type ServiceHeroQuickInfo = {
   feeCurrency?: string | null;
 };
 
+const DEFAULT_SERVICE_HERO_LABELS: ServiceHeroLabels = {
+  program: "Program",
+  duration: "Süre",
+  appointment: "Randevu",
+  required: "Gerekli",
+  countryDependent: "Ülkeye bağlı",
+  fee: "Ücret",
+  feeFrom: "{amount} ve üzeri",
+};
+
 type Props = {
   heroImage?: string | null;
   title: string;
   subtitle?: string | null;
   badge?: string | null;
   quickInfo?: ServiceHeroQuickInfo;
+  labels?: Partial<ServiceHeroLabels>;
 };
 
 export function ServicePageHero({
   heroImage,
   title,
   subtitle,
-  badge = "Program",
+  badge,
   quickInfo,
+  labels,
 }: Props) {
+  const heroLabels = { ...DEFAULT_SERVICE_HERO_LABELS, ...labels };
+  const badgeText = badge?.trim() || heroLabels.program;
   const badges: Array<{ label: string; value: string; highlight?: boolean }> = [];
 
   if (quickInfo?.processingTime?.trim()) {
-    badges.push({ label: "Süre", value: quickInfo.processingTime.trim(), highlight: true });
+    badges.push({
+      label: heroLabels.duration,
+      value: quickInfo.processingTime.trim(),
+      highlight: true,
+    });
   }
 
   badges.push({
-    label: "Randevu",
-    value: quickInfo?.requiresAppointment ? "Gerekli" : "Ülkeye bağlı",
+    label: heroLabels.appointment,
+    value: quickInfo?.requiresAppointment
+      ? heroLabels.required
+      : heroLabels.countryDependent,
   });
 
   if (quickInfo?.feeAmount?.trim() && quickInfo.feeCurrency?.trim()) {
     badges.push({
-      label: "Ücret",
-      value: `${quickInfo.feeAmount.trim()} ${quickInfo.feeCurrency.trim()} ve üzeri`,
+      label: heroLabels.fee,
+      value: heroLabels.feeFrom.replace(
+        "{amount}",
+        `${quickInfo.feeAmount.trim()} ${quickInfo.feeCurrency.trim()}`,
+      ),
     });
   }
 
@@ -65,9 +89,9 @@ export function ServicePageHero({
 
       <div className="relative z-[1] site-container py-16 md:py-20 lg:py-24">
         <div className="max-w-3xl">
-          {badge?.trim() && (
+          {badgeText && (
             <p className="text-sm font-semibold uppercase tracking-widest text-sky-300">
-              {badge}
+              {badgeText}
             </p>
           )}
           <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white md:text-4xl lg:text-5xl">

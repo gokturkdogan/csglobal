@@ -1,8 +1,9 @@
 import Link from "next/link";
 import {
-  FOREIGN_CONSULTANCY_OPTIONS,
-  buildForeignConsultancyOptionPath,
-} from "@/lib/foreign-consultancy";
+  getLocalizedForeignConsultancyOptions,
+} from "@/lib/i18n/foreign-consultancy";
+import type { ForeignConsultancyMessages } from "@/lib/i18n/foreign-consultancy/types";
+import { buildForeignConsultancyOptionPath } from "@/lib/foreign-consultancy";
 
 const icons = [
   <svg
@@ -37,10 +38,16 @@ const icons = [
   </svg>,
 ];
 
-export function ForeignConsultancyOptions() {
+type Props = {
+  messages: ForeignConsultancyMessages;
+};
+
+export function ForeignConsultancyOptions({ messages }: Props) {
+  const options = getLocalizedForeignConsultancyOptions(messages);
+
   return (
     <div className="grid gap-6 sm:grid-cols-2">
-      {FOREIGN_CONSULTANCY_OPTIONS.map((option, index) => (
+      {options.map((option, index) => (
         <Link
           key={option.slug}
           href={buildForeignConsultancyOptionPath(option.slug)}
@@ -54,7 +61,7 @@ export function ForeignConsultancyOptions() {
           </h2>
           <p className="mt-3 text-base leading-relaxed text-slate-600">{option.description}</p>
           <span className="mt-6 text-sm font-semibold text-csg-red group-hover:underline">
-            Detayları incele
+            {messages.common.viewDetails}
           </span>
         </Link>
       ))}

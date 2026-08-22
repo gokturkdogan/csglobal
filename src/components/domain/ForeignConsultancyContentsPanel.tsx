@@ -4,8 +4,12 @@ import {
   buildForeignConsultancyContentPath,
 } from "@/lib/foreign-consultancy";
 import {
+  formatForeignConsultancyMessage,
+  getForeignConsultancyCategoryMessages,
+} from "@/lib/i18n/foreign-consultancy";
+import type { ForeignConsultancyMessages } from "@/lib/i18n/foreign-consultancy/types";
+import {
   foreignConsultancyCategoryToSlug,
-  getForeignConsultancyCategoryLabel,
   type ForeignConsultancyCategoryValue,
 } from "@/lib/foreign-consultancy-categories";
 
@@ -16,41 +20,43 @@ type PanelItem = {
   category: ForeignConsultancyCategoryValue;
 };
 
-export function ForeignConsultancyContentsPanel({
-  categorySlug,
-  items,
-  heading = "İçerikler",
-  subtitle,
-  currentSlug,
-}: {
+type Props = {
   categorySlug: string;
   items: PanelItem[];
+  messages: ForeignConsultancyMessages;
   heading?: string;
   subtitle?: string;
   currentSlug?: string;
-}) {
-  const categoryLabel =
-    subtitle ??
-    (items[0]
-      ? getForeignConsultancyCategoryLabel(items[0].category)
-      : categorySlug === "oturma-izni"
-        ? "Oturma izni"
-        : "Çalışma izni");
+};
+
+export function ForeignConsultancyContentsPanel({
+  categorySlug,
+  items,
+  messages,
+  heading,
+  subtitle,
+  currentSlug,
+}: Props) {
+  const categoryMessages = getForeignConsultancyCategoryMessages(messages, categorySlug);
+  const panelHeading = heading ?? messages.common.contents;
+  const categoryLabel = subtitle ?? categoryMessages.title;
+  const showCategoryLink =
+    Boolean(currentSlug) || panelHeading === messages.common.similarContents;
 
   return (
     <nav
-      aria-label="Yabancı danışmanlık içerikleri"
+      aria-label={messages.common.contentsNavAria}
       className="country-panel-card scroll-mt-24 flex max-h-[inherit] flex-col overflow-hidden rounded-xl border border-slate-200/80 bg-white text-sm shadow-md shadow-csg-blue/[0.05] ring-1 ring-slate-900/[0.04]"
     >
       <div className="country-panel-header shrink-0 px-3.5 py-3">
-        <h2 className="text-xs font-semibold tracking-wide text-white">{heading}</h2>
+        <h2 className="text-xs font-semibold tracking-wide text-white">{panelHeading}</h2>
         <p className="mt-0.5 text-[11px] leading-snug">{categoryLabel}</p>
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-white">
         {items.length === 0 ? (
           <p className="px-3.5 py-4 text-xs leading-relaxed text-slate-500">
-            Bu kategoride henüz içerik yok.
+            {messages.common.noContents}
           </p>
         ) : (
           <ul className="divide-y divide-slate-100">
@@ -94,13 +100,13 @@ export function ForeignConsultancyContentsPanel({
         )}
       </div>
 
-      {(currentSlug || heading === "Benzer içerikler") && (
+      {showCategoryLink && (
         <div className="shrink-0 border-t border-slate-100 bg-slate-50/50 px-3 py-2">
           <Link
             href={buildForeignConsultancyCategoryPath(categorySlug)}
             className="text-[11px] font-medium text-csg-blue hover:text-csg-blue/80"
           >
-            Kategori sayfası
+            {messages.common.categoryPage}
           </Link>
         </div>
       )}
@@ -121,4 +127,11 @@ function ArrowIcon() {
       <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
     </svg>
   );
+}
+
+export function buildForeignConsultancyContactTitle(
+  messages: ForeignConsultancyMessages,
+  name: string,
+) {
+  return formatForeignConsultancyMessage(messages.common.contactFor, { name });
 }
