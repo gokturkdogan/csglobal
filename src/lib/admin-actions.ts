@@ -20,6 +20,10 @@ import {
   foreignConsultancySlugToCategory,
   getForeignConsultancyCategoryLabel,
 } from "@/lib/foreign-consultancy-categories";
+import {
+  parseForeignConsultancyTranslationsFromForm,
+  serializeForeignConsultancyTranslations,
+} from "@/lib/i18n/foreign-consultancy/translations";
 import { HOMEPAGE_FEATURED_BLOGS_MAX } from "@/lib/homepage";
 import { isBlogTopicCategory } from "@/lib/blog-topic-categories";
 import { upsertSeoFromForm } from "@/lib/admin-seo";
@@ -557,6 +561,9 @@ export async function saveForeignConsultancyContentAction(
   await requireAdmin();
   const id = formData.get("id") as string | null;
   const sectionsRaw = (formData.get("sectionsJson") as string) || "";
+  const translationsJson = serializeForeignConsultancyTranslations(
+    parseForeignConsultancyTranslationsFromForm(formData.get("translationsJson")),
+  );
   const isActive = formData.get("isActive") === "on";
   const categoryRaw = (formData.get("category") as string)?.trim();
 
@@ -592,6 +599,7 @@ export async function saveForeignConsultancyContentAction(
       formData.get("featureImage2Text") as string,
     ),
     requiresAppointment: formData.get("requiresAppointment") === "on",
+    translationsJson,
     isActive,
     sortOrder: Number(formData.get("sortOrder") || 0),
     publishedAt: isActive ? new Date() : null,
@@ -663,6 +671,9 @@ export async function saveForeignConsultancyCategoryPageAction(
   const id = (formData.get("id") as string)?.trim();
   const categorySlug = (formData.get("categorySlug") as string)?.trim();
   const sectionsRaw = (formData.get("sectionsJson") as string) || "";
+  const translationsJson = serializeForeignConsultancyTranslations(
+    parseForeignConsultancyTranslationsFromForm(formData.get("translationsJson")),
+  );
   const isActive = formData.get("isActive") === "on";
 
   const categoryValue = foreignConsultancySlugToCategory(categorySlug);
@@ -695,6 +706,7 @@ export async function saveForeignConsultancyCategoryPageAction(
     featureImage2Text: normalizeServiceFeatureText(
       formData.get("featureImage2Text") as string,
     ),
+    translationsJson,
     isActive,
   };
 

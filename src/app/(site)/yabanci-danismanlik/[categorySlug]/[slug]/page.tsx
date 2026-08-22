@@ -12,9 +12,12 @@ import { ForeignConsultancyTranslationNotice } from "@/components/foreign-consul
 import {
   getForeignConsultancyCategoryMessages,
   getForeignConsultancyMessages,
-  shouldUseForeignConsultancyStaticCopy,
 } from "@/lib/i18n/foreign-consultancy";
 import { getForeignConsultancyLocale } from "@/lib/i18n/foreign-consultancy/server";
+import {
+  hasForeignConsultancyLocaleTranslation,
+  resolveForeignConsultancyLocalizedRecord,
+} from "@/lib/i18n/foreign-consultancy/translations";
 import { optimizeCloudinaryDeliveryUrl, siteImages } from "@/lib/media";
 import {
   findActiveForeignConsultancyContentsByCategorySlug,
@@ -45,8 +48,11 @@ type Props = { params: Promise<{ categorySlug: string; slug: string }> };
 
 export async function generateMetadata({ params }: Props) {
   const { categorySlug, slug } = await params;
+  const locale = await getForeignConsultancyLocale();
   const content = await findForeignConsultancyContentBySlug(categorySlug, slug);
   if (!content) return {};
+
+  const localized = resolveForeignConsultancyLocalizedRecord(content, locale);
 
   return buildEntityMetadata({
     entityType: SeoEntityType.FOREIGN_CONSULTANCY,
@@ -55,8 +61,8 @@ export async function generateMetadata({ params }: Props) {
       foreignConsultancyCategoryToSlug(content.category as ForeignConsultancyCategoryValue),
       content.slug,
     ),
-    fallbackTitle: content.name,
-    fallbackDescription: content.shortDescription ?? content.excerpt ?? undefined,
+    fallbackTitle: localized.name ?? content.name,
+    fallbackDescription: localized.shortDescription ?? localized.excerpt ?? undefined,
   });
 }
 
@@ -71,7 +77,7 @@ export default async function ForeignConsultancyContentPage({ params }: Props) {
   const locale = await getForeignConsultancyLocale();
   const messages = getForeignConsultancyMessages(locale);
   const categoryMessages = getForeignConsultancyCategoryMessages(messages, categorySlug);
-  const useStaticCopy = shouldUseForeignConsultancyStaticCopy(locale);
+  const localized = resolveForeignConsultancyLocalizedRecord(content, locale);
 
   const category = content.category as ForeignConsultancyCategoryValue;
   const categoryLabel = categoryMessages.title;
@@ -88,11 +94,15 @@ export default async function ForeignConsultancyContentPage({ params }: Props) {
     findEntityStructuredDataJsonLd(SeoEntityType.FOREIGN_CONSULTANCY, content.id),
   ]);
 
+  const displayName = localized.name ?? content.name;
+  const showTranslationNotice =
+    locale !== "tr" && !hasForeignConsultancyLocaleTranslation(content, locale);
+
   const breadcrumbItems = [
     { label: messages.common.home, href: "/" },
     { label: messages.common.foreignConsultancy, href: FOREIGN_CONSULTANCY_BASE_PATH },
     { label: categoryLabel, href: buildForeignConsultancyCategoryPath(categorySlug) },
-    { label: content.name },
+    { label: displayName },
   ];
 
   const contentPath = buildForeignConsultancyContentPath(
@@ -110,11 +120,11 @@ export default async function ForeignConsultancyContentPage({ params }: Props) {
     ...seoStructuredData,
   ].filter(Boolean);
 
-  const heroTitle = content.heroTitle?.trim() || content.name;
+  const heroTitle = localized.heroTitle?.trim() || displayName;
   const heroSubtitle =
-    content.heroSubtitle?.trim() || content.shortDescription || content.excerpt;
+    localized.heroSubtitle?.trim() || localized.shortDescription || localized.excerpt;
 
-  const sectionNav = getServiceSectionNavItems(content.sectionsJson, []);
+  const sectionNav = getServiceSectionNavItems(localized.sectionsJson, []);
   const showTocSidebar = sectionNav.length > 0;
   const showLeftPanel = categoryContents.length > 0;
 
@@ -137,7 +147,7 @@ export default async function ForeignConsultancyContentPage({ params }: Props) {
         subtitle={heroSubtitle}
         badge={categoryLabel}
         quickInfo={{
-          processingTime: content.processingTime,
+          processingTime: localized.processingTime ?? content.processingTime,
           requiresAppointment: content.requiresAppointment,
         }}
         labels={messages.serviceHero}
@@ -163,36 +173,41 @@ export default async function ForeignConsultancyContentPage({ params }: Props) {
                 heading={messages.common.similarContents}
                 subtitle={categoryLabel}
                 currentSlug={content.slug}
-                items={categoryContents.map((item) => ({
-                  id: item.id,
-                  name: item.name,
-                  slug: item.slug,
-                  category: item.category as ForeignConsultancyCategoryValue,
-                }))}
+                items={categoryContents.map((item) => {
+                  const localizedItem = resolveForeignConsultancyLocalizedRecord(item, locale);
+                  return {
+                    id: item.id,
+                    name: localizedItem.name ?? item.name,
+                    slug: item.slug,
+                    category: item.category as ForeignConsultancyCategoryValue,
+                  };
+                })}
               />
             </aside>
           )}
 
           <div className={`order-1 min-w-0 ${showLeftPanel ? "lg:order-2" : ""}`}>
-            {useStaticCopy && <ForeignConsultancyTranslationNotice messages={messages} />}
+            {showTranslationNotice && (
+              <ForeignConsultancyTranslationNotice messages={messages} />
+            )}
 
             <ServiceDetailContent
-              sectionsJson={content.sectionsJson}
+              sectionsJson={localized.sectionsJson}
               legacySections={[]}
               featureImage1={content.featureImage1}
-              featureImage1Title={content.featureImage1Title}
-              featureImage1Text={content.featureImage1Text}
+              featureImage1Title={localized.featureImage1Title}
+              featureImage1Text={localized.featureImage1Text}
               featureImage2={content.featureImage2}
-              featureImage2Title={content.featureImage2Title}
-              featureImage2Text={content.featureImage2Text}
+              featureImage2Title={localized.featureImage2Title}
+              featureImage2Text={localized.featureImage2Text}
             />
 
             <div className="mt-12">
               <ContactCTA
                 settings={settings}
-                title={buildForeignConsultancyContactTitle(messages, content.name)}
+                title={buildForeignConsultancyContactTitle(messages, displayName)}
                 subtitle={messages.common.contactSubtitle}
-                context={content.name}
+                context={displayName}
               />
             </div>
           </div>

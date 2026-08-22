@@ -11,10 +11,13 @@ import {
   calismaIzniCategoryPageSeed,
   calismaIzniCategorySeo,
 } from "./data/foreign-consultancy-calisma-izni-category";
+import { calismaIzniCategoryTranslations } from "./data/fc-translations/calisma-izni-translations";
 import {
   oturmaIzniCategoryPageSeed,
   oturmaIzniCategorySeo,
 } from "./data/foreign-consultancy-oturma-izni-category";
+import { oturmaIzniCategoryTranslations } from "./data/fc-translations/oturma-izni-translations";
+import { serializeForeignConsultancyTranslations } from "../src/lib/i18n/foreign-consultancy/translations";
 
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://csglobal.com").replace(/\/$/, "");
 
@@ -27,16 +30,19 @@ const CATEGORY_SEEDS: Array<{
   slug: string;
   page: CategoryPageSeed;
   seo: CategorySeo;
+  translationsJson: string | null;
 }> = [
   {
     slug: "oturma-izni",
     page: oturmaIzniCategoryPageSeed,
     seo: oturmaIzniCategorySeo,
+    translationsJson: serializeForeignConsultancyTranslations(oturmaIzniCategoryTranslations),
   },
   {
     slug: "calisma-izni",
     page: calismaIzniCategoryPageSeed,
     seo: calismaIzniCategorySeo,
+    translationsJson: serializeForeignConsultancyTranslations(calismaIzniCategoryTranslations),
   },
 ];
 
@@ -45,6 +51,7 @@ async function upsertCategoryPage(
   slug: string,
   pageSeed: CategoryPageSeed,
   seo: CategorySeo,
+  translationsJson: string | null,
 ) {
   const page = await prisma.foreignConsultancyCategoryPage.upsert({
     where: { category: pageSeed.category },
@@ -63,6 +70,7 @@ async function upsertCategoryPage(
       featureImage2: pageSeed.featureImage2,
       featureImage2Title: pageSeed.featureImage2Title,
       featureImage2Text: pageSeed.featureImage2Text,
+      translationsJson,
       isActive: pageSeed.isActive,
     },
     update: {
@@ -78,6 +86,7 @@ async function upsertCategoryPage(
       featureImage2: pageSeed.featureImage2,
       featureImage2Title: pageSeed.featureImage2Title,
       featureImage2Text: pageSeed.featureImage2Text,
+      translationsJson,
       isActive: pageSeed.isActive,
     },
   });
@@ -120,8 +129,8 @@ async function main() {
   const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
 
   try {
-    for (const { slug, page, seo } of CATEGORY_SEEDS) {
-      await upsertCategoryPage(prisma, slug, page, seo);
+    for (const { slug, page, seo, translationsJson } of CATEGORY_SEEDS) {
+      await upsertCategoryPage(prisma, slug, page, seo, translationsJson);
     }
   } finally {
     await prisma.$disconnect();

@@ -1,0 +1,171 @@
+/** @type {import('../batch4-translations-data.mjs').SlugTranslations} */
+export default {
+  en: {
+    name: "Work Permit Transfer",
+    excerpt:
+      "Work permit transfer is the procedure that allows a foreign employee working under one employer to change branch within the same employer or to work in a different position at the same workplace. This guide explains eligibility, the e-permit process, refusal grounds, and appeal options.",
+    shortDescription:
+      "Work permit transfer allows a foreign employee tied to one employer to move to another branch in the same line of business or to a different role at the same workplace, subject to Ministry approval and procedural rules.",
+    heroTitle: "Work Permit Transfer",
+    heroSubtitle:
+      "Learn how foreign employees may transfer an existing work permit to another branch or position of the same employer in Türkiye, which documents are required, and what to do if the transfer application is refused.",
+    sections: [
+      {
+        title: "Work Permit Transfer",
+        content:
+          "<p>Work permit transfer is the legal mechanism used by foreign employees who work under one employer and wish to change the branch where they work or the duty they perform at that branch. Changes of role within the workplace or reassignment to another department are common situations in practice.</p>",
+      },
+      {
+        title: "What Is Work Permit Transfer?",
+        content:
+          "<p>Work permit transfer is the authorization that allows a foreign national who holds a work permit tied to one employer to work in a different position at that workplace or at other branches of the same employer within the same line of business. In practice, transfer is usually carried out when the foreign worker changes branch or begins working in a different role at the same workplace.</p><p>A work permit obtained for one employer cannot be transferred to workplaces belonging to another employer. Through work permit transfer (workplace change), the foreign employee's branch or position within the same employer may be changed.</p>",
+      },
+      {
+        title: "What Are the Conditions for Workplace Change of a Work Permit?",
+        content:
+          "<p>The conditions for changing the workplace of a work permit are regulated in Article 26 of the Regulation on the Implementation of the International Labour Force Law.</p><p>The conditions are as follows:</p><ul>\n<li>The change application must be submitted by the employer.</li>\n\n\n\n<li>The change application must be filed before the work permit expires.</li>\n\n\n\n<li>The change application must be made through the e-permit system and documents must be uploaded electronically.</li>\n\n\n\n<li>The position the foreign national will move to, or the job at the new branch, must not require prior approval.</li>\n\n\n\n<li>The foreign national's new duty must not be among occupations requiring professional qualification and must be compatible with the occupation stated in the employment contract.</li>\n\n\n\n<li>The branch to which the transfer will be made must also be registered in the employer's trade registry.</li>\n\n\n\n<li>The application must be found appropriate by the Directorate General of International Labour Force.</li>\n</ul><p>If the foreign national is found working at a different workplace or in a different role although the transfer application was refused, the work permit becomes invalid and the foreign national must leave the country within <strong>10 days</strong>. Otherwise, the foreign national may be deported.</p><p><strong>NOTE: </strong>Through work permit transfer, the foreign employee may work at another branch of the same employer in the same line of business or in a different role at the same workplace. The employer cannot be changed through transfer. If the foreign employee wishes to work for a different employer, the existing work permit must be cancelled and a new work permit must be obtained.</p>",
+      },
+      {
+        title: "How Is Work Permit Transfer Carried Out?",
+        content:
+          '<p>Work permit transfer is carried out by the employer through the e-permit application of the Directorate General of International Labour Force on the e-Devlet system. After logging in, forms requiring information about the employer and the employee will appear. The employer completes the application by entering the requested information and uploading the required documents.</p><p>Because transfer applications are procedurally similar to general work permit applications, you may read our article on "how to obtain a work permit".</p>',
+      },
+      {
+        title: "Refusal of Transfer Application, Appeal and Annulment Action",
+        content:
+          '<p>If any required condition for approval of a work permit transfer application is missing, the application is refused. For example, the transfer application is refused if the branch to which the transfer will be made is not registered in the same employer\'s trade registry, if the foreign national\'s new duty is incompatible with the current job, or if the new duty is subject to prior approval by the Ministry. Missing documents uploaded to the system are also grounds for refusal.</p><p>Apart from the refusal grounds listed above, the Ministry may also refuse the application if it does not find it compatible with international labour policy. Against the refusal of a work permit transfer application, an objection may be filed or an annulment action may be brought.</p><p><strong>Objections</strong> against refusal must be filed within <strong>30 days</strong> from the date the refusal decision is notified to the foreign national, through the e-permit system against the Ministry. When objecting, a legally drafted petition on the subject of the objection must be prepared, supporting information and documents must be attached, and the file must be uploaded to the system with an e-signature.</p><p>An <strong>annulment action</strong> against refusal must be brought before the administrative court within 60 days from the day following notification of the decision to the foreign national. If an objection was filed first, the period for bringing an annulment action is suspended. For example, if an objection was filed on the 32nd day after notification of the refusal to the person, the person has 28 days from the day following notification of the decision on the objection to bring an annulment action.</p><p>In both remedies, petitions must be prepared with reasoned grounds. At this stage, the grounds on which the refusal was based must be identified. After the refusal reason is determined, a petition with legal grounds against that decision must be drafted. For effective and swift management of the process, it is advisable to consult a specialist lawyer in foreign nationals law.</p><p>You may read our article on "refusal of work permit application" for detailed information on refusal grounds and legal remedies.</p>',
+      },
+      {
+        title: "Conclusion",
+        content:
+          "<p>Failure to meet the conditions required for a work permit transfer application or errors in procedural steps will lead to refusal. Therefore, statutory conditions must be observed in applications. If the refusal is considered unjustified, objection or annulment remedies may be used. During this process, procedural deadlines and correct drafting of petitions must be observed. It is advisable to manage the process with a lawyer specialised in foreign nationals law.</p>",
+      },
+    ],
+  },
+  ar: {
+    name: "نقل تصريح العمل",
+    excerpt:
+      "نقل تصريح العمل هو الإجراء الذي يتيح للأجنبي العامل لدى صاحب عمل واحد تغيير الفرع أو المنصب داخل نفس صاحب العمل. يشرح هذا الدليل الشروط ونظام e-permit وأسباب الرفض وطرق الطعن.",
+    shortDescription:
+      "يسمح نقل تصريح العمل للأجنبي المرتبط بصاحب عمل واحد بالانتقال إلى فرع آخر في نفس قطاع النشاط أو إلى مهمة مختلفة في نفس مكان العمل، وفق موافقة الوزارة والقواعد الإجرائية.",
+    heroTitle: "نقل تصريح العمل",
+    heroSubtitle:
+      "تعرّف كيف يمكن للأجانب نقل تصريح العمل الحالي إلى فرع أو منصب آخر لدى نفس صاحب العمل في Türkiye، والمستندات المطلوبة، وما يجب فعله عند رفض طلب النقل.",
+    sections: [
+      {
+        title: "نقل تصريح العمل",
+        content:
+          "<p>نقل تصريح العمل هو الإجراء القانوني الذي يلجأ إليه الأجانب العاملون لدى صاحب عمل واحد ويرغبون في تغيير الفرع الذي يعملون فيه أو المهمة التي يؤدونها في ذلك الفرع. تغيير المهمة في مكان العمل أو التوجيه إلى قسم آخر من الحالات الشائعة في الممارسة.</p>",
+      },
+      {
+        title: "ما هو نقل تصريح العمل؟",
+        content:
+          "<p>نقل تصريح العمل هو التصريح الذي يتيح للأجنبي الحاصل على تصريح عمل مرتبط بصاحب عمل واحد العمل في مهمة مختلفة في ذلك المكان أو في فروع أخرى لنفس صاحب العمل ضمن نفس قطاع النشاط. في الممارسة، يُجرى النقل عادة عند تغيير الفرع أو العمل في مهمة مختلفة في نفس مكان العمل.</p><p>لا يمكن نقل تصريح العمل الممنوح لصاحب عمل واحد إلى أماكن عمل تابعة لصاحب عمل آخر. ومن خلال نقل تصريح العمل (تغيير مكان العمل) يمكن تغيير فرع العمل أو المهمة داخل نفس صاحب العمل.</p>",
+      },
+      {
+        title: "ما شروط تغيير مكان العمل لتصريح العمل؟",
+        content:
+          "<p>تنظم المادة 26 من لائحة تطبيق قانون القوى العاملة الدولية شروط تغيير مكان العمل لتصريح العمل.</p><p>الشروط كالتالي:</p><ul>\n<li>يجب تقديم طلب التغيير من قبل صاحب العمل.</li>\n\n\n\n<li>يجب تقديم طلب التغيير قبل انتهاء مدة تصريح العمل.</li>\n\n\n\n<li>يجب تقديم طلب التغيير عبر نظام e-permit وتحميل المستندات إلكترونياً.</li>\n\n\n\n<li>يجب ألا تتطلب المهمة التي سينتقل إليها الأجنبي أو العمل في الفرع الجديد موافقة مسبقة.</li>\n\n\n\n<li>يجب ألا تكون مهمة الأجنبي الجديدة من الأعمال التي تتطلب كفاءة مهنية وأن تكون متوافقة مع المهنة الواردة في عقد العمل.</li>\n\n\n\n<li>يجب أن يكون الفرع المنقول إليه مسجلاً في السجل التجاري لصاحب العمل.</li>\n\n\n\n<li>يجب أن يجد المديرية العامة للقوى العاملة الدولية الطلب مناسباً.</li>\n</ul><p>إذا وُجد الأجنبي يعمل في مكان عمل أو مهمة مختلفة رغم رفض طلب النقل، يصبح تصريح العمل باطلاً ويجب على الأجنبي مغادرة البلاد خلال <strong>10 أيام</strong>. وإلا قد يُبعد الأجنبي.</p><p><strong>تنبيه: </strong>بموجب نقل تصريح العمل يمكن للأجنبي العمل في فرع آخر لنفس صاحب العمل في نفس قطاع النشاط أو في مهمة مختلفة في نفس مكان العمل. لا يمكن تغيير صاحب العمل عبر النقل. إذا رغب الأجنبي في العمل لدى صاحب عمل آخر، فيجب إلغاء تصريح العمل الحالي والحصول على تصريح جديد.</p>",
+      },
+      {
+        title: "كيف يتم نقل تصريح العمل؟",
+        content:
+          '<p>ينفذ صاحب العمل نقل تصريح العمل عبر تطبيق e-perbit التابع للمديرية العامة للقوى العاملة الدولية على نظام e-Devlet. بعد تسجيل الدخول، تظهر نماذج تتطلب معلومات عن صاحب العمل والعامل. يكمل صاحب العمل الطلب بإدخال المعلومات المطلوبة وتحميل المستندات.</p><p>لأن طلبات النقل تشبه إجرائياً طلبات تصريح العمل العامة، يمكنكم قراءة مقالنا بعنوان "كيفية الحصول على تصريح عمل".</p>',
+      },
+      {
+        title: "رفض طلب النقل والطعن ودعوى الإلغاء",
+        content:
+          '<p>إذا كان هناك نقص في أي شرط مطلوب لاعتماد طلب نقل تصريح العمل، يُرفض الطلب. على سبيل المثال، يُرفض الطلب إذا لم يكن الفرع المنقول إليه مسجلاً في السجل التجاري لنفس صاحب العمل، أو إذا كانت مهمة الأجنبي الجديدة غير متوافقة مع عمله الحالي، أو إذا كانت المهمة الجديدة خاضعة لموافقة مسبقة من الوزارة. نقص المستندات المرفوعة إلى النظام سبب للرفض أيضاً.</p><p>بخلاف أسباب الرفض المذكورة، قد ترفض الوزارة الطلب إذا لم تجده متوافقاً مع سياسة القوى العاملة الدولية. يمكن الطعن في رفض طلب نقل تصريح العمل أو رفع دعوى إلغاء.</p><p>يجب تقديم <strong>الطعون</strong> ضد الرفض خلال <strong>30 يوماً</strong> من تاريخ تبليغ قرار الرفض للأجنبي عبر نظام e-permit أمام الوزارة. عند الطعن، ينبغي إعداد عريضة قانونية، وإرفاق المعلومات والمستندات الداعمة، وتحميل الملف بإمضاء إلكتروني.</p><p>تُرفع <strong>دعوى الإلغاء</strong> ضد الرفض أمام المحكمة الإدارية خلال 60 يوماً من اليوم التالي لتبليغ القرار للأجنبي. إذا سبق الطعن، تتوقف مهلة رفع دعوى الإلغاء. مثلاً، إذا قُدّم الطعن في اليوم 32 بعد التبليغ، يتبقى 28 يوماً من تاريخ تبليغ نتيجة الطعن.</p><p>في كلا المسارين، يجب إعداد العرائض بأسباب واضحة. ينبغي تحديد الأساس الذي بُني عليه الرفض، ثم صياغة عريضة قانونية ضد ذلك القرار. للإدارة الفعالة للعملية، يُنصح بالاستعانة بمحامٍ متخصص في قانون الأجانب.</p><p>يمكنكم قراءة مقالنا عن "رفض طلب تصريح العمل" لمزيد من التفاصيل.</p>',
+      },
+      {
+        title: "الخلاصة",
+        content:
+          "<p>عدم استيفاء شروط طلب نقل تصريح العمل أو الأخطاء الإجرائية يؤدي إلى الرفض. لذلك يجب مراعاة الشروط القانونية. إذا كان الرفض غير عادل، يمكن اللجوء إلى الطعن أو دعوى الإلغاء. خلال هذه العملية، ينبغي مراعاة المهل والصياغة الصحيحة للعرائض. من المفيد إدارة العملية مع محامٍ متخصص في قانون الأجانب.</p>",
+      },
+    ],
+  },
+  ru: {
+    name: "Перевод разрешения на работу",
+    excerpt:
+      "Перевод разрешения на работу позволяет иностранному работнику, занятому у одного работодателя, сменить филиал или должность в рамках того же работодателя. В статье описаны условия, подача через e-permit, основания отказа и обжалование.",
+    shortDescription:
+      "Перевод разрешения на работу дает иностранному работнику, привязанному к одному работодателю, возможность перейти в другой филиал той же отрасли или на иную должность на том же предприятии при одобрении Министерства.",
+    heroTitle: "Перевод разрешения на работу",
+    heroSubtitle:
+      "Узнайте, как иностранный работник может перевести действующее разрешение на работу на другой филиал или должность того же работодателя в Türkiye, какие документы нужны и что делать при отказе.",
+    sections: [
+      {
+        title: "Перевод разрешения на работу",
+        content:
+          "<p>Перевод разрешения на работу - это правовой механизм для иностранных работников, занятых у одного работодателя и желающих сменить филиал или выполняемую в нем функцию. Смена должности или перевод в другое подразделение - распространенные ситуации.</p>",
+      },
+      {
+        title: "Что такое перевод разрешения на работу?",
+        content:
+          "<p>Перевод разрешения на работу - это разрешение, позволяющее иностранцу, имеющему разрешение, привязанное к одному работодателю, работать на другой должности на том же предприятии или в других филиалах того же работодателя в той же отрасли. На практике перевод обычно осуществляется при смене филиала или должности на том же месте работы.</p><p>Разрешение, выданное для одного работодателя, нельзя перевести на предприятия другого работодателя. Через перевод (смену места работы) можно изменить филиал или должность в рамках того же работодателя.</p>",
+      },
+      {
+        title: "Каковы условия смены места работы по разрешению?",
+        content:
+          "<p>Условия смены места работы по разрешению установлены статьей 26 Положения о применении Закона о международной рабочей силе.</p><p>Условия следующие:</p><ul>\n<li>Заявление о смене подает работодатель.</li>\n\n\n\n<li>Заявление подается до истечения срока разрешения.</li>\n\n\n\n<li>Заявление подается через систему e-permit, документы загружаются в электронном виде.</li>\n\n\n\n<li>Должность или работа в новом филиале не должны требовать предварительного одобрения.</li>\n\n\n\n<li>Новая должность не должна относиться к работам, требующим профессиональной квалификации, и должна соответствовать профессии в трудовом договоре.</li>\n\n\n\n<li>Филиал, в который осуществляется перевод, должен быть зарегистрирован в торговом реестре работодателя.</li>\n\n\n\n<li>Заявление должно быть признано уместным Генеральным директоратом по международной рабочей силе.</li>\n</ul><p>Если после отказа в переводе установлено, что иностранец работает в другом месте или на другой должности, разрешение утрачивает силу, и иностранец обязан покинуть страну в течение <strong>10 дней</strong>. В противном случае возможно выдворение.</p><p><strong>ВНИМАНИЕ: </strong>Через перевод иностранец может работать в другом филиале того же работодателя в той же отрасли или на другой должности на том же предприятии. Сменить работодателя через перевод нельзя. Для работы у другого работодателя необходимо отменить текущее разрешение и получить новое.</p>",
+      },
+      {
+        title: "Как осуществляется перевод разрешения на работу?",
+        content:
+          '<p>Перевод осуществляет работодатель через приложение e-permit Генерального директората по международной рабочей силе в системе e-Devlet. После входа появляются формы с данными о работодателе и работнике. Работодатель завершает заявление, вводя сведения и загружая документы.</p><p>Поскольку процедура похожа на обычное заявление на разрешение, вы можете прочитать нашу статью «как получить разрешение на работу».</p>',
+      },
+      {
+        title: "Отказ в переводе, возражение и иск об отмене",
+        content:
+          '<p>При отсутствии любого необходимого условия заявление об отказе. Например, отказ следует, если филиал не зарегистрирован в торговом реестре того же работодателя, новая должность несовместима с текущей работой или подлежит предварительному одобрению Министерства. Неполный комплект документов также является основанием отказа.</p><p>Кроме перечисленного, Министерство может отказать, если заявление не соответствует политике в области международной рабочей силы. Против отказа можно подать возражение или иск об отмене.</p><p><strong>Возражения</strong> подаются в течение <strong>30 дней</strong> с даты уведомления иностранца о решении через систему e-permit в Министерство. Необходимо подготовить мотивированное заявление, приложить доказательства и загрузить файл с электронной подписью.</p><p><strong>Иск об отмене</strong> подается в административный суд в течение 60 дней со дня, следующего за уведомлением. Если сначала подано возражение, срок приостанавливается. Например, при возражении на 32-й день остается 28 дней с даты уведомления о результате возражения.</p><p>В обоих случаях необходимы мотивированные заявления. Следует установить основания отказа и подготовить правовую позицию. Для эффективного ведения дела рекомендуется обратиться к специализированному адвокату.</p><p>Подробнее см. статью «отказ в выдаче разрешения на работу».</p>',
+      },
+      {
+        title: "Заключение",
+        content:
+          "<p>Несоблюдение условий или ошибки в процедуре приведут к отказу. Необходимо соблюдать законные требования. При несогласии с отказом можно использовать возражение или иск об отмене, соблюдая сроки и правильно оформляя документы. Целесообразно вести процесс с адвокатом по праву иностранцев.</p>",
+      },
+    ],
+  },
+  fa: {
+    name: "انتقال مجوز کار",
+    excerpt:
+      "انتقال مجوز کار رویه‌ای است که به کارگر خارجی وابسته به یک کارفرما امکان می‌دهد شعبه یا سمت خود را در همان کارفرما تغییر دهد. این راهنما شرایط، سامانه e-permit، دلایل رد و راه‌های اعتراض را توضیح می‌دهد.",
+    shortDescription:
+      "انتقال مجوز کار به کارگر خارجی وابسته به یک کارفرما اجازه می‌دهد در همان حوزه فعالیت به شعبه دیگر یا سمت متفاوت در همان محل کار منتقل شود، مشروط به تأیید وزارت و رعایت آیین‌نامه.",
+    heroTitle: "انتقال مجوز کار",
+    heroSubtitle:
+      "بیاموزید چگونه کارگر خارجی می‌تواند مجوز کار فعلی را به شعبه یا سمت دیگر همان کارفرما در Türkiye منتقل کند، چه مدارکی لازم است و در صورت رد درخواست چه باید کرد.",
+    sections: [
+      {
+        title: "انتقال مجوز کار",
+        content:
+          "<p>انتقال مجوز کار سازوکار حقوقی است که کارگران خارجی وابسته به یک کارفرما برای تغییر شعبه یا وظیفه خود در آن شعبه از آن استفاده می‌کنند. تغییر سمت در محل کار یا انتقال به بخش دیگر از موارد رایج است.</p>",
+      },
+      {
+        title: "انتقال مجوز کار چیست؟",
+        content:
+          "<p>انتقال مجوز کار مجوزی است که به خارجی دارای مجوز وابسته به یک کارفرما اجازه می‌دهد در سمت دیگر در همان محل کار یا در شعب دیگر همان کارفرما در همان حوزه فعالیت کار کند. در عمل، انتقال معمولاً هنگام تغییر شعبه یا سمت در همان محل کار انجام می‌شود.</p><p>مجوز صادرشده برای یک کارفرما را نمی‌توان به محل کار کارفرمای دیگر منتقل کرد. از طریق انتقال (تغییر محل کار) می‌توان شعبه یا سمت را در همان کارفرما تغییر داد.</p>",
+      },
+      {
+        title: "شرایط تغییر محل کار مجوز کار چیست؟",
+        content:
+          "<p>شرایط تغییر محل کار در ماده 26 آیین‌نامه اجرای قانون نیروی کار بین‌المللی تنظیم شده است.</p><p>شرایط به شرح زیر است:</p><ul>\n<li>درخواست تغییر باید توسط کارفرما ارائه شود.</li>\n\n\n\n<li>درخواست باید قبل از پایان مدت مجوز ارائه شود.</li>\n\n\n\n<li>درخواست باید از طریق سامانه e-permit و با بارگذاری الکترونیکی مدارک انجام شود.</li>\n\n\n\n<li>سمت یا کار در شعبه جدید نباید نیازمند پیش‌مجوز باشد.</li>\n\n\n\n<li>سمت جدید نباید از مشاغل نیازمند صلاحیت حرفه‌ای باشد و باید با شغل مندرج در قرارداد کار سازگار باشد.</li>\n\n\n\n<li>شعبه مقصد باید در اداره ثبت تجاری کارفرما ثبت شده باشد.</li>\n\n\n\n<li>درخواست باید توسط اداره کل نیروی کار بین‌المللی مناسب تشخیص داده شود.</li>\n</ul><p>اگر پس از رد درخواست انتقال، خارجی در محل یا سمت دیگر کار کند، مجوز باطل می‌شود و خارجی باید ظرف <strong>10 روز</strong> کشور را ترک کند. در غیر این صورت ممکن است اخراج شود.</p><p><strong>توجه: </strong>از طریق انتقال، کارگر خارجی می‌تواند در شعبه دیگر همان کارفرما در همان حوزه یا در سمت دیگر در همان محل کار فعالیت کند. تغییر کارفرما از طریق انتقال ممکن نیست. برای کار با کارفرمای دیگر باید مجوز فعلی لغو و مجوز جدید اخذ شود.</p>",
+      },
+      {
+        title: "انتقال مجوز کار چگونه انجام می‌شود؟",
+        content:
+          '<p>انتقال توسط کارفرما از طریق سامانه e-permit اداره کل نیروی کار بین‌المللی در e-Devlet انجام می‌شود. پس از ورود، فرم‌های اطلاعات کارفرما و کارگر نمایش داده می‌شود. کارفرما با وارد کردن اطلاعات و بارگذاری مدارک درخواست را تکمیل می‌کند.</p><p>چون فرایند انتقال از نظر آیین شبیه درخواست عمومی مجوز کار است، می‌توانید مقاله «چگونه مجوز کار بگیریم» را بخوانید.</p>',
+      },
+      {
+        title: "رد درخواست انتقال، اعتراض و دعوای ابطال",
+        content:
+          '<p>اگر هر شرط لازم برای تأیید درخواست انتقال وجود نداشته باشد، درخواست رد می‌شود. مثلاً اگر شعبه در اداره ثبت تجاری همان کارفرما ثبت نباشد، سمت جدید ناسازگار باشد یا مشمول پیش‌مجوز وزارت باشد، درخواست رد می‌شود. نقص مدارک نیز دلیل رد است.</p><p>علاوه بر موارد فوق، وزارت می‌تواند در صورت ناسازگاری با سیاست نیروی کار بین‌المللی درخواست را رد کند. علیه رد می‌توان اعتراض کرد یا دعوای ابطال طرح کرد.</p><p><strong>اعتراض‌ها</strong> ظرف <strong>30 روز</strong> از تاریخ ابلاغ رد به خارجی از طریق سامانه e-permit نزد وزارت ارائه می‌شوند. هنگام اعتراض باید لایحه حقوقی، مدارک پشتیبان و امضای الکترونیکی بارگذاری شود.</p><p><strong>دعوای ابطال</strong> ظرف 60 روز از روز بعد از ابلاغ در دادگاه اداری طرح می‌شود. اگر ابتدا اعتراض شده باشد، مهلت دعوا متوقف می‌شود. مثلاً اگر اعتراض در روز 32 انجام شود، 28 روز از تاریخ ابلاغ نتیجه اعتراض باقی می‌ماند.</p><p>در هر دو مسیر، لوایح باید مستدل باشند. ابتدا علت رد مشخص و سپس لوایح حقوقی تهیه شود. برای مدیریت مؤثر، مشورت با وکیل متخصص حقوق اتباع خارجی توصیه می‌شود.</p><p>برای جزئیات بیشتر مقاله «رد درخواست مجوز کار» را بخوانید.</p>',
+      },
+      {
+        title: "نتیجه‌گیری",
+        content:
+          "<p>عدم رعایت شرایط یا اشتباه در آیین منجر به رد می‌شود. باید شرایط قانونی رعایت شود. اگر رد ناعادلانه باشد، می‌توان از اعتراض یا دعوای ابطال استفاده کرد. در این فرایند به مهلت‌ها و نگارش صحیح لوایح توجه کنید. مدیریت پرونده با وکیل حقوق اتباع خارجی مفید است.</p>",
+      },
+    ],
+  },
+};

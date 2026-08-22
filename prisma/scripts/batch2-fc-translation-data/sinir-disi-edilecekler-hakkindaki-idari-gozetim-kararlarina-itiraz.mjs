@@ -1,0 +1,208 @@
+const lawyerFaq = {
+  en: `<p><strong>Is There an Obligation to Hire a Lawyer in Administrative Courts?</strong></p>Turkish law allows parties to defend and represent themselves in court; hiring a lawyer for representation is not mandatory except in certain cases. There is no obligation to hire an administrative law lawyer in administrative courts either.<br />However, because administrative law legislation is complex and deadlines under the Administrative Procedure Law are strict and short, non-lawyers may make formal or substantive errors that cannot be remedied. To avoid loss of rights in the detailed administrative litigation process, we recommend obtaining legal support from lawyers practicing in <strong><a href="https://kulacoglu.av.tr/calismaalanlarimiz/idare-hukuku/" target="_blank" rel="noreferrer noopener">Administrative Law</a></strong> before taking any step.`,
+  ar: `<p><strong>هل يوجد إلزام بتعيين محامٍ في محاكم الإدارة؟</strong></p>يسمح القانون التركي للأطراف بالدفاع عن أنفسهم؛ وتعيين محامٍ ليس إلزامياً إلا في حالات استثنائية. ولا يوجد إلزام بتعيين محامٍ إداري في محاكم الإدارة.<br />لكن نظراً لتعقيد تشريعات القانون الإداري وقصر المدد في قانون الإجراءات الإدارية، قد يرتكب غير المختصين أخطاء لا يمكن إصلاحها. لتجنّب فقدان الحقوق، ننصح بالحصول على دعم قانوني من محامين في <strong><a href="https://kulacoglu.av.tr/calismaalanlarimiz/idare-hukuku/" target="_blank" rel="noreferrer noopener">القانون الإداري</a></strong>.`,
+  ru: `<p><strong>Обязательно ли нанимать адвоката в административных судах?</strong></p>Турецкое право допускает самозащиту и самопредставительство; найм адвоката обязателен лишь в отдельных случаях. В административных судах также нет обязанности нанимать административного адвоката.<br />Однако из-за сложности административного законодательства и коротких процессуальных сроков возможны неустранимые ошибки. Чтобы не потерять права, рекомендуем обратиться к адвокатам по <strong><a href="https://kulacoglu.av.tr/calismaalanlarimiz/idare-hukuku/" target="_blank" rel="noreferrer noopener">административному праву</a></strong>.`,
+  fa: `<p><strong>آیا در دادگاه‌های اداری الزام به وکیل وجود دارد؟</strong></p>قانون Türkiye به طرفین اجازه دفاع شخصی می‌دهد و استخدام وکیل جز در موارد استثنایی اجباری نیست. در دادگاه‌های اداری نیز الزام به وکیل اداری وجود ندارد.<br />اما به دلیل پیچیدگی قوانین اداری و کوتاه بودن مهلت‌ها، اشخاص غیرحقوقی ممکن است خطاهای غیرقابل جبران مرتکب شوند. برای جلوگیری از از دست رفتن حقوق، توصیه می‌کنیم از وکلای <strong><a href="https://kulacoglu.av.tr/calismaalanlarimiz/idare-hukuku/" target="_blank" rel="noreferrer noopener">حقوق اداری</a></strong> کمک بگیرید.`,
+};
+
+const meta = {
+  en: {
+    name: "Objection to Administrative Detention Decisions Concerning Persons to Be Deported",
+    excerpt:
+      "Procedures and principles regarding foreigners' entry to and exit from Türkiye, their stay in Türkiye, and the scope and application of protection provided to foreigners seeking protection.",
+    shortDescription:
+      "Procedures and principles regarding foreigners' entry to and exit from Türkiye, their stay in Türkiye, and the scope and application of protection provided to foreigners seeking protection.",
+    heroTitle: "Objection to Administrative Detention Decisions Concerning Persons to Be Deported",
+    heroSubtitle:
+      "Procedures and principles regarding foreigners' entry to and exit from Türkiye, their stay in Türkiye, and the scope and application of protection provided to foreigners seeking protection.",
+  },
+  ar: {
+    name: "الاعتراض على قرارات الإيقاف الإداري بحق المقرر ترحيلهم",
+    excerpt:
+      "الإجراءات والأسس المتعلقة بدخول الأجانب إلى Türkiye وخروجهم منها، وإقامتهم في Türkiye، ونطاق الحماية المقدمة للأجانب طالبي الحماية وتطبيقها.",
+    shortDescription:
+      "الإجراءات والأسس المتعلقة بدخول الأجانب إلى Türkiye وخروجهم منها، وإقامتهم في Türkiye، ونطاق الحماية المقدمة للأجانب طالبي الحماية وتطبيقها.",
+    heroTitle: "الاعتراض على قرارات الإيقاف الإداري بحق المقرر ترحيلهم",
+    heroSubtitle:
+      "الإجراءات والأسس المتعلقة بدخول الأجانب إلى Türkiye وخروجهم منها، وإقامتهم في Türkiye، ونطاق الحماية المقدمة للأجانب طالبي الحماية وتطبيقها.",
+  },
+  ru: {
+    name: "Обжалование решений об административном содержании лиц, подлежащих депортации",
+    excerpt:
+      "Порядок и принципы въезда и выезда иностранцев в Türkiye и из Türkiye, их пребывания в Türkiye, а также объем и применение защиты для иностранцев, ищущих защиты.",
+    shortDescription:
+      "Порядок и принципы въезда и выезда иностранцев в Türkiye и из Türkiye, их пребывания в Türkiye, а также объем и применение защиты для иностранцев, ищущих защиты.",
+    heroTitle: "Обжалование решений об административном содержании лиц, подлежащих депортации",
+    heroSubtitle:
+      "Порядок и принципы въезда и выезда иностранцев в Türkiye и из Türkiye, их пребывания в Türkiye, а также объем и применение защиты для иностранцев, ищущих защиты.",
+  },
+  fa: {
+    name: "اعتراض به تصمیمات نظارت اداری درباره افراد مشمول اخراج",
+    excerpt:
+      "آیین و اصول مربوط به ورود و خروج اتباع خارجی به Türkiye، اقامت آنان در Türkiye و دامنه و اجرای حمایت برای متقاضیان حمایت بین‌المللی.",
+    shortDescription:
+      "آیین و اصول مربوط به ورود و خروج اتباع خارجی به Türkiye، اقامت آنان در Türkiye و دامنه و اجرای حمایت برای متقاضیان حمایت بین‌المللی.",
+    heroTitle: "اعتراض به تصمیمات نظارت اداری درباره افراد مشمول اخراج",
+    heroSubtitle:
+      "آیین و اصول مربوط به ورود و خروج اتباع خارجی به Türkiye، اقامت آنان در Türkiye و دامنه و اجرای حمایت برای متقاضیان حمایت بین‌المللی.",
+  },
+};
+
+export default {
+  en: {
+    ...meta.en,
+    sections: [
+      {
+        title: meta.en.heroTitle,
+        content: `<p>Procedures and principles regarding foreigners' entry to and exit from Türkiye, their stay in Türkiye, and the scope and application of protection provided to foreigners seeking protection are regulated by <a href="https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6458.pdf" target="_blank" rel="noreferrer noopener nofollow">Law No. 6458 on Foreigners and International Protection</a>. The same Law also contains provisions on "deportation" and "administrative detention" decisions applicable to foreigners. Under these provisions, provincial governorships may issue deportation decisions concerning persons listed in Article 56 of the Law. Administrative detention decisions may also be issued concerning persons subject to deportation who pose a risk of absconding or disappearing, who constitute a threat to public security or public health, and others specified in the Law. For persons not subject to administrative detention, alternative measures to administrative detention may also be applied. Where an administrative detention decision is unlawful, it may be challenged by applying to the criminal judge of peace.</p><p>Under the principle of state sovereignty, it is entirely natural for states to control the entry and exit of non-nationals and to decide independently on a foreigner's residence. As a consequence of the same principle, the state also has the power to deport foreigners considered dangerous to general security and public order. In addition to the power of deportation, foreigners may also be held in administrative detention in cases regulated by the Law. A person unlawfully deported or subject to an administrative detention decision may pursue legal remedies against that decision.</p><p>For detailed information on deportation decisions and the procedure for objecting to them, see our article titled "<a href="https://kulacoglu.av.tr/sinir-disi-deport-kararina-itiraz/" target="_blank" rel="noreferrer noopener"><strong>Objection to a Deportation Decision</strong></a>".</p>`,
+      },
+      {
+        title: "1. Administrative Detention Decision",
+        content: `<p>Article 54 of Law No. 6458 on Foreigners and International Protection regulates who may be subject to a deportation decision. Under this article, persons to be deported are immediately reported to the provincial governorship upon apprehension by law enforcement for a decision to be made. Administrative detention decisions may also be issued in certain cases concerning persons subject to deportation. Administrative detention decisions are issued by the provincial governorship for persons subject to deportation who:</p><ul>\n<li>pose a risk of absconding or disappearing,</li>\n<li>violate rules on legal entry or exit,</li>\n<li>use forged or false documents,</li>\n<li>fail to leave Türkiye within the period granted for departure without an acceptable excuse,</li>\n<li>constitute a threat to public security or public health.</li>\n</ul><p>Alternatively, obligations substituting administrative detention may be imposed.</p>`,
+      },
+      {
+        title: "2. Administrative Detention of Foreigners to Be Deported and Its Duration",
+        content: `<p>Persons subject to an administrative detention decision are taken to Removal Centers within forty-eight hours after being apprehended by law enforcement.</p><p>Administrative detention at Removal Centers may not exceed six months. However, if deportation procedures cannot be completed because the foreigner fails to cooperate or does not provide correct information or documents relating to their country, this period may be extended by a further six months.</p><p>Whether continuation of administrative detention is necessary is reviewed regularly each month by the provincial governorship. If deemed necessary, the thirty-day period need not be awaited. Administrative detention is terminated immediately for foreigners whose continued detention is not considered necessary. Alternative obligations to administrative detention, such as residence at a specified address and reporting at specified intervals, may also be imposed on these foreigners.</p><p>The <strong>administrative detention decision</strong>, any extension of the detention period, and the results of monthly reviews are notified to the foreigner, their legal representative, or their lawyer together with the grounds. If the person held in administrative detention is not represented by a lawyer, they or their legal representative are informed of the outcome of the decision and of objection procedures and time limits.</p>`,
+      },
+      {
+        title: "3. Removal Centers",
+        content: `<p>Persons subject to administrative detention following a deportation decision are held at Removal Centers. The following services are provided at removal centers:</p><ul>\n<li>Emergency and basic health services that the foreigner cannot afford are provided free of charge.</li>\n<li>The foreigner is given access to relatives, a notary, a legal representative, and a lawyer, and may meet with them; access to telephone services is also provided.</li>\n<li>The foreigner may meet with visitors, the consular official of the country of which they are a national, and officials of the Office of the United Nations High Commissioner for Refugees.</li>\n<li>The best interests of children are taken into account; families are not housed separately.</li>\n<li>The Ministry of National Education takes necessary measures for children to benefit from education and training.</li>\n</ul>`,
+      },
+      {
+        title: "4. Alternative Measures to Administrative Detention",
+        content: `<p>Alternative obligations to administrative detention may be imposed on foreigners who may be subject to deportation and administrative detention, and on foreigners whose administrative detention has been terminated.</p><p>Under Law No. 6458 on Foreigners and International Protection, alternative obligations to administrative detention are as follows:</p><ul>\n<li>Residence at a specified address</li>\n<li>Reporting obligations</li>\n<li>Family-based return</li>\n<li>Return counselling</li>\n<li>Voluntary participation in public benefit services</li>\n<li>Security deposit</li>\n<li>Electronic monitoring</li>\n</ul><p>Where one or more of the obligations listed above are imposed on a foreigner, the period of application of the measure may not exceed <em>twenty-four months</em>.</p><p>It should be noted that a person subject to a deportation decision who may be placed under administrative detention under Article 57 of the Law need not necessarily be placed in administrative detention. In that case, one or more alternative obligations must be imposed.</p><p>Imposition of alternative obligations to administrative detention is notified to the foreigner, their legal representative, or their lawyer together with the grounds. If the foreigner is not represented by a lawyer, they or their legal representative are informed of the outcome of the decision and of objection procedures and time limits.</p>`,
+      },
+      {
+        title: "5. Objection to a Decision on Alternative Measures to Administrative Detention",
+        content: `<p>A foreigner subject to electronic monitoring, or their legal representative or lawyer, may apply to the criminal judge of peace and request annulment of the decision. However, applying to the criminal judge of peace does not suspend the administrative obligation imposed on the person. The criminal judge of peace completes the review within <em>five days</em>. The decision of the <strong>criminal judge of peace</strong> is final.</p><p>Foreigners subject to alternative obligations to administrative detention rather than an administrative detention decision may be placed in administrative detention if they fail to comply with those alternative obligations.</p><p>The Law does not regulate whether judicial remedies are available for measures other than electronic monitoring. Although the legislator left this matter incomplete, we are of the view that judicial remedies may also be pursued for the other measures.</p>`,
+      },
+      {
+        title: "6. Objection to an Administrative Detention Decision",
+        content: `<p>A person subject to a deportation decision must first apply to the administrative court to object to that decision. Where both a deportation decision and an administrative detention decision have been issued against the same person, <strong>objection to the administrative detention decision</strong> must be made before the criminal judge of peace. As can be seen, the authorities to which applications must be made differ for each decision. Accordingly, applying only to the criminal judge of peace or only to the administrative court may result in loss of rights. For this reason, persons deported and placed in administrative detention must apply both to the administrative court and to the criminal judge of peace.</p><p>An application to the criminal judge of peace will not suspend administrative detention. If the objection petition is submitted to the administration, it must be forwarded immediately to the competent criminal judge of peace. The criminal judge of peace completes the review within five days. The decision of the criminal judge of peace is final. The person held in administrative detention, or their legal representative or lawyer, may reapply to the criminal judge of peace on the grounds that the conditions for administrative detention have ceased or changed, seeking annulment of the administrative detention decision.</p>`,
+      },
+      {
+        title: "7. Frequently Asked Questions",
+        content:
+          lawyerFaq.en +
+          `<p><strong>What Is a Removal Center?</strong></p>Where a foreigner to be deported is also subject to an administrative detention decision, the places where they are held until they are sent to their country or to a safe third country are called removal centers.<br /><p><strong>Within What Period Are Foreigners Subject to Administrative Detention Taken to Removal Centers?</strong></p>Foreigners subject to an administrative detention decision are taken to removal centers by the apprehending law enforcement unit within 48 hours.<br /><p><strong>Does an Administrative Detention Decision Remain in Force Until Deportation?</strong></p>Whether continuation of the administrative detention decision is necessary is reviewed each month by the provincial governorship. If it is concluded that continued detention is not necessary, the decision is lifted. If the provincial governorship does not take such a decision, the administrative detention decision continues for up to six months until the foreigner is deported.<br /><p><strong>How Long May a Foreigner Be Held at Removal Centers?</strong></p>As a rule, the administrative detention period may not exceed six months. Therefore, a foreigner may be held at removal centers for at most six months. However, if deportation procedures cannot be completed because the foreigner fails to cooperate or does not provide correct information or documents relating to their country, this period may be extended by up to six more months.<br /><p><strong>Where Should an Application Be Made Against an Administrative Detention Decision?</strong></p>After being placed in administrative detention, the foreigner, their legal representative, or their lawyer may apply to the criminal judge of peace for annulment of the administrative detention decision. However, such an application does not suspend administrative detention. The criminal judge of peace completes the review within five days.<br /><p><strong>Is Everyone to Be Deported Sent to Removal Centers?</strong></p>Foreigners to be deported who are also subject to an administrative detention decision are sent to removal centers. If only a deportation decision has been issued and no administrative detention decision has been issued, the foreigner is not sent to removal centers.<br />Kulaçoğlu Law Office`,
+      },
+    ],
+  },
+  ar: {
+    ...meta.ar,
+    sections: [
+      {
+        title: meta.ar.heroTitle,
+        content: `<p>تنظم <a href="https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6458.pdf" target="_blank" rel="noreferrer noopener nofollow">القانون رقم 6458 بشأن الأجانب والحماية الدولية</a> الإجراءات والأسس المتعلقة بدخول الأجانب إلى Türkiye وخروجهم منها، وإقامتهم في Türkiye، ونطاق الحماية المقدمة للأجانب طالبي الحماية وتطبيقها. وينظم القانون ذاته أيضاً قرارات «الترحيل» و«الإيقاف الإداري» بحق الأجانب. وبموجب هذه الأحكام يمكن للمحافظات إصدار قرارات ترحيل بحق الأشخاص المنصوص عليهم في المادة 56. ويمكن أيضاً إصدار قرارات إيقاف إداري بحق من صدر بحقهم قرار ترحيل ويشكلون خطر فرار أو اختفاء، أو خطراً على الأمن أو الصحة العامة، وغيرهم من المنصوص عليهم في القانون. ولمن لا يُوقف إدارياً يمكن تطبيق تدابير بديلة. وإذا كان قرار الإيقاف الإداري مخالفاً للقانون، يمكن الاعتراض عليه أمام قاضي الصلح الجزائي.</p><p>وفق مبدأ سيادة الدولة، من الطبيعي أن تتحكم الدول في دخول غير مواطنيها وخروجهم وتقرر بشكل مستقل إقامة الأجنبي. ونتيجة لذلك، للدولة أيضاً سلطة ترحيل الأجانب الذين يُعدون خطراً على الأمن العام والنظام العام. إلى جانب سلطة الترحيل، يمكن أيضاً إيقاف الأجانب إدارياً في الحالات التي ينظمها القانون. ومن رُحّل بشكل غير قانوني أو صدر بحقه قرار إيقاف إداري يمكنه اللجوء إلى طرق قانونية ضد ذلك القرار.</p><p>للمعلومات التفصيلية عن قرارات الترحيل وإجراءات الاعتراض، راجع مقالنا "<a href="https://kulacoglu.av.tr/sinir-disi-deport-kararina-itiraz/" target="_blank" rel="noreferrer noopener"><strong>الاعتراض على قرار الترحيل</strong></a>".</p>`,
+      },
+      {
+        title: "1. قرار الإيقاف الإداري",
+        content: `<p>تنظم المادة 54 من القانون 6458 من يمكن إصدار قرار ترحيل بحقه. وفق هذه المادة، يُبلّغ الأشخاص المقرر ترحيلهم فوراً إلى المحافظة عند ضبطهم من قبل الأمن لاتخاذ قرار. ويمكن في بعض الحالات إصدار قرار إيقاف إداري أيضاً. يصدر المحافظ قرار الإيقاف الإداري بحق من صدر بحقهم قرار ترحيل و:</p><ul>\n<li>يشكلون خطر فرار أو اختفاء،</li>\n<li>ينتهكون قواعد الدخول أو الخروج القانوني،</li>\n<li>يستخدمون وثائق مزورة أو غير صحيحة،</li>\n<li>لا يغادرون Türkiye خلال المدة الممنوحة دون عذر مقبول،</li>\n<li>يشكلون تهديداً للأمن أو الصحة العامة.</li>\n</ul><p>أو يمكن فرض التزامات بديلة عن الإيقاف الإداري.</p>`,
+      },
+      {
+        title: "2. الإيقاف الإداري للأجانb المقرر ترحيلهم ومدته",
+        content: `<p>يُنقل الأشخاص قرار إيقاف إداري إلى مراكز الإعادة خلال ثماني وأربعين ساعة من ضبطهم.</p><p>لا يجوز أن تتجاوز مدة الإيقاف الإداري في مراكز الإعادة ستة أشهر. لكن إذا تعذر إكمال إجراءات الترحيل بسبب عدم تعاون الأجنبي أو عدم تقديم معلومات أو وثائق صحيحة عن بلده، يمكن تمديد المدة ستة أشهر أخرى.</p><p>تراجع المحافظة شهرياً ما إذا كان استمرار الإيقاف الإداري ضرورياً. وإذا لم يعد ضرورياً، يُنهى الإيقاف فوراً. ويمكن فرض التزامات بديلة مثل الإقامة في عنوان محدد والإبلاغ في فترات محددة.</p><p>يُبلّغ <strong>قرار الإيقاف الإداري</strong> وتمديد المدة ونتائج المراجعات الشهرية للأجنبي أو ممثله القانوني أو محاميه مع الأسباب. وإذا لم يكن ممثلاً بمحامٍ، يُبلَّغ عن نتيجة القرار وإجراءات الاعتراض والمواعيد.</p>`,
+      },
+      {
+        title: "3. مراكز الإعادة",
+        content: `<p>يُحتجز في مراكز الإعادة من صدر بحقهم قرار ترحيل وإيقاف إداري. تُقدَّم في هذه المراكز:</p><ul>\n<li>خدمات صحية طارئة وأساسية مجاناً إذا تعذر على الأجنبي تحمل تكلفتها.</li>\n<li>إمكانية الوصول إلى الأقارب والموثق والممثل القانوني والمحامي والاجتماع بهم، وكذلك خدمات الهاتف.</li>\n<li>إمكانية مقابلة الزوار ومسؤول القنصلية وممثلي مفوضية الأمم المتحدة لشؤون اللاجئين.</li>\n<li>مراعاة مصلحة الطفل الفضلى؛ لا يُفصل أفراد الأسرة.</li>\n<li>اتخاذ وزارة التربية تدابير لتعليم الأطفال.</li>\n</ul>`,
+      },
+      {
+        title: "4. تدابير بديلة للإيقاف الإداري",
+        content: `<p>يمكن فرض التزامات بديلة على من يمكن إيقافهم إدارياً أو من انتهى إيقافهم الإداري.</p><p>وفق القانون 6458، التزامات بديلة للإيقاف الإداري هي:</p><ul>\n<li>الإقامة في عنوان محدد</li>\n<li>الإبلاغ</li>\n<li>العودة الأسرية</li>\n<li>الإرشاد للعودة</li>\n<li>المشاركة التطوعية في خدمات النفع العام</li>\n<li>الضمان</li>\n<li>المراقبة الإلكترونية</li>\n</ul><p>إذا فُرض أحد هذه الالتزامات أو أكثر، لا تتجاوز مدة التطبيق <em>أربعاً وعشرين شهراً</em>.</p><p>يجب التنبيه إلى أن من يمكن إيقافه إدارياً بموجب المادة 57 قد لا يُوقف إدارياً، وفي هذه الحالة يجب فرض التزام بديل.</p><p>يُبلّغ فرض الالتزامات البديلة للأجنبي أو ممثله أو محاميه مع الأسباب، ويُبلَّغ عن طرق الاعتراض إذا لم يكن ممثلاً بمحامٍ.</p>`,
+      },
+      {
+        title: "5. الاعتراض على قرار التدابير البديلة",
+        content: `<p>يمكن للأجنبي الخاضع للمراقبة الإلكترونية أو ممثله أو محاميه التقدم إلى قاضي الصلح الجزائي وطلب إلغاء القرار. لكن هذا لا يوقف الالتزام الإداري. ينهي القاضي المراجعة خلال <em>خمسة أيام</em>. قرار <strong>قاضي الصلح الجزائي</strong> نهائي.</p><p>من خضع لالتزامات بديلة ولم يلتزم بها يمكن إيقافه إدارياً.</p><p>القانون لا ينظم صراحةً طرق الطعن في التدابير غير الإلكترونية، لكننا نرى أن الطعن ممكن أيضاً فيها.</p>`,
+      },
+      {
+        title: "6. الاعتراض على قرار الإيقاف الإداري",
+        content: `<p>يجب أولاً على من صدر بحقه قرار ترحيل أن يعترض أمام المحكمة الإدارية. وإذا صدر قرار ترحيل وإيقاف إداري معاً، فيجب <strong>الاعتراض على قرار الإيقاف الإداري</strong> أمام قاضي الصلح الجزائي. الجهات مختلفة لكل قرار، والاكتفاء بجهة واحدة قد يسبب فقدان الحقوق. لذلك يجب اللجوء إلى المحكمة الإدارية وقاضي الصلح معاً.</p><p>الطعن أمام قاضي الصلح لا يوقف الإيقاف الإداري. إذا قُدّمت العريضة للإدارة، تُحال فوراً للقاضي. ينهي القاضي المراجعة خلال خمسة أيام وقراره نهائي. ويمكن إعادة الطلب إذا زالت أو تغيرت شروط الإيقاف.</p>`,
+      },
+      {
+        title: "7. الأسئلة الشائعة",
+        content:
+          lawyerFaq.ar +
+          `<p><strong>ما هو مركز الإعادة؟</strong></p>المكان الذي يُحتجز فيه الأجنبي المقرر ترحيله إيقاف إداري حتى إعادته إلى بلده أو بلد ثالث آمن.<br /><p><strong>خلال أي مدة يُنقل الموقوفون إلى مراكز الإعادة؟</strong></p>خلال 48 ساعة من الضبط.<br /><p><strong>هل يستمر قرار الإيقاف حتى الترحيل؟</strong></p>تراجع المحافظة شهرياً ضرورة الاستمرار. إذا لم يعد ضرورياً يُرفع. وإلا يستمر حتى ستة أشهر كحد أقصى.<br /><p><strong>كم مدة الاحتجاز في مراكز الإعادة؟</strong></p>قاعدةً لا تتجاوز ستة أشهر، ويمكن تمديدها ستة أشهر أخرى في حالات عدم التعاون.<br /><p><strong>أين يُقدَّم الاعتراض؟</strong></p>أمام قاضي الصلح الجزائي، دون أن يوقف ذلك الإيقاف. ينهي القاضي خلال خمسة أيام.<br /><p><strong>هل يُرسل كل مقرر ترحيله إلى مراكز الإعادة؟</strong></p>فقط من صدر بحقهم قرار إيقاف إداري. من لديهم قرار ترحيل فقط لا يُرسلون.<br />مكتب Kulaçoğlu للمحاماة`,
+      },
+    ],
+  },
+  ru: {
+    ...meta.ru,
+    sections: [
+      {
+        title: meta.ru.heroTitle,
+        content: `<p>Порядок и принципы въезда и выезда иностранцев в Türkiye и из Türkiye, их пребывания в Türkiye, а также объем и применение защиты для иностранцев, ищущих защиты, регулируются <a href="https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6458.pdf" target="_blank" rel="noreferrer noopener nofollow">Законом № 6458 об иностранцах и международной защите</a>. Тот же Закон содержит положения о решениях о «депортации» и «административном содержании». По этим нормам провинциальные губернаторства могут выносить решения о депортации в отношении лиц, указанных в статье 56. Также могут выноситься решения об административном содержании в отношении депортируемых лиц с риском бегства или исчезновения, представляющих угрозу общественной безопасности или здоровью, и иных лиц, указанных в Законе. Для лиц, не подлежащих административному содержанию, могут применяться альтернативные меры. Против незаконного решения об административном содержании можно обратиться к судье мира.</p><p>В силу принципа суверенитета государства контроль въезда и выезда иностранцев и самостоятельное решение вопроса о пребывании иностранца естественны. Как следствие того же принципа, государство также вправе депортировать иностранцев, представляющих опасность для общественной безопасности и порядка. Помимо депортации, иностранцы могут содержаться административно в случаях, предусмотренных Законом. Лицо, незаконно депортированное или подвергнутое административному содержанию, вправе обжаловать решение.</p><p>Подробнее о депортации и порядке возражения см. нашу статью «<a href="https://kulacoglu.av.tr/sinir-disi-deport-kararina-itiraz/" target="_blank" rel="noreferrer noopener"><strong>Возражение против решения о депортации</strong></a>».</p>`,
+      },
+      {
+        title: "1. Решение об административном содержании",
+        content: `<p>Статья 54 Закона № 6458 регулирует, в отношении кого может быть вынесено решение о депортации. Лица, подлежащие депортации, немедленно доставляются в губернаторство после задержания правоохранительными органами. В отдельных случаях также выносится решение об административном содержании. Губернаторство выносит такое решение в отношении депортируемых, которые:</p><ul>\n<li>создают риск бегства или исчезновения,</li>\n<li>нарушают правила законного въезда или выезда,</li>\n<li>используют подложные или ложные документы,</li>\n<li>не покидают Türkiye в установленный срок без уважительной причины,</li>\n<li>создают угрозу общественной безопасности или здоровью.</li>\n</ul><p>Либо могут быть установлены альтернативные обязательства.</p>`,
+      },
+      {
+        title: "2. Административное содержание депортируемых и его срок",
+        content: `<p>Лица, в отношении которых вынесено решение об административном содержании, доставляются в центры возвращения в течение сорока восьми часов после задержания.</p><p>Срок административного содержания в центрах возвращения не может превышать шесть месяцев. Если депортация не может быть завершена из-за отсутствия сотрудничества или предоставления недостоверных сведений или документов, срок может быть продлен еще на шесть месяцев.</p><p>Необходимость продолжения содержания ежемесячно оценивается губернаторством. При отсутствии необходимости содержание прекращается немедленно. Могут быть установлены альтернативные обязательства, например проживание по указанному адресу и периодическая отчетность.</p><p><strong>Решение об административном содержании</strong>, продление срока и результаты ежемесячных проверок направляются иностранцу, его законному представителю или адвокату с указанием оснований. Если адвоката нет, сообщаются последствия решения и порядок обжалования.</p>`,
+      },
+      {
+        title: "3. Центры возвращения",
+        content: `<p>После решения о депортации лица с решением об административном содержании удерживаются в центрах возвращения. Там предоставляются:</p><ul>\n<li>бесплатная экстренная и базовая медицинская помощь, если иностранец не может ее оплатить;</li>\n<li>доступ к родственникам, нотариусу, законному представителю и адвокату, а также телефонные услуги;</li>\n<li>встречи с посетителями, консульским должностным лицом и представителями УВКБ ООН;</li>\n<li>учет наилучших интересов детей; семьи не разделяются;</li>\n<li>меры Министерства национального образования для обучения детей.</li>\n</ul>`,
+      },
+      {
+        title: "4. Альтернативные меры вместо административного содержания",
+        content: `<p>Альтернативные обязательства могут быть установлены для лиц, которым может быть назначено административное содержание, и для лиц, чье содержание прекращено.</p><p>По Закону № 6458 альтернативные обязательства включают:</p><ul>\n<li>проживание по указанному адресу;</li>\n<li>обязанность явки;</li>\n<li>семейное возвращение;</li>\n<li>консультирование по возвращению;</li>\n<li>добровольное участие в общественно полезных работах;</li>\n<li>залог;</li>\n<li>электронный мониторинг.</li>\n</ul><p>Срок применения меры не может превышать <em>двадцать четыре месяца</em>.</p><p>Лицо, которому может быть назначено содержание по ст. 57, не обязательно содержится административно; в этом случае должны быть установлены альтернативные обязательства.</p><p>Об установлении альтернативных обязательств уведомляются иностранец, его представитель или адвокат с указанием оснований.</p>`,
+      },
+      {
+        title: "5. Возражение против альтернативных мер",
+        content: `<p>Иностранец, подвергнутый электронному мониторингу, или его представитель/адвокат может обратиться к судье мира с требованием об отмене решения. Обращение не приостанавливает обязательство. Судья мира завершает рассмотрение в течение <em>пяти дней</em>. Решение <strong>судьи мира</strong> окончательно.</p><p>Лица, не соблюдающие альтернативные обязательства, могут быть помещены под административное содержание.</p><p>Закон прямо не регулирует судебную защиту для иных мер, но мы считаем, что она также возможна.</p>`,
+      },
+      {
+        title: "6. Возражение против решения об административном содержании",
+        content: `<p>Лицо, в отношении которого вынесено решение о депортации, должно сначала обратиться в административный суд. Если одновременно вынесены решения о депортации и административном содержании, <strong>возражение против административного содержания</strong> подается судье мира. Органы для обжалования различны; обращение только в один орган может привести к потере прав. Поэтому необходимо обращаться и в административный суд, и к судье мира.</p><p>Обращение к судье мира не приостанавливает содержание. Жалоба, поданная в администрацию, немедленно направляется судье. Рассмотрение завершается в течение пяти дней. Решение окончательно. При изменении условий можно повторно обратиться за отменой содержания.</p>`,
+      },
+      {
+        title: "7. Часто задаваемые вопросы",
+        content:
+          lawyerFaq.ru +
+          `<p><strong>Что такое центр возвращения?</strong></p>Место содержания депортируемого с решением об административном содержании до отправки в страну происхождения или безопасную третью страну.<br /><p><strong>В какой срок доставляют в центры возвращения?</strong></p>В течение 48 часов после задержания.<br /><p><strong>Действует ли решение до депортации?</strong></p>Губернаторство ежемесячно оценивает необходимость. При ее отсутствии решение отменяется; иначе действует до шести месяцев.<br /><p><strong>Как долго можно содержать в центре?</strong></p>Как правило, не более шести месяцев, с возможным продлением еще на шесть.<br /><p><strong>Куда обращаться против решения?</strong></p>К судье мира; это не приостанавливает содержание. Рассмотрение за пять дней.<br /><p><strong>Всех депортируемых отправляют в центры?</strong></p>Только тех, у кого есть решение об административном содержании.<br />Юридическая фирма Kulaçoğlu`,
+      },
+    ],
+  },
+  fa: {
+    ...meta.fa,
+    sections: [
+      {
+        title: meta.fa.heroTitle,
+        content: `<p>آیین و اصول ورود و خروج اتباع خارجی به Türkiye، اقامت آنان در Türkiye و دامنه و اجرای حمایت برای متقاضیان حمایت، در <a href="https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6458.pdf" target="_blank" rel="noreferrer noopener nofollow">قانون 6458 اتباع خارجی و حمایت بین‌المللی</a> تنظیم شده است. این قانون همچنین مقررات «اخراج» و «نظارت اداری» را شامل می‌شود. بر اساس آن، استانداری‌ها می‌توانند برای اشخاص مندرج در ماده 56 تصمیم اخراج صادر کنند. برای افراد مشمول اخراج که خطر فرار یا ناپدید شدن دارند یا برای امنیت یا سلامت عمومی خطر ایجاد می‌کنند نیز می‌توان تصمیم نظارت اداری صادر کرد. برای سایر موارد نیز تدابیر جایگزین ممکن است. در صورت غیرقانونی بودن تصمیم نظارت اداری، می‌توان به قاضی صلح جزایی مراجعه کرد.</p><p>بر اساس اصل حاکمیت دولت، کنترل ورود و خروج اتباع خارجی و تصمیم مستقل درباره اقامت طبیعی است. دولت همچنین اختیار اخراج اتباع خارجی خطرناک برای امنیت و نظم عمومی را دارد. علاوه بر اخراج، در موارد قانونی نظارت اداری نیز ممکن است. فردی که بشكل غير قانوني اخراج شده یا مشمول نظارت اداری است می‌تواند به تصمیم اعتراض کند.</p><p>برای اطلاعات بیشتر درباره اخراج و اعتراض، مقاله «<a href="https://kulacoglu.av.tr/sinir-disi-deport-kararina-itiraz/" target="_blank" rel="noreferrer noopener"><strong>اعتراض به تصمیم اخراج</strong></a>» را ببینید.</p>`,
+      },
+      {
+        title: "1. تصمیم نظارت اداری",
+        content: `<p>ماده 54 قانون 6458 مشخص می‌کند چه کسانی می‌توانند مشمول اخراج شوند. پس از دستگیری، فوراً به استانداری گزارش می‌شوند. در برخی موارد تصمیم نظارت اداری نیز صادر می‌شود برای کسانی که:</p><ul>\n<li>خطر فرار یا ناپدید شدن دارند،</li>\n<li>قواعد ورود یا خروج قانونی را نقض کرده‌اند،</li>\n<li>از مدارک جعلی یا غیرواقعی استفاده کرده‌اند،</li>\n<li>بدون عذر موجه در مهلت خروج Türkiye را ترک نکرده‌اند،</li>\n<li>برای امنیت یا سلامت عمومی خطر ایجاد می‌کنند.</li>\n</ul><p>یا تعهدات جایگزین اعمال می‌شود.</p>`,
+      },
+      {
+        title: "2. نظارت اداری افراد مشمول اخراج و مدت آن",
+        content: `<p>افراد مشمول نظارت اداری ظرف 48 ساعت به مراکز بازگشت منتقل می‌شوند.</p><p>مدت نظارت در مراکز بازگشت بیش از شش ماه نمی‌شود. اگر به دلیل عدم همکاری یا ارائه اطلاعات نادرست تکمیل اخراج ممکن نباشد، حداکثر شش ماه دیگر تمدید می‌شود.</p><p>استانداری ماهانه ضرورت ادامه نظارت را بررسی می‌کند. در صورت عدم ضرورت، فوراً پایان می‌یابد. تعهدات جایگزین مانند اقامت در نشانی مشخص نیز ممکن است.</p><p><strong>تصمیم نظارت اداری</strong>، تمدید و نتایج بررسی‌های ماهانه با ذکر دلایل به فرد، نماینده یا وکیل ابلاغ می‌شود.</p>`,
+      },
+      {
+        title: "3. مراکز بازگشت",
+        content: `<p>افراد مشمول اخراج و نظارت اداری در مراکز بازگشت نگهداری می‌شوند. خدمات شامل:</p><ul>\n<li>خدمات سلامت اضطراری و پایه رایگان در صورت عدم توانایی پرداخت؛</li>\n<li>دسترسی به بستگان، دفتر اسناد رسمی، نماینده و وکیل و تماس تلفنی؛</li>\n<li>ملاقات با بازدیدکنندگان، مقام کنسولی و نمایندگان UNHCR؛</li>\n<li>رعایت منافع عالی کودک؛ خانواده‌ها جدا نمی‌شوند؛</li>\n<li>اقدامات وزارت آموزش برای تحصیل کودکان.</li>\n</ul>`,
+      },
+      {
+        title: "4. تدابیر جایگزین نظارت اداری",
+        content: `<p>برای افراد مشمول یا پایان‌یافته از نظارت اداری می‌توان تعهدات جایگزین تعیین کرد.</p><p>طبق قانون 6458، تعهدات جایگزین عبارت‌اند از:</p><ul>\n<li>اقامت در نشانی مشخص</li>\n<li>گزارش‌دهی</li>\n<li>بازگشت خانوادگی</li>\n<li>مشاوره بازگشت</li>\n<li>خدمات داوطلبانه عمومی</li>\n<li>وثیقه</li>\n<li>پایش الکترونیکی</li>\n</ul><p>مدت اجرای تدبیر از <em>بیست و چهار ماه</em> تجاوز نمی‌کند.</p><p>کسی که می‌تواند تحت ماده 57 نظارت شود، لزوماً نظارت نمی‌شود و باید تعهد جایگزین اعمال گردد.</p><p>اعمال تعهدات جایگزین با ذکر دلایل ابلاغ می‌شود.</p>`,
+      },
+      {
+        title: "5. اعتراض به تدابیر جایگزین",
+        content: `<p>فرد تحت پایش الکترونیکی یا نماینده/وکیل می‌تواند برای لغو تصمیم به قاضی صلح جزایی مراجعه کند. این اقدام تعهد را متوقف نمی‌کند. قاضی ظرف <em>پنج روز</em> بررسی را تمام می‌کند. رأی <strong>قاضی صلح</dzایی</strong> قطعی است.</p><p>عدم رعایت تعهدات جایگزین می‌تواند منجر به نظارت اداری شود.</p><p>قانون صراحتاً برای سایر تدابیر مسیر قضایی را تنظیم نکرده، اما ما معتقدیم اعتراض ممکن است.</p>`,
+      },
+      {
+        title: "6. اعتراض به تصمیم نظارت اداری",
+        content: `<p>مشمول اخراج باید ابتدا به دادگاه اداری اعتراض کند. اگر همزمان اخراج و نظارت اداری صادر شده، <strong>اعتراض به نظارت اداری</strong> نزد قاضی صلح جزایی است. مراجعه فقط به یک مرجع ممکن است موجب از دست رفتن حق شود. بنابراین باید به هر دو مراجعه شود.</p><p>اعتراض به قاضی نظارت را متوقف نمی‌کند. دادخواست به اداره فوراً به قاضی ارجاع می‌شود. بررسی ظرف پنج روز تمام و رأی قطعی است. در صورت تغییر شرایط می‌توان دوباره درخواست لغو کرد.</p>`,
+      },
+      {
+        title: "7. پرسش‌های متداول",
+        content:
+          lawyerFaq.fa +
+          `<p><strong>مرکز بازگشت چیست؟</strong></p>محل نگهداری فرد مشمول اخراج و نظارت اداری تا بازگشت به کشور مبدأ یا کشور ثالث امن.<br /><p><strong>ظرف چه مدت به مرکز بازگشت منتقل می‌شوند؟</strong></p>ظرف 48 ساعت.<br /><p><strong>آیا تصمیم تا اخراج معتبر است؟</strong></p>استانداری ماهانه بررسی می‌کند. در صورت عدم ضرورت لغو می‌شود؛ وگرنه حداکثر شش ماه.<br /><p><strong>حداکثر مدت نگهداری؟</strong></p>معمولاً شش ماه، با امکان تمدید شش ماه دیگر.<br /><p><strong>اعتراض کجا مطرح می‌شود؟</strong></p>نزد قاضی صلح جزایی؛ نظارت متوقف نمی‌شود. بررسی پنج روزه.<br /><p><strong>آیا همه مشمول اخراج به مرکز می‌روند؟</strong></p>فقط کسانی که تصمیم نظارت اداری دارند.<br />دفتر حقوقی Kulaçoğlu`,
+      },
+    ],
+  },
+};

@@ -21,6 +21,7 @@ const listSelect = {
   category: true,
   sortOrder: true,
   publishedAt: true,
+  translationsJson: true,
 } as const;
 
 export async function findForeignConsultancyContentById(id: string) {

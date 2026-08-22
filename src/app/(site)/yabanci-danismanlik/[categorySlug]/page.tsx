@@ -15,6 +15,10 @@ import {
   shouldUseForeignConsultancyStaticCopy,
 } from "@/lib/i18n/foreign-consultancy";
 import { getForeignConsultancyLocale } from "@/lib/i18n/foreign-consultancy/server";
+import {
+  hasForeignConsultancyLocaleTranslation,
+  resolveForeignConsultancyLocalizedRecord,
+} from "@/lib/i18n/foreign-consultancy/translations";
 import { optimizeCloudinaryDeliveryUrl, siteImages } from "@/lib/media";
 import {
   findActiveForeignConsultancyContentsByCategorySlug,
@@ -47,7 +51,7 @@ export async function generateMetadata({ params }: Props) {
   if (!option) return {};
 
   const page = await findForeignConsultancyCategoryPageByCategorySlug(categorySlug);
-  const useStaticCopy = shouldUseForeignConsultancyStaticCopy(locale);
+  const useStaticCopy = shouldUseForeignConsultancyStaticCopy(locale) && !page;
 
   if (useStaticCopy || !page) {
     return buildEntityMetadata({
@@ -63,8 +67,11 @@ export async function generateMetadata({ params }: Props) {
     entityType: SeoEntityType.FOREIGN_CONSULTANCY_CATEGORY,
     entityId: page.id,
     path: buildForeignConsultancyCategoryPath(categorySlug),
-    fallbackTitle: page.name,
-    fallbackDescription: page.shortDescription ?? page.excerpt ?? categoryMessages.description,
+    fallbackTitle: `${resolveForeignConsultancyLocalizedRecord(page, locale).name ?? page.name} | ${messages.common.foreignConsultancy}`,
+    fallbackDescription:
+      resolveForeignConsultancyLocalizedRecord(page, locale).shortDescription ??
+      resolveForeignConsultancyLocalizedRecord(page, locale).excerpt ??
+      categoryMessages.description,
   });
 }
 
@@ -76,7 +83,6 @@ export default async function ForeignConsultancyCategoryPage({ params }: Props) 
   const locale = await getForeignConsultancyLocale();
   const messages = getForeignConsultancyMessages(locale);
   const categoryMessages = getForeignConsultancyCategoryMessages(messages, categorySlug);
-  const useStaticCopy = shouldUseForeignConsultancyStaticCopy(locale);
 
   const settings = await getSiteSettings();
   const heroImage = settings.contactHeroImage?.trim()
@@ -93,12 +99,20 @@ export default async function ForeignConsultancyCategoryPage({ params }: Props) 
     : [];
 
   const displayPage = categoryPage?.isActive ? categoryPage : null;
-  const categoryLabel = categoryMessages.title;
+  const localizedPage = displayPage
+    ? resolveForeignConsultancyLocalizedRecord(displayPage, locale)
+    : null;
+  const categoryLabel =
+    localizedPage?.name?.trim() || categoryMessages.title;
+  const showTranslationNotice =
+    locale !== "tr" &&
+    Boolean(displayPage) &&
+    !hasForeignConsultancyLocaleTranslation(displayPage!, locale);
 
   const breadcrumbItems = [
     { label: messages.common.home, href: "/" },
     { label: messages.common.foreignConsultancy, href: FOREIGN_CONSULTANCY_BASE_PATH },
-    { label: useStaticCopy ? categoryLabel : (displayPage?.name ?? categoryLabel) },
+    { label: categoryLabel },
   ];
 
   const categoryPath = buildForeignConsultancyCategoryPath(categorySlug);
@@ -113,17 +127,17 @@ export default async function ForeignConsultancyCategoryPage({ params }: Props) 
     ...seoStructuredData,
   ].filter(Boolean);
 
-  const heroTitle = useStaticCopy
-    ? categoryLabel
-    : displayPage?.heroTitle?.trim() || displayPage?.name || categoryLabel;
-  const heroSubtitle = useStaticCopy
-    ? categoryMessages.description
-    : displayPage?.heroSubtitle?.trim() ||
-      displayPage?.shortDescription ||
-      displayPage?.excerpt ||
-      categoryMessages.description;
+  const heroTitle =
+    localizedPage?.heroTitle?.trim() ||
+    localizedPage?.name?.trim() ||
+    categoryLabel;
+  const heroSubtitle =
+    localizedPage?.heroSubtitle?.trim() ||
+    localizedPage?.shortDescription ||
+    localizedPage?.excerpt ||
+    categoryMessages.description;
 
-  const sectionNav = getServiceSectionNavItems(displayPage?.sectionsJson ?? null, []);
+  const sectionNav = getServiceSectionNavItems(localizedPage?.sectionsJson ?? null, []);
   const showTocSidebar = sectionNav.length > 0;
   const showLeftPanel = contents.length > 0;
 
@@ -138,7 +152,7 @@ export default async function ForeignConsultancyCategoryPage({ params }: Props) 
   const tocStickyClass =
     "lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100dvh-var(--site-header-height)-2rem)] lg:overflow-y-auto";
 
-  const contactName = useStaticCopy ? categoryLabel : (displayPage?.name ?? categoryLabel);
+  const contactName = categoryLabel;
 
   return (
     <>
@@ -167,31 +181,34 @@ export default async function ForeignConsultancyCategoryPage({ params }: Props) 
               <ForeignConsultancyContentsPanel
                 categorySlug={categorySlug}
                 messages={messages}
-                items={contents.map((item) => ({
-                  id: item.id,
-                  name: item.name,
-                  slug: item.slug,
-                  category: item.category as ForeignConsultancyCategoryValue,
-                }))}
+                items={contents.map((item) => {
+                  const localizedItem = resolveForeignConsultancyLocalizedRecord(item, locale);
+                  return {
+                    id: item.id,
+                    name: localizedItem.name ?? item.name,
+                    slug: item.slug,
+                    category: item.category as ForeignConsultancyCategoryValue,
+                  };
+                })}
               />
             </aside>
           )}
 
           <div className="order-1 min-w-0 lg:order-2">
-            {useStaticCopy && displayPage && (
+            {showTranslationNotice && (
               <ForeignConsultancyTranslationNotice messages={messages} />
             )}
 
-            {displayPage ? (
+            {displayPage && localizedPage ? (
               <ServiceDetailContent
-                sectionsJson={displayPage.sectionsJson}
+                sectionsJson={localizedPage.sectionsJson}
                 legacySections={[]}
                 featureImage1={displayPage.featureImage1}
-                featureImage1Title={displayPage.featureImage1Title}
-                featureImage1Text={displayPage.featureImage1Text}
+                featureImage1Title={localizedPage.featureImage1Title}
+                featureImage1Text={localizedPage.featureImage1Text}
                 featureImage2={displayPage.featureImage2}
-                featureImage2Title={displayPage.featureImage2Title}
-                featureImage2Text={displayPage.featureImage2Text}
+                featureImage2Title={localizedPage.featureImage2Title}
+                featureImage2Text={localizedPage.featureImage2Text}
                 featureImage1Priority
               />
             ) : (

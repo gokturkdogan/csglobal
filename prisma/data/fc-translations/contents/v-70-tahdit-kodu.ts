@@ -1,0 +1,196 @@
+import type { ServiceContentSection } from "../../../../src/lib/service-page";
+import { serializeServiceSections } from "../../../../src/lib/service-page";
+import type { ForeignConsultancyTranslations } from "../../../../src/lib/i18n/foreign-consultancy/translations";
+
+const enSections: ServiceContentSection[] = [
+  {
+    title: "V-70 Restriction Code",
+    content: "<p>The V-70 restriction code is imposed on foreign nationals who are deported because of a sham marriage and whose entry to Türkiye is blocked for five years. As a result, the foreign national may be stripped of Turkish citizenship where applicable, and the residence permit is cancelled. A foreign national recorded with V-70 should use available legal remedies to avoid these sanctions.</p>",
+  },
+  {
+    title: "What Is the V-70 Restriction Code?",
+    content: "<p>The V-70 restriction code is entered in the records of foreign nationals found to have contracted a sham marriage in order to block their entry to the country. A foreign national with V-70 will have a family residence permit cancelled and subsequent applications under the same ground refused. However, applications for other types of residence permits may be assessed while the V-70 code remains, provided that the five-year entry ban has in any event expired for acceptance.</p>",
+  },
+  {
+    title: "Why Is the V-70 Restriction Code Imposed?",
+    content: "<p>The V-70 restriction code is imposed to deport foreign nationals found to have entered into a sham marriage to obtain a residence permit and to prevent their entry to Türkiye for five years. The family residence permit held by such a foreign national is also cancelled for this purpose.</p><p>That a marriage is sham is established through an investigation by the competent authorities based on concrete information and documents. Although living at the same address is an important criterion, it alone has not been considered sufficient. Activities incompatible with marital union, often treated in practice as prostitution, are decisive factors.</p>",
+  },
+  {
+    title: "How Is the V-70 Restriction Code Removed?",
+    content: "<p>The V-70 restriction code may be removed through administrative objection or court action. Apart from that, the five-year entry ban effect of V-70 expires automatically after five years.</p>Removal by Administrative Objection<p>The first legal remedy is a reasoned petition to the competent authority. The authority for objection against V-70 is the Presidency of Migration Management. Objection must be made within <strong>60 days</strong> from the day following notification of the code.</p><p>In the objection, it must be shown that the marriage was not concluded to obtain a residence permit or citizenship. If the marital union continues, this must be demonstrated. If it has ended, it must be shown that the union existed at the outset even if it later broke down.</p><p>The administration must decide within <strong>30 days</strong>. Failure to decide within that period constitutes implied refusal and allows court action. After express or implied refusal, an annulment action may be brought from the day following the refusal (or the 30th day in case of implied refusal).</p><p>For example, if objection is filed on the 40th day of the 60-day judicial period, 20 days remain to bring an action after notification of the refusal.</p>Removal by Annulment Action<p>An annulment action is another remedy. The action is brought against the Presidency of Migration Management. If the administrative court dismisses the case, appeal before the regional administrative court is possible.</p><p>In an annulment action to cancel V-70, a separate request for stay of execution must be made. Filing the action alone does not automatically suspend the code; the court may suspend enforcement until the case concludes if the conditions are met.</p><p>Further details appear in our article on \"foreign restriction codes and annulment actions\".</p>Entry Through Annotated Visa<p>An annotated visa is a special visa granted for reasons such as family reunification, health, or education. A holder of an annotated visa may enter Türkiye even if entry is banned because of V-70.</p><p>Persons with V-70 may apply for an annotated visa, but issuance is at the administration's discretion. Criteria and procedure are explained in our article on \"how to obtain an annotated visa\".</p>",
+  },
+  {
+    title: "Annulment Action Against Deportation Decision",
+    content: "<p>Against a deportation decision based on a restriction code, an annulment action must be brought within <strong>7 days</strong> from notification to the foreign national. If an action is filed, the foreign national is not deported until the court rules.</p><p>The competent court is the administrative court of the province where the governorship that issued the deportation decision is located. Deportation annulment cases usually conclude within <strong>4-6 months</strong>. If the case is upheld, deportation is lifted; if dismissed, deportation continues and administrative detention may follow.</p><p>If the case is dismissed, appeal and cassation are not available, but an individual application with a stay request may be made to the Constitutional Court.</p><p>Filing a deportation annulment action directly suspends enforcement; a separate stay request is not required.</p><p>In successful deportation cases in practice, cancellation of the V-70 code may also be achieved. See our article on \"how to lift a deportation decision\".</p>Objection to Administrative Detention<p>Foreign nationals held in removal centers during deportation proceedings must object to administrative detention to be released during the case. Because filing deportation annulment suspends deportation, detention during proceedings is common.</p><p>Objection is made to the criminal peace judgeship of the province of the governorship that issued the deportation decision or where the person is detained. Objection may be filed throughout detention.</p><p>Further details appear in our article on \"objection to administrative detention\".</p>",
+  },
+  {
+    title: "How Long Does Removal of the V-70 Code Take?",
+    content: "<p>In practice, removal of a restriction code takes about one year. If appellate remedies are used, the process may extend to several years.</p>",
+  },
+  {
+    title: "Attorney Fees and Litigation Costs for Removing a Restriction Code",
+    content: "<p>Litigation costs to remove a restriction code are approximately <strong>4,000 TL</strong> for 2023 data published by the authorities. The individual application fee to the Constitutional Court with a stay request is <strong>2,220.60 TL</strong>.</p>New Case Postage Fee580 TLNew Case (with stay of execution)588 TLApplication Fee269.85 TLDecision Fee269.85 TLStay of Execution Fee444.60 TLEvidence Determination Fee444.60 TLAppeal Fee738 TLİDARE MAHKEMELERİNDE DAVA AÇILIRKEN PEŞİN ALINAN POSTA GİDERLERİYeni Dava Açılış Posta Masrafı,580,00 TL,Duruşma İstemli Yeni Dava,696,00 TL,Yürütmenin Durdurulması İstemli Yeni Dava,812,00 TL,Duruşma ve Yürütmenin Durdurulması İstemli Yeni Dava,928,00 TL,İDARE MAHKEMESİ VE İSTİNAF HARÇLARIBaşvuru Harcı,269,85 TL,Karar Harcı,269,85 TL,Yürütmeyi Durdurma Harcı,444,60 TL,Delil Tespiti Harcı,444,60 TL,Suret Harcı,13,95 TL x Sayfa Sayısı,Vekalet Harcı,38,40 TL,Keşif Harcı,1.912,35 TL.Bölge İstinaf Başvuru Harcı,738,00 TL,ANAYASA MAHKEMESİ BİREYSEL BAŞVURU HARCI,2.220,60 TL.",
+  },
+  {
+    title: "Competent and Authorized Court for Removing a Restriction Code",
+    content: "<p>The competent administrative court for removal of a restriction code is the Ankara administrative courts. For annulment of deport decisions based on a restriction code, the competent court is the administrative court of the province where the governorship that issued the deport decision is located.</p>",
+  },
+  {
+    title: "Conclusion",
+    content: "<p>The V-70 restriction code is imposed on foreign nationals found to have entered into a sham marriage to obtain family residence. It may lead to deportation, cancellation of permits, and a five-year entry ban. The foreign national should pursue legal remedies to remove the code. Consulting a specialist lawyer in foreign nationals law is important to obtain a favourable outcome.</p>",
+  }
+];
+
+const arSections: ServiceContentSection[] = [
+  {
+    title: "رمز التقييد V-70",
+    content: "<p>يُفرض رمز التقييد V-70 على الأجانب الذين يُرحَّلون بسبب زواج صوري وتُمنع دخولهم إلى Türkiye لمدة خمس سنوات. ونتيجة لذلك قد يُسحب الجنسية التركية إن وُجدت، ويُلغى تصريح الإقامة. على الأجنبي المسجل بـ V-70 اللجوء إلى السبل القانونية لتجنب هذه العقوبات.</p>",
+  },
+  {
+    title: "ما هو رمز التقييد V-70؟",
+    content: "<p>رمز V-70 يُدرج في سجلات الأجانب الذين ثبت تعاقدهم على زواج صوري لمنع دخولهم إلى البلاد. يُلغى تصريح إقامة العائلة ويُرفض الطلب المتعلق بنفس السبب. لكن يمكن النظر في طلبات إقامة أخرى مع بقاء الرمز، على أن ينتهي حظر الدخول لمدة خمس سنوات في كل الأحوال للقبول.</p>",
+  },
+  {
+    title: "لماذا يُفرض رمز التقييد V-70؟",
+    content: "<p>يُفرض V-70 لترحيل الأجانب الذين ثبت زواجهم الصوري للحصول على إقامة ومنع دخولهم Türkiye لمدة خمس سنوات. كما يُلغى تصريح إقامة العائلة لهذا الغرض.</p><p>يُثبت الزواج الصوري بتحقيق السلطات المختصة بناءً على معلومات ووثائق ملموسة. رغم أهمية السكن المشترك، لم يُعتبر كافياً وحده. الأنشطة غير المتوافقة مع الزوجية، وغالباً تُعامل كدعارة في التطبيق، عوامل حاسمة.</p>",
+  },
+  {
+    title: "كيف تُزال رمز التقييد V-70؟",
+    content: "<p>يمكن إزالة V-70 بالطعن الإداري أو الدعوى. كما يسقط أثر حظر الدخول لمدة خمس سنوات تلقائياً بعد انقضائها.</p>الطعن الإداري لإزالة الرمز<p>أول سبل هو عريضة مسببة إلى الجهة المختصة. جهة الطعن هي رئاسة إدارة الهجرة. يجب الطعن خلال <strong>60 يوماً</strong> من اليوم التالي لتبليغ الرمز.</p><p>يجب إثبات أن الزواج لم يُبرم للحصول على إقامة أو جنسية. إن استمرت الزوجية يجب إثباتها. إن انتهت يجب إثبات وجودها في البداية.</p><p>تبت الإدارة خلال <strong>30 يوماً</strong>. عدم البت يُعد رفضاً ضمنياً ويفتح دعوى الإلغاء.</p>دعوى الإلغاء لإزالة الرمز<p>دعوى الإلغاء سبيل آخر تُرفع ضد رئاسة إدارة الهجرة. عند الرفض يمكن الاستئناف أمام محكمة الإدارية الإقليمية.</p><p>يجب طلب وقف التنفيذ بشكل منفصل؛ رفع الدعوى وحده لا يوقف الرمز تلقائياً.</p><p>تفاصيل إضافية في مقال \"رموز التقييد الأجنبية ودعاوى الإلغاء\".</p>الدخول بتأشيرة مشروحة<p>التأشيرة المشروحة تُمنح لأسباب عائلية أو صحية أو تعليمية. حاملها قد يدخل Türkiye حتى مع حظر V-70.</p><p>يمكن التقديم لها لكن الإصدار بتقدير الإدارة. راجعوا \"كيفية الحصول على تأشيرة مشروحة\".</p>",
+  },
+  {
+    title: "دعوى الإلغاء ضد قرار الترحيل",
+    content: "<p>ضد قرار الترحيل المبني على رمز التقييد، تُرفع دعوى إلغاء خلال <strong>7 أيام</strong> من التبليغ. عند رفع الدعوى لا يُرحَّل الأجنبي حتى يصدر الحكم.</p><p>المحكمة المختصة هي الإدارية في محافظة الوالي الذي أصدر قرار الترحيل. تستغرق الدعوى عادة <strong>4-6 أشهر</strong>.</p><p>عند الرفض لا استئناف أو نقض، لكن يمكن الطعن الفردي لدى المحكمة الدستورية.</p><p>رفع دعوى إلغاء الترحيل يوقف التنفيذ مباشرة دون حاجة لطلب وقف منفصل.</p><p>في الدعاوى الناجحة قد يُلغى V-70 أيضاً. راجعوا \"كيفية رفع قرار الترحيل\".</p>الطعن في قرار المراقبة الإدارية<p>المحتجزون في مراكز الإعادة يجب أن يطعنوا في المراقبة الإدارية للإفراج أثناء الدعوى.</p><p>الطعن لدى محكمة الجنح في محافظة الوالي أو مكان الاحتجاز.</p><p>تفاصيل في \"الطعن في قرار المراقبة الإدارية\".</p>",
+  },
+  {
+    title: "كم تستغرق إزالة رمز V-70؟",
+    content: "<p>في التطبيق تستغرق إزالة رمز التقييد نحو سنة. مع الطعون قد تمتد إلى عدة سنوات.</p>",
+  },
+  {
+    title: "أتعاب المحاماة وتكاليف دعوى إزالة رمز التقييد",
+    content: "<p>تكاليف رفع دعوى إزالة رمز التقييد نحو <strong>4,000 ليرة تركية</strong> وفق بيانات 2023. رسوم الطعن الفردي لدى المحكمة الدستورية مع طلب وقف التنفيذ <strong>2,220.60 ليرة</strong>.</p>رسوم بريد دعوى جديدة580 ليرةدعوى جديدة (وقف التنفيذ)588 ليرةرسوم الطلب269.85 ليرةرسوم الحكم269.85 ليرةرسوم وقف التنفيذ444.60 ليرةرسوم إثبات الدليل444.60 ليرةرسوم الاستئناف738 ليرةمصاريف بريد الدعوى الجديدة580,00 ليرةدعوى مع جلسة696,00 ليرةدعوى مع وقف التنفيذ812,00 ليرةدعوى مع جلسة ووقف928,00 ليرة",
+  },
+  {
+    title: "المحكمة المختصة والنافذة لإزالة رمز التقييد",
+    content: "<p>المحكمة الإدارية المختصة لإزالة رمز التقييد هي محاكم أنقرة الإدارية. ولإلغاء قرارات الترحيل المبنية على رمز التقييد، تكون المحكمة الإدارية في محافظة الوالي الذي أصدر قرار الترحيل.</p>",
+  },
+  {
+    title: "الخلاصة",
+    content: "<p>يُفرض V-70 على من يثبت زواجهم الصوري لإقامة العائلة. قد يؤدي إلى الترحيل وإلغاء التصاريح وحظر دخول خمس سنوات. ينبغي للأجنبي متابعة السبل القانونية. استشارة محامٍ متخصص في قانون الأجانب مهمة لنتيجة إيجابية.</p>",
+  }
+];
+
+const ruSections: ServiceContentSection[] = [
+  {
+    title: "Код ограничения V-70",
+    content: "<p>Код V-70 налагается на иностранцев, выдворяемых из-за фиктивного брака, с запретом въезда в Türkiye на пять лет. В результате может быть утрачено гражданство, аннулирован ВНЖ. Иностранцу с V-70 следует использовать правовые средства защиты.</p>",
+  },
+  {
+    title: "Что такое код ограничения V-70?",
+    content: "<p>Код V-70 вносится в записи иностранцев, у которых установлен фиктивный брак, чтобы блокировать въезд. Семейный ВНЖ аннулируется, повторные заявления по тому же основанию отклоняются. Заявления на иные типы ВНЖ могут рассматриваться при сохранении кода, если пятилетний запрет въезда в любом случае истек.</p>",
+  },
+  {
+    title: "Почему вносится код V-70?",
+    content: "<p>Код V-70 вводится для выдворения иностранцев с фиктивным браком для получения ВНЖ и запрета въезда в Türkiye на пять лет. Семейный ВНЖ также аннулируется.</p><p>Фиктивность брака устанавливается компетентными органами на основании конкретных данных. Совместное проживание важно, но недостаточно. Деятельность, несовместимая с браком, часто квалифицируется как проституция.</p>",
+  },
+  {
+    title: "Как снять код V-70?",
+    content: "<p>Код V-70 снимается через административное возражение или суд. Пятилетний запрет въезда прекращается автоматически по истечении срока.</p>Административное возражение<p>Первое средство - мотивированное заявление в компетентный орган, Президентство по делам миграции. Срок - <strong>60 дней</strong> со дня после уведомления.</p><p>Необходимо доказать, что брак не был заключен для ВНЖ или гражданства. Если союз продолжается, это подтверждается. Если прекратился, доказывается его изначальное существование.</p><p>Решение принимается в течение <strong>30 дней</strong>. Молчание означает отказ и право на иск.</p>Иск об отмене<p>Иск подается против Президентства по делам миграции. При отказе возможно обжалование в региональный административный суд.</p><p>Нужно отдельно ходатайствовать об обеспечительных мерах; сам иск не приостанавливает код автоматически.</p>Въезд по аннотированной визе<p>Аннотированная виза выдается по семейным, медицинским и иным основаниям. Ее держатель может въехать даже при V-70.</p><p>Выдача на усмотрение администрации. См. статью о получении аннотированной визы.</p>",
+  },
+  {
+    title: "Иск об отмене решения о выдворении",
+    content: "<p>Против решения о выдворении на основании кода подается иск в течение <strong>7 дней</strong> с уведомления. До решения суда выдворение не исполняется.</p><p>Компетентен административный суд провинции губернаторства, вынесшего решение. Срок рассмотрения обычно <strong>4-6 месяцев</strong>.</p><p>При отказе апелляция и кассация недоступны, но возможно индивидуальное обращение в Конституционный суд.</p><p>Подача иска о выдворении непосредственно приостанавливает исполнение.</p>Возражение против административного задержания<p>Лица в центрах удержания должны оспорить задержание для освобождения на время дела.</p><p>Возражение в суд мировых судей провинции или места задержания.</p>",
+  },
+  {
+    title: "Сколько длится снятие кода V-70?",
+    content: "<p>На практике снятие кода занимает около года, при обжаловании - до нескольких лет.</p>",
+  },
+  {
+    title: "Гонорары и судебные расходы по снятию кода",
+    content: "<p>Судебные расходы по снятию кода ограничения составляют около <strong>4 000 TL</strong> по данным 2023 года. Госпошлина за индивидуальное обращение в Конституционный суд с ходатайством об обеспечительных мерах - <strong>2 220,60 TL</strong>.</p>Почтовые расходы нового иска580 TLИск с обеспечительными мерами588 TLПошлина за заявление269,85 TLПошлина за решение269,85 TLОбеспечительные меры444,60 TLОпределение доказательств444,60 TLАпелляция738 TL",
+  },
+  {
+    title: "Компетентный суд для снятия кода ограничения",
+    content: "<p>Компетентный административный суд для снятия кода ограничения - административные суды Анкары. Для отмены решений о выдворении на основании кода ограничения компетентен административный суд провинции, где находится губернаторство, вынесшее решение.</p>",
+  },
+  {
+    title: "Заключение",
+    content: "<p>Код V-70 налагается при фиктивном браке для семейного ВНЖ. Возможны выдворение, отмена разрешений и пятилетний запрет. Необходимо использовать правовые средства. Консультация специализированного адвоката важна для успешного исхода.</p>",
+  }
+];
+
+const faSections: ServiceContentSection[] = [
+  {
+    title: "کد محدودیت V-70",
+    content: "<p>کد V-70 علیه خارجیانی وضع می‌شود که به دلیل ازدواج صوری اخراج شده و ورودشان به Türkiye برای پنج سال ممنوع می‌شود. در نتیجه ممکن است تابعیت لغو و اقامت ابطال شود. خارجی دارای V-70 باید از راه‌های حقوقی استفاده کند.</p>",
+  },
+  {
+    title: "کد محدودیت V-70 چیست؟",
+    content: "<p>کد V-70 در پرونده خارجیانی ثبت می‌شود که ازدواج صوری برای آنها ثابت شده است. اقامت خانوادگی لغو و درخواست مشابه رد می‌شود. درخواست انواع دیگر اقامت ممکن است با باقی ماندن کد بررسی شود، مشروط بر پایان ممنوعیت پنج‌ساله.</p>",
+  },
+  {
+    title: "چرا کد V-70 وضع می‌شود؟",
+    content: "<p>V-70 برای اخراج خارجیان با ازدواج صوری برای اقامت و ممنوعیت ورود پنج‌ساله به Türkiye وضع می‌شود. اقامت خانوادگی نیز لغو می‌گردد.</p><p>صوری بودن ازدواج با تحقیق مراجع صلاح بر اساس ادله مشخص ثابت می‌شود. سکونت مشترک مهم اما کافی نیست. فعالیت ناسازگار با زندگی زناشویی، اغلب فحشا تلقی می‌شود.</p>",
+  },
+  {
+    title: "کد V-70 چگونه رفع می‌شود؟",
+    content: "<p>رفع V-70 از طریق اعتراض اداری یا دعوا ممکن است. اثر ممنوعیت پنج‌ساله پس از پنج سال خودبه‌خود زایل می‌شود.</p>اعتراض اداری<p>اولین راه، دادخواست مستدل به مرجع صلاح است: ریاست مدیریت مهاجرت. مهلت <strong>60 روز</strong> از روز بعد از ابلاغ.</p><p>باید ثابت شود ازدواج برای اقامت یا تابعیت نبوده است. ادامه زندگی مشترک یا وجود اولیه آن باید اثبات شود.</p><p>اداره ظرف <strong>30 روز</strong> تصمیم می‌گیرد. سکوت به منزله رد است.</p>دعوای ابطال<p>دعوا علیه ریاست مدیریت مهاجرت. در صورت رد، تجدیدنظر در دیوان اداری منطقه ممکن است.</p><p>درخواست توقف اجرا جداگانه لازم است.</p>ورود با ویزای مشروح<p>ویزای مشروح برای خانواده، سلامت و آموزش صادر می‌شود. دارنده آن حتی با V-70 می‌تواند وارد شود.</p><p>صدور به صلاحدید اداره است.</p>",
+  },
+  {
+    title: "دعوای ابطال تصمیم اخراج",
+    content: "<p>علیه تصمیم اخراج مبتنی بر کد، ظرف <strong>7 روز</strong> از ابلاغ دعوا طرح می‌شود. تا صدور رأی اخراج اجرا نمی‌شود.</p><p>دادگاه صالح، اداری استان والی صادرکننده تصمیم است. معمولاً <strong>4-6 ماه</strong> طول می‌کشد.</p><p>در صورت رد، تجدیدنظر و فرجام نیست، اما شکایت فردی به دیوان عالیان ممکن است.</p><p>طرح دعوای ابطال اخراج مستقیماً اجرا را متوقف می‌کند.</p>اعتراض به نظارت اداری<p>محبوسان در مراکز بازگشت باید برای آزادی در جریان دعوا اعتراض کنند.</p><p>اعتراض به دادگاه صلح جنایی استان یا محل بازداشت.</p>",
+  },
+  {
+    title: "رفع کد V-70 چقدر طول می‌کشد؟",
+    content: "<p>در عمل حدود یک سال است و با مراجعه به مراحل تجدیدنظر ممکن است چند سال شود.</p>",
+  },
+  {
+    title: "حق‌الزحمه و هزینه دعوای رفع کد محدودیت",
+    content: "<p>هزینه دعوای رفع کد محدودیت حدود <strong>4,000 لیر</strong> بر اساس داده‌های 2023 است. هزینه شکایت فردی به دیوان عالیان با درخواست توقف اجرا <strong>2,220.60 لیر</strong> است.</p>هزینه پست دعوای جدید580 لیردعوای جدید (توقف اجرا)588 لیرحق طرح269.85 لیرحق حکم269.85 لیرحق توقف اجرا444.60 لیرحق تعیین دلیل444.60 لیرحق تجدیدنظر738 لیر",
+  },
+  {
+    title: "دادگاه صالح برای رفع کد محدودیت",
+    content: "<p>دادگاه اداری صالح برای رفع کد محدودیت، دادگاه‌های اداری آنکارا است. برای ابطال تصمیم اخراج مبتنی بر کد محدودیت، دادگاه اداری استان والی صادرکننده تصمیم صالح است.</p>",
+  },
+  {
+    title: "نتیجه‌گیری",
+    content: "<p>V-70 برای ازدواج صوری جهت اقامت خانوادگی وضع می‌شود و ممکن است اخراج، لغو مجوزها و ممنوعیت پنج‌ساله به دنبال داشته باشد. خارجی باید راه‌های حقوقی را دنبال کند. مشورت با وکیل متخصص حقوق اتباع خارجی برای نتیجه مطلوب مهم است.</p>",
+  }
+];
+
+export const contentSlug = "v-70-tahdit-kodu";
+
+export const contentTranslations: ForeignConsultancyTranslations = {
+  en: {
+    name: "V-70 Restriction Code",
+    excerpt: "The V-70 restriction code is imposed on foreign nationals found to have entered into a sham marriage to obtain a residence permit. It may lead to deportation and a five-year entry ban to Türkiye, cancellation of family residence permits, and refusal of new applications. This guide explains grounds, removal procedures, and legal remedies.",
+    shortDescription: "The V-70 code is recorded against foreigners whose marriage for residence purposes is found to be sham. It triggers deportation, permit cancellation, and a five-year re-entry ban, but may be challenged through administrative and judicial remedies.",
+    heroTitle: "V-70 Restriction Code",
+    heroSubtitle: "Learn what the V-70 restriction code means, why it is imposed after sham marriage findings, how to remove it through objection or annulment action, and options including annotated visa applications.",
+    sectionsJson: serializeServiceSections(enSections),
+  },
+  ar: {
+    name: "رمز التقييد V-70",
+    excerpt: "يُفرض رمز التقييد V-70 على الأجانب الذين تثبت زواجهم الصوري للحصول على إقامة. قد يؤدي إلى الترحيل وحظر دخول Türkiye لمدة خمس سنوات وإلغاء إقامة العائلة ورفض الطلبات الجديدة. يشرح هذا الدليل الأسباب وإجراءات الإزالة والسبل القانونية.",
+    shortDescription: "يُسجل رمز V-70 بحق الأجانب الذين يُعتبر زواجهم لأغراض الإقامة صورياً. يترتب عليه الترحيل وإلغاء التصريح وحظر إعادة الدخول لخمس سنوات، ويمكن الطعن فيه إدارياً وقضائياً.",
+    heroTitle: "رمز التقييد V-70",
+    heroSubtitle: "تعرّف معنى رمز V-70 وأسباب فرضه بعد ثبوت الزواج الصوري وكيفية إزالته بالطعن أو دعوى الإلغاء وخيارات التأشيرة المشروحة.",
+    sectionsJson: serializeServiceSections(arSections),
+  },
+  ru: {
+    name: "Код ограничения V-70",
+    excerpt: "Код ограничения V-70 налагается на иностранцев, у которых установлен фиктивный брак для получения ВНЖ. Это может повлечь выдворение, пятилетний запрет въезда в Türkiye, аннулирование семейного ВНЖ и отказ в новых заявлениях. В статье описаны основания, снятие кода и правовые средства.",
+    shortDescription: "Код V-70 вносится против иностранцев, чей брак для целей проживания признан фиктивным. Он влечет выдворение, отмену разрешения и пятилетний запрет на въезд, но может быть оспорен в административном и судебном порядке.",
+    heroTitle: "Код ограничения V-70",
+    heroSubtitle: "Узнайте, что означает код V-70, почему он вносится после выявления фиктивного брака, как снять его через возражение или иск об отмене и какие есть варианты с аннотированной визой.",
+    sectionsJson: serializeServiceSections(ruSections),
+  },
+  fa: {
+    name: "کد محدودیت V-70",
+    excerpt: "کد محدودیت V-70 علیه اتباع خارجی که ازدواج صوری برای اخذ اقامت برای آنها ثابت شود وضع می‌شود. ممکن است به اخراج، ممنوعیت ورود پنج‌ساله به Türkiye، لغو اقامت خانوادگی و رد درخواست‌های جدید منجر شود. این راهنما علل، رفع کد و راه‌های حقوقی را توضیح می‌دهد.",
+    shortDescription: "کد V-70 برای خارجیانی ثبت می‌شود که ازدواجشان برای اقامت صوری تشخیص داده شود. اخراج، لغو مجوز و ممنوعیت ورود پنج‌ساله به دنبال دارد و قابل اعتراض اداری و قضایی است.",
+    heroTitle: "کد محدودیت V-70",
+    heroSubtitle: "با معنای کد V-70، دلایل وضع آن پس از ازدواج صوری، نحوه رفع از طریق اعتراض یا دعوای ابطال و گزینه ویزای مشروح آشنا شوید.",
+    sectionsJson: serializeServiceSections(faSections),
+  },
+};

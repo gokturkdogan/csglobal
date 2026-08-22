@@ -1,0 +1,252 @@
+import type { ServiceContentSection } from "../../../../src/lib/service-page";
+import { serializeServiceSections } from "../../../../src/lib/service-page";
+import type { ForeignConsultancyTranslations } from "../../../../src/lib/i18n/foreign-consultancy/translations";
+
+const enSections: ServiceContentSection[] = [
+  {
+    title: "How to Obtain a Humanitarian Residence Permit?",
+    content: `<p>Provisions relating to the humanitarian residence permit are set out in Article 46 of the <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6458.pdf">Law on Foreigners and International Protection</a>. Under the relevant article, the humanitarian residence permit is accepted as exceptional and may be granted only in certain cases. The rule is that the other residence permits listed in the law should be obtained. As its name suggests, the humanitarian residence permit is arranged for foreign nationals who must remain in Türkiye for humanitarian reasons. For example, where return proceedings to the first country of asylum or a safe third country are ongoing for an international protection applicant who must remain in the country during that process, a humanitarian residence permit will be granted. Even if a foreign national applies for a humanitarian residence permit, the administration may refuse the application.</p>
+<p>At the same time, persons staying in Türkiye on a humanitarian residence permit may transition to other residence permits if they meet the conditions. For example, a holder of a humanitarian residence permit who marries a Turkish citizen may transition to a <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/aile-oturma-ikamet-izni/"><strong><u>family residence permit</u></strong></a> provided that the other conditions specified in the law are also met. However, persons staying in Türkiye on a humanitarian residence permit may not obtain a <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/uzun-donem-oturma-izni-nasil-alinir/"><strong><u>long-term residence permit</u></strong></a> even if they meet the statutory conditions.</p>`,
+  },
+  {
+    title: "In Which Cases Is a Humanitarian Residence Permit Granted?",
+    content: `<p>The cases in which a humanitarian residence permit may be granted are limited in number and listed in Article 46 of the Law on Foreigners and International Protection. Accordingly:</p>
+<ul><li><p>Where the best interests of the child are at stake, a humanitarian residence permit may also be granted to the child's mother and/or father together with the child.</p></li>
+<li><p>Foreign nationals subject to deportation or an entry ban to Türkiye may obtain a humanitarian residence permit where their removal from Türkiye cannot be enforced or where their departure from Türkiye is not considered possible.</p></li>
+<li><p>Foreign nationals in respect of whom a deportation decision may not be taken under Article 55 of the Law may also obtain a humanitarian residence permit.</p></li>
+<li><p>Judicial remedies may be sought against deportation decisions and decisions rejecting or withdrawing, or deeming withdrawn, an international protection status application. A foreign national who applies to the courts may remain in the country on a humanitarian residence permit until the application is concluded.</p></li>
+<li><p>While return proceedings to the first country of asylum or a safe third country are ongoing for an international protection applicant, the applicant may hold the right of residence through a humanitarian residence permit.</p></li>
+<li><p>A humanitarian residence permit may also be arranged for foreign nationals whose entry to and stay in Türkiye must be permitted for urgent reasons or for the protection of national interests and for public order and public security. In this case, however, a precondition for issuing the humanitarian residence permit is that the foreign national cannot obtain any of the other residence permits because of circumstances that prevent the grant of a residence permit. The other residence permits referred to are the <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/kisa-donem-ikamet-izni/"><strong><u>short-term residence permit</u></strong></a>, <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/ogrenci-oturma-ikamet-izni/"><strong><u>student residence permit</u></strong></a>, family residence permit, and residence permit for victims of human trafficking.</p></li>
+<li><p>The law also provides that a humanitarian residence permit may be obtained in extraordinary circumstances. However, what is meant by extraordinary circumstances is not explained. In this respect, assessment will be made taking into account the specific features of the concrete case.</p></li></ul><p></p>`,
+  },
+  {
+    title: "Where Is a Humanitarian Residence Permit Application Made?",
+    content: `<p>Under Article 46 of the Law on Foreigners and International Protection, applications for a humanitarian residence permit must be made to the provincial directorates of migration management within governorships. It should be noted immediately that the provincial directorate of migration management grants a humanitarian residence permit decision with the approval of the Ministry of Interior.</p>
+<p>Again, a humanitarian residence permit is cancelled by governorships without extension, with the approval of the Ministry, when the conditions requiring its grant cease to exist.</p>`,
+  },
+  {
+    title: "Transitions Between Residence Permits",
+    content: `<p>Where the main ground on which a foreign national obtained a residence permit ends, or where a different ground arises, the foreign national may obtain a residence permit suited to the new purpose of stay. For example, a foreign national staying in Türkiye on a student residence permit may reside on a family permit after graduation and may later obtain a long-term residence permit. This is regarded as a transition between residence permits.</p>
+<p>Likewise, a foreign national staying in Türkiye on a humanitarian residence permit may transition to a family residence permit if they marry a Turkish citizen and meet the other conditions. Where a person marries a Turkish citizen, a family residence permit may be obtained, and where the conditions specified in the law are met, the right to <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/evlilik-yoluyla-turk-vatandasligi/"><strong><u>Citizenship Through Marriage</u></strong></a> may also be acquired. However, a limit is envisaged for the humanitarian residence permit. Under Article 42 of the Law, no right to transition to a long-term residence permit is granted to persons staying in Türkiye on a humanitarian residence permit.</p>`,
+  },
+  {
+    title: "Obligation for Holders of a Humanitarian Residence Permit to Register in the Address Registration System",
+    content: `<p>The law imposes certain main obligations on foreign nationals who obtain a humanitarian residence permit. One of these obligations is the duty to register in the <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://adres.nvi.gov.tr/Home">Address Registration System (AKS)</a>. Accordingly, foreign nationals who obtain a humanitarian residence permit must register in the address registration system within at most twenty business days from the date the permit is granted.</p>`,
+  },
+  {
+    title: "Grant, Extension, or Cancellation of a Humanitarian Residence Permit",
+    content: `<p>Humanitarian residence permit procedures are initiated at the request of the Directorate General or the governorship. During the validity of humanitarian residence permits, the governorship ex officio assesses whether the conditions on which those permits were granted have ceased to exist. A humanitarian residence permit is cancelled by governorships without extension, with the approval of the Ministry, when the conditions requiring its grant cease to exist. The governorship notifies the foreign national of the decision on cancellation or non-extension of the humanitarian residence permit, in line with the Ministry's approval, at the latest fifteen days before the residence permit expires.</p>`,
+  },
+  {
+    title: "Legal Remedies in Case of Refusal or Cancellation of a Humanitarian Residence Permit Application",
+    content: `<p>Decisions of the governorship refusing a foreign national's humanitarian residence permit application or cancelling a humanitarian residence permit are administrative acts. For this reason, an <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/idari-islemlerin-iptali-davasi/"><strong><u>annulment action</u></strong></a> may be brought against this administrative act carried out by the administration. However, before that, it is possible to object to the refusal or cancellation by applying to the administration that issued the act. On the other hand, if the administration remains silent in response to this application, an annulment action may be brought before the competent administrative court within thirty days.</p>`,
+  },
+  {
+    title: "Competent and Authorized Court",
+    content: `<p>Administrative courts have jurisdiction in actions brought against refusal of a humanitarian residence permit application or extension request and against decisions cancelling a humanitarian residence permit. The authorized court is the administrative court in the place where the administrative authority that issued the decision is located. Accordingly, actions against refusal of a humanitarian residence permit application or extension request or against cancellation of a humanitarian residence permit must be brought before the administrative court in the place where the governorship that issued the decision is located.</p>`,
+  },
+  {
+    title: "Frequently Asked Questions",
+    content: `<p><strong>Is There an Obligation to Hire a Lawyer in Administrative Courts?</strong></p>
+<p>Turkish law allows parties to defend and represent themselves in court; hiring a lawyer for representation is not mandatory except in certain cases. There is no obligation to hire an administrative law lawyer in administrative courts either.<br>However, because administrative law legislation is complex and deadlines under the Administrative Procedure Law are strict and short, non-lawyers may make formal or substantive errors that cannot be remedied. To avoid loss of rights in the detailed administrative litigation process, we recommend obtaining legal support from lawyers practicing in "<a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/calismaalanlarimiz/idare-hukuku/"><strong><u>Administrative Law</u></strong></a>" before taking any step.</p><p><strong>What Is a Humanitarian Residence Permit?</strong></p>
+<p>It is the type of residence permit granted to foreign nationals who must remain in Türkiye for humanitarian reasons specified in the Law on Foreigners and International Protection.</p>
+<p><strong>How Many Times Can a Humanitarian Residence Permit Be Extended?</strong></p>
+<p>It may be extended without limit, for up to one year on each occasion.</p>
+<p><strong>What Is the Process for a Humanitarian Residence Permit for Ukrainians Due to War?</strong></p>
+<p>When war broke out between Ukraine and Russia in 2022, thousands of Ukrainians came to Türkiye. As a new development in Türkiye, all Ukrainian citizens who came to Türkiye because of the Ukraine-Russia war will be granted a humanitarian residence permit. On this matter, the Ministry sent a letter to provincial directorates of migration management and decided to provide facilitation for Ukrainian citizens who cannot return to their country because of the war.</p>`,
+  },
+];
+
+const arSections: ServiceContentSection[] = [
+  {
+    title: "كيفية الحصول على تصريح إقامة إنساني؟",
+    content: `<p>تُنظم أحكام تصريح الإقامة الإنساني في المادة 46 من <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6458.pdf">قانون الأجانب والحماية الدولية</a>. وفقاً للمادة المعنية، يُعد تصريح الإقامة الإنساني استثنائياً ولا يُمنح إلا في حالات محددة. الأصل هو الحصول على تصاريح الإقامة الأخرى المنصوص عليها في القانون. كما يُفهم من اسمه، يُخصص تصريح الإقامة الإنساني للأجانب المضطرين للبقاء في Türkiye لأسباب إنسانية. على سبيل المثال، إذا كان على طالب الحماية الدولية البقاء في البلاد أثناء استمرار إجراءات إعادته إلى بلد اللجوء الأول أو بلد ثالث آمن، سيُمنح تصريح إقامة إنساني. ومع ذلك، حتى إذا تقدم الأجنبي بطلب تصريح إقامة إنساني، يجوز للإدارة رفض الطلب.</p>
+<p>في الوقت نفسه، يجوز لمن يقيمون في Türkiye بتصريح إقامة إنساني الانتقال إلى تصاريح إقامة أخرى إذا توافرت الشروط. على سبيل المثال، يجوز لحامل تصريح إقامة إنساني يتزوج من مواطن تركي الانتقال إلى <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/aile-oturma-ikamet-izni/"><strong><u>تصريح الإقامة العائلي</u></strong></a> بشرط توافر الشروط الأخرى المنصوص عليها في القانون. أما من يقيمون في Türkiye بتصريح إقامة إنساني فلا يجوز لهم الحصول على <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/uzun-donem-oturma-izni-nasil-alinir/"><strong><u>تصريح الإقامة طويل الأمد</u></strong></a> ولو توافرت الشروط القانونية.</p>`,
+  },
+  {
+    title: "في أي الحالات يُمنح تصريح الإقامة الإنساني؟",
+    content: `<p>حالات منح تصريح الإقامة الإنساني محدودة ومنصوص عليها في المادة 46 من قانون الأجانب والحماية الدولية. وفقاً لذلك:</p>
+<ul><li><p>عندما تكون المصلحة الفضلى للطفل مطروحة، يجوز منح تصريح إقامة إنساني لأمه و/أو أبيه مع الطفل.</p></li>
+<li><p>يجوز للأجانب الخاضعين لقرار ترحيل أو حظر دخول إلى Türkiye الحصول على تصريح إقامة إنساني عندما لا يمكن تنفيذ مغادرتهم من Türkiye أو عندما لا يُرى مغادرتهم ممكنة.</p></li>
+<li><p>يجوز أيضاً للأجانب الذين لا يجوز اتخاذ قرار ترحيل بحقهم وفق المادة 55 من القانون الحصول على تصريح إقامة إنساني.</p></li>
+<li><p>يجوز اللجوء إلى القضاء ضد قرارات الترحيل وقرارات رفض طلب الحماية الدولية أو سحبه أو اعتباره مسحوباً. يجوز للأجنبي الذي يلجأ إلى القضاء البقاء في البلاد بتصريح إقامة إنساني حتى انتهاء الدعوى.</p></li>
+<li><p>أثناء استمرار إجراءات إعادة طالب الحماية الدولية إلى بلد اللجوء الأول أو بلد ثالث آمن، يجوز له الحصول على حق الإقامة بتصريح إقامة إنساني.</p></li>
+<li><p>يجوز أيضاً إصدار تصريح إقامة إنساني للأجانب الذين يجب السماح بدخولهم إلى Türkiye وبقائهم فيها لأسباب طارئة أو لحماية المصلحة الوطنية وللنظام العام والأمن العام. في هذه الحالة، شرط مسبق لإصدار التصريح هو عدم إمكان حصول الأجنبي على أي من تصاريح الإقامة الأخرى بسبب ظروف تمنع منح تصريح الإقامة. وتشمل تصاريح الإقامة الأخرى <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/kisa-donem-ikamet-izni/"><strong><u>تصريح الإقامة قصير الأمد</u></strong></a>، <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/ogrenci-oturma-ikamet-izni/"><strong><u>تصريح إقامة الطالب</u></strong></a>، تصريح الإقامة العائلي، وتصريح إقامة ضحايا الاتجار بالبشر.</p></li>
+<li><p>ينص القانون أيضاً على إمكان الحصول على تصريح إقامة إنساني في الظروف الاستثنائية. غير أنه لم يُفسر المقصود بالظروف الاستثنائية. وفي هذا الإطار، تُجرى التقييم مع مراعاة خصائص الواقعة. يجب على المتقدمين تقديم جميع المستندات والمعلومات الداعمة لطلبهم بشكل كامل.</p></li></ul><p></p><p>يُنصح المتقدمون بالحصول على دعم قانوني من محامٍ متخصص في <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/calismaalanlarimiz/idare-hukuku/"><strong><u>قانون الإدارة</u></strong></a> و<a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/calismaalanlarimiz/yabancilar-hukuku/"><strong><u>قانون الأجانب</u></strong></a> قبل تقديم الطلب، لضمان اكتمال المستندات وتقديمها بشكل صحيح وتجنب فقدان الحقوق في الإجراءات الإدارية.</p>`,
+  },
+  {
+    title: "أين يُقدَّم طلب تصريح الإقامة الإنساني؟",
+    content: `<p>وفق المادة 46 من قانون الأجانب والحماية الدولية، يجب تقديم طلب تصريح الإقامة الإنساني إلى مديريات الهجرة في المحافظات. يجب التأكيد فوراً أن مديرية الهجرة في المحافظة تتخذ قرار منح تصريح الإقامة الإنساني بموافقة وزارة الداخلية.</p>
+<p>كما يُلغى تصريح الإقامة الإنساني من قبل المحافظات دون تجديد، بموافقة الوزارة، عند زوال الشروط التي تفرض منحه.</p>`,
+  },
+  {
+    title: "الانتقال بين تصاريح الإقامة",
+    content: `<p>عند انتهاء السبب الأساسي الذي بُني عليه تصريح الإقامة أو ظهور سبب مختلف، يجوز للأجنبي الحصول على تصريح إقامة يناسب غرض الإقامة الجديد. على سبيل المثال، يجوز للأجنبي المقيم بتصريح إقامة طالب أن يقيم بتصريح عائلي بعد التخرج ثم يحصل لاحقاً على تصريح إقامة طويل الأمد. يُعد ذلك انتقالاً بين تصاريح الإقامة.</p>
+<p>كذلك، يجوز للأجنبي المقيم بتصريح إقامة إنساني الانتقال إلى تصريح إقامة عائلي إذا تزوج من مواطن تركي وتوافرت الشروط الأخرى. عند الزواج من مواطن تركي، يمكن الحصول على تصريح إقامة عائلي، وعند توافر الشروط المنصوص عليها في القانون يمكن أيضاً كسب حق <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/evlilik-yoluyla-turk-vatandasligi/"><strong><u>الجنسية عن طريق الزواج</u></strong></a>. غير أنه وُضع حد لتصريح الإقامة الإنساني. وفق المادة 42 من القانون، لا يُمنح حق الانتقال إلى تصريح إقامة طويل الأمد لمن يقيمون في Türkiye بتصريح إقامة إنساني.</p>`,
+  },
+  {
+    title: "التزام حاملي تصريح الإقامة الإنساني بالتسجيل في نظام تسجيل العناوين",
+    content: `<p>يفرض القانون التزامات رئيسية على الأجانب الحاصلين على تصريح إقامة إنساني. أحد هذه الالتزامات هو التسجيل في <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://adres.nvi.gov.tr/Home">نظام تسجيل العناوين (AKS)</a>. وفقاً لذلك، يجب على الأجانب الحاصلين على تصريح إقامة إنساني التسجيل في نظام تسجيل العناوين خلال عشرين يوم عمل على الأكثر من تاريخ منح التصريح.</p>`,
+  },
+  {
+    title: "منح تصريح الإقامة الإنساني أو تمديده أو إلغاؤه",
+    content: `<p>تُبدأ إجراءات تصريح الإقامة الإنساني بناءً على طلب المديرية العامة أو المحافظة. خلال مدة تصاريح الإقامة الإنساني، تُقيِّم المحافظة من تلقاء نفسها ما إذا كانت الشروط التي بُني عليها منح التصريح قد زالت. يُلغى تصريح الإقامة الإنساني من قبل المحافظات دون تجديد، بموافقة الوزارة، عند زوال الشروط التي تفرض منحه. تُبلِّغ المحافظة الأجنبي بقرار الإلغاء أو عدم التمديد، وفق موافقة الوزارة، في موعد أقصاه خمسة عشر يوماً قبل انتهاء مدة تصريح الإقامة.</p>`,
+  },
+  {
+    title: "الطرق القانونية عند رفض طلب تصريح الإقامة الإنساني أو إلغائه",
+    content: `<p>قرارات المحافظة برفض طلب تصريح الإقامة الإنساني أو إلغاء التصريح هي إجراءات إدارية. لذلك، يجوز رفع <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/idari-islemlerin-iptali-davasi/"><strong><u>دعوى الإبطال</u></strong></a> ضد هذا الإجراء الإداري. غير أنه يمكن أولاً الاعتراض على الرفض أو الإلغاء بالتقدم إلى الإدارة التي أصدرت الإجراء. وإذا سكتت الإدارة أمام هذا الطلب، يجوز رفع دعوى إبطال أمام المحكمة الإدارية المختصة خلال ثلاثين يوماً.</p><p>يُنصح المتقدمون بالحصول على دعم قانوني من محامٍ متخصص في <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/calismaalanlarimiz/idare-hukuku/"><strong><u>قانون الإدارة</u></strong></a> و<a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/calismaalanlarimiz/yabancilar-hukuku/"><strong><u>قانون الأجانب</u></strong></a> قبل تقديم الطلب، لضمان اكتمال المستندات وتقديمها بشكل صحيح وتجنب فقدان الحقوق في الإجراءات الإدارية.</p>`,
+  },
+  {
+    title: "المحكمة المختصة وذات الاختصاص المكاني",
+    content: `<p>تختص المحاكم الإدارية بالدعاوى المرفوعة ضد رفض طلب تصريح الإقامة الإنساني أو طلب التمديد وضد قرارات إلغاء التصريح. المحكمة ذات الاختصاص المكاني هي المحكمة الإدارية في مكان الجهة الإدارية التي أصدرت القرار. وعليه، يجب رفع الدعاوى ضد رفض طلب تصريح الإقامة الإنساني أو التمديد أو ضد إلغاء التصريح أمام المحكمة الإدارية في مكان المحافظة التي أصدرت القرار.</p>`,
+  },
+  {
+    title: "الأسئلة الشائعة",
+    content: `<p><strong>هل يوجد التزام بتوكيل محامٍ في المحاكم الإدارية؟</strong></p>
+<p>يسمح القانون التركي للأطراف بالدفاع عن أنفسهم وتمثيل أنفسهم أمام المحاكم، وتوكيل محامٍ للتمثيل ليس إلزامياً إلا في حالات استثنائية. ولا يوجد التزام بتوكيل محامٍ في قانون الإدارة في المحاكم الإدارية.<br>لكن نظراً لتعقيد تشريعات قانون الإدارة وقصر المهل في قانون الإجراءات الإدارية، قد يرتكب غير المختصين أخطاء شكلية أو موضوعية لا يمكن تصحيحها. لتجنب فقدان الحقوق في مسطرة التقاضي الإداري المفصلة، نوصي بالحصول على دعم قانوني من محامين يعملون في "<a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/calismaalanlarimiz/idare-hukuku/"><strong><u>قانون الإدارة</u></strong></a>" قبل أي إجراء.</p><p><strong>ما هو تصريح الإقامة الإنساني؟</strong></p>
+<p>هو نوع تصريح الإقامة الممنوح للأجانب المضطرين للبقاء في Türkiye للأسباب الإنسانية المنصوص عليها في قانون الأجانب والحماية الدولية.</p>
+<p><strong>كم مرة يمكن تمديد تصريح الإقامة الإنساني؟</strong></p>
+<p>يمكن تمديده دون حد، بحد أقصى سنة واحدة في كل مرة.</p>
+<p><strong>كيف تسير إجراءات تصريح الإقامة الإنساني للأوكرانيين بسبب الحرب؟</strong></p>
+<p>عند اندلاع الحرب بين أوكرانيا وروسيا في 2022، جاء آلاف الأوكرانيين إلى Türkiye. كتطور جديد في Türkiye، سيُمنح تصريح إقامة إنساني لجميع المواطنين الأوكرانيين الذين جاءوا إلى Türkiye بسبب حرب أوكرانيا وروسيا. في هذا الشأن، أرسلت الوزارة كتاباً إلى مديريات الهجرة في المحافظات وقررت تسهيلاً للمواطنين الأوكرانيين الذين لا يستطيعون العودة إلى بلدهم بسبب الحرب.</p>`,
+  },
+];
+
+const ruSections: ServiceContentSection[] = [
+  {
+    title: "Как получить вид на жительство гуманитарного характера?",
+    content: `<p>Положения о гуманитарном виде на жительство установлены в статье 46 <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6458.pdf">Закона об иностранцах и международной защите</a>. Согласно соответствующей статье, гуманитарный вид на жительство признается исключительным и может выдаваться только в определенных случаях. Правилом является получение других видов на жительство, перечисленных в законе. Как следует из названия, гуманитарный вид на жительство предназначен для иностранцев, которые вынуждены оставаться в Türkiye по гуманитарным причинам. Например, если лицо, подавшее заявление о международной защите, должно оставаться в стране на время продолжения процедур возвращения в первую страну убежища или безопасную третью страну, ему будет выдан гуманитарный вид на жительство. Даже если иностранец подает заявление о гуманитарном виде на жительство, администрация может отказать в заявлении.</p>
+<p>Вместе с тем лица, находящиеся в Türkiye на гуманитарном виде на жительство, при соблюдении условий могут перейти на другие виды на жительство. Например, обладатель гуманитарного вида на жительство, вступивший в брак с гражданином Türkiye, может перейти на <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/aile-oturma-ikamet-izni/"><strong><u>семейный вид на жительство</u></strong></a>, если также соблюдены иные условия, указанные в законе. Однако лица, находящиеся в Türkiye на гуманитарном виде на жительство, не могут получить <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/uzun-donem-oturma-izni-nasil-alinir/"><strong><u>долгосрочный вид на жительство</u></strong></a>, даже если они соответствуют установленным законом условиям.</p>`,
+  },
+  {
+    title: "В каких случаях выдается гуманитарный вид на жительство?",
+    content: `<p>Случаи выдачи гуманитарного вида на жительство ограничены и перечислены в статье 46 Закона об иностранцах и международной защите. Согласно этому:</p>
+<ul><li><p>Когда затронуты наилучшие интересы ребенка, гуманитарный вид на жительство может быть выдан также его матери и/или отцу вместе с ребенком.</p></li>
+<li><p>Иностранцы, в отношении которых имеется решение о депортации или запрет на въезд в Türkiye, могут получить гуманитарный вид на жительство, если их выезд из Türkiye не может быть обеспечен или если их отъезд из Türkiye не считается возможным.</p></li>
+<li><p>Иностранцы, в отношении которых согласно статье 55 Закона не может быть принято решение о депортации, также могут получить гуманитарный вид на жительство.</p></li>
+<li><p>Можно обратиться в суд против решений о депортации и решений об отказе в международной защите, об отзыве заявления или о признании его отозванным. Иностранец, обратившийся в суд, может оставаться в стране на гуманитарном виде на жительство до завершения рассмотрения.</p></li>
+<li><p>На время продолжения процедур возвращения заявителя о международной защите в первую страну убежища или безопасную третью страну он может иметь право пребывания на основании гуманитарного вида на жительство.</p></li>
+<li><p>Гуманитарный вид на жительство также может быть оформлен для иностранцев, которым необходимо разрешить въезд и пребывание в Türkiye по срочным причинам, для защиты национальных интересов, а также в целях общественного порядка и общественной безопасности. В этом случае предварительным условием выдачи гуманитарного вида на жительство является невозможность получения иностранцем любого из других видов на жительство из-за обстоятельств, препятствующих выдаче вида на жительство. К другим видам на жительство относятся <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/kisa-donem-ikamet-izni/"><strong><u>краткосрочный вид на жительство</u></strong></a>, <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/ogrenci-oturma-ikamet-izni/"><strong><u>студенческий вид на жительство</u></strong></a>, семейный вид на жительство и вид на жительство для жертв торговли людьми.</p></li>
+<li><p>Закон также предусматривает возможность получения гуманитарного вида на жительство в чрезвычайных обстоятельствах. Однако не разъяснено, что понимается под чрезвычайными обстоятельствами. В этом отношении оценка будет проводиться с учетом особенностей конкретного случая.</p></li></ul><p></p>`,
+  },
+  {
+    title: "Куда подается заявление о гуманитарном виде на жительство?",
+    content: `<p>Согласно статье 46 Закона об иностранцах и международной защите заявления о гуманитарном виде на жительство должны подаваться в провинциальные управления по вопросам миграции при губернаторствах. Следует сразу отметить, что решение о выдаче гуманитарного вида на жительство принимается провинциальным управлением по вопросам миграции с одобрения Министерства внутренних дел.</p>
+<p>Гуманитарный вид на жительство также аннулируется губернаторствами без продления с одобрения Министерства, когда условия, требующие его выдачи, перестают существовать.</p>`,
+  },
+  {
+    title: "Переход между видами на жительство",
+    content: `<p>Если основное основание, на котором иностранец получил вид на жительство, прекращается или возникает иное основание, иностранец может получить вид на жительство, соответствующий новой цели пребывания. Например, иностранец, находящийся в Türkiye на студенческом виде на жительство, после окончания учебы может проживать на семейном разрешении, а затем получить долгосрочный вид на жительство. Это рассматривается как переход между видами на жительство.</p>
+<p>Также иностранец, находящийся в Türkiye на гуманитарном виде на жительство, может перейти на семейный вид на жительство, если он вступит в брак с гражданином Türkiye и соблюдет иные условия. При браке с гражданином Türkiye можно получить семейный вид на жительство, а при соблюдении условий, указанных в законе, также может быть приобретено право на <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/evlilik-yoluyla-turk-vatandasligi/"><strong><u>гражданство через брак</u></strong></a>. Однако для гуманитарного вида на жительство предусмотрено ограничение. Согласно статье 42 Закона, лицам, находящимся в Türkiye на гуманитарном виде на жительство, не предоставляется право перехода на долгосрочный вид на жительство.</p>`,
+  },
+  {
+    title: "Обязанность регистрации в системе регистрации адресов для обладателей гуманитарного вида на жительство",
+    content: `<p>Закон устанавливает для иностранцев, получивших гуманитарный вид на жительство, определенные основные обязанности. Одной из таких обязанностей является регистрация в <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://adres.nvi.gov.tr/Home">Системе регистрации адресов (AKS)</a>. Согласно этому иностранцы, получившие гуманитарный вид на жительство, обязаны зарегистрироваться в системе регистрации адресов не позднее чем через двадцать рабочих дней с даты выдачи разрешения.</p>`,
+  },
+  {
+    title: "Выдача, продление или аннулирование гуманитарного вида на жительство",
+    content: `<p>Процедуры по гуманитарному виду на жительство инициируются по запросу Генерального директората или губернаторства. В течение срока действия гуманитарных видов на жительство губернаторство по собственной инициативе оценивает, не прекратились ли условия, на которых они были выданы. Гуманитарный вид на жительство аннулируется губернаторствами без продления с одобрения Министерства, когда условия, требующие его выдачи, перестают существовать. Губернаторство уведомляет иностранца о решении об аннулировании или непродлении гуманитарного вида на жительство в соответствии с одобрением Министерства не позднее чем за пятнадцать дней до истечения срока вида на жительство.</p>`,
+  },
+  {
+    title: "Правовые средства защиты при отказе или аннулировании заявления о гуманитарном виде на жительство",
+    content: `<p>Решения губернаторства об отказе в заявлении иностранца о гуманитарном виде на жительство или об аннулировании гуманитарного вида на жительство являются административными актами. Поэтому против этого административного акта может быть подано <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/idari-islemlerin-iptali-davasi/"><strong><u>исковое заявление об отмене</u></strong></a>. Однако предварительно можно возразить против отказа или аннулирования, обратившись в администрацию, издавшую акт. Если администрация не ответит на это обращение, иск об отмене может быть подан в компетентный административный суд в течение тридцати дней.</p>`,
+  },
+  {
+    title: "Подсудность и территориальная компетенция суда",
+    content: `<p>Административные суды подведомственны искам, поданным против отказа в заявлении о гуманитарном виде на жительство или просьбе о продлении и против решений об аннулировании гуманитарного вида на жительство. Компетентным судом является административный суд по месту нахождения административного органа, принявшего решение. Следовательно, иски против отказа в заявлении о гуманитарном виде на жительство или продлении либо против аннулирования гуманитарного вида на жительство должны подаваться в административный суд по месту нахождения губернаторства, принявшего решение.</p>`,
+  },
+  {
+    title: "Часто задаваемые вопросы",
+    content: `<p><strong>Обязательно ли нанимать адвоката в административных судах?</strong></p>
+<p>Турецкое право допускает, чтобы стороны защищали и представляли себя в суде; найм адвоката для представительства обязателен лишь в отдельных случаях. В административных судах также нет обязанности нанимать адвоката по административному праву.<br>Однако из-за сложности административного законодательства и строгих коротких сроков по Закону об административном судопроизводстве лица без юридического образования могут допустить формальные или существенные ошибки, которые невозможно исправить. Чтобы не потерять права в детализированном административном процессе, рекомендуем получить правовую поддержку у адвокатов, работающих в области «<a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/calismaalanlarimiz/idare-hukuku/"><strong><u>административного права</u></strong></a>» до любых действий.</p><p><strong>Что такое гуманитарный вид на жительство?</strong></p>
+<p>Это вид на жительство, выдаваемый иностранцам, которые вынуждены оставаться в Türkiye по гуманитарным причинам, указанным в Законе об иностранцах и международной защите.</p>
+<p><strong>Сколько раз можно продлить гуманитарный вид на жительство?</strong></p>
+<p>Его можно продлевать без ограничения числа раз, каждый раз на срок до одного года.</p>
+<p><strong>Как проходит процедура гуманитарного вида на жительство для украинцев из-за войны?</strong></p>
+<p>Когда в 2022 году между Украиной и Россией началась война, тысячи украинцев приехали в Türkiye. Как новое развитие в Türkiye всем гражданам Украины, прибывшим в Türkiye из-за войны между Украиной и Россией, будет выдан гуманитарный вид на жительство. По этому вопросу Министерство направило письмо в провинциальные управления по вопросам миграции и приняло решение об облегчении положения граждан Украины, которые не могут вернуться в свою страну из-за войны.</p>`,
+  },
+];
+
+const faSections: ServiceContentSection[] = [
+  {
+    title: "چگونه مجوز اقامت انسانی بگیریم؟",
+    content: `<p>احکام مربوط به مجوز اقامت انسانی در ماده 46 <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6458.pdf">قانون اتباع خارجی و حمایت بین‌المللی</a> تنظیم شده است. بر اساس ماده مذکور، مجوز اقامت انسانی استثنایی تلقی می‌شود و فقط در موارد معین قابل اعطاست. اصل، اخذ سایر مجوزهای اقامت منصوص در قانون است. همان‌طور که از نامش برمی‌آید، مجوز اقامت انسانی برای اتباع خارجی که به دلایل انسانی مجبور به ماندن در Türkiye هستند مقرر شده است. مثلاً اگر متقاضی حمایت بین‌المللی باید در طول ادامه اقدامات بازگرداندن به اولین کشور پناه یا کشور ثالث امن در کشور بماند، مجوز اقامت انسانی اعطا می‌شود. حتی اگر اتباع خارجی درخواست مجوز اقامت انسانی بدهد، اداره می‌تواند درخواست را رد کند.</p>
+<p>در عین حال، کسانی که با مجوز اقامت انسانی در Türkiye می‌مانند در صورت احراز شرایط می‌توانند به سایر مجوزهای اقامت منتقل شوند. مثلاً دارنده مجوز اقامت انسانی که با شهروند ترکیه ازدواج کند می‌تواند به <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/aile-oturma-ikamet-izni/"><strong><u>مجوز اقامت خانوادگی</u></strong></a> منتقل شود به شرط آنکه سایر شرایط قانون نیز برقرار باشد. اما کسانی که با مجوز اقامت انسانی در Türkiye می‌مانند حتی با احراز شرایط قانونی نمی‌توانند <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/uzun-donem-oturma-izni-nasil-alinir/"><strong><u>مجوز اقامت بلندمدت</u></strong></a> بگیرند.</p>`,
+  },
+  {
+    title: "مجوز اقامت انسانی در چه مواردی اعطا می‌شود؟",
+    content: `<p>موارد اعطای مجوز اقامت انسانی محدود و در ماده 46 قانون اتباع خارجی و حمایت بین‌المللی ذکر شده است. بر این اساس:</p>
+<ul><li><p>وقتی منافع برتر کودک مطرح باشد، مجوز اقامت انسانی می‌تواند به مادر و/یا پدر او همراه با کودک نیز اعطا شود.</p></li>
+<li><p>اتباع خارجی که مشمول تصمیم اخراج یا ممنوعیت ورود به Türkiye هستند می‌توانند در صورتی که خروج آنها از Türkiye قابل اجرا نباشد یا خروجشان ممکن تلقی نشود مجوز اقامت انسانی بگیرند.</p></li>
+<li><p>اتباع خارجی که طبق ماده 55 قانون نمی‌توان علیه آنها تصمیم اخراج اتخاذ کرد نیز می‌توانند مجوز اقامت انسانی بگیرند.</p></li>
+<li><p>می‌توان علیه تصمیمات اخراج و تصمیمات رد، پس‌گیری یا تلقی پس‌گیری درخواست حمایت بین‌المللی به مراجع قضایی مراجعه کرد. اتباع خارجی که به دادگاه مراجعه می‌کند می‌تواند تا پایان رسیدگی با مجوز اقامت انسانی در کشور بماند.</p></li>
+<li><p>در طول ادامه اقدامات بازگرداندن متقاضی حمایت بین‌المللی به اولین کشور پناه یا کشور ثالث امن، او می‌تواند حق اقامت با مجوز اقامت انسانی داشته باشد.</p></li>
+<li><p>مجوز اقامت انسانی می‌تواند برای اتباع خارجی که به دلایل فوری یا برای حفاظت منافع ملی و از نظر نظم عمومی و امنیت عمومی باید ورود و ماندنشان در Türkiye مجاز شود نیز صادر شود. در این حالت، شرط مقدم صدور مجوز اقامت انسانی این است که اتباع خارجی به دلیل شرایطی که مانع اعطای مجوز اقامت است نتواند هیچ‌یک از سایر مجوزهای اقامت را بگیرد. سایر مجوزهای اقامت عبارت‌اند از <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/kisa-donem-ikamet-izni/"><strong><u>مجوز اقامت کوتاه‌مدت</u></strong></a>، <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/ogrenci-oturma-ikamet-izni/"><strong><u>مجوز اقامت دانشجویی</u></strong></a>، مجوز اقامت خانوادگی و مجوز اقامت قربانیان قاچاق انسان.</p></li>
+<li><p>قانون همچنین امکان اخذ مجوز اقامت انسانی در شرایط فوق‌العاده را پیش‌بینی کرده است. اما منظور از شرایط فوق‌العاده توضیح داده نشده است. در این راستا ارزیابی با توجه به ویژگی‌های مورد مشخص انجام می‌شود.</p></li></ul><p></p><p>توصیه می‌شود متقاضیان پیش از ارائه درخواست از وکیل متخصص در <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/calismaalanlarimiz/idare-hukuku/"><strong><u>حقوق اداری</u></strong></a> و<a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/calismaalanlarimiz/yabancilar-hukuku/"><strong><u>حقوق اتباع خارجی</u></strong></a> پشتیبانی حقوقی بگیرند تا مدارک کامل و صحیح ارائه شود و از از دست رفتن حقوق در فرایند اداری جلوگیری شود.</p>`,
+  },
+  {
+    title: "درخواست مجوز اقامت انسانی کجا ارائه می‌شود؟",
+    content: `<p>طبق ماده 46 قانون اتباع خارجی و حمایت بین‌المللی، درخواست مجوز اقامت انسانی باید به ادارات مهاجرت استان‌ها در استانداری‌ها ارائه شود. باید فوراً تأکید کرد که اداره مهاجرت استان با تأیید وزارت کشور تصمیم اعطای مجوز اقامت انسانی را می‌گیرد.</p>
+<p>همچنین مجوز اقامت انسانی با تأیید وزارت، در صورت زوال شرایطی که اعطای آن را الزامی می‌کند، توسط استانداری‌ها بدون تمدید لغو می‌شود.</p>`,
+  },
+  {
+    title: "انتقال بین مجوزهای اقامت",
+    content: `<p>اگر علت اصلی که اتباع خارجی بر اساس آن مجوز اقامت گرفته پایان یابد یا علت دیگری پدید آید، اتباع خارجی می‌تواند مجوز اقامتی متناسب با هدف اقامت جدید بگیرد. مثلاً اتباع خارجی که با مجوز اقامت دانشجویی در Türkiye می‌ماند پس از فارغ‌التحصیلی می‌تواند با مجوز خانوادگی اقامت کند و سپس مجوز اقامت بلندمدت بگیرد. این انتقال بین مجوزهای اقامت تلقی می‌شود.</p>
+<p>همچنین اتباع خارجی که با مجوز اقامت انسانی در Türkiye می‌ماند در صورت ازدواج با شهروند ترکیه و احراز سایر شرایط می‌تواند به مجوز اقامت خانوادگی منتقل شود. در صورت ازدواج با شهروند ترکیه می‌توان مجوز اقامت خانوادگی گرفت و در صورت احراز شرایط قانون حق <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/evlilik-yoluyla-turk-vatandasligi/"><strong><u>تابعیت از طریق ازدواج</u></strong></a> نیز کسب کرد. اما برای مجوز اقامت انسانی محدودیتی پیش‌بینی شده است. طبق ماده 42 قانون، حق انتقال به مجوز اقامت بلندمدت به کسانی که با مجوز اقامت انسانی در Türkiye می‌مانند داده نمی‌شود.</p>`,
+  },
+  {
+    title: "الزام ثبت در سامانه ثبت آدرس برای دارندگان مجوز اقامت انسانی",
+    content: `<p>قانون برای اتباع خارجی که مجوز اقامت انسانی می‌گیرند برخی تکالیف اصلی مقرر کرده است. یکی از این تکالیف ثبت در <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://adres.nvi.gov.tr/Home">سامانه ثبت آدرس (AKS)</a> است. بر این اساس، اتباع خارجی که مجوز اقامت انسانی می‌گیرند باید حداکثر ظرف بیست روز کاری از تاریخ اعطای مجوز در سامانه ثبت آدرس ثبت‌نام کنند.</p>`,
+  },
+  {
+    title: "اعطا، تمدید یا لغو مجوز اقامت انسانی",
+    content: `<p>اقدامات مجوز اقامت انسانی به درخواست اداره کل یا استانداری آغاز می‌شود. استانداری در طول مدت مجوزهای اقامت انسانی به‌طور رسمی بررسی می‌کند که آیا شرایطی که مجوز بر اساس آنها اعطا شده زائل شده‌اند یا خیر. مجوز اقامت انسانی با تأیید وزارت، در صورت زوال شرایطی که اعطای آن را الزامی می‌کند، توسط استانداری‌ها بدون تمدید لغو می‌شود. استانداری مطابق تأیید وزارت، حداکثر پانزده روز پیش از پایان مدت مجوز اقامت، تصمیم لغو یا عدم تمدید مجوز اقامت انسانی را به اتباع خارجی ابلاغ می‌کند.</p>`,
+  },
+  {
+    title: "راه‌های قانونی در صورت رد یا لغو درخواست مجوز اقامت انسانی",
+    content: `<p>تصمیمات استانداری در رد درخواست مجوز اقامت انسانی اتباع خارجی یا لغو مجوز اقامت انسانی اقدامات اداری هستند. بنابراین می‌توان علیه این اقدام اداری <a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/idari-islemlerin-iptali-davasi/"><strong><u>دادخواست ابطال</u></strong></a> داد. اما پیش از آن می‌توان با مراجعه به اداره صادرکننده اقدام، علیه رد یا لغو اعتراض کرد. از سوی دیگر اگر اداره در برابر این درخواست سکوت کند، ظرف سی روز می‌توان در دادگاه اداری صالح دادخواست ابطال داد.</p>`,
+  },
+  {
+    title: "دادگاه صالح و مرجع ذی‌صلاح",
+    content: `<p>دادگاه‌های اداری در دعاوی علیه رد درخواست مجوز اقامت انسانی یا درخواست تمدید و علیه تصمیمات لغو مجوز اقامت انسانی صالح هستند. دادگاه ذی‌صلاح، دادگاه اداری در محل مرجع اداری صادرکننده تصمیم است. بنابراین دعاوی علیه رد درخواست مجوز اقامت انسانی یا تمدید یا علیه لغو مجوز اقامت انسانی باید در دادگاه اداری محل استانداری صادرکننده تصمیم اقامه شود.</p>`,
+  },
+  {
+    title: "سؤالات متداول",
+    content: `<p><strong>آیا در دادگاه‌های اداری الزام به استخدام وکیل وجود دارد؟</strong></p>
+<p>حقوق ترکیه به طرفین اجازه می‌دهد خود را در دادگاه دفاع و نمایندگی کنند و استخدام وکیل برای نمایندگی جز در موارد استثنایی الزامی نیست. در دادگاه‌های اداری نیز الزام به استخدام وکیل حقوق اداری وجود ندارد.<br>اما به‌دلیل پیچیدگی قوانین حقوق اداری و کوتاه بودن مهلت‌های قانون آیین دادرسی اداری، افراد غیرحقوقی ممکن است خطاهای شکلی یا ماهوی غیرقابل جبران مرتکب شوند. برای جلوگیری از از دست رفتن حقوق در فرایند دقیق دادرسی اداری، پیش از هر اقدامی توصیه می‌کنیم از وکلای فعال در «<a target="_blank" rel="noopener noreferrer nofollow" class="text-csg-blue underline cursor-pointer" href="https://kulacoglu.av.tr/calismaalanlarimiz/idare-hukuku/"><strong><u>حقوق اداری</u></strong></a>» پشتیبانی حقوقی بگیرید.</p><p><strong>مجوز اقامت انسانی چیست؟</strong></p>
+<p>نوع مجوز اقامتی است که به اتباع خارجی که به دلایل انسانی منصوص در قانون اتباع خارجی و حمایت بین‌المللی مجبور به ماندن در Türkiye هستند اعطا می‌شود.</p>
+<p><strong>مجوز اقامت انسانی چند بار قابل تمدید است؟</strong></p>
+<p>می‌توان آن را بدون محدودیت، هر بار حداکثر یک سال تمدید کرد.</p>
+<p><strong>فرایند مجوز اقامت انسانی برای اوکراینی‌ها به دلیل جنگ چگونه است؟</strong></p>
+<p>با شروع جنگ میان اوکراین و روسیه در 2022، هزاران اوکراینی به Türkiye آمدند. به‌عنوان تحول جدید در Türkiye، به همه شهروندان اوکراینی که به دلیل جنگ اوکراین و روسیه به Türkiye آمده‌اند مجوز اقامت انسانی اعطا خواهد شد. در این زمینه وزارت نامه‌ای به ادارات مهاجرت استان‌ها ارسال کرده و تصمیم تسهیل برای شهروندان اوکراینی که به دلیل جنگ نمی‌توانند به کشورشان بازگردند اتخاذ شده است. متقاضیان باید مدارک هویتی و اقامتی خود را کامل ارائه دهند.</p>`,
+  },
+];
+
+export const contentSlug = "insani-ikamet-izni-nasil-alinir";
+
+export const contentTranslations: ForeignConsultancyTranslations = {
+  en: {
+    name: "How to Obtain a Humanitarian Residence Permit?",
+    excerpt: "How to Obtain a Humanitarian Residence Permit?",
+    heroTitle: "How to Obtain a Humanitarian Residence Permit?",
+    sectionsJson: serializeServiceSections(enSections),
+  },
+  ar: {
+    name: "كيفية الحصول على تصريح إقامة إنساني؟",
+    excerpt: "كيفية الحصول على تصريح إقامة إنساني؟",
+    heroTitle: "كيفية الحصول على تصريح إقامة إنساني؟",
+    sectionsJson: serializeServiceSections(arSections),
+  },
+  ru: {
+    name: "Как получить вид на жительство гуманитарного характера?",
+    excerpt: "Как получить вид на жительство гуманитарного характера?",
+    heroTitle: "Как получить вид на жительство гуманитарного характера?",
+    sectionsJson: serializeServiceSections(ruSections),
+  },
+  fa: {
+    name: "چگونه مجوز اقامت انسانی بگیریم؟",
+    excerpt: "چگونه مجوز اقامت انسانی بگیریم؟",
+    heroTitle: "چگونه مجوز اقامت انسانی بگیریم؟",
+    sectionsJson: serializeServiceSections(faSections),
+  },
+};
