@@ -17,7 +17,8 @@
     "db:seed-seo-metadata": "tsx prisma/seed-seo-metadata.ts",
     "db:upsert-site-pages": "tsx prisma/upsert-site-pages.ts",
     "db:seed-foreign-consultancy-categories": "tsx prisma/seed-foreign-consultancy-category-pages.ts",
-    "db:seed-almanya-detail": "tsx prisma/seed-country-detail-almanya.ts",
+    "db:seed-immigration-offices": "tsx prisma/seed-immigration-offices.ts",
+    "db:fetch-immigration-offices": "tsx prisma/fetch-immigration-offices-data.ts",
     "db:studio": "prisma studio"
   },
   "prisma": {
