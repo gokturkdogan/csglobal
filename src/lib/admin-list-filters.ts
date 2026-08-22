@@ -15,6 +15,7 @@ export const ADMIN_LIST_COUNTRY_PARAM = "countryId";
 export const ADMIN_LIST_CATEGORY_PARAM = "categoryId";
 export const ADMIN_LIST_TOPIC_CATEGORY_PARAM = "topicCategory";
 export const ADMIN_LIST_FC_CATEGORY_PARAM = "fcCategory";
+export const ADMIN_LIST_CITY_PARAM = "city";
 
 export type AdminListSearchParams = {
   q?: string;
@@ -22,6 +23,7 @@ export type AdminListSearchParams = {
   categoryId?: string;
   topicCategory?: string;
   fcCategory?: string;
+  city?: string;
   page?: string;
   pageSize?: string;
 };
@@ -32,6 +34,7 @@ export type AdminListFilterValues = {
   categoryId: string;
   topicCategory: string;
   fcCategory: string;
+  city: string;
 };
 
 export type AdminListFilterField = {
@@ -55,6 +58,7 @@ export function resolveAdminListFilters(
     categoryId: searchParams.categoryId?.trim() ?? "",
     topicCategory: searchParams.topicCategory?.trim() ?? "",
     fcCategory: searchParams.fcCategory?.trim() ?? "",
+    city: searchParams.city?.trim() ?? "",
   };
 }
 
@@ -64,7 +68,8 @@ export function hasActiveAdminListFilters(filters: AdminListFilterValues): boole
       filters.countryId ||
       filters.categoryId ||
       filters.topicCategory ||
-      filters.fcCategory,
+      filters.fcCategory ||
+      filters.city,
   );
 }
 
@@ -79,6 +84,7 @@ export function buildAdminListFilterQuery(
     query[ADMIN_LIST_TOPIC_CATEGORY_PARAM] = filters.topicCategory;
   }
   if (filters.fcCategory) query[ADMIN_LIST_FC_CATEGORY_PARAM] = filters.fcCategory;
+  if (filters.city) query[ADMIN_LIST_CITY_PARAM] = filters.city;
   return query;
 }
 

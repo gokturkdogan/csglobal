@@ -59,6 +59,7 @@ import {
   buildConsulatePath,
 } from "@/lib/paths";
 import { AdminRole } from "@/generated/prisma/client";
+import { parseImmigrationOfficeFormData } from "@/lib/immigration-office-input";
 
 async function upsertSiteSettingsBatch(
   entries: Array<{ key: string; value: string }>,
@@ -1342,6 +1343,91 @@ export async function saveSitePageAction(formData: FormData): Promise<AdminActio
   } catch (error) {
     return adminFailure(
       adminErrorMessage(error, "Sayfa kaydedilemedi. Lütfen tekrar deneyin."),
+    );
+  }
+}
+
+export async function saveImmigrationOfficeAction(formData: FormData): Promise<AdminActionResult> {
+  await requireAdmin();
+  const id = (formData.get("id") as string | null)?.trim() || null;
+  const parsed = parseImmigrationOfficeFormData(formData);
+
+  if (!parsed.ok) {
+    return adminFailure(parsed.message);
+  }
+
+  try {
+    if (id) {
+      await prisma.immigrationOffice.update({
+        where: { id },
+        data: parsed.data,
+      });
+      revalidatePath("/admin/goc-idareleri");
+      revalidatePath("/araclar/goc-idaresi-bul");
+      return adminSuccess(
+        "Göç İdaresi kaydı güncellendi.",
+        `/admin/goc-idareleri/${id}`,
+      );
+    }
+
+    const office = await prisma.immigrationOffice.create({ data: parsed.data });
+    revalidatePath("/admin/goc-idareleri");
+    revalidatePath("/araclar/goc-idaresi-bul");
+    return adminSuccess(
+      "Göç İdaresi kaydı oluşturuldu.",
+      `/admin/goc-idareleri/${office.id}`,
+    );
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Göç İdaresi kaydı kaydedilemedi. Lütfen tekrar deneyin."),
+    );
+  }
+}
+
+export async function toggleImmigrationOfficeActiveAction(
+  formData: FormData,
+): Promise<AdminActionResult> {
+  await requireAdmin();
+  const id = (formData.get("id") as string | null)?.trim();
+  if (!id) return adminFailure("Geçersiz kayıt.");
+
+  try {
+    const existing = await prisma.immigrationOffice.findUnique({ where: { id } });
+    if (!existing) return adminFailure("Kayıt bulunamadı.");
+
+    await prisma.immigrationOffice.update({
+      where: { id },
+      data: { isActive: !existing.isActive },
+    });
+
+    revalidatePath("/admin/goc-idareleri");
+    revalidatePath("/araclar/goc-idaresi-bul");
+    return adminSuccess(
+      existing.isActive ? "Kayıt pasif yapıldı." : "Kayıt aktif yapıldı.",
+      "/admin/goc-idareleri",
+    );
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Durum güncellenemedi. Lütfen tekrar deneyin."),
+    );
+  }
+}
+
+export async function deleteImmigrationOfficeAction(
+  formData: FormData,
+): Promise<AdminActionResult> {
+  await requireAdmin();
+  const id = (formData.get("id") as string | null)?.trim();
+  if (!id) return adminFailure("Geçersiz kayıt.");
+
+  try {
+    await prisma.immigrationOffice.delete({ where: { id } });
+    revalidatePath("/admin/goc-idareleri");
+    revalidatePath("/araclar/goc-idaresi-bul");
+    return adminSuccess("Göç İdaresi kaydı silindi.", "/admin/goc-idareleri");
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Kayıt silinemedi. Lütfen tekrar deneyin."),
     );
   }
 }

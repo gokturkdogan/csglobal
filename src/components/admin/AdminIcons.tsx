@@ -59,6 +59,12 @@ export function AdminNavIcon({ name }: { name: AdminNavIcon }) {
           <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
         </svg>
       );
+    case "immigrationOffices":
+      return (
+        <svg className={iconClass} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15m-15 18V9.75m15 11.25V9.75M8.25 21V12.75m7.5 8.25V12.75M8.25 9.75h7.5M8.25 6h7.5" />
+        </svg>
+      );
     case "documents":
       return (
         <svg className={iconClass} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>

@@ -10,6 +10,10 @@ import { findAllActiveConsulates } from "@/lib/repositories/consulate.repository
 import { buildCategoryPath, buildVisaProgramPath } from "@/lib/services/path-resolver.service";
 import { buildToolPath, siteTools, TOOLS_LIST_PATH } from "@/lib/tools";
 import {
+  buildGocIdaresiTopicPath,
+  gocIdaresiTopics,
+} from "@/lib/goc-idaresi-guide-data";
+import {
   buildRejectionReasonPath,
   rejectionReasons,
 } from "@/lib/rejection-guide-data";
@@ -45,6 +49,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     ...rejectionReasons.map((reason) => ({
       url: `${base}${buildRejectionReasonPath(reason.slug)}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.65,
+    })),
+    ...gocIdaresiTopics.map((topic) => ({
+      url: `${base}${buildGocIdaresiTopicPath(topic.slug)}`,
       changeFrequency: "monthly" as const,
       priority: 0.65,
     })),

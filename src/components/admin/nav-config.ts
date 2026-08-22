@@ -15,6 +15,7 @@ export type AdminNavIcon =
   | "article"
   | "guides"
   | "consulates"
+  | "immigrationOffices"
   | "documents"
   | "about"
   | "contact"
@@ -31,6 +32,7 @@ export const adminNav: AdminNavItem[] = [
   { href: "/admin/yabanci-danismanlik/kategori/calisma-izni", label: "Çalışma İzni İçerik", icon: "foreign" },
   { href: "/admin/bloglar", label: "Bloglar", icon: "article" },
   { href: "/admin/consulates", label: "Konsolosluklar", icon: "consulates" },
+  { href: "/admin/goc-idareleri", label: "Göç İdareleri", icon: "immigrationOffices" },
   { href: "/admin/bloglarimiz", label: "Bloglarımız", icon: "guides" },
   { href: "/admin/dokumanlar", label: "Dökümanlar", icon: "documents" },
   { href: "/admin/hakkimizda", label: "Hakkımızda", icon: "about" },

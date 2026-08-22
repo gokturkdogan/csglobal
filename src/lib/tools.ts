@@ -25,6 +25,18 @@ export const siteTools: SiteTool[] = [
     description:
       "Ret kararınızdaki kanun maddesini seçerek gerekçeyi ve izlenebilecek süreci inceleyin.",
   },
+  {
+    slug: "goc-idaresi-rehberi",
+    name: "Göç İdaresi Rehberi",
+    description:
+      "Göç İdaresi süreçleri, başvuru adımları ve sık karşılaşılan konular hakkında pratik rehber.",
+  },
+  {
+    slug: "goc-idaresi-bul",
+    name: "Göç İdaresi Bul",
+    description:
+      "Şehir, kurum adı veya adrese göre Göç İdaresi müdürlüklerini bulun; adres, çalışma saatleri ve yol tarifi alın.",
+  },
 ];
 
 export function getToolBySlug(slug: string): SiteTool | undefined {
