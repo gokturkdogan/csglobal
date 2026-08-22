@@ -3,6 +3,8 @@ export const rejectionReasonsContent = [
     "slug": "madde-9",
     "title": "Girişine İzin Verilmeyecek Yabancılar",
     "code": "9",
+    "severity": "danger",
+    "category": "entry",
     "shortDescription": "Kamu güvenliği veya yasal ihlaller nedeniyle ülkeye girişin engellenmesi.",
     "icon": "entry-ban",
     "sections": [
@@ -33,6 +35,8 @@ export const rejectionReasonsContent = [
     "slug": "madde-15",
     "title": "Vize Verilmeyecek Yabancılar",
     "code": "15",
+    "severity": "danger",
+    "category": "visa",
     "shortDescription": "Vize başvurusunun temel şartlarının sağlanmaması.",
     "icon": "visa-deny",
     "sections": [
@@ -63,6 +67,8 @@ export const rejectionReasonsContent = [
     "slug": "madde-25",
     "title": "İkamet Başvurusunun Reddi / İptali",
     "code": "25",
+    "severity": "warning",
+    "category": "residency",
     "shortDescription": "İkamet başvurusu prosedürlerindeki hatalar.",
     "icon": "residency-procedure",
     "sections": [
@@ -93,6 +99,8 @@ export const rejectionReasonsContent = [
     "slug": "madde-32",
     "title": "Kısa Dönem İkamet Şartları",
     "code": "32",
+    "severity": "warning",
+    "category": "residency",
     "shortDescription": "Turizm veya ticari amaçlı kalış kriterlerinin sağlanmaması.",
     "icon": "short-stay",
     "sections": [
@@ -127,6 +135,8 @@ export const rejectionReasonsContent = [
     "slug": "madde-33",
     "title": "Kısa Dönem İkametin Reddi / İptali",
     "code": "33",
+    "severity": "danger",
+    "category": "residency",
     "shortDescription": "Kullanım amacı dışına çıkılması veya şartların kaybı.",
     "icon": "short-stay-cancel",
     "sections": [
@@ -161,6 +171,8 @@ export const rejectionReasonsContent = [
     "slug": "madde-36",
     "title": "Aile İkametinin Reddi / İptali",
     "code": "36",
+    "severity": "danger",
+    "category": "residency",
     "shortDescription": "Evlilik birliğinin inandırıcı bulunmaması.",
     "icon": "family-residency",
     "sections": [
@@ -195,6 +207,8 @@ export const rejectionReasonsContent = [
     "slug": "madde-41",
     "title": "Öğrenci İkameti Ret / İptal",
     "code": "41",
+    "severity": "danger",
+    "category": "residency",
     "shortDescription": "Eğitim amacının dışına çıkılması.",
     "icon": "student-residency",
     "sections": [
@@ -228,6 +242,8 @@ export const rejectionReasonsContent = [
     "slug": "madde-45",
     "title": "Uzun Dönem İkamet İptali",
     "code": "45",
+    "severity": "danger",
+    "category": "residency",
     "shortDescription": "Süresiz ikamet hakkının kaybedilmesi.",
     "icon": "long-term",
     "sections": [
@@ -258,6 +274,8 @@ export const rejectionReasonsContent = [
     "slug": "madde-64",
     "title": "Uluslararası Koruma Hariçte Bırakılma",
     "code": "64",
+    "severity": "danger",
+    "category": "protection",
     "shortDescription": "Ağır suçlar nedeniyle koruma hakkının verilmemesi.",
     "icon": "protection-exclude",
     "sections": [
@@ -288,6 +306,8 @@ export const rejectionReasonsContent = [
     "slug": "madde-72",
     "title": "Kabul Edilemez Başvuru",
     "code": "72",
+    "severity": "info",
+    "category": "protection",
     "shortDescription": "Başvurunun incelenmeye dahi alınmaması.",
     "icon": "unacceptable",
     "sections": [
@@ -318,6 +338,8 @@ export const rejectionReasonsContent = [
     "slug": "madde-78",
     "title": "Uluslararası Koruma Esastan Ret",
     "code": "78",
+    "severity": "danger",
+    "category": "protection",
     "shortDescription": "Gerekçelerin inandırıcı bulunmaması.",
     "icon": "protection-deny",
     "sections": [
@@ -351,6 +373,8 @@ export const rejectionReasonsContent = [
     "slug": "madde-79",
     "title": "Hızlandırılmış Ret Kararı",
     "code": "79",
+    "severity": "danger",
+    "category": "protection",
     "shortDescription": "Kötü niyetli veya temelsiz başvurular.",
     "icon": "fast-track-deny",
     "sections": [
@@ -384,6 +408,8 @@ export const rejectionReasonsContent = [
     "slug": "madde-34-35",
     "title": "Aile İkamet İzni Şartları",
     "code": "34-35",
+    "severity": "warning",
+    "category": "residency",
     "shortDescription": "Aile birliği için gereken kriterlerin eksikliği.",
     "icon": "family-requirements",
     "sections": [
@@ -417,6 +443,8 @@ export const rejectionReasonsContent = [
     "slug": "madde-39-40",
     "title": "Öğrenci İkamet İzni Şartları",
     "code": "39-40",
+    "severity": "warning",
+    "category": "residency",
     "shortDescription": "Eğitim statüsünün kanıtlanamaması.",
     "icon": "student-requirements",
     "sections": [
@@ -450,6 +478,8 @@ export const rejectionReasonsContent = [
     "slug": "madde-46-47",
     "title": "İnsani İkamet İzni İptali",
     "code": "46-47",
+    "severity": "info",
+    "category": "residency",
     "shortDescription": "İnsani gerekçelerin ortadan kalkması.",
     "icon": "humanitarian",
     "sections": [
@@ -480,6 +510,8 @@ export const rejectionReasonsContent = [
     "slug": "madde-48-49",
     "title": "Mağdur İkamet İzni İptali",
     "code": "48-49",
+    "severity": "danger",
+    "category": "residency",
     "shortDescription": "Mağduriyet statüsünün kaybı.",
     "icon": "victim",
     "sections": [

@@ -1,7 +1,5 @@
 import { notFound } from "next/navigation";
-import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { RejectionContent } from "@/components/tools/rejection/RejectionContent";
-import { RejectionGuideShell } from "@/components/tools/rejection/RejectionGuideShell";
 import {
   buildRejectionReasonPath,
   getRejectionReasonBySlug,
@@ -51,28 +49,12 @@ export default async function RejectionReasonPage({ params }: Props) {
   ]);
 
   return (
-    <section className="border-b border-slate-200/60">
-      <div className="site-container py-8 md:py-12">
-        <Breadcrumb
-          items={[
-            { label: "Ana Sayfa", href: "/" },
-            { label: "Araçlar", href: TOOLS_LIST_PATH },
-            { label: "İkamet & Vize Ret", href: REJECTION_GUIDE_PATH },
-            { label: reason.title },
-          ]}
-        />
-
-        <div className="mt-5">
-          <RejectionGuideShell activeSlug={reason.slug}>
-            <RejectionContent reason={reason} settings={settings} />
-          </RejectionGuideShell>
-        </div>
-      </div>
-
+    <>
+      <RejectionContent reason={reason} settings={settings} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
-    </section>
+    </>
   );
 }

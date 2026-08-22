@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { RejectionReasonIcon } from "@/components/tools/rejection/RejectionIcons";
+import { getSeverityConfig } from "@/components/tools/rejection/RejectionSeverityBadge";
 import {
   buildRejectionReasonPath,
   type RejectionIconKey,
@@ -11,7 +12,7 @@ import {
 
 type SidebarItem = Pick<
   RejectionReason,
-  "slug" | "title" | "code" | "shortDescription" | "icon"
+  "slug" | "title" | "code" | "shortDescription" | "icon" | "severity"
 >;
 
 type Props = {
@@ -30,32 +31,39 @@ function MaddeListItem({
   active: boolean;
   onClick?: () => void;
 }) {
-  const className = `group flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-left transition ${
-    active
-      ? "bg-csg-red/[0.08] ring-1 ring-csg-red/25"
-      : "hover:bg-slate-50"
+  const severity = getSeverityConfig(item.severity);
+
+  const className = `group flex w-full cursor-pointer items-start gap-3 rounded-xl px-3 py-2.5 text-left transition ${
+    active ? severity.sidebarActive : "hover:bg-slate-50"
   }`;
 
   const inner = (
     <>
       <span
-        className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
-          active ? "bg-csg-red text-white" : "bg-csg-red/10 text-csg-red"
+        className={`relative mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition ${
+          active
+            ? severity.sidebarIcon
+            : "bg-slate-100 text-slate-700 group-hover:bg-white"
         }`}
       >
         <RejectionReasonIcon icon={item.icon} className="h-4 w-4" />
+        {!active ? (
+          <span
+            className={`absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full ring-2 ring-white ${severity.dot}`}
+          />
+        ) : null}
       </span>
       <span className="min-w-0 flex-1">
         <span
           className={`block text-[10px] font-bold uppercase tracking-wide ${
-            active ? "text-csg-red" : "text-slate-400"
+            active ? severity.sidebarLabel : "text-slate-400"
           }`}
         >
           Madde {item.code}
         </span>
         <span
           className={`mt-0.5 block text-sm font-medium leading-snug ${
-            active ? "text-csg-red" : "text-slate-800 group-hover:text-slate-950"
+            active ? severity.sidebarTitle : "text-slate-800 group-hover:text-slate-950"
           }`}
         >
           {item.title}
@@ -63,8 +71,8 @@ function MaddeListItem({
       </span>
       <span
         aria-hidden
-        className={`shrink-0 text-sm transition ${
-          active ? "text-csg-red" : "text-slate-300 group-hover:text-slate-400"
+        className={`mt-1 shrink-0 text-sm transition ${
+          active ? severity.sidebarArrow : "text-slate-300 group-hover:text-slate-400"
         }`}
       >
         →
@@ -81,7 +89,7 @@ function MaddeListItem({
   }
 
   return (
-    <Link href={href!} className={className}>
+    <Link href={href!} scroll={false} className={className}>
       {inner}
     </Link>
   );

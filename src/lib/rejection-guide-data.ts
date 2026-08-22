@@ -19,6 +19,10 @@ export type RejectionIconKey =
   | "humanitarian"
   | "victim";
 
+export type RejectionSeverity = "danger" | "warning" | "info";
+
+export type RejectionCategory = "entry" | "visa" | "residency" | "protection";
+
 export type RejectionSection = {
   title: string;
   contentHtml: string;
@@ -31,6 +35,8 @@ export type RejectionReason = {
   code: string;
   shortDescription: string;
   icon: RejectionIconKey;
+  severity: RejectionSeverity;
+  category: RejectionCategory;
   sections: RejectionSection[];
   relatedSlugs?: string[];
 };
@@ -61,6 +67,14 @@ export function getRejectionReasonBySlug(slug: string): RejectionReason | undefi
 export function buildRejectionReasonPath(slug?: string): string {
   if (!slug) return REJECTION_GUIDE_PATH;
   return `${REJECTION_GUIDE_PATH}/${slug}`;
+}
+
+export function getActiveRejectionSlugFromPathname(pathname: string): string | undefined {
+  if (pathname === REJECTION_GUIDE_PATH) return undefined;
+  const prefix = `${REJECTION_GUIDE_PATH}/`;
+  if (!pathname.startsWith(prefix)) return undefined;
+  const slug = pathname.slice(prefix.length).split("/")[0];
+  return slug || undefined;
 }
 
 export function getRelatedRejectionReasons(reason: RejectionReason): RejectionReason[] {

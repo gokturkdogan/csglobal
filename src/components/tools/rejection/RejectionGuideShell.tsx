@@ -1,19 +1,28 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { RejectionSidebar, RejectionMobileSelector } from "@/components/tools/rejection/RejectionSidebar";
 import { RejectionDisclaimer } from "@/components/tools/rejection/RejectionContent";
-import { rejectionReasons } from "@/lib/rejection-guide-data";
+import {
+  getActiveRejectionSlugFromPathname,
+  rejectionReasons,
+} from "@/lib/rejection-guide-data";
 
 type Props = {
-  activeSlug?: string;
   children: React.ReactNode;
 };
 
-export function RejectionGuideShell({ activeSlug, children }: Props) {
+export function RejectionGuideShell({ children }: Props) {
+  const pathname = usePathname();
+  const activeSlug = getActiveRejectionSlugFromPathname(pathname);
+
   const sidebarItems = rejectionReasons.map((item) => ({
     slug: item.slug,
     title: item.title,
     code: item.code,
     shortDescription: item.shortDescription,
     icon: item.icon,
+    severity: item.severity,
   }));
 
   return (

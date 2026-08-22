@@ -2,6 +2,11 @@ import Link from "next/link";
 import { RichContent } from "@/components/RichTextContent";
 import { ContactCTA } from "@/components/domain/ContactCTA";
 import {
+  getSeverityConfig,
+  RejectionCategoryBadge,
+  RejectionSeverityBadge,
+} from "@/components/tools/rejection/RejectionSeverityBadge";
+import {
   RejectionReasonIcon,
   RejectionSectionIcon,
 } from "@/components/tools/rejection/RejectionIcons";
@@ -160,36 +165,48 @@ export function RejectionContent({ reason, settings }: Props) {
   const related = getRelatedRejectionReasons(reason);
   const mainSections = reason.sections.filter((s) => !s.title.includes("Son Değildir"));
   const ctaSection = reason.sections.find((s) => s.title.includes("Son Değildir"));
+  const severity = getSeverityConfig(reason.severity);
 
   return (
     <div className="flex min-h-[520px] min-w-0 flex-col">
       <div className="flex-1 space-y-4 px-4 md:px-6">
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-900 text-white shadow-sm">
+        <div
+          className={`overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm border-t-4 ${severity.headerBorder}`}
+        >
           <div className="px-5 py-4 md:px-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="min-w-0 flex-1">
-                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">
-                  Analiz paneli
-                </p>
-                <div className="mt-2 flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-md bg-csg-red px-2.5 py-1 text-xs font-bold">
-                    <RejectionReasonIcon icon={reason.icon} className="h-3.5 w-3.5" />
-                    Madde {reason.code}
+                <div className="flex flex-wrap items-center gap-2">
+                  <span
+                    className={`inline-flex h-11 w-11 items-center justify-center rounded-xl ${severity.iconWrap}`}
+                  >
+                    <RejectionReasonIcon icon={reason.icon} className="h-5 w-5" />
                   </span>
-                  <span className="rounded-md bg-white/10 px-2 py-1 text-[11px] font-medium text-white/85">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">
+                      Analiz paneli
+                    </p>
+                    <p className="text-lg font-bold text-slate-900 md:text-xl">
+                      Madde {reason.code} Analizi
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <RejectionSeverityBadge severity={reason.severity} size="md" />
+                  <RejectionCategoryBadge category={reason.category} />
+                  <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
                     6458 sayılı kanun
                   </span>
                 </div>
-                <h2 className="mt-3 text-xl font-semibold tracking-tight md:text-2xl">{reason.title}</h2>
-              </div>
-              <div className="hidden shrink-0 sm:flex sm:h-14 sm:w-14 sm:items-center sm:justify-center sm:rounded-2xl sm:bg-white/10 sm:text-white">
-                <RejectionReasonIcon icon={reason.icon} className="h-7 w-7" />
+                <h2 className="mt-4 text-xl font-semibold tracking-tight text-slate-900 md:text-2xl">
+                  {reason.title}
+                </h2>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-csg-red/20 bg-csg-red/[0.04] px-5 py-3.5 shadow-sm md:px-6">
+        <div className={`rounded-2xl border px-5 py-3.5 shadow-sm md:px-6 ${severity.summaryCard}`}>
           <p className="text-sm leading-relaxed text-slate-700">{reason.shortDescription}</p>
         </div>
 
@@ -228,9 +245,12 @@ export function RejectionContent({ reason, settings }: Props) {
                     <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-csg-red/10 text-csg-red group-hover:bg-csg-red group-hover:text-white">
                       <RejectionReasonIcon icon={item.icon} className="h-5 w-5" />
                     </span>
-                    <span className="min-w-0">
-                      <span className="block text-[10px] font-bold uppercase tracking-wide text-csg-red">
-                        Madde {item.code}
+                    <span className="min-w-0 flex-1">
+                      <span className="flex flex-wrap items-center gap-1.5">
+                        <span className="block text-[10px] font-bold uppercase tracking-wide text-csg-red">
+                          Madde {item.code}
+                        </span>
+                        <RejectionSeverityBadge severity={item.severity} />
                       </span>
                       <span className="mt-0.5 block text-sm font-semibold text-slate-900 group-hover:text-csg-red">
                         {item.title}

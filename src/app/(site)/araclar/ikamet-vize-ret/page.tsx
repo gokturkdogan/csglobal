@@ -1,6 +1,4 @@
-import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { RejectionEmptyState } from "@/components/tools/rejection/RejectionContent";
-import { RejectionGuideShell } from "@/components/tools/rejection/RejectionGuideShell";
 import {
   REJECTION_GUIDE_PATH,
   rejectionGuideMeta,
@@ -27,27 +25,12 @@ export default function RejectionGuideIndexPage() {
   ]);
 
   return (
-    <section className="border-b border-slate-200/60">
-      <div className="site-container py-8 md:py-12">
-        <Breadcrumb
-          items={[
-            { label: "Ana Sayfa", href: "/" },
-            { label: "Araçlar", href: TOOLS_LIST_PATH },
-            { label: "İkamet & Vize Ret" },
-          ]}
-        />
-
-        <div className="mt-5">
-          <RejectionGuideShell>
-            <RejectionEmptyState />
-          </RejectionGuideShell>
-        </div>
-      </div>
-
+    <>
+      <RejectionEmptyState />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
-    </section>
+    </>
   );
 }
