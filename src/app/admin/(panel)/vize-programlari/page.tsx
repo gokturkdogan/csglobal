@@ -14,7 +14,8 @@ import {
 import { logAdminListPerf, resolveAdminPagination } from "@/lib/admin-pagination";
 import { buildVisaProgramPath } from "@/lib/paths";
 import { formatPublicSitePath } from "@/lib/site-url";
-import { AdminButtonLink, AdminLink } from "@/components/admin/AdminForm";
+import { deleteVisaProgramAction } from "@/lib/admin-actions";
+import { AdminActionForm, AdminButtonLink, AdminLink } from "@/components/admin/AdminForm";
 import { AdminListFilters } from "@/components/admin/AdminListFilters";
 import { AdminPagination } from "@/components/admin/AdminPagination";
 import {
@@ -135,7 +136,7 @@ export default async function AdminVisaProgramsPage({ searchParams }: Props) {
                 <td className="px-5 py-3.5">
                   <AdminStatusBadge active={program.isActive} />
                 </td>
-                <td className="px-5 py-3.5 text-right">
+                <td className="px-5 py-3.5 text-right whitespace-nowrap">
                   <AdminLink href={`/admin/vize-programlari/${program.id}`}>Düzenle</AdminLink>
                   <span className="mx-2 text-slate-300">|</span>
                   <AdminLink
@@ -144,6 +145,20 @@ export default async function AdminVisaProgramsPage({ searchParams }: Props) {
                   >
                     Görüntüle
                   </AdminLink>
+                  <span className="mx-2 text-slate-300">|</span>
+                  <AdminActionForm
+                    action={deleteVisaProgramAction}
+                    className="inline"
+                    successMessage="Vize programı silindi."
+                  >
+                    <input type="hidden" name="id" value={program.id} />
+                    <button
+                      type="submit"
+                      className="cursor-pointer text-sm font-medium text-red-600 hover:text-red-700"
+                    >
+                      Sil
+                    </button>
+                  </AdminActionForm>
                 </td>
               </tr>
             ))

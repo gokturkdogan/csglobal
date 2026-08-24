@@ -555,6 +555,35 @@ export async function saveVisaProgramAction(formData: FormData): Promise<AdminAc
   }
 }
 
+export async function deleteVisaProgramAction(
+  formData: FormData,
+): Promise<AdminActionResult> {
+  await requireAdmin();
+  const id = (formData.get("id") as string | null)?.trim();
+  if (!id) return adminFailure("Geçersiz kayıt.");
+
+  try {
+    const program = await prisma.visaProgram.delete({
+      where: { id },
+      select: {
+        slug: true,
+        country: { select: { slug: true } },
+      },
+    });
+
+    revalidatePath("/");
+    revalidatePath("/admin/vize-programlari");
+    revalidatePath(`/${program.country.slug}`);
+    revalidatePath(`/${program.country.slug}/${program.slug}`);
+    revalidateSitemap();
+    return adminSuccess("Vize programı silindi.", "/admin/vize-programlari");
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Vize programı silinemedi. Lütfen tekrar deneyin."),
+    );
+  }
+}
+
 export async function saveForeignConsultancyContentAction(
   formData: FormData,
 ): Promise<AdminActionResult> {
