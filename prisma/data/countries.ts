@@ -45,7 +45,7 @@ export const countries: CountrySeed[] = [
   { name: "Gine", slug: "gine", iso2: "GN" },
   { name: "Gine Bissau", slug: "gine-bissau", iso2: "GW" },
   { name: "Grenada", slug: "grenada", iso2: "GD" },
-  { name: "Güney Kıbrıs Cumhuriyeti", slug: "guney-kibris", iso2: "CY" },
+  { name: "Güney Kıbrıs Cumhuriyeti", slug: "kibris", iso2: "CY" },
   { name: "Güney Kore", slug: "guney-kore", iso2: "KR" },
   { name: "Güney Sudan", slug: "guney-sudan", iso2: "SS" },
   { name: "Hindistan", slug: "hindistan", iso2: "IN" },

@@ -27,6 +27,8 @@ import {
 import { HOMEPAGE_FEATURED_BLOGS_MAX } from "@/lib/homepage";
 import { isBlogTopicCategory } from "@/lib/blog-topic-categories";
 import { upsertSeoFromForm } from "@/lib/admin-seo";
+import { importEagvsCountryHub } from "@/lib/eagvs-country-sync";
+import { revalidateAfterEagvsCountrySync } from "@/lib/eagvs-country-sync-revalidate";
 import { revalidateSitemap } from "@/lib/sitemap-revalidate";
 import {
   adminErrorMessage,
@@ -61,6 +63,7 @@ import {
   buildBlogListPath,
   buildBlogPath,
   buildConsulatePath,
+  buildVisaProgramPath,
 } from "@/lib/paths";
 import { AdminRole } from "@/generated/prisma/client";
 import { parseImmigrationOfficeFormData } from "@/lib/immigration-office-input";
@@ -1360,6 +1363,52 @@ export async function deleteSiteAssetAction(formData: FormData): Promise<AdminAc
   } catch (error) {
     return adminFailure(
       adminErrorMessage(error, "Döküman silinemedi. Lütfen tekrar deneyin."),
+    );
+  }
+}
+
+export async function importEagvsCountrySyncAction(formData: FormData): Promise<AdminActionResult> {
+  await requireAdmin();
+
+  const url = (formData.get("url") as string)?.trim();
+  const countryId = (formData.get("countryId") as string)?.trim();
+
+  if (!url) {
+    return adminFailure("EAGVS ülke ana sayfa linki girin.");
+  }
+
+  if (!countryId) {
+    return adminFailure("Ülke seçin veya linkten otomatik eşleşmesini bekleyin.");
+  }
+
+  try {
+    const result = await importEagvsCountryHub({
+      url,
+      countryId,
+    });
+
+    revalidateAfterEagvsCountrySync(result);
+
+    const programNote =
+      result.programs.length > 0
+        ? ` ${result.programs.length} yeni program eklendi.`
+        : "";
+    const documentNote =
+      result.documents.length > 0
+        ? ` ${result.documents.length} yeni döküman eklendi (sol menüde göster).`
+        : "";
+    const skippedNote =
+      result.skipped.length > 0
+        ? ` ${result.skipped.length} kayıt atlandı (zaten mevcut veya PDF/form).`
+        : "";
+
+    return adminSuccess(
+      `${result.countryName}: ${result.detailSectionCount} detay bölümü güncellendi; sol panel ${result.sidebarLinkCount} link tarandı.${programNote}${documentNote}${skippedNote}`,
+      "/admin/eagvs-country-sync",
+    );
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Ülke senkronizasyonu başarısız. Lütfen tekrar deneyin."),
     );
   }
 }
