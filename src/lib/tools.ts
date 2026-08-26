@@ -31,6 +31,12 @@ export const siteTools: SiteTool[] = [
     description:
       "Şehir, kurum adı veya adrese göre Göç İdaresi müdürlüklerini bulun; adres, çalışma saatleri ve yol tarifi alın.",
   },
+  {
+    slug: "tahdit-kodlari",
+    name: "Tahdit Kodları",
+    description:
+      "Ç, G, N, O ve V tahdit kodlarının anlamlarını, giriş durumlarını ve varsa giriş yasağı sürelerini inceleyin.",
+  },
 ];
 
 export function getToolBySlug(slug: string): SiteTool | undefined {
