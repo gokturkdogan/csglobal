@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { optimizeCloudinaryDeliveryUrl, siteImages } from "@/lib/media";
 import { getSiteSettings } from "@/lib/settings";
 
 const inter = Inter({
@@ -10,6 +11,8 @@ const inter = Inter({
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
+  const faviconUrl = optimizeCloudinaryDeliveryUrl(siteImages.headerLogo, 64);
+
   return {
     title: {
       default: `${settings.siteName} | Vize Danışmanlığı`,
@@ -19,6 +22,11 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(
       process.env.NEXT_PUBLIC_SITE_URL ?? "https://csglobal.com",
     ),
+    icons: {
+      icon: [{ url: faviconUrl, type: "image/png" }],
+      apple: [{ url: faviconUrl, type: "image/png" }],
+      shortcut: faviconUrl,
+    },
   };
 }
 
