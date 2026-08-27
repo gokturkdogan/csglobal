@@ -1,6 +1,13 @@
 import { loginAction } from "@/lib/admin-actions";
 
-export default function AdminLoginPage() {
+type Props = {
+  searchParams?: Promise<{ error?: string }>;
+};
+
+export default async function AdminLoginPage({ searchParams }: Props) {
+  const params = searchParams ? await searchParams : undefined;
+  const showInvalidError = params?.error === "invalid";
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#f0f4f9] via-white to-[#e8eef6] px-4 py-12">
       <div className="w-full max-w-md">
@@ -45,6 +52,12 @@ export default function AdminLoginPage() {
           >
             Giriş Yap
           </button>
+
+          {showInvalidError && (
+            <p className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+              E-posta veya şifre hatalı. Bilgilerinizi kontrol edip tekrar deneyin.
+            </p>
+          )}
         </form>
 
         <p className="mt-6 text-center text-xs text-slate-500">

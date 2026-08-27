@@ -30,7 +30,8 @@ npm run dev
 | Değişken | Açıklama |
 |----------|----------|
 | `DATABASE_URL` | Neon PostgreSQL bağlantı URL'i |
-| `AUTH_SECRET` | Admin oturumu için gizli anahtar |
+| `AUTH_SECRET` | Admin oturumu için gizli anahtar (Vercel Production ortamında zorunlu) |
+| `AUTH_URL` | Canlı site kök URL (ör. `https://csglobal-neon.vercel.app`) |
 | `NEXT_PUBLIC_SITE_URL` | Canlı site URL (SEO / sitemap) |
 
 ## Admin

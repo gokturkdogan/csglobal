@@ -4,6 +4,7 @@ import { buildWhatsAppUrl } from "@/lib/site-settings.shared";
 import { siteImages } from "@/lib/media";
 import { SiteImage } from "@/components/ui/SiteImage";
 import { WhatsAppIcon, whatsappButtonClass } from "@/components/ui/WhatsAppIcon";
+import { LegalDisclaimer } from "@/components/layout/LegalDisclaimer";
 
 const navItems = [
   { href: "/ulkeler", label: "Ülkeler" },
@@ -139,7 +140,8 @@ export function Footer({
           </ul>
         </div>
       </div>
-      <div className="border-t border-slate-200 py-6 text-center text-xs text-slate-500">
+      <LegalDisclaimer />
+      <div className="border-t border-slate-200 bg-slate-50 py-6 text-center text-xs text-slate-500">
         © {new Date().getFullYear()} {siteName}
       </div>
     </footer>

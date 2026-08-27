@@ -4,9 +4,12 @@ import { getToken } from "next-auth/jwt";
 
 export async function middleware(request: NextRequest) {
   const isLoginPage = request.nextUrl.pathname === "/admin/login";
+  const isProduction = process.env.NODE_ENV === "production";
+
   const token = await getToken({
     req: request,
     secret: process.env.AUTH_SECRET,
+    secureCookie: isProduction,
   });
 
   if (!token && !isLoginPage) {

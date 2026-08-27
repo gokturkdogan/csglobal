@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
+import { AuthError } from "next-auth";
 import { auth, signIn, signOut } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { BlogTopicCategory, ForeignConsultancyCategory, SeoEntityType } from "@/generated/prisma/client";
@@ -90,11 +91,18 @@ async function requireAdmin() {
 }
 
 export async function loginAction(formData: FormData) {
-  await signIn("credentials", {
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
-    redirectTo: "/admin",
-  });
+  try {
+    await signIn("credentials", {
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+      redirectTo: "/admin",
+    });
+  } catch (error) {
+    if (error instanceof AuthError) {
+      redirect("/admin/login?error=invalid");
+    }
+    throw error;
+  }
 }
 
 export async function logoutAction() {

@@ -23,6 +23,18 @@ export function optimizeCloudinaryDeliveryUrl(url: string, width = 1920): string
   return `${url.slice(0, uploadIdx + marker.length)}f_auto,q_auto,w_${width}/${rest}`;
 }
 
+/** Favicon gibi PNG gerektiren uçlar için (WebP ImageResponse ile uyumsuz). */
+export function optimizeCloudinaryPngUrl(url: string, width: number): string {
+  if (!url.includes("res.cloudinary.com/") || !url.includes("/upload/")) {
+    return url;
+  }
+  const marker = "/upload/";
+  const uploadIdx = url.indexOf(marker);
+  const rest = url.slice(uploadIdx + marker.length);
+  if (/^(f_|q_|w_|c_|g_)/.test(rest)) return url;
+  return `${url.slice(0, uploadIdx + marker.length)}f_png,q_auto,w_${width}/${rest}`;
+}
+
 export const siteImages = {
   /** Mevcut Cloudinary banner; Home/hero yüklenene kadar varsayılan */
   hero: optimizeCloudinaryDeliveryUrl(

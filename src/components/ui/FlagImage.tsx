@@ -8,9 +8,13 @@ type Props = {
   alt?: string;
 };
 
+/** flagcdn.com yalnızca w20, w40, w80, w160 genişliklerini destekler. */
+const FLAGCDN_WIDTHS = [20, 40, 80, 160] as const;
+
 function flagCdnWidth(displayWidth: number): number {
   const retinaWidth = Math.ceil(displayWidth * 2);
-  return Math.min(160, Math.max(20, retinaWidth));
+  const target = Math.max(20, Math.min(160, retinaWidth));
+  return FLAGCDN_WIDTHS.find((w) => w >= target) ?? 160;
 }
 
 /** Bayrak ikonları; flagcdn next/image üzerinden birinci parti proxy ile yüklenir. */
@@ -22,7 +26,7 @@ export function FlagImage({
 }: Props) {
   const cdnWidth = flagCdnWidth(displayWidth);
   const code = flag.toLowerCase();
-  const intrinsicHeight = Math.round(cdnWidth * 0.75);
+  const intrinsicHeight = Math.round(cdnWidth / 2);
   const src = `https://flagcdn.com/w${cdnWidth}/${code}.png`;
 
   return (
