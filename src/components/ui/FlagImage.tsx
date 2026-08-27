@@ -22,18 +22,22 @@ export function FlagImage({
 }: Props) {
   const cdnWidth = flagCdnWidth(displayWidth);
   const code = flag.toLowerCase();
-  const height = Math.round(displayWidth * 0.75);
+  const intrinsicHeight = Math.round(cdnWidth * 0.75);
   const src = `https://flagcdn.com/w${cdnWidth}/${code}.png`;
 
   return (
-    <Image
-      src={src}
-      alt={alt}
-      width={displayWidth}
-      height={height}
-      sizes={`${displayWidth}px`}
-      className={className}
-      style={{ width: displayWidth, height: "auto" }}
-    />
+    <span
+      className={`inline-block shrink-0 leading-none ${className}`}
+      style={{ width: displayWidth }}
+    >
+      <Image
+        src={src}
+        alt={alt}
+        width={cdnWidth}
+        height={intrinsicHeight}
+        sizes={`${displayWidth}px`}
+        className="h-auto w-full"
+      />
+    </span>
   );
 }
