@@ -37,8 +37,8 @@ export function Header({
           <SiteImage
             src={logo}
             alt={siteName}
-            width={200}
-            height={56}
+            width={440}
+            height={124}
             sizes="(max-width: 768px) 180px, 220px"
             className="h-10 w-auto max-w-[180px] object-contain md:h-12 md:max-w-[220px]"
           />

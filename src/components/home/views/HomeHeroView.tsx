@@ -24,7 +24,7 @@ export function HomeHeroView({
           alt={heroAlt}
           fill
           priority
-          sizes="(max-width: 1024px) 100vw, 60vw"
+          sizes="(max-width: 1024px) 100vw, 85vw"
           className="object-cover object-[center_30%] md:object-right"
         />
         <div
@@ -68,7 +68,12 @@ export function HomeHeroView({
                 className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/20"
               >
                 {country.flag && (
-                  <FlagImage flag={country.flag} displayWidth={20} className="rounded-sm" />
+                  <FlagImage
+                    flag={country.flag}
+                    displayWidth={20}
+                    alt={country.name}
+                    className="rounded-sm"
+                  />
                 )}
                 {country.name}
               </Link>

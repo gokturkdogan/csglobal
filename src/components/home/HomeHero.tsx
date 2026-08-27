@@ -31,7 +31,7 @@ export function HomeHero({
             alt={content.heroTitle?.trim() || "Vize danışmanlığı hero görseli"}
             fill
             priority
-            sizes="(max-width: 1024px) 100vw, 60vw"
+            sizes="(max-width: 1024px) 100vw, 85vw"
             className="object-cover object-[center_30%] md:object-right"
           />
         </HomeEditableImage>

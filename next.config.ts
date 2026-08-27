@@ -19,8 +19,7 @@ const securityHeaders = [
   },
   {
     key: "Permissions-Policy",
-    value:
-      "camera=(), microphone=(), geolocation=(), interest-cohort=(), payment=(), usb=()",
+    value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
   },
 ];
 
@@ -61,6 +60,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "plus.unsplash.com" },
       { protocol: "https", hostname: "flagcdn.com" },
       { protocol: "https", hostname: "res.cloudinary.com" },
+      { protocol: "https", hostname: "staticmap.openstreetmap.de" },
     ],
   },
 };

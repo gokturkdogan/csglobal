@@ -27,10 +27,11 @@ export const siteImages = {
   /** Mevcut Cloudinary banner; Home/hero yüklenene kadar varsayılan */
   hero: optimizeCloudinaryDeliveryUrl(
     "https://res.cloudinary.com/ulnb2wjo/image/upload/v1786551822/banner-1.png",
+    2560,
   ),
   headerLogo: optimizeCloudinaryDeliveryUrl(
     "https://res.cloudinary.com/ulnb2wjo/image/upload/v1786552142/header-logo-no-bg.png",
-    400,
+    512,
   ),
   about: homeAsset("about"),
   ctaBanner: homeAsset("cta-banner"),

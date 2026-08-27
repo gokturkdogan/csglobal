@@ -16,6 +16,7 @@ const REMOTE_HOSTS = [
   "plus.unsplash.com",
   "flagcdn.com",
   "res.cloudinary.com",
+  "staticmap.openstreetmap.de",
 ];
 
 function canUseNextImage(src: string) {

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { optimizeCloudinaryDeliveryUrl, siteImages } from "@/lib/media";
 import { defaultOgImageUrl } from "@/lib/services/seo.service";
 import { getSiteSettings } from "@/lib/settings";
 
@@ -12,7 +11,6 @@ const inter = Inter({
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
-  const faviconUrl = optimizeCloudinaryDeliveryUrl(siteImages.headerLogo, 64);
 
   return {
     title: {
@@ -29,11 +27,6 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       images: [defaultOgImageUrl],
-    },
-    icons: {
-      icon: [{ url: faviconUrl, type: "image/png" }],
-      apple: [{ url: faviconUrl, type: "image/png" }],
-      shortcut: faviconUrl,
     },
   };
 }
