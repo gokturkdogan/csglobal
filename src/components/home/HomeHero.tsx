@@ -28,10 +28,10 @@ export function HomeHero({
         <HomeEditableImage field="heroImage" value={content.heroImage} fullBleed label="Hero banner">
           <SiteImage
             src={edit?.content.heroImage ?? content.heroImage}
-            alt=""
+            alt={content.heroTitle?.trim() || "Vize danışmanlığı hero görseli"}
             fill
             priority
-            sizes="100vw"
+            sizes="(max-width: 1024px) 100vw, 60vw"
             className="object-cover object-[center_30%] md:object-right"
           />
         </HomeEditableImage>

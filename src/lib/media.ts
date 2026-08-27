@@ -1,8 +1,11 @@
 /** Site assets and verified remote fallbacks (Cloudinary Home klasörü). */
 const CLOUD = "ulnb2wjo";
 
-function homeAsset(name: string) {
-  return `https://res.cloudinary.com/${CLOUD}/image/upload/Home/${name}`;
+function homeAsset(name: string, width = 1200) {
+  return optimizeCloudinaryDeliveryUrl(
+    `https://res.cloudinary.com/${CLOUD}/image/upload/Home/${name}`,
+    width,
+  );
 }
 
 /**
@@ -25,15 +28,22 @@ export const siteImages = {
   hero: optimizeCloudinaryDeliveryUrl(
     "https://res.cloudinary.com/ulnb2wjo/image/upload/v1786551822/banner-1.png",
   ),
-  headerLogo:
+  headerLogo: optimizeCloudinaryDeliveryUrl(
     "https://res.cloudinary.com/ulnb2wjo/image/upload/v1786552142/header-logo-no-bg.png",
+    400,
+  ),
   about: homeAsset("about"),
   ctaBanner: homeAsset("cta-banner"),
   travel: homeAsset("seo-1"),
   /** Ülke kartı varsayılan kapak */
-  countryItemCover:
+  countryItemCover: optimizeCloudinaryDeliveryUrl(
     "https://res.cloudinary.com/ulnb2wjo/image/upload/v1786556725/country-item-cover.png",
-  country: "https://res.cloudinary.com/ulnb2wjo/image/upload/v1786556725/country-item-cover.png",
+    800,
+  ),
+  country: optimizeCloudinaryDeliveryUrl(
+    "https://res.cloudinary.com/ulnb2wjo/image/upload/v1786556725/country-item-cover.png",
+    800,
+  ),
   article:
     "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80&auto=format",
   germany:

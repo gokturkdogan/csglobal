@@ -38,7 +38,7 @@ export function ContactMapSection({
             src={embedUrl}
             className="absolute inset-0 h-full w-full border-0"
             loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
+            referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen
           />
         </div>

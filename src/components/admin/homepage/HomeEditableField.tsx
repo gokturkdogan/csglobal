@@ -2,9 +2,18 @@
 
 import type { HomepageContent } from "@/lib/homepage";
 import { homepageImageSlots } from "@/lib/homepage-image-slots";
-import { EditableText } from "./EditableText";
-import { CloudinaryImagePicker } from "./CloudinaryImagePicker";
+import dynamic from "next/dynamic";
 import { useHomepageEdit } from "./HomepageEditContext";
+
+const EditableText = dynamic(
+  () => import("./EditableText").then((module) => module.EditableText),
+  { ssr: false },
+);
+
+const CloudinaryImagePicker = dynamic(
+  () => import("./CloudinaryImagePicker").then((module) => module.CloudinaryImagePicker),
+  { ssr: false },
+);
 
 type HomepageImageField = "heroImage" | "aboutImage" | "ctaBannerImage";
 

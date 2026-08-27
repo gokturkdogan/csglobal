@@ -1,9 +1,8 @@
-import "@/app/globals.css";
 import { Header, Footer } from "@/components/layout/HeaderFooter";
 import { FloatingPhone, FloatingWhatsApp } from "@/components/domain/ContactCTA";
 import { getSiteSettings } from "@/lib/settings";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const settings = await getSiteSettings();

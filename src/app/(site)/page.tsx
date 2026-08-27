@@ -1,14 +1,14 @@
-import { HomeHero } from "@/components/home/HomeHero";
-import { HomeAbout } from "@/components/home/HomeAbout";
-import { HomeWhyUs } from "@/components/home/HomeWhyUs";
-import { HomeProcess } from "@/components/home/HomeProcess";
-import { HomeCtaBanner } from "@/components/home/HomeCtaBanner";
-import { HomeSeoIntro, HomeSeoBlocks } from "@/components/home/HomeSeoSections";
-import { HomeServiceAreas } from "@/components/home/HomeServiceAreas";
-import { HomeFaqPreview } from "@/components/home/HomeFaqPreview";
-import { HomeFeaturedSection } from "@/components/home/HomeFeaturedSection";
-import { HomeCountriesSection } from "@/components/home/HomeCountriesSection";
-import { HomeArticlesSection } from "@/components/home/HomeArticlesSection";
+import { HomeHeroView } from "@/components/home/views/HomeHeroView";
+import { HomeAboutView } from "@/components/home/views/HomeAboutView";
+import { HomeWhyUsView } from "@/components/home/views/HomeWhyUsView";
+import { HomeProcessView } from "@/components/home/views/HomeProcessView";
+import { HomeCtaBannerView } from "@/components/home/views/HomeCtaBannerView";
+import { HomeSeoIntroView, HomeSeoBlocksView } from "@/components/home/views/HomeSeoSectionsView";
+import { HomeServiceAreasView } from "@/components/home/views/HomeServiceAreasView";
+import { HomeFaqPreviewView } from "@/components/home/views/HomeFaqPreviewView";
+import { HomeFeaturedSectionView } from "@/components/home/views/HomeFeaturedSectionView";
+import { HomeCountriesSectionView } from "@/components/home/views/HomeCountriesSectionView";
+import { HomeArticlesSectionView } from "@/components/home/views/HomeArticlesSectionView";
 import { findActiveCountries } from "@/lib/repositories/country.repository";
 import { findFeaturedBlogPostsForHomepage } from "@/lib/repositories/blog.repository";
 import { findFeaturedPrograms } from "@/lib/repositories/visa-program.repository";
@@ -135,18 +135,18 @@ export default async function HomePage() {
         />
       )}
 
-      <HomeHero content={content} countryOptions={countryOptions} />
-      <HomeSeoIntro content={content} />
-      <HomeAbout content={content} />
-      <HomeServiceAreas content={content} />
-      <HomeFeaturedSection content={content} services={featuredItems} />
-      <HomeWhyUs content={content} />
-      <HomeSeoBlocks content={content} />
-      <HomeProcess content={content} />
-      <HomeCountriesSection content={content} countryCatalog={countryCatalog} />
-      <HomeFaqPreview content={content} />
-      <HomeArticlesSection content={content} articles={featuredArticles} />
-      <HomeCtaBanner content={content} settings={settings} />
+      <HomeHeroView content={content} countryOptions={countryOptions} siteName={settings.siteName} />
+      <HomeSeoIntroView content={content} />
+      <HomeAboutView content={content} />
+      <HomeServiceAreasView content={content} />
+      <HomeFeaturedSectionView content={content} services={featuredItems} />
+      <HomeWhyUsView content={content} />
+      <HomeSeoBlocksView content={content} />
+      <HomeProcessView content={content} />
+      <HomeCountriesSectionView content={content} countryCatalog={countryCatalog} />
+      <HomeFaqPreviewView content={content} />
+      <HomeArticlesSectionView content={content} articles={featuredArticles} />
+      <HomeCtaBannerView content={content} settings={settings} />
     </>
   );
 }

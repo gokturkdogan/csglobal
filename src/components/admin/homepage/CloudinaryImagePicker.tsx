@@ -1,9 +1,14 @@
 "use client";
 
 import { useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { uploadCloudinaryHomeImageAction } from "@/lib/admin-actions";
 import { dataUrlToFile, readImageFileAsDataUrl } from "@/lib/crop-image";
-import { HomepageImageCropDialog } from "./HomepageImageCropDialog";
+
+const HomepageImageCropDialog = dynamic(
+  () => import("./HomepageImageCropDialog").then((module) => module.HomepageImageCropDialog),
+  { ssr: false },
+);
 
 export function CloudinaryImagePicker({
   publicId,

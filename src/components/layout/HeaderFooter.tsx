@@ -31,7 +31,7 @@ export function Header({
       : siteImages.headerLogo;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white">
       <div className="site-container flex items-center justify-between gap-4 py-3">
         <Link href="/" className="flex shrink-0 cursor-pointer items-center" aria-label={siteName}>
           <SiteImage
@@ -39,7 +39,7 @@ export function Header({
             alt={siteName}
             width={200}
             height={56}
-            priority
+            sizes="(max-width: 768px) 180px, 220px"
             className="h-10 w-auto max-w-[180px] object-contain md:h-12 md:max-w-[220px]"
           />
         </Link>
