@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { optimizeCloudinaryDeliveryUrl, siteImages } from "@/lib/media";
+import { defaultOgImageUrl } from "@/lib/services/seo.service";
 import { getSiteSettings } from "@/lib/settings";
 
 const inter = Inter({
@@ -22,6 +23,13 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(
       process.env.NEXT_PUBLIC_SITE_URL ?? "https://csglobal.com",
     ),
+    openGraph: {
+      images: [{ url: defaultOgImageUrl }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: [defaultOgImageUrl],
+    },
     icons: {
       icon: [{ url: faviconUrl, type: "image/png" }],
       apple: [{ url: faviconUrl, type: "image/png" }],

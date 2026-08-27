@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
 import type { SeoEntityType } from "@/generated/prisma/client";
 import { findSeoMetadata } from "@/lib/repositories/seo.repository";
+import { optimizeCloudinaryDeliveryUrl, siteImages } from "@/lib/media";
 import { getSiteSettings } from "@/lib/settings";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://csglobal.com";
+
+/** Sosyal önizleme için varsayılan OG görseli (1200px genişlik). */
+export const defaultOgImageUrl = optimizeCloudinaryDeliveryUrl(siteImages.hero, 1200);
 
 export function parseStructuredDataJsonLd(raw: string | null | undefined): Record<string, unknown>[] {
   if (!raw?.trim()) return [];
@@ -62,7 +66,8 @@ export async function buildEntityMetadata({
   const url = seo?.canonicalUrl ?? `${siteUrl}${path.startsWith("/") ? path : `/${path}`}`;
   const ogTitle = seo?.ogTitle ?? fullTitle;
   const ogDescription = seo?.ogDescription ?? description;
-  const ogImages = seo?.ogImage ? [{ url: seo.ogImage }] : undefined;
+  const ogImageUrl = seo?.ogImage ?? defaultOgImageUrl;
+  const ogImages = [{ url: ogImageUrl }];
 
   const titleMetadata: Metadata["title"] = rawTitle.includes(settings.siteName)
     ? { absolute: fullTitle }
@@ -87,7 +92,7 @@ export async function buildEntityMetadata({
       card: "summary_large_image",
       title: ogTitle,
       description: ogDescription,
-      images: seo?.ogImage ? [seo.ogImage] : undefined,
+      images: [ogImageUrl],
     },
     robots: {
       index: seo?.robotsIndex ?? true,
@@ -138,6 +143,15 @@ export function buildOrganizationJsonLd(settings: {
     telephone: settings.contactPhone,
     email: settings.contactEmail,
     address: settings.address,
+  };
+}
+
+export function buildWebSiteJsonLd(settings: { siteName: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: settings.siteName,
+    url: siteUrl,
   };
 }
 

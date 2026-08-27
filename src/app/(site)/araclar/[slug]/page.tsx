@@ -5,7 +5,7 @@ import { DeportCalculator } from "@/components/tools/DeportCalculator";
 import { VisaPenaltyCalculator } from "@/components/tools/VisaPenaltyCalculator";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { buildToolPath, getToolBySlug, TOOLS_LIST_PATH } from "@/lib/tools";
-import { buildEntityMetadata } from "@/lib/services/seo.service";
+import { buildEntityMetadata, buildBreadcrumbJsonLd, siteUrl } from "@/lib/services/seo.service";
 import { SeoEntityType } from "@/generated/prisma/client";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -49,8 +49,18 @@ export default async function ToolDetailPage({ params }: Props) {
   const tool = getToolBySlug(slug);
   if (!tool) notFound();
 
+  const breadcrumbLd = buildBreadcrumbJsonLd([
+    { name: "Ana Sayfa", url: siteUrl },
+    { name: "Araçlar", url: `${siteUrl}${TOOLS_LIST_PATH}` },
+    { name: tool.name, url: `${siteUrl}${buildToolPath(tool.slug)}` },
+  ]);
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
       <ToolPageHero title={tool.name} subtitle={tool.description} />
 
       <section className="border-b border-slate-200/60 bg-white">

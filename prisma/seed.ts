@@ -11,6 +11,7 @@ import {
   wipeServicesAndCategories,
   seedGlobalVisaCategories,
 } from "./lib/visa-structure-seed";
+import { siteTools } from "../src/lib/tools";
 import { resolvePgConnectionString } from "../src/lib/pg-connection";
 
 const pool = new Pool({
@@ -163,6 +164,33 @@ async function main() {
     },
     update: {},
   });
+
+  await prisma.sitePage.upsert({
+    where: { slug: "araclar" },
+    create: {
+      slug: "araclar",
+      title: "Araçlar",
+      content: "Vize ve göçmenlik süreçleriniz için hesaplama ve bilgi araçları.",
+      isActive: true,
+    },
+    update: {},
+  });
+
+  for (const tool of siteTools) {
+    await prisma.sitePage.upsert({
+      where: { slug: `araclar-${tool.slug}` },
+      create: {
+        slug: `araclar-${tool.slug}`,
+        title: tool.name,
+        content: tool.description,
+        isActive: true,
+      },
+      update: {
+        title: tool.name,
+        content: tool.description,
+      },
+    });
+  }
 
   await prisma.sitePage.updateMany({
     where: { slug: "rehber" },

@@ -17,7 +17,8 @@ Yeni `site_pages` kayıtları (`home`, `ulkeler`, `hizmetlerimiz`) için `seed.t
 
 ## 1. Sitemap
 
-- [ ] `https://csglobal.com/sitemap.xml` açılıyor ve aktif program URL'leri listeleniyor
+- [ ] `NEXT_PUBLIC_SITE_URL` production'da canonical domain (ör. `https://www.csglobal.com.tr`, trailing slash yok)
+- [ ] `https://<canonical-domain>/sitemap.xml` açılıyor ve aktif program URL'leri listeleniyor
 - [ ] Search Console > Sitemaps > `sitemap.xml` gönderildi
 - [ ] "Sitemap okundu" durumu birkaç gün içinde yeşile döndü
 - [ ] Yeni program ekledikten sonra URL sitemap'te görünüyor (admin kayıt + revalidate)
@@ -54,9 +55,10 @@ Yeni `site_pages` kayıtları (`home`, `ulkeler`, `hizmetlerimiz`) için `seed.t
 
 ## 6. robots.txt ve index hijyeni
 
-- [ ] `https://csglobal.com/robots.txt` sitemap satırını içeriyor
-- [ ] `/admin` ve `/api` disallow aktif
+- [ ] `https://<canonical-domain>/robots.txt` sitemap satırını içeriyor
+- [ ] `/admin`, `/admin/`, `/api/`, `/asset/` disallow aktif
 - [ ] Asset/döküman URL'leri `noindex` (view-source `robots` meta)
+- [ ] Eski araç URL'leri 301: `goc-idaresi-rehberi` → `goc-idaresi-bul`, `tehdit-kodlari` → `tahdit-kodlari`
 
 ## 7. Performans izleme (Neon / hosting)
 

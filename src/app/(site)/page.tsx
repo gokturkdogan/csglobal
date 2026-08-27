@@ -20,6 +20,7 @@ import {
   buildEntityMetadata,
   buildFaqJsonLd,
   buildOrganizationJsonLd,
+  buildWebSiteJsonLd,
 } from "@/lib/services/seo.service";
 import { findSitePageBySlug } from "@/lib/repositories/site.repository";
 import { SeoEntityType } from "@/generated/prisma/client";
@@ -111,6 +112,7 @@ export default async function HomePage() {
 
   const faqJsonLd = buildFaqJsonLd(content.faqs);
   const orgJsonLd = buildOrganizationJsonLd(settings);
+  const webSiteJsonLd = buildWebSiteJsonLd(settings);
 
   return (
     <>
@@ -124,6 +126,12 @@ export default async function HomePage() {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+        />
+      )}
+      {webSiteJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }}
         />
       )}
 
