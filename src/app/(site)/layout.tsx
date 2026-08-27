@@ -1,6 +1,6 @@
 import "@/app/globals.css";
 import { Header, Footer } from "@/components/layout/HeaderFooter";
-import { FloatingWhatsApp } from "@/components/domain/ContactCTA";
+import { FloatingPhone, FloatingWhatsApp } from "@/components/domain/ContactCTA";
 import { getSiteSettings } from "@/lib/settings";
 
 export const dynamic = "force-dynamic";
@@ -22,6 +22,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         contactPhone={settings.contactPhone}
         contactEmail={settings.contactEmail}
       />
+      <FloatingPhone settings={settings} />
       <FloatingWhatsApp settings={settings} />
     </>
   );
