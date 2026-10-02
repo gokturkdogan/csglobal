@@ -11,9 +11,9 @@ export function LegalDisclaimer() {
             Yasal bilgilendirme
           </p>
           <p className="mt-2 text-center text-xs leading-relaxed text-slate-600 md:text-sm">
-            İnternet sitemizde yer alan bilgiler Çankaya Danışmanlık tarafından, 6458 numaralı
+            İnternet sitemizde yer alan bilgiler CS GLOBAL tarafından, 6458 numaralı
             yabancılar kanunu ve bağlamında sadece bilgi amaçlı olarak temin edilmektedir. Web
-            sitemizdeki tüm içeriklerin telif hakkı Çankaya Danışmanlığa aittir. Tüm makaleler hak
+            sitemizdeki tüm içeriklerin telif hakkı CS GLOBAL'a aittir. Tüm makaleler hak
             sahipliğinin tescili amacıyla elektronik imzalı zaman damgalıdır.
           </p>
         </div>
