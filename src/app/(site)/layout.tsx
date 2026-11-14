@@ -1,4 +1,5 @@
 import { Header, Footer } from "@/components/layout/HeaderFooter";
+import { SiteContentProtection } from "@/components/layout/SiteContentProtection";
 import { FloatingPhone, FloatingWhatsApp } from "@/components/domain/ContactCTA";
 import { getSiteSettings } from "@/lib/settings";
 import { resolveFixedAbout } from "@/lib/fixed-about";
@@ -10,6 +11,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
 
   return (
     <>
+      <SiteContentProtection />
       <Header
         siteName={settings.siteName}
         whatsappNumber={settings.whatsappNumber}
