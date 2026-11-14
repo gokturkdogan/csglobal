@@ -14,6 +14,7 @@ import {
   getForeignConsultancyMessages,
 } from "@/lib/i18n/foreign-consultancy";
 import { getForeignConsultancyLocale } from "@/lib/i18n/foreign-consultancy/server";
+import { resolveForeignConsultancyDisplayFeatureMedia } from "@/lib/i18n/foreign-consultancy/feature-media";
 import {
   hasForeignConsultancyLocaleTranslation,
   resolveForeignConsultancyLocalizedRecord,
@@ -97,6 +98,8 @@ export default async function ForeignConsultancyContentPage({ params }: Props) {
   const displayName = localized.name ?? content.name;
   const showTranslationNotice =
     locale !== "tr" && !hasForeignConsultancyLocaleTranslation(content, locale);
+
+  const displayFeatureMedia = resolveForeignConsultancyDisplayFeatureMedia(content, locale);
 
   const breadcrumbItems = [
     { label: messages.common.home, href: "/" },
@@ -194,12 +197,13 @@ export default async function ForeignConsultancyContentPage({ params }: Props) {
             <ServiceDetailContent
               sectionsJson={localized.sectionsJson}
               legacySections={[]}
-              featureImage1={content.featureImage1}
-              featureImage1Title={localized.featureImage1Title}
-              featureImage1Text={localized.featureImage1Text}
-              featureImage2={content.featureImage2}
-              featureImage2Title={localized.featureImage2Title}
-              featureImage2Text={localized.featureImage2Text}
+              featureMediaJson={displayFeatureMedia.featureMediaJson}
+              featureImage1={displayFeatureMedia.legacy.featureImage1}
+              featureImage1Title={displayFeatureMedia.legacy.featureImage1Title}
+              featureImage1Text={displayFeatureMedia.legacy.featureImage1Text}
+              featureImage2={displayFeatureMedia.legacy.featureImage2}
+              featureImage2Title={displayFeatureMedia.legacy.featureImage2Title}
+              featureImage2Text={displayFeatureMedia.legacy.featureImage2Text}
             />
 
             <div className="mt-12">

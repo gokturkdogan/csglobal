@@ -1,4 +1,4 @@
-import { SERVICE_HERO_CROP_ASPECT } from "@/lib/service-page";
+import { SERVICE_HERO_CROP_ASPECT } from "@/lib/service-constants";
 import { buildServiceImagePublicId } from "@/lib/cloudinary/services-folder";
 
 export function serviceHeroImageSlot(slug: string) {
@@ -18,5 +18,23 @@ export function serviceFeatureImageSlot(slug: string, index: 1 | 2) {
     label: `Görsel alan ${index}`,
     aspectRatio: 4 / 3,
     cropHint: `Görsel alan ${index} için 4:3 kırpma.`,
+  };
+}
+
+export function serviceFeatureDynamicImageSlot(slug: string, index: number) {
+  return {
+    publicId: buildServiceImagePublicId(slug, `feature-image-${index}`),
+    label: `Görsel alan ${index}`,
+    aspectRatio: 4 / 3,
+    cropHint: `Görsel alan ${index} için 4:3 kırpma.`,
+  };
+}
+
+export function serviceFeatureVideoSlot(slug: string, index: number) {
+  return {
+    publicId: buildServiceImagePublicId(slug, `feature-video-${index}`),
+    label: `Video alan ${index}`,
+    aspectRatio: 16 / 9,
+    cropHint: `Video alan ${index} için 16:9 önerilir.`,
   };
 }

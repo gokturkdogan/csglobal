@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { saveVisaProgramAction } from "@/lib/admin-actions";
-import { ServiceFeatureBlock } from "@/components/admin/service/ServiceFeatureBlock";
+import { ServiceFeatureMediaEditor } from "@/components/admin/service/ServiceFeatureMediaEditor";
 import { ServiceHeroBlock } from "@/components/admin/service/ServiceHeroBlock";
 import { ServiceSectionsEditor } from "@/components/admin/service/ServiceSectionsEditor";
 import { GuideCountryCategoriesField } from "@/components/admin/guide/GuideCountryCategoriesField";
@@ -67,7 +67,7 @@ export default async function EditVisaProgramPage({ params }: Props) {
       >
         <AdminPageHeader
           title={program ? `${program.name} Düzenle` : "Yeni Vize Programı"}
-          description="Banner, içerik bölümleri, kategori bağlantıları ve görselli alanlar."
+          description="Banner, içerik bölümleri, kategori bağlantıları, görsel ve video alanları."
           publicUrl={
             <AdminServicePublicUrl
               countries={countries}
@@ -149,32 +149,29 @@ export default async function EditVisaProgramPage({ params }: Props) {
 
           <AdminFormSection
             title="İçerik bölümleri"
-            description="Blog tarzında başlık ve zengin metin blokları."
+            description="Her bölüme sayfa sırası verin; görsel/video alanlarıyla karışık dizilebilir."
           >
             <ServiceSectionsEditor initialJson={program?.sectionsJson} />
           </AdminFormSection>
 
           <AdminFormSection
-            title="Görsel alan 1"
-            description="Görsel, başlık ve metin birlikte; sitede görsel solda."
+            title="Görsel ve video alanları"
+            description="Cloudinary ile görsel ve video. Sayfa sırası içerik bölümleriyle ortaktır; en fazla 10+10 alan."
           >
-            <ServiceFeatureBlock
-              index={1}
-              featureImage={program?.featureImage1 ?? ""}
-              featureImageTitle={program?.featureImage1Title}
-              featureImageText={program?.featureImage1Text}
-            />
-          </AdminFormSection>
-
-          <AdminFormSection
-            title="Görsel alan 2"
-            description="Görsel, başlık ve metin birlikte; sitede görsel sağda."
-          >
-            <ServiceFeatureBlock
-              index={2}
-              featureImage={program?.featureImage2 ?? ""}
-              featureImageTitle={program?.featureImage2Title}
-              featureImageText={program?.featureImage2Text}
+            <ServiceFeatureMediaEditor
+              initialJson={program?.featureMediaJson}
+              legacy={
+                program
+                  ? {
+                      featureImage1: program.featureImage1,
+                      featureImage1Title: program.featureImage1Title,
+                      featureImage1Text: program.featureImage1Text,
+                      featureImage2: program.featureImage2,
+                      featureImage2Title: program.featureImage2Title,
+                      featureImage2Text: program.featureImage2Text,
+                    }
+                  : undefined
+              }
             />
           </AdminFormSection>
 

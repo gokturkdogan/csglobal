@@ -13,6 +13,11 @@ import {
   parseServiceSectionsJson,
   serializeServiceSections,
 } from "@/lib/service-page";
+import {
+  SERVICE_PAGE_SORT_ORDER_MAX,
+  SERVICE_PAGE_SORT_ORDER_MIN,
+  normalizePageSortOrder,
+} from "@/lib/service-constants";
 
 const inputClass =
   "mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-csg-blue focus:outline-none focus:ring-2 focus:ring-csg-blue/20";
@@ -30,15 +35,25 @@ function getSectionsForLocale(
   return parseServiceSectionsJson(getSectionsJsonForLocale(locale));
 }
 
+type LocalizedSectionFieldKey = "title" | "content";
+
 function isSectionFieldFilled(
   locale: ForeignConsultancyLocale,
   sectionIndex: number,
-  field: keyof ServiceContentSection,
+  field: LocalizedSectionFieldKey,
   trSections: ServiceContentSection[],
   getSectionsJsonForLocale: (locale: ForeignConsultancyLocale) => string,
 ): boolean {
   const sections = getSectionsForLocale(locale, trSections, getSectionsJsonForLocale);
-  return Boolean(sections[sectionIndex]?.[field]?.trim());
+  const section = sections[sectionIndex];
+  if (!section) return false;
+  const value = section[field];
+  return typeof value === "string" && value.trim().length > 0;
+}
+
+function nextSortOrder(sections: ServiceContentSection[]): number {
+  const max = sections.reduce((acc, section) => Math.max(acc, section.sortOrder ?? 0), 0);
+  return Math.min(SERVICE_PAGE_SORT_ORDER_MAX, max + 1);
 }
 
 export function ForeignConsultancyLocalizedSectionsEditor({ initialJson }: Props) {
@@ -65,7 +80,7 @@ export function ForeignConsultancyLocalizedSectionsEditor({ initialJson }: Props
 
     const next = [...current];
     while (next.length < length) {
-      next.push({ title: "", content: "" });
+      next.push({ title: "", content: "", sortOrder: next.length + 1 });
     }
     syncLocaleSections(locale, next);
     return next;
@@ -73,11 +88,12 @@ export function ForeignConsultancyLocalizedSectionsEditor({ initialJson }: Props
 
   const addSection = () => {
     setTrSections((prev) => {
-      const next = [...prev, { title: "", content: "" }];
+      const sortOrder = nextSortOrder(prev);
+      const next = [...prev, { title: "", content: "", sortOrder }];
       for (const locale of FOREIGN_CONSULTANCY_LOCALES) {
         if (locale === "tr") continue;
         const current = getSectionsForLocale(locale, prev, getSectionsJsonForLocale);
-        syncLocaleSections(locale, [...current, { title: "", content: "" }]);
+        syncLocaleSections(locale, [...current, { title: "", content: "", sortOrder }]);
       }
       return next;
     });
@@ -101,13 +117,36 @@ export function ForeignConsultancyLocalizedSectionsEditor({ initialJson }: Props
   const updateTrSection = (
     index: number,
     field: keyof ServiceContentSection,
-    value: string,
+    value: string | number,
   ) => {
-    setTrSections((prev) =>
-      prev.map((section, sectionIndex) =>
-        sectionIndex === index ? { ...section, [field]: value } : section,
-      ),
-    );
+    setTrSections((prev) => {
+      const next = prev.map((section, sectionIndex) => {
+        if (sectionIndex !== index) return section;
+        if (field === "sortOrder") {
+          return {
+            ...section,
+            sortOrder: normalizePageSortOrder(value, section.sortOrder ?? sectionIndex + 1),
+          };
+        }
+        return { ...section, [field]: value };
+      });
+      if (field === "sortOrder") {
+        const order = next[index]?.sortOrder;
+        if (order != null) {
+          for (const locale of FOREIGN_CONSULTANCY_LOCALES) {
+            if (locale === "tr") continue;
+            const current = getSectionsForLocale(locale, prev, getSectionsJsonForLocale);
+            syncLocaleSections(
+              locale,
+              current.map((section, sectionIndex) =>
+                sectionIndex === index ? { ...section, sortOrder: order } : section,
+              ),
+            );
+          }
+        }
+      }
+      return next;
+    });
   };
 
   const updateLocaleSection = (
@@ -126,6 +165,11 @@ export function ForeignConsultancyLocalizedSectionsEditor({ initialJson }: Props
   return (
     <div className="space-y-4">
       <input type="hidden" name="sectionsJson" value={trSerialized} readOnly />
+
+      <p className="text-xs text-slate-500">
+        Her bölümün <strong>sayfa sırası</strong> numarası, görsel ve video alanlarıyla aynı
+        skalada (1-{SERVICE_PAGE_SORT_ORDER_MAX}) çalışır.
+      </p>
 
       {trSections.length === 0 && (
         <p className="text-sm text-slate-500">
@@ -174,7 +218,7 @@ function SectionBlock({
   trSections: ServiceContentSection[];
   getSectionsJsonForLocale: (locale: ForeignConsultancyLocale) => string;
   onRemove: () => void;
-  onUpdateTr: (field: keyof ServiceContentSection, value: string) => void;
+  onUpdateTr: (field: keyof ServiceContentSection, value: string | number) => void;
   onUpdateLocale: (
     locale: Exclude<ForeignConsultancyLocale, "tr">,
     field: keyof ServiceContentSection,
@@ -195,6 +239,18 @@ function SectionBlock({
           Kaldır
         </button>
       </div>
+
+      <label className="block max-w-[8rem]">
+        <span className="text-sm font-medium text-slate-700">Sayfa sırası</span>
+        <input
+          type="number"
+          min={SERVICE_PAGE_SORT_ORDER_MIN}
+          max={SERVICE_PAGE_SORT_ORDER_MAX}
+          value={trSection.sortOrder ?? index + 1}
+          onChange={(e) => onUpdateTr("sortOrder", e.target.value)}
+          className={inputClass}
+        />
+      </label>
 
       <LocalizedSectionField
         label="Bölüm başlığı"
@@ -236,13 +292,16 @@ function LocalizedSectionField({
   richText = false,
 }: {
   label: string;
-  field: keyof ServiceContentSection;
+  field: LocalizedSectionFieldKey;
   sectionIndex: number;
   trValue: string;
   trSections: ServiceContentSection[];
   getSectionsJsonForLocale: (locale: ForeignConsultancyLocale) => string;
   onUpdateTr: (value: string) => void;
-  onUpdateLocale: (locale: Exclude<ForeignConsultancyLocale, "tr">, value: string) => void;
+  onUpdateLocale: (
+    locale: Exclude<ForeignConsultancyLocale, "tr">,
+    value: string,
+  ) => void;
   placeholder?: string;
   richText?: boolean;
 }) {

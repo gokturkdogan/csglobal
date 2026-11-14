@@ -23,6 +23,7 @@ export const visaProgramPublicDetailSelect = {
   featureImage2: true,
   featureImage2Title: true,
   featureImage2Text: true,
+  featureMediaJson: true,
   processingTime: true,
   requiresAppointment: true,
   publishedAt: true,

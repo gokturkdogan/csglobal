@@ -19,6 +19,7 @@ export function AdminManagedImageField({
   previewVariant = "card",
   imageClassName = "object-cover object-center",
   hint,
+  onUrlChange,
 }: {
   name: string;
   defaultValue: string;
@@ -26,6 +27,7 @@ export function AdminManagedImageField({
   previewVariant?: PreviewVariant;
   imageClassName?: string;
   hint?: string;
+  onUrlChange?: (url: string) => void;
 }) {
   const [url, setUrl] = useState(defaultValue);
   const hasImage = url.trim().length > 0;
@@ -63,7 +65,10 @@ export function AdminManagedImageField({
 
         <CloudinaryImagePicker
           publicId={slot.publicId}
-          onChange={(newUrl) => setUrl(newUrl)}
+          onChange={(newUrl) => {
+            setUrl(newUrl);
+            onUrlChange?.(newUrl);
+          }}
           label={slot.label}
           placement="top"
           aspectRatio={slot.aspectRatio}

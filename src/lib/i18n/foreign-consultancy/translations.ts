@@ -2,6 +2,7 @@ import {
   FOREIGN_CONSULTANCY_LOCALES,
   type ForeignConsultancyLocale,
 } from "@/lib/i18n/foreign-consultancy/locales";
+import { parseLocaleFeatureMediaOverlay } from "@/lib/i18n/foreign-consultancy/feature-media";
 
 export const FOREIGN_CONSULTANCY_TRANSLATION_LOCALES = FOREIGN_CONSULTANCY_LOCALES.filter(
   (locale): locale is Exclude<ForeignConsultancyLocale, "tr"> => locale !== "tr",
@@ -21,6 +22,7 @@ export type ForeignConsultancyTranslatableFields = {
   featureImage1Text?: string | null;
   featureImage2Title?: string | null;
   featureImage2Text?: string | null;
+  featureMediaJson?: string | null;
   processingTime?: string | null;
 };
 
@@ -46,6 +48,7 @@ const TRANSLATABLE_FIELD_KEYS = [
   "featureImage1Text",
   "featureImage2Title",
   "featureImage2Text",
+  "featureMediaJson",
   "processingTime",
 ] as const satisfies ReadonlyArray<keyof ForeignConsultancyTranslatableFields>;
 
@@ -65,8 +68,8 @@ function normalizeLocaleFields(
     const value = fields[key];
     if (value === undefined) continue;
 
-    if (key === "sectionsJson") {
-      normalized.sectionsJson = trimOrNull(value);
+    if (key === "sectionsJson" || key === "featureMediaJson") {
+      normalized[key] = trimOrNull(value);
       continue;
     }
 
@@ -136,6 +139,18 @@ export function isForeignConsultancyFieldFilledForLocale(
     return isForeignConsultancyTranslationFieldFilled(trValue);
   }
 
+  if (field === "featureMediaJson") {
+    const overlay = parseLocaleFeatureMediaOverlay(translations[locale]?.featureMediaJson);
+    return (
+      overlay.images.some(
+        (row: { title: string; text: string }) => row.title.trim() || row.text.trim(),
+      ) ||
+      overlay.videos.some(
+        (row: { title: string; text: string }) => row.title.trim() || row.text.trim(),
+      )
+    );
+  }
+
   const localized = translations[locale]?.[field];
   return isForeignConsultancyTranslationFieldFilled(localized);
 }
@@ -162,6 +177,7 @@ export function resolveForeignConsultancyLocalizedRecord(
       featureImage1Text: source.featureImage1Text,
       featureImage2Title: source.featureImage2Title,
       featureImage2Text: source.featureImage2Text,
+      featureMediaJson: null,
       processingTime: source.processingTime,
     };
   }
@@ -179,6 +195,7 @@ export function resolveForeignConsultancyLocalizedRecord(
     featureImage1Text: localized.featureImage1Text ?? source.featureImage1Text,
     featureImage2Title: localized.featureImage2Title ?? source.featureImage2Title,
     featureImage2Text: localized.featureImage2Text ?? source.featureImage2Text,
+    featureMediaJson: localized.featureMediaJson ?? null,
     processingTime: localized.processingTime ?? source.processingTime,
   };
 }

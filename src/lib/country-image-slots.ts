@@ -1,5 +1,5 @@
-import { SERVICE_HERO_CROP_ASPECT } from "@/lib/service-page";
 import { buildCountryImagePublicId } from "@/lib/cloudinary/countries-folder";
+import { SERVICE_HERO_CROP_ASPECT } from "@/lib/service-constants";
 
 export const COUNTRY_ITEM_CROP_ASPECT = 6 / 4;
 
@@ -20,5 +20,23 @@ export function countryItemImageSlot(slug: string) {
     aspectRatio: COUNTRY_ITEM_CROP_ASPECT,
     cropHint:
       "Kart ve liste kapak görseli (6:4). Bu ülkeye bağlı tüm kart ve liste önizlemelerinde kullanılır.",
+  };
+}
+
+export function countryFeatureDynamicImageSlot(slug: string, index: number) {
+  return {
+    publicId: buildCountryImagePublicId(slug, `feature-image-${index}`),
+    label: `Görsel alan ${index}`,
+    aspectRatio: 4 / 3,
+    cropHint: `Görsel alan ${index} için 4:3 kırpma.`,
+  };
+}
+
+export function countryFeatureVideoSlot(slug: string, index: number) {
+  return {
+    publicId: buildCountryImagePublicId(slug, `feature-video-${index}`),
+    label: `Video alan ${index}`,
+    aspectRatio: 16 / 9,
+    cropHint: `Video alan ${index} için 16:9 önerilir.`,
   };
 }

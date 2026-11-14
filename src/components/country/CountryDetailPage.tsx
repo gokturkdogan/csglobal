@@ -2,7 +2,6 @@ import type { SiteSettingsMap } from "@/lib/site-settings.shared";
 import {
   buildCountryDetailParagraphs,
   buildCountryQuickStats,
-  parseCountryDetailSectionsJson,
   parseCountryNotesJson,
 } from "@/lib/country-detail";
 import type { CountryCategoryPanelItem, CountryConsulatePanelItem, CountryDocumentPanelItem } from "@/lib/country-page/category-panel";
@@ -10,7 +9,7 @@ import { ContactCTA } from "@/components/domain/ContactCTA";
 import { FaqAccordion } from "@/components/domain/FaqAccordion";
 import { CountryPageHero } from "@/components/domain/CountryPageHero";
 import { CountryCategoryPanel } from "@/components/country/CountryCategoryPanel";
-import { RichContent } from "@/components/RichTextContent";
+import { CountryInterleavedDetailContent } from "@/components/domain/CountryInterleavedDetailContent";
 
 export type CountryDetailViewModel = {
   id: string;
@@ -26,6 +25,13 @@ export type CountryDetailViewModel = {
   detailParagraph2: string | null;
   importantNotesJson: string | null;
   detailSectionsJson: string | null;
+  featureMediaJson?: string | null;
+  featureImage1?: string | null;
+  featureImage1Title?: string | null;
+  featureImage1Text?: string | null;
+  featureImage2?: string | null;
+  featureImage2Title?: string | null;
+  featureImage2Text?: string | null;
   faqs: Array<{ question: string; answer: string }>;
 };
 
@@ -78,7 +84,6 @@ export function CountryDetailPage({
     categoryCount,
   });
   const importantNotes = parseCountryNotesJson(country.importantNotesJson);
-  const detailSections = parseCountryDetailSectionsJson(country.detailSectionsJson);
   const heroBadge = country.visaRegion?.trim() || "Ülke rehberi";
 
   return (
@@ -156,17 +161,16 @@ export function CountryDetailPage({
                 </section>
               )}
 
-              {detailSections.map((section, index) => (
-                <section
-                  key={`${section.title}-${index}`}
-                  className="country-section-card p-6 md:p-8"
-                >
-                  <SectionHeading title={section.title} />
-                  <div className="mt-6 country-detail-prose">
-                    <RichContent content={section.content} />
-                  </div>
-                </section>
-              ))}
+              <CountryInterleavedDetailContent
+                detailSectionsJson={country.detailSectionsJson}
+                featureMediaJson={country.featureMediaJson}
+                featureImage1={country.featureImage1}
+                featureImage1Title={country.featureImage1Title}
+                featureImage1Text={country.featureImage1Text}
+                featureImage2={country.featureImage2}
+                featureImage2Title={country.featureImage2Title}
+                featureImage2Text={country.featureImage2Text}
+              />
 
               {country.faqs.length > 0 && (
                 <section className="country-section-card p-6 md:p-8">

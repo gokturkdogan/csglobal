@@ -9,6 +9,7 @@ import {
 } from "@/lib/country-detail";
 import { CountryDetailSectionsEditor } from "@/components/admin/country/CountryDetailSectionsEditor";
 import { CountryImagesFields } from "@/components/admin/country/CountryImagesFields";
+import { ServiceFeatureMediaEditor } from "@/components/admin/service/ServiceFeatureMediaEditor";
 import {
   VisualSlugProvider,
   VisualTitleField,
@@ -53,7 +54,7 @@ export default async function EditCountryPage({ params }: Props) {
     <div className="space-y-6">
       <AdminPageHeader
         title={country ? `${country.name} Düzenle` : "Yeni Ülke"}
-        description="Ülke bilgileri, detay sayfası içeriği ve ülkeye özel SSS."
+        description="Ülke bilgileri, detay sayfası içeriği, görsel/video alanları ve ülkeye özel SSS."
         publicUrl={
           <AdminFormSlugPublicUrl
             fieldName="slug"
@@ -154,9 +155,31 @@ export default async function EditCountryPage({ params }: Props) {
 
         <AdminFormSection
           title="Ek içerik bölümleri"
-          description="Notlar ve sık sorulan sorular arasında gösterilir. Kalın yazı ve liste desteklenir."
+          description="Her bölüme sayfa sırası verin; görsel/video alanlarıyla karışık dizilebilir. Notlar ile SSS arasında gösterilir."
         >
           <CountryDetailSectionsEditor initialJson={country?.detailSectionsJson} />
+        </AdminFormSection>
+
+        <AdminFormSection
+          title="Görsel ve video alanları"
+          description="Cloudinary Countries klasörüne yüklenir. Sayfa sırası içerik bölümleriyle ortaktır; en fazla 10+10 alan."
+        >
+          <ServiceFeatureMediaEditor
+            slotScope="country"
+            initialJson={country?.featureMediaJson}
+            legacy={
+              country
+                ? {
+                    featureImage1: country.featureImage1,
+                    featureImage1Title: country.featureImage1Title,
+                    featureImage1Text: country.featureImage1Text,
+                    featureImage2: country.featureImage2,
+                    featureImage2Title: country.featureImage2Title,
+                    featureImage2Text: country.featureImage2Text,
+                  }
+                : undefined
+            }
+          />
         </AdminFormSection>
 
         <AdminFormSection

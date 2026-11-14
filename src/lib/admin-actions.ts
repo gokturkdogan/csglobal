@@ -21,6 +21,7 @@ import {
   foreignConsultancySlugToCategory,
   getForeignConsultancyCategoryLabel,
 } from "@/lib/foreign-consultancy-categories";
+import { pruneForeignConsultancyTranslationsFeatureMedia } from "@/lib/i18n/foreign-consultancy/feature-media";
 import {
   parseForeignConsultancyTranslationsFromForm,
   serializeForeignConsultancyTranslations,
@@ -59,6 +60,9 @@ import {
 import {
   normalizeServiceFeatureText,
   normalizeServiceFeatureTitle,
+  parseFeatureMediaJson,
+  serializeFeatureMediaJson,
+  syncLegacyFeatureImagesFromMedia,
 } from "@/lib/service-page";
 import {
   buildBlogListPath,
@@ -291,6 +295,41 @@ export async function uploadCloudinaryHomeImageAction(formData: FormData) {
   return result;
 }
 
+export async function uploadCloudinaryServiceVideoAction(formData: FormData) {
+  await requireAdmin();
+
+  const publicId = formData.get("publicId") as string | null;
+  const file = formData.get("file") as File | null;
+
+  if (!publicId || !file) {
+    throw new Error("Dosya veya hedef eksik");
+  }
+
+  const allowed = ["video/mp4", "video/webm", "video/quicktime"];
+  if (!allowed.includes(file.type)) {
+    throw new Error("Yalnızca MP4, WebM veya MOV yüklenebilir");
+  }
+
+  if (publicId.startsWith("Countries/")) {
+    const { parseCountryImagePublicId } = await import("@/lib/cloudinary/countries-folder");
+    parseCountryImagePublicId(publicId);
+  } else {
+    const { parseServiceImagePublicId } = await import("@/lib/cloudinary/services-folder");
+    parseServiceImagePublicId(publicId);
+  }
+
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const { uploadServiceVideoToCloudinary } = await import("@/lib/cloudinary");
+  const result = await uploadServiceVideoToCloudinary(
+    buffer,
+    publicId,
+    file.type,
+    file.name || "upload.mp4",
+  );
+
+  return result;
+}
+
 export async function saveCountryAction(formData: FormData): Promise<AdminActionResult> {
   await requireAdmin();
   const id = formData.get("id") as string | null;
@@ -308,6 +347,11 @@ export async function saveCountryAction(formData: FormData): Promise<AdminAction
       `Kısa açıklama en fazla ${COUNTRY_SHORT_DESCRIPTION_MAX} karakter olabilir.`,
     );
   }
+
+  const featureMediaRaw = (formData.get("featureMediaJson") as string) || "";
+  const featureMedia = parseFeatureMediaJson(featureMediaRaw);
+  const featureMediaJson = serializeFeatureMediaJson(featureMedia);
+  const legacyImages = syncLegacyFeatureImagesFromMedia(featureMedia);
 
   const data = {
     name: formData.get("name") as string,
@@ -331,6 +375,13 @@ export async function saveCountryAction(formData: FormData): Promise<AdminAction
       const sections = parseCountryDetailSectionsJson(raw);
       return sections.length > 0 ? JSON.stringify(sections) : null;
     })(),
+    featureMediaJson: featureMediaJson === '{"images":[],"videos":[]}' ? null : featureMediaJson,
+    featureImage1: legacyImages.featureImage1,
+    featureImage1Title: legacyImages.featureImage1Title,
+    featureImage1Text: legacyImages.featureImage1Text,
+    featureImage2: legacyImages.featureImage2,
+    featureImage2Title: legacyImages.featureImage2Title,
+    featureImage2Text: legacyImages.featureImage2Text,
     sortOrder: Number(formData.get("sortOrder") || 0),
     isActive: formData.get("isActive") === "on",
   };
@@ -455,9 +506,12 @@ export async function saveVisaProgramAction(formData: FormData): Promise<AdminAc
 
   const primaryCategoryId = categoryIds[0];
 
-  const data = {
-    countryId,
-    categoryId: primaryCategoryId,
+  const featureMediaRaw = (formData.get("featureMediaJson") as string) || "";
+  const featureMedia = parseFeatureMediaJson(featureMediaRaw);
+  const featureMediaJson = serializeFeatureMediaJson(featureMedia);
+  const legacyImages = syncLegacyFeatureImagesFromMedia(featureMedia);
+
+  const programScalars = {
     name: formData.get("name") as string,
     slug: formData.get("slug") as string,
     excerpt: (formData.get("excerpt") as string) || null,
@@ -467,26 +521,23 @@ export async function saveVisaProgramAction(formData: FormData): Promise<AdminAc
     heroTitle: (formData.get("heroTitle") as string) || null,
     heroSubtitle: (formData.get("heroSubtitle") as string) || null,
     sectionsJson: sectionsRaw.trim() || null,
-    featureImage1: (formData.get("featureImage1") as string) || null,
-    featureImage1Title: normalizeServiceFeatureTitle(
-      formData.get("featureImage1Title") as string,
-    ),
-    featureImage1Text: normalizeServiceFeatureText(
-      formData.get("featureImage1Text") as string,
-    ),
-    featureImage2: (formData.get("featureImage2") as string) || null,
-    featureImage2Title: normalizeServiceFeatureTitle(
-      formData.get("featureImage2Title") as string,
-    ),
-    featureImage2Text: normalizeServiceFeatureText(
-      formData.get("featureImage2Text") as string,
-    ),
+    featureMediaJson: featureMediaJson === '{"images":[],"videos":[]}' ? null : featureMediaJson,
+    featureImage1: legacyImages.featureImage1,
+    featureImage1Title: legacyImages.featureImage1Title,
+    featureImage1Text: legacyImages.featureImage1Text,
+    featureImage2: legacyImages.featureImage2,
+    featureImage2Title: legacyImages.featureImage2Title,
+    featureImage2Text: legacyImages.featureImage2Text,
     requiresAppointment: formData.get("requiresAppointment") === "on",
     isFeatured: formData.get("isFeatured") === "on",
     isActive,
     showInCategoryPanel: formData.get("showInCategoryPanel") === "on",
     sortOrder: Number(formData.get("sortOrder") || 0),
-    publishedAt: isActive ? new Date() : null,
+  };
+
+  const programRelations = {
+    country: { connect: { id: countryId } },
+    category: { connect: { id: primaryCategoryId } },
   };
 
   const syncCategoryLinks = async (
@@ -516,7 +567,8 @@ export async function saveVisaProgramAction(formData: FormData): Promise<AdminAc
         const updated = await tx.visaProgram.update({
           where: { id },
           data: {
-            ...data,
+            ...programScalars,
+            ...programRelations,
             publishedAt: isActive ? (existing?.publishedAt ?? new Date()) : null,
           },
           include: { country: { select: { slug: true } } },
@@ -540,7 +592,8 @@ export async function saveVisaProgramAction(formData: FormData): Promise<AdminAc
     const program = await prisma.$transaction(async (tx) => {
       const created = await tx.visaProgram.create({
         data: {
-          ...data,
+          ...programScalars,
+          ...programRelations,
           publishedAt: isActive ? new Date() : null,
         },
         include: { country: { select: { slug: true } } },
@@ -601,9 +654,6 @@ export async function saveForeignConsultancyContentAction(
   await requireAdmin();
   const id = formData.get("id") as string | null;
   const sectionsRaw = (formData.get("sectionsJson") as string) || "";
-  const translationsJson = serializeForeignConsultancyTranslations(
-    parseForeignConsultancyTranslationsFromForm(formData.get("translationsJson")),
-  );
   const isActive = formData.get("isActive") === "on";
   const categoryRaw = (formData.get("category") as string)?.trim();
 
@@ -612,6 +662,18 @@ export async function saveForeignConsultancyContentAction(
   }
 
   const category = categoryRaw as ForeignConsultancyCategory;
+
+  const featureMediaRaw = (formData.get("featureMediaJson") as string) || "";
+  const featureMedia = parseFeatureMediaJson(featureMediaRaw);
+  const featureMediaJson = serializeFeatureMediaJson(featureMedia);
+  const legacyImages = syncLegacyFeatureImagesFromMedia(featureMedia);
+
+  const translationsJson = serializeForeignConsultancyTranslations(
+    pruneForeignConsultancyTranslationsFeatureMedia(
+      parseForeignConsultancyTranslationsFromForm(formData.get("translationsJson")),
+      featureMedia,
+    ),
+  );
 
   const data = {
     category,
@@ -624,20 +686,13 @@ export async function saveForeignConsultancyContentAction(
     heroTitle: ((formData.get("heroTitle") as string) || "").trim() || null,
     heroSubtitle: ((formData.get("heroSubtitle") as string) || "").trim() || null,
     sectionsJson: sectionsRaw.trim() || null,
-    featureImage1: ((formData.get("featureImage1") as string) || "").trim() || null,
-    featureImage1Title: normalizeServiceFeatureTitle(
-      formData.get("featureImage1Title") as string,
-    ),
-    featureImage1Text: normalizeServiceFeatureText(
-      formData.get("featureImage1Text") as string,
-    ),
-    featureImage2: ((formData.get("featureImage2") as string) || "").trim() || null,
-    featureImage2Title: normalizeServiceFeatureTitle(
-      formData.get("featureImage2Title") as string,
-    ),
-    featureImage2Text: normalizeServiceFeatureText(
-      formData.get("featureImage2Text") as string,
-    ),
+    featureMediaJson: featureMediaJson === '{"images":[],"videos":[]}' ? null : featureMediaJson,
+    featureImage1: legacyImages.featureImage1,
+    featureImage1Title: legacyImages.featureImage1Title,
+    featureImage1Text: legacyImages.featureImage1Text,
+    featureImage2: legacyImages.featureImage2,
+    featureImage2Title: legacyImages.featureImage2Title,
+    featureImage2Text: legacyImages.featureImage2Text,
     requiresAppointment: formData.get("requiresAppointment") === "on",
     translationsJson,
     isActive,
@@ -711,9 +766,6 @@ export async function saveForeignConsultancyCategoryPageAction(
   const id = (formData.get("id") as string)?.trim();
   const categorySlug = (formData.get("categorySlug") as string)?.trim();
   const sectionsRaw = (formData.get("sectionsJson") as string) || "";
-  const translationsJson = serializeForeignConsultancyTranslations(
-    parseForeignConsultancyTranslationsFromForm(formData.get("translationsJson")),
-  );
   const isActive = formData.get("isActive") === "on";
 
   const categoryValue = foreignConsultancySlugToCategory(categorySlug);
@@ -722,6 +774,18 @@ export async function saveForeignConsultancyCategoryPageAction(
   }
 
   const category = categoryValue as ForeignConsultancyCategory;
+
+  const featureMediaRaw = (formData.get("featureMediaJson") as string) || "";
+  const featureMedia = parseFeatureMediaJson(featureMediaRaw);
+  const featureMediaJson = serializeFeatureMediaJson(featureMedia);
+  const legacyImages = syncLegacyFeatureImagesFromMedia(featureMedia);
+
+  const translationsJson = serializeForeignConsultancyTranslations(
+    pruneForeignConsultancyTranslationsFeatureMedia(
+      parseForeignConsultancyTranslationsFromForm(formData.get("translationsJson")),
+      featureMedia,
+    ),
+  );
 
   const data = {
     category,
@@ -732,20 +796,13 @@ export async function saveForeignConsultancyCategoryPageAction(
     heroTitle: ((formData.get("heroTitle") as string) || "").trim() || null,
     heroSubtitle: ((formData.get("heroSubtitle") as string) || "").trim() || null,
     sectionsJson: sectionsRaw.trim() || null,
-    featureImage1: ((formData.get("featureImage1") as string) || "").trim() || null,
-    featureImage1Title: normalizeServiceFeatureTitle(
-      formData.get("featureImage1Title") as string,
-    ),
-    featureImage1Text: normalizeServiceFeatureText(
-      formData.get("featureImage1Text") as string,
-    ),
-    featureImage2: ((formData.get("featureImage2") as string) || "").trim() || null,
-    featureImage2Title: normalizeServiceFeatureTitle(
-      formData.get("featureImage2Title") as string,
-    ),
-    featureImage2Text: normalizeServiceFeatureText(
-      formData.get("featureImage2Text") as string,
-    ),
+    featureMediaJson: featureMediaJson === '{"images":[],"videos":[]}' ? null : featureMediaJson,
+    featureImage1: legacyImages.featureImage1,
+    featureImage1Title: legacyImages.featureImage1Title,
+    featureImage1Text: legacyImages.featureImage1Text,
+    featureImage2: legacyImages.featureImage2,
+    featureImage2Title: legacyImages.featureImage2Title,
+    featureImage2Text: legacyImages.featureImage2Text,
     translationsJson,
     isActive,
   };
@@ -798,6 +855,11 @@ export async function saveBlogPostAction(formData: FormData): Promise<AdminActio
     topicCategory = topicCategoryRaw as BlogTopicCategory;
   }
 
+  const featureMediaRaw = (formData.get("featureMediaJson") as string) || "";
+  const featureMedia = parseFeatureMediaJson(featureMediaRaw);
+  const featureMediaJson = serializeFeatureMediaJson(featureMedia);
+  const legacyImages = syncLegacyFeatureImagesFromMedia(featureMedia);
+
   const data = {
     title: (formData.get("title") as string)?.trim(),
     slug: (formData.get("slug") as string)?.trim(),
@@ -807,20 +869,13 @@ export async function saveBlogPostAction(formData: FormData): Promise<AdminActio
     heroSubtitle: ((formData.get("heroSubtitle") as string) || "").trim() || null,
     sectionsJson: sectionsRaw.trim() || null,
     coverImage: null,
-    featureImage1: ((formData.get("featureImage1") as string) || "").trim() || null,
-    featureImage1Title: normalizeServiceFeatureTitle(
-      formData.get("featureImage1Title") as string,
-    ),
-    featureImage1Text: normalizeServiceFeatureText(
-      formData.get("featureImage1Text") as string,
-    ),
-    featureImage2: ((formData.get("featureImage2") as string) || "").trim() || null,
-    featureImage2Title: normalizeServiceFeatureTitle(
-      formData.get("featureImage2Title") as string,
-    ),
-    featureImage2Text: normalizeServiceFeatureText(
-      formData.get("featureImage2Text") as string,
-    ),
+    featureMediaJson: featureMediaJson === '{"images":[],"videos":[]}' ? null : featureMediaJson,
+    featureImage1: legacyImages.featureImage1,
+    featureImage1Title: legacyImages.featureImage1Title,
+    featureImage1Text: legacyImages.featureImage1Text,
+    featureImage2: legacyImages.featureImage2,
+    featureImage2Title: legacyImages.featureImage2Title,
+    featureImage2Text: legacyImages.featureImage2Text,
     countryId,
     topicCategory,
     isFeatured: formData.get("isFeatured") === "on",

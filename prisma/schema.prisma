@@ -85,6 +85,14 @@ model Country {
   detailParagraph2        String?  @map("detail_paragraph_2") @db.Text
   importantNotesJson      String?  @map("important_notes_json") @db.Text
   detailSectionsJson      String?  @map("detail_sections_json") @db.Text
+  featureImage1           String?  @map("feature_image_1")
+  featureImage1Title      String?  @map("feature_image_1_title")
+  featureImage1Text       String?  @map("feature_image_1_text") @db.Text
+  featureImage2           String?  @map("feature_image_2")
+  featureImage2Title      String?  @map("feature_image_2_title")
+  featureImage2Text       String?  @map("feature_image_2_text") @db.Text
+  /** Dinamik görsel/video alanları (JSON); legacy featureImage1/2 ile uyumlu senkron tutulur */
+  featureMediaJson        String?  @map("feature_media_json") @db.Text
   isActive         Boolean  @default(true) @map("is_active")
   sortOrder        Int      @default(0) @map("sort_order")
   createdAt        DateTime @default(now()) @map("created_at")
@@ -144,6 +152,8 @@ model VisaProgram {
   featureImage2       String?   @map("feature_image_2")
   featureImage2Title  String?   @map("feature_image_2_title")
   featureImage2Text   String?   @map("feature_image_2_text") @db.Text
+  /** Dinamik görsel/video alanları (JSON); legacy featureImage1/2 ile uyumlu senkron tutulur */
+  featureMediaJson    String?   @map("feature_media_json") @db.Text
   icon                String?
   isFeatured          Boolean   @default(false) @map("is_featured")
   isActive            Boolean   @default(true) @map("is_active")
@@ -189,6 +199,7 @@ model BlogPost {
   featureImage2       String?   @map("feature_image_2")
   featureImage2Title  String?   @map("feature_image_2_title")
   featureImage2Text   String?   @map("feature_image_2_text") @db.Text
+  featureMediaJson    String?   @map("feature_media_json") @db.Text
   countryId           String?            @map("country_id")
   topicCategory         BlogTopicCategory? @map("topic_category")
   isFeatured          Boolean            @default(false) @map("is_featured")
@@ -223,6 +234,7 @@ model ForeignConsultancyContent {
   featureImage2       String?                    @map("feature_image_2")
   featureImage2Title  String?                    @map("feature_image_2_title")
   featureImage2Text   String?                    @map("feature_image_2_text") @db.Text
+  featureMediaJson    String?                    @map("feature_media_json") @db.Text
   processingTime      String?                    @map("processing_time")
   requiresAppointment Boolean                    @default(false) @map("requires_appointment")
   translationsJson    String?                    @map("translations_json") @db.Text
@@ -252,6 +264,7 @@ model ForeignConsultancyCategoryPage {
   featureImage2       String?                    @map("feature_image_2")
   featureImage2Title  String?                    @map("feature_image_2_title")
   featureImage2Text   String?                    @map("feature_image_2_text") @db.Text
+  featureMediaJson    String?                    @map("feature_media_json") @db.Text
   translationsJson    String?                    @map("translations_json") @db.Text
   isActive            Boolean                    @default(true) @map("is_active")
   updatedAt           DateTime                   @updatedAt @map("updated_at")

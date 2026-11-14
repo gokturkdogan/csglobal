@@ -46,11 +46,12 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  // Toplu döküman yükleme (10 dosya x 10MB)
+  // Video: server action + middleware/proxy gövde buffer (admin matcher)
   experimental: {
     serverActions: {
-      bodySizeLimit: "100mb",
+      bodySizeLimit: "500mb",
     },
+    proxyClientMaxBodySize: "500mb",
   },
   images: {
     formats: ["image/avif", "image/webp"],

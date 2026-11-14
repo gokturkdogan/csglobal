@@ -71,6 +71,13 @@ export default async function CountryPage({ params }: Props) {
           detailParagraph2: country.detailParagraph2,
           importantNotesJson: country.importantNotesJson,
           detailSectionsJson: country.detailSectionsJson,
+          featureMediaJson: country.featureMediaJson,
+          featureImage1: country.featureImage1,
+          featureImage1Title: country.featureImage1Title,
+          featureImage1Text: country.featureImage1Text,
+          featureImage2: country.featureImage2,
+          featureImage2Title: country.featureImage2Title,
+          featureImage2Text: country.featureImage2Text,
           faqs,
         }}
         settings={settings}

@@ -1,0 +1,1 @@
+ALTER TABLE "visa_programs" ADD COLUMN IF NOT EXISTS "feature_media_json" TEXT;

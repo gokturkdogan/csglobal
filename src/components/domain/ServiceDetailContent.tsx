@@ -1,10 +1,5 @@
-import { SiteImage } from "@/components/ui/SiteImage";
-import { MarkdownContent } from "@/components/MarkdownContent";
-import { RichContent } from "@/components/RichTextContent";
-import {
-  resolveServiceDisplaySections,
-  resolveServiceFeatureImage,
-} from "@/lib/service-page";
+import { InterleavedDetailBlocksView } from "@/components/domain/InterleavedDetailBlocksView";
+import { buildInterleavedServiceDetailBlocks } from "@/lib/service-detail-blocks";
 
 type LegacySection = {
   id: string;
@@ -13,75 +8,10 @@ type LegacySection = {
   content: string;
 };
 
-type FeatureBlock = {
-  image?: string | null;
-  title?: string | null;
-  text?: string | null;
-  reverse?: boolean;
-  priority?: boolean;
-};
-
-function ServiceFeatureBlock({
-  image,
-  title,
-  text,
-  reverse = false,
-  priority = false,
-}: FeatureBlock) {
-  const src = resolveServiceFeatureImage(image);
-  if (!src || (!title?.trim() && !text?.trim())) return null;
-
-  return (
-    <section className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
-      <div
-        className={`grid gap-0 lg:grid-cols-2 ${
-          reverse ? "lg:[&>div:first-child]:order-2" : ""
-        }`}
-      >
-        <div className="relative aspect-[4/3] bg-slate-100 lg:aspect-auto lg:min-h-[280px]">
-          <SiteImage
-            src={src}
-            alt={title?.trim() || ""}
-            fill
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-cover"
-            priority={priority}
-          />
-        </div>
-        <div className="flex flex-col justify-center p-6 md:p-8 lg:p-10">
-          {title?.trim() && (
-            <h2 className="text-xl font-semibold tracking-tight text-slate-900 md:text-2xl">
-              {title}
-            </h2>
-          )}
-          {text?.trim() && (
-            <p className="mt-4 text-content text-slate-600">
-              {text}
-            </p>
-          )}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function resolveDisplaySections(
-  sectionsJson: string | null | undefined,
-  legacySections: LegacySection[],
-) {
-  return resolveServiceDisplaySections(
-    sectionsJson,
-    legacySections.map((section) => ({
-      title: section.title,
-      slug: section.slug,
-      content: section.content,
-    })),
-  );
-}
-
 type Props = {
   sectionsJson: string | null | undefined;
   legacySections?: LegacySection[];
+  featureMediaJson?: string | null;
   featureImage1?: string | null;
   featureImage1Title?: string | null;
   featureImage1Text?: string | null;
@@ -94,6 +24,7 @@ type Props = {
 export function ServiceDetailContent({
   sectionsJson,
   legacySections = [],
+  featureMediaJson,
   featureImage1,
   featureImage1Title,
   featureImage1Text,
@@ -102,42 +33,28 @@ export function ServiceDetailContent({
   featureImage2Text,
   featureImage1Priority = false,
 }: Props) {
-  const sections = resolveDisplaySections(sectionsJson, legacySections);
+  const blocks = buildInterleavedServiceDetailBlocks(
+    sectionsJson,
+    legacySections.map((section) => ({
+      title: section.title,
+      slug: section.slug,
+      content: section.content,
+    })),
+    {
+      featureMediaJson,
+      featureImage1,
+      featureImage1Title,
+      featureImage1Text,
+      featureImage2,
+      featureImage2Title,
+      featureImage2Text,
+    },
+  );
 
   return (
-    <div className="space-y-8 md:space-y-10">
-      {sections.map((section) => (
-        <section
-          key={section.slug}
-          id={section.slug}
-          className="scroll-mt-24 rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm md:p-8"
-        >
-          <h2 className="text-xl font-semibold tracking-tight text-slate-900 md:text-2xl">
-            {section.title}
-          </h2>
-          <div className="mt-5 country-detail-prose">
-            {section.isMarkdown ? (
-              <MarkdownContent content={section.content} />
-            ) : (
-              <RichContent content={section.content} />
-            )}
-          </div>
-        </section>
-      ))}
-
-      <ServiceFeatureBlock
-        image={featureImage1}
-        title={featureImage1Title}
-        text={featureImage1Text}
-        priority={featureImage1Priority}
-      />
-
-      <ServiceFeatureBlock
-        image={featureImage2}
-        title={featureImage2Title}
-        text={featureImage2Text}
-        reverse
-      />
-    </div>
+    <InterleavedDetailBlocksView
+      blocks={blocks}
+      featureImage1Priority={featureImage1Priority}
+    />
   );
 }

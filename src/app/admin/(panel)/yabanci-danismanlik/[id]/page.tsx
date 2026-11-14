@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { saveForeignConsultancyContentAction } from "@/lib/admin-actions";
 import { ForeignConsultancyCategoryField } from "@/components/admin/foreign-consultancy/ForeignConsultancyCategoryField";
-import { ForeignConsultancyLocalizedFeatureBlock } from "@/components/admin/foreign-consultancy/ForeignConsultancyLocalizedFeatureBlock";
+import { ForeignConsultancyFeatureMediaSection } from "@/components/admin/foreign-consultancy/ForeignConsultancyFeatureMediaSection";
 import { ForeignConsultancyLocalizedHeroBlock } from "@/components/admin/foreign-consultancy/ForeignConsultancyLocalizedHeroBlock";
 import { ForeignConsultancyLocalizedSectionsEditor } from "@/components/admin/foreign-consultancy/ForeignConsultancyLocalizedSectionsEditor";
 import { ForeignConsultancyTranslationsProvider } from "@/components/admin/foreign-consultancy/ForeignConsultancyTranslationsProvider";
@@ -134,32 +134,29 @@ export default async function EditForeignConsultancyContentPage({ params }: Prop
 
             <AdminFormSection
               title="İçerik bölümleri"
-              description="Her bölüm başlığı ve içeriği için dil sekmeleri kullanın."
+              description="Her bölüme sayfa sırası verin; görsel/video alanlarıyla karışık dizilebilir. Başlık ve içerik için dil sekmeleri kullanın."
             >
               <ForeignConsultancyLocalizedSectionsEditor initialJson={content?.sectionsJson} />
             </AdminFormSection>
 
             <AdminFormSection
-              title="Görsel alan 1"
-              description="Görsel, başlık ve metin birlikte; sitede görsel solda."
+              title="Görsel ve video alanları"
+              description="Cloudinary Services klasörüne yüklenir. Sayfa sırası içerik bölümleriyle ortaktır; en fazla 10+10 alan. Başlık ve metin için dil sekmeleri opsiyoneldir."
             >
-              <ForeignConsultancyLocalizedFeatureBlock
-                index={1}
-                featureImage={content?.featureImage1 ?? ""}
-                featureImageTitle={content?.featureImage1Title}
-                featureImageText={content?.featureImage1Text}
-              />
-            </AdminFormSection>
-
-            <AdminFormSection
-              title="Görsel alan 2"
-              description="Görsel, başlık ve metin birlikte; sitede görsel sağda."
-            >
-              <ForeignConsultancyLocalizedFeatureBlock
-                index={2}
-                featureImage={content?.featureImage2 ?? ""}
-                featureImageTitle={content?.featureImage2Title}
-                featureImageText={content?.featureImage2Text}
+              <ForeignConsultancyFeatureMediaSection
+                initialJson={content?.featureMediaJson}
+                legacy={
+                  content
+                    ? {
+                        featureImage1: content.featureImage1,
+                        featureImage1Title: content.featureImage1Title,
+                        featureImage1Text: content.featureImage1Text,
+                        featureImage2: content.featureImage2,
+                        featureImage2Title: content.featureImage2Title,
+                        featureImage2Text: content.featureImage2Text,
+                      }
+                    : undefined
+                }
               />
             </AdminFormSection>
 

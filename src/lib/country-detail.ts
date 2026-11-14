@@ -1,4 +1,5 @@
 import { normalizeRichTextContent } from "@/lib/rich-text";
+import { normalizePageSortOrder } from "@/lib/service-constants";
 
 export const COUNTRY_NOTES_MAX = 10;
 export const COUNTRY_FAQ_MAX = 5;
@@ -7,6 +8,7 @@ export const COUNTRY_SHORT_DESCRIPTION_MAX = 100;
 export type CountryDetailSection = {
   title: string;
   content: string;
+  sortOrder?: number;
 };
 
 export function parseCountryNotesJson(json: string | null | undefined): string[] {
@@ -90,17 +92,27 @@ export function parseCountryDetailSectionsJson(
     if (!Array.isArray(parsed)) return [];
 
     const sections: CountryDetailSection[] = [];
-    for (const item of parsed) {
+    for (const [index, item] of parsed.entries()) {
       if (!item || typeof item !== "object") continue;
-      const record = item as { title?: unknown; content?: unknown };
+      const record = item as { title?: unknown; content?: unknown; sortOrder?: unknown };
       const title = typeof record.title === "string" ? record.title.trim() : "";
       const content = normalizeRichTextContent(
         typeof record.content === "string" ? record.content : "",
       );
       if (!title || !content) continue;
-      sections.push({ title, content });
+      sections.push({
+        title,
+        content,
+        sortOrder: normalizePageSortOrder(record.sortOrder, index + 1),
+      });
     }
-    return sections;
+
+    const indexed = sections.map((section, index) => ({ section, index }));
+    indexed.sort(
+      (a, b) =>
+        (a.section.sortOrder ?? 0) - (b.section.sortOrder ?? 0) || a.index - b.index,
+    );
+    return indexed.map(({ section }) => section);
   } catch {
     return [];
   }
@@ -108,9 +120,10 @@ export function parseCountryDetailSectionsJson(
 
 export function serializeCountryDetailSections(sections: CountryDetailSection[]): string {
   const valid = sections
-    .map((section) => ({
+    .map((section, index) => ({
       title: section.title.trim(),
       content: normalizeRichTextContent(section.content) ?? "",
+      sortOrder: normalizePageSortOrder(section.sortOrder, index + 1),
     }))
     .filter((section) => section.title && section.content);
 

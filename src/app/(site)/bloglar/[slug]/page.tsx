@@ -138,6 +138,7 @@ export default async function BlogDetailPage({ params }: Props) {
             <ServiceDetailContent
               sectionsJson={post.sectionsJson}
               legacySections={[]}
+              featureMediaJson={post.featureMediaJson}
               featureImage1={post.featureImage1}
               featureImage1Title={post.featureImage1Title}
               featureImage1Text={post.featureImage1Text}

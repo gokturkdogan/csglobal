@@ -3,7 +3,7 @@ import { Pool } from "pg";
 import { PrismaClient } from "@/generated/prisma/client";
 import { resolvePgConnectionString } from "@/lib/pg-connection";
 
-const PRISMA_CLIENT_BUILD_ID = "blog-posts-v1";
+const PRISMA_CLIENT_BUILD_ID = "visa-feature-media-v2";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;

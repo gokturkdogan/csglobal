@@ -9,6 +9,10 @@ import {
   type ReactNode,
 } from "react";
 import {
+  parseLocaleFeatureMediaOverlay,
+  serializeLocaleFeatureMediaOverlay,
+} from "@/lib/i18n/foreign-consultancy/feature-media";
+import {
   isForeignConsultancyFieldFilledForLocale,
   isForeignConsultancyTranslationFieldFilled,
   parseForeignConsultancyTranslationsJson,
@@ -16,6 +20,7 @@ import {
   type ForeignConsultancyTranslatableFields,
   type ForeignConsultancyTranslations,
 } from "@/lib/i18n/foreign-consultancy/translations";
+import type { ServiceFeatureMediaPayload } from "@/lib/service-feature-media";
 import {
   FOREIGN_CONSULTANCY_LOCALES,
   type ForeignConsultancyLocale,
@@ -42,6 +47,20 @@ type ContextValue = {
     sectionsJson: string,
   ) => void;
   getSectionsJsonForLocale: (locale: ForeignConsultancyLocale) => string;
+  getFeatureMediaOverlayForLocale: (
+    locale: Exclude<ForeignConsultancyLocale, "tr">,
+  ) => ServiceFeatureMediaPayload;
+  setFeatureMediaOverlayForLocale: (
+    locale: Exclude<ForeignConsultancyLocale, "tr">,
+    payload: ServiceFeatureMediaPayload,
+  ) => void;
+  updateFeatureMediaTranslation: (
+    locale: Exclude<ForeignConsultancyLocale, "tr">,
+    kind: "image" | "video",
+    url: string,
+    field: "title" | "text",
+    value: string,
+  ) => void;
 };
 
 const ForeignConsultancyTranslationsContext = createContext<ContextValue | null>(null);
@@ -64,9 +83,10 @@ export function ForeignConsultancyTranslationsProvider({
       value: string,
     ) => {
       setTranslations((prev) => {
+        if (prev[locale]?.[field] === value) return prev;
         const nextLocaleFields = { ...(prev[locale] ?? {}), [field]: value };
         const cleanedEntries = Object.entries(nextLocaleFields).filter(([key, fieldValue]) => {
-          if (key === "sectionsJson") {
+          if (key === "sectionsJson" || key === "featureMediaJson") {
             return typeof fieldValue === "string" && fieldValue.trim().length > 0;
           }
           return isForeignConsultancyTranslationFieldFilled(fieldValue as string);
@@ -119,6 +139,70 @@ export function ForeignConsultancyTranslationsProvider({
     [translations],
   );
 
+  const getFeatureMediaOverlayForLocale = useCallback(
+    (locale: Exclude<ForeignConsultancyLocale, "tr">) =>
+      parseLocaleFeatureMediaOverlay(translations[locale]?.featureMediaJson),
+    [translations],
+  );
+
+  const setFeatureMediaOverlayForLocale = useCallback(
+    (locale: Exclude<ForeignConsultancyLocale, "tr">, payload: ServiceFeatureMediaPayload) => {
+      const serialized = serializeLocaleFeatureMediaOverlay(payload);
+      const existing = translations[locale]?.featureMediaJson ?? null;
+      if (serialized) {
+        if (existing === serialized) return;
+        setTranslationField(locale, "featureMediaJson", serialized);
+        return;
+      }
+      if (!existing) return;
+      setTranslations((prev) => {
+          const nextLocale = { ...(prev[locale] ?? {}) };
+          delete nextLocale.featureMediaJson;
+          const cleanedEntries = Object.entries(nextLocale).filter(([key, fieldValue]) => {
+            if (key === "sectionsJson" || key === "featureMediaJson") {
+              return typeof fieldValue === "string" && fieldValue.trim().length > 0;
+            }
+            return isForeignConsultancyTranslationFieldFilled(fieldValue as string);
+          });
+          if (cleanedEntries.length === 0) {
+            const { [locale]: _removed, ...rest } = prev;
+            return rest;
+          }
+          return { ...prev, [locale]: Object.fromEntries(cleanedEntries) };
+        });
+    },
+    [setTranslationField, translations],
+  );
+
+  const updateFeatureMediaTranslation = useCallback(
+    (
+      locale: Exclude<ForeignConsultancyLocale, "tr">,
+      kind: "image" | "video",
+      url: string,
+      field: "title" | "text",
+      value: string,
+    ) => {
+      const trimmedUrl = url.trim();
+      if (!trimmedUrl) return;
+      const current = getFeatureMediaOverlayForLocale(locale);
+      const listKey = kind === "image" ? "images" : "videos";
+      const rows = [...current[listKey]];
+      const index = rows.findIndex((row) => row.url === trimmedUrl);
+      if (index === -1) {
+        rows.push({
+          url: trimmedUrl,
+          title: field === "title" ? value : "",
+          text: field === "text" ? value : "",
+        });
+      } else {
+        rows[index] = { ...rows[index], [field]: value };
+      }
+      const next = { ...current, [listKey]: rows };
+      setFeatureMediaOverlayForLocale(locale, next);
+    },
+    [getFeatureMediaOverlayForLocale, setFeatureMediaOverlayForLocale],
+  );
+
   const serialized = useMemo(
     () => serializeForeignConsultancyTranslations(translations) ?? "",
     [translations],
@@ -132,6 +216,9 @@ export function ForeignConsultancyTranslationsProvider({
       isFieldFilled,
       setSectionsJsonForLocale,
       getSectionsJsonForLocale,
+      getFeatureMediaOverlayForLocale,
+      setFeatureMediaOverlayForLocale,
+      updateFeatureMediaTranslation,
     }),
     [
       translations,
@@ -140,6 +227,9 @@ export function ForeignConsultancyTranslationsProvider({
       isFieldFilled,
       setSectionsJsonForLocale,
       getSectionsJsonForLocale,
+      getFeatureMediaOverlayForLocale,
+      setFeatureMediaOverlayForLocale,
+      updateFeatureMediaTranslation,
     ],
   );
 

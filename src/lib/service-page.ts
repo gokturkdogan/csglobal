@@ -1,13 +1,28 @@
 import { normalizeRichTextContent } from "@/lib/rich-text";
 import { optimizeCloudinaryDeliveryUrl, siteImages } from "@/lib/media";
-
-export const SERVICE_HERO_CROP_ASPECT = 3.2;
-export const SERVICE_FEATURE_TITLE_MAX = 35;
-export const SERVICE_FEATURE_TEXT_MAX = 450;
+import { normalizePageSortOrder } from "@/lib/service-constants";
+export { SERVICE_HERO_CROP_ASPECT } from "@/lib/service-constants";
+export {
+  SERVICE_FEATURE_TITLE_MAX,
+  SERVICE_FEATURE_TEXT_MAX,
+  SERVICE_FEATURE_MEDIA_MAX_PER_KIND,
+  type ServiceFeatureMediaKind,
+  type ServiceFeatureMediaItem,
+  type ServiceFeatureMediaPayload,
+  normalizeServiceFeatureTitle,
+  normalizeServiceFeatureText,
+  legacyFeatureMediaFromProgram,
+  parseFeatureMediaJson,
+  serializeFeatureMediaJson,
+  featureMediaToDisplayItems,
+  syncLegacyFeatureImagesFromMedia,
+} from "@/lib/service-feature-media";
 
 export type ServiceContentSection = {
   title: string;
   content: string;
+  /** Sayfa sırası; parse/serialize sırasında yoksa otomatik atanır */
+  sortOrder?: number;
 };
 
 export type ServiceDisplaySection = ServiceContentSection & {
@@ -48,6 +63,7 @@ export function resolveServiceDisplaySections(
     content: section.content,
     slug: section.slug?.trim() || serviceSectionDomId(index),
     isMarkdown: true,
+    sortOrder: index + 1,
   }));
 }
 
@@ -68,18 +84,33 @@ export function parseServiceSectionsJson(json: string | null | undefined): Servi
   try {
     const parsed = JSON.parse(json) as unknown;
     if (!Array.isArray(parsed)) return [];
-    return parsed
-      .map((item) => {
+    const sections = parsed
+      .map((item, index) => {
         if (!item || typeof item !== "object") return null;
-        const record = item as { title?: unknown; content?: unknown };
+        const record = item as {
+          title?: unknown;
+          content?: unknown;
+          sortOrder?: unknown;
+        };
         const title = typeof record.title === "string" ? record.title.trim() : "";
         const content = normalizeRichTextContent(
           typeof record.content === "string" ? record.content : "",
         );
         if (!title || !content) return null;
-        return { title, content };
+        return {
+          title,
+          content,
+          sortOrder: normalizePageSortOrder(record.sortOrder, index + 1),
+        };
       })
-      .filter((item): item is ServiceContentSection => item !== null);
+      .filter((item) => item !== null);
+
+    const indexed = sections.map((section, index) => ({ section, index }));
+    indexed.sort(
+      (a, b) =>
+        (a.section.sortOrder ?? 0) - (b.section.sortOrder ?? 0) || a.index - b.index,
+    );
+    return indexed.map(({ section }) => section);
   } catch {
     return [];
   }
@@ -87,9 +118,10 @@ export function parseServiceSectionsJson(json: string | null | undefined): Servi
 
 export function serializeServiceSections(sections: ServiceContentSection[]): string {
   const valid = sections
-    .map((section) => ({
+    .map((section, index) => ({
       title: section.title.trim(),
       content: normalizeRichTextContent(section.content) ?? "",
+      sortOrder: normalizePageSortOrder(section.sortOrder, index + 1),
     }))
     .filter((section) => section.title && section.content);
 
@@ -105,20 +137,6 @@ export function resolveServiceHeroImage(url: string | null | undefined): string 
 export function resolveServiceFeatureImage(url: string | null | undefined): string | null {
   const trimmed = url?.trim();
   return trimmed || null;
-}
-
-export function normalizeServiceFeatureTitle(value: string | null | undefined): string | null {
-  if (typeof value !== "string") return null;
-  const trimmed = value.trim();
-  if (!trimmed) return null;
-  return trimmed.slice(0, SERVICE_FEATURE_TITLE_MAX);
-}
-
-export function normalizeServiceFeatureText(value: string | null | undefined): string | null {
-  if (typeof value !== "string") return null;
-  const trimmed = value.trim();
-  if (!trimmed) return null;
-  return trimmed.slice(0, SERVICE_FEATURE_TEXT_MAX);
 }
 
 export const serviceHeroImageClassName =

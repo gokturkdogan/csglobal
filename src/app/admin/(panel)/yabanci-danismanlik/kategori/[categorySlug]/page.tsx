@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { saveForeignConsultancyCategoryPageAction } from "@/lib/admin-actions";
-import { ForeignConsultancyLocalizedFeatureBlock } from "@/components/admin/foreign-consultancy/ForeignConsultancyLocalizedFeatureBlock";
+import { ForeignConsultancyFeatureMediaSection } from "@/components/admin/foreign-consultancy/ForeignConsultancyFeatureMediaSection";
 import { ForeignConsultancyLocalizedHeroBlock } from "@/components/admin/foreign-consultancy/ForeignConsultancyLocalizedHeroBlock";
 import { ForeignConsultancyLocalizedSectionsEditor } from "@/components/admin/foreign-consultancy/ForeignConsultancyLocalizedSectionsEditor";
 import { ForeignConsultancyTranslationsProvider } from "@/components/admin/foreign-consultancy/ForeignConsultancyTranslationsProvider";
@@ -44,7 +44,7 @@ export default async function AdminForeignConsultancyCategoryPage({ params }: Pr
 
   return (
     <div className="space-y-6">
-      <VisualSlugProvider initialSlug="" initialTitle={page?.name ?? option.title}>
+      <VisualSlugProvider initialSlug={categorySlug} initialTitle={page?.name ?? option.title}>
         <AdminPageHeader
           title={`${categoryLabel} İçerik`}
           description="Kategori sayfasının orta alanı. Her alanda dil sekmeleriyle çeviri ekleyebilirsiniz."
@@ -99,26 +99,29 @@ export default async function AdminForeignConsultancyCategoryPage({ params }: Pr
 
             <AdminFormSection
               title="İçerik bölümleri"
-              description="Her bölüm başlığı ve içeriği için dil sekmeleri kullanın."
+              description="Her bölüme sayfa sırası verin; görsel/video alanlarıyla karışık dizilebilir. Başlık ve içerik için dil sekmeleri kullanın."
             >
               <ForeignConsultancyLocalizedSectionsEditor initialJson={page?.sectionsJson} />
             </AdminFormSection>
 
-            <AdminFormSection title="Görsel alan 1">
-              <ForeignConsultancyLocalizedFeatureBlock
-                index={1}
-                featureImage={page?.featureImage1 ?? ""}
-                featureImageTitle={page?.featureImage1Title}
-                featureImageText={page?.featureImage1Text}
-              />
-            </AdminFormSection>
-
-            <AdminFormSection title="Görsel alan 2">
-              <ForeignConsultancyLocalizedFeatureBlock
-                index={2}
-                featureImage={page?.featureImage2 ?? ""}
-                featureImageTitle={page?.featureImage2Title}
-                featureImageText={page?.featureImage2Text}
+            <AdminFormSection
+              title="Görsel ve video alanları"
+              description="Sayfa sırası içerik bölümleriyle ortaktır; en fazla 10+10 alan. Başlık ve metin için dil sekmeleri opsiyoneldir."
+            >
+              <ForeignConsultancyFeatureMediaSection
+                initialJson={page?.featureMediaJson}
+                legacy={
+                  page
+                    ? {
+                        featureImage1: page.featureImage1,
+                        featureImage1Title: page.featureImage1Title,
+                        featureImage1Text: page.featureImage1Text,
+                        featureImage2: page.featureImage2,
+                        featureImage2Title: page.featureImage2Title,
+                        featureImage2Text: page.featureImage2Text,
+                      }
+                    : undefined
+                }
               />
             </AdminFormSection>
 

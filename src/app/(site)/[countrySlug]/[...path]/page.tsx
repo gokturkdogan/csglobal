@@ -173,6 +173,7 @@ export default async function CountryPathPage({ params }: Props) {
               <ServiceDetailContent
                 sectionsJson={program.sectionsJson}
                 legacySections={program.sections}
+                featureMediaJson={program.featureMediaJson}
                 featureImage1={program.featureImage1}
                 featureImage1Title={program.featureImage1Title}
                 featureImage1Text={program.featureImage1Text}

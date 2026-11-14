@@ -15,6 +15,7 @@ import {
   shouldUseForeignConsultancyStaticCopy,
 } from "@/lib/i18n/foreign-consultancy";
 import { getForeignConsultancyLocale } from "@/lib/i18n/foreign-consultancy/server";
+import { resolveForeignConsultancyDisplayFeatureMedia } from "@/lib/i18n/foreign-consultancy/feature-media";
 import {
   hasForeignConsultancyLocaleTranslation,
   resolveForeignConsultancyLocalizedRecord,
@@ -154,6 +155,11 @@ export default async function ForeignConsultancyCategoryPage({ params }: Props) 
 
   const contactName = categoryLabel;
 
+  const displayFeatureMedia =
+    displayPage && localizedPage
+      ? resolveForeignConsultancyDisplayFeatureMedia(displayPage, locale)
+      : null;
+
   return (
     <>
       <ServicePageHero
@@ -199,16 +205,17 @@ export default async function ForeignConsultancyCategoryPage({ params }: Props) 
               <ForeignConsultancyTranslationNotice messages={messages} />
             )}
 
-            {displayPage && localizedPage ? (
+            {displayPage && localizedPage && displayFeatureMedia ? (
               <ServiceDetailContent
                 sectionsJson={localizedPage.sectionsJson}
                 legacySections={[]}
-                featureImage1={displayPage.featureImage1}
-                featureImage1Title={localizedPage.featureImage1Title}
-                featureImage1Text={localizedPage.featureImage1Text}
-                featureImage2={displayPage.featureImage2}
-                featureImage2Title={localizedPage.featureImage2Title}
-                featureImage2Text={localizedPage.featureImage2Text}
+                featureMediaJson={displayFeatureMedia.featureMediaJson}
+                featureImage1={displayFeatureMedia.legacy.featureImage1}
+                featureImage1Title={displayFeatureMedia.legacy.featureImage1Title}
+                featureImage1Text={displayFeatureMedia.legacy.featureImage1Text}
+                featureImage2={displayFeatureMedia.legacy.featureImage2}
+                featureImage2Title={displayFeatureMedia.legacy.featureImage2Title}
+                featureImage2Text={displayFeatureMedia.legacy.featureImage2Text}
                 featureImage1Priority
               />
             ) : (

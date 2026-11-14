@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { saveBlogPostAction } from "@/lib/admin-actions";
-import { ServiceFeatureBlock } from "@/components/admin/service/ServiceFeatureBlock";
+import { ServiceFeatureMediaEditor } from "@/components/admin/service/ServiceFeatureMediaEditor";
 import { ServiceHeroBlock } from "@/components/admin/service/ServiceHeroBlock";
 import { ServiceSectionsEditor } from "@/components/admin/service/ServiceSectionsEditor";
 import { AdminBlogPlacementFields } from "@/components/admin/blog/AdminBlogPlacementFields";
@@ -127,32 +127,29 @@ export default async function EditBlogPostPage({ params }: Props) {
 
           <AdminFormSection
             title="İçerik bölümleri"
-            description="Başlık ve zengin metin blokları. İstediğiniz kadar bölüm ekleyebilirsiniz."
+            description="Her bölüme sayfa sırası verin; görsel/video alanlarıyla karışık dizilebilir."
           >
             <ServiceSectionsEditor initialJson={post?.sectionsJson} />
           </AdminFormSection>
 
           <AdminFormSection
-            title="Görsel alan 1"
-            description="Görsel, başlık ve metin birlikte; sitede görsel solda."
+            title="Görsel ve video alanları"
+            description="Cloudinary ile görsel ve video. Sayfa sırası içerik bölümleriyle ortaktır; en fazla 10+10 alan."
           >
-            <ServiceFeatureBlock
-              index={1}
-              featureImage={post?.featureImage1 ?? ""}
-              featureImageTitle={post?.featureImage1Title}
-              featureImageText={post?.featureImage1Text}
-            />
-          </AdminFormSection>
-
-          <AdminFormSection
-            title="Görsel alan 2"
-            description="Görsel, başlık ve metin birlikte; sitede görsel sağda."
-          >
-            <ServiceFeatureBlock
-              index={2}
-              featureImage={post?.featureImage2 ?? ""}
-              featureImageTitle={post?.featureImage2Title}
-              featureImageText={post?.featureImage2Text}
+            <ServiceFeatureMediaEditor
+              initialJson={post?.featureMediaJson}
+              legacy={
+                post
+                  ? {
+                      featureImage1: post.featureImage1,
+                      featureImage1Title: post.featureImage1Title,
+                      featureImage1Text: post.featureImage1Text,
+                      featureImage2: post.featureImage2,
+                      featureImage2Title: post.featureImage2Title,
+                      featureImage2Text: post.featureImage2Text,
+                    }
+                  : undefined
+              }
             />
           </AdminFormSection>
 

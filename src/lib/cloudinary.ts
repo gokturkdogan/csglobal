@@ -100,7 +100,7 @@ function parseCloudinaryErrorMessage(errText: string): string {
 
 async function uploadSignedResource(
   file: Buffer,
-  resourceType: "image" | "raw",
+  resourceType: "image" | "raw" | "video",
   folder: string,
   publicId: string,
   mimeType: string,
@@ -240,4 +240,17 @@ export async function uploadHomeImageToCloudinary(
 
   const { folder, assetName } = parseHomeImagePublicId(fullPublicId);
   return uploadWithFolder(file, folder, assetName, mimeType);
+}
+
+/** Services klasörüne video yükler (MP4, WebM). */
+export async function uploadServiceVideoToCloudinary(
+  file: Buffer,
+  fullPublicId: string,
+  mimeType: string,
+  originalFilename: string,
+): Promise<{ secureUrl: string; publicId: string; version: number }> {
+  const { folder, assetName } = fullPublicId.startsWith("Countries/")
+    ? parseCountryImagePublicId(fullPublicId)
+    : parseServiceImagePublicId(fullPublicId);
+  return uploadSignedResource(file, "video", folder, assetName, mimeType, originalFilename);
 }
