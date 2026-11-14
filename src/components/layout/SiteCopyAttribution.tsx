@@ -33,6 +33,7 @@ function appendAttributionToHtml(html: string, suffix: string): string {
   return `${html}<p><em>${escaped}</em></p>`;
 }
 
+/** Kopya yine de gerçekleşirse panoya kaynak satırı ekler (engeller aşılırsa). */
 export function SiteCopyAttribution() {
   useEffect(() => {
     const onCopy = (event: ClipboardEvent) => {

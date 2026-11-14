@@ -1,5 +1,19 @@
 @import "tailwindcss";
 
+/* Ziyaretçi sitesinde metin seçimi / sürükleyerek kopya (form alanları hariç) */
+body.site-copy-protection {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+body.site-copy-protection input,
+body.site-copy-protection textarea,
+body.site-copy-protection select,
+body.site-copy-protection [contenteditable="true"] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #0f172a;
