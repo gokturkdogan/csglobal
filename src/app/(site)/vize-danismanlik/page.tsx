@@ -8,10 +8,10 @@ import {
   VIZE_CONSULTANCY_LIST_SITE_PAGE_SLUG,
 } from "@/lib/paths";
 import { SeoEntityType } from "@/generated/prisma/client";
+import { STATIC_PAGE_SEO } from "@/lib/static-page-seo";
 
-const FALLBACK_TITLE = "Vize danışmanlık";
-const FALLBACK_DESCRIPTION =
-  "CSGLOBAL vize ve göçmenlik programları kapsanan ülkeler.";
+const FALLBACK_TITLE = STATIC_PAGE_SEO.vizeDanismanlik.title;
+const FALLBACK_DESCRIPTION = STATIC_PAGE_SEO.vizeDanismanlik.description;
 
 async function findVizeConsultancyListSitePage() {
   return (
@@ -36,7 +36,7 @@ export async function generateMetadata() {
     entityType: SeoEntityType.SITE_PAGE,
     entityId: page.id,
     path: VIZE_CONSULTANCY_LIST_PATH,
-    fallbackTitle: page.title,
+    fallbackTitle: FALLBACK_TITLE,
     fallbackDescription: FALLBACK_DESCRIPTION,
   });
 }

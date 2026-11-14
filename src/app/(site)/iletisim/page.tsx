@@ -10,6 +10,7 @@ import { findSitePageBySlug } from "@/lib/repositories/site.repository";
 import { getSiteSettings } from "@/lib/settings";
 import { buildEntityMetadata } from "@/lib/services/seo.service";
 import { SeoEntityType } from "@/generated/prisma/client";
+import { STATIC_PAGE_SEO } from "@/lib/static-page-seo";
 
 export async function generateMetadata() {
   const page = await findSitePageBySlug("iletisim");
@@ -18,10 +19,8 @@ export async function generateMetadata() {
     entityType: SeoEntityType.SITE_PAGE,
     entityId: page.id,
     path: "/iletisim",
-    fallbackTitle: page.title,
-    fallbackDescription:
-      page.content?.trim() ||
-      "Vize ve göçmenlik danışmanlığı için telefon, WhatsApp veya e-posta ile CSGLOBAL uzman ekibine ulaşın.",
+    fallbackTitle: STATIC_PAGE_SEO.iletisim.title,
+    fallbackDescription: STATIC_PAGE_SEO.iletisim.description,
   });
 }
 

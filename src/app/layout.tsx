@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { defaultOgImageUrl } from "@/lib/services/seo.service";
 import { getSiteSettings } from "@/lib/settings";
+import { getPublicSiteUrl } from "@/lib/site-url";
 
 const inter = Inter({
   subsets: ["latin", "latin-ext"],
@@ -18,9 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s | ${settings.siteName}`,
     },
     description: settings.siteDescription,
-    metadataBase: new URL(
-      process.env.NEXT_PUBLIC_SITE_URL ?? "https://csglobal.com",
-    ),
+    metadataBase: new URL(getPublicSiteUrl()),
     openGraph: {
       images: [{ url: defaultOgImageUrl }],
     },

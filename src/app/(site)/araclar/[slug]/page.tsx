@@ -7,6 +7,7 @@ import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { buildToolPath, getToolBySlug, TOOLS_LIST_PATH } from "@/lib/tools";
 import { buildEntityMetadata, buildBreadcrumbJsonLd, siteUrl } from "@/lib/services/seo.service";
 import { SeoEntityType } from "@/generated/prisma/client";
+import { getToolPageSeo } from "@/lib/static-page-seo";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -19,8 +20,8 @@ export async function generateMetadata({ params }: Props) {
     entityType: SeoEntityType.SITE_PAGE,
     entityId: `araclar-${tool.slug}`,
     path: buildToolPath(tool.slug),
-    fallbackTitle: tool.name,
-    fallbackDescription: tool.description,
+    fallbackTitle: getToolPageSeo(tool.slug)?.title ?? tool.name,
+    fallbackDescription: getToolPageSeo(tool.slug)?.description ?? tool.description,
   });
 }
 

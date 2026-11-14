@@ -7,28 +7,23 @@ import {
   findBlogListSitePage,
   findBlogListSitePageRecord,
   getGuidesListPageContent,
-  guidesListPageSeo,
+  BLOG_LIST_SITE_PAGE_SLUG,
 } from "@/lib/guides-list-page";
 import { buildBlogListPath } from "@/lib/paths";
 import { findActiveBlogPosts } from "@/lib/repositories/blog.repository";
 import { getSiteSettings } from "@/lib/settings";
 import { buildEntityMetadata } from "@/lib/services/seo.service";
 import { SeoEntityType } from "@/generated/prisma/client";
+import { STATIC_PAGE_SEO } from "@/lib/static-page-seo";
 
 export async function generateMetadata() {
   const page = await findBlogListSitePage();
-  if (!page) {
-    return {
-      title: guidesListPageSeo.title,
-      description: guidesListPageSeo.description,
-    };
-  }
   return buildEntityMetadata({
     entityType: SeoEntityType.SITE_PAGE,
-    entityId: page.id,
+    entityId: page?.id ?? BLOG_LIST_SITE_PAGE_SLUG,
     path: buildBlogListPath(),
-    fallbackTitle: guidesListPageSeo.title,
-    fallbackDescription: guidesListPageSeo.description,
+    fallbackTitle: STATIC_PAGE_SEO.bloglar.title,
+    fallbackDescription: STATIC_PAGE_SEO.bloglar.description,
   });
 }
 

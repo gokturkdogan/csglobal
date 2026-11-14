@@ -3,10 +3,10 @@ import { ToolsPageHero } from "@/components/domain/ToolsPageHero";
 import { TOOLS_LIST_PATH, siteTools } from "@/lib/tools";
 import { buildEntityMetadata } from "@/lib/services/seo.service";
 import { SeoEntityType } from "@/generated/prisma/client";
+import { STATIC_PAGE_SEO } from "@/lib/static-page-seo";
 
-const FALLBACK_TITLE = "Araçlar";
-const FALLBACK_DESCRIPTION =
-  "Vize ve göçmenlik süreçleriniz için hesaplama ve bilgi araçları. CSGLOBAL pratik yardımcılar.";
+const FALLBACK_TITLE = STATIC_PAGE_SEO.araclar.title;
+const FALLBACK_DESCRIPTION = STATIC_PAGE_SEO.araclar.description;
 
 export async function generateMetadata() {
   return buildEntityMetadata({

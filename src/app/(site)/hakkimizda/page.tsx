@@ -1,25 +1,20 @@
 import { AboutPageContent } from "@/components/domain/AboutPageContent";
 import { AboutPageHero } from "@/components/domain/AboutPageHero";
 import { findSitePageBySlug } from "@/lib/repositories/site.repository";
-import { aboutPageSeo, getAboutPageContent } from "@/lib/about";
+import { getAboutPageContent } from "@/lib/about";
 import { getSiteSettings } from "@/lib/settings";
 import { buildEntityMetadata } from "@/lib/services/seo.service";
 import { SeoEntityType } from "@/generated/prisma/client";
+import { STATIC_PAGE_SEO } from "@/lib/static-page-seo";
 
 export async function generateMetadata() {
   const page = await findSitePageBySlug("hakkimizda");
-  if (!page) {
-    return {
-      title: aboutPageSeo.title,
-      description: aboutPageSeo.description,
-    };
-  }
   return buildEntityMetadata({
     entityType: SeoEntityType.SITE_PAGE,
-    entityId: page.id,
+    entityId: page?.id ?? "hakkimizda",
     path: "/hakkimizda",
-    fallbackTitle: aboutPageSeo.title,
-    fallbackDescription: aboutPageSeo.description,
+    fallbackTitle: STATIC_PAGE_SEO.hakkimizda.title,
+    fallbackDescription: STATIC_PAGE_SEO.hakkimizda.description,
   });
 }
 

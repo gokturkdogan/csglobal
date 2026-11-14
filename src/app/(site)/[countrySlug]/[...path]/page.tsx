@@ -1,4 +1,11 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import {
+  buildCountryCategoryDescription,
+  buildCountryCategoryHeading,
+  buildCountryCategoryIntro,
+  isIndexableCountryCategory,
+} from "@/lib/country-page/category-seo";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { ContactCTA } from "@/components/domain/ContactCTA";
 import { ServiceCard } from "@/components/domain/ServiceCard";
@@ -54,13 +61,21 @@ export async function generateMetadata({ params }: Props) {
   }
 
   const data = await loadCategoryPageData(countrySlug, path);
-  if (!data) return {};
+  if (!data || data.programs.length === 0) return {};
+  // Kategori SEO kaydı ülkeden bağımsız; başlık ve açıklama ülkeye özel üretilir.
+  const heading = buildCountryCategoryHeading(data.country.name, data.category.name);
   return buildEntityMetadata({
     entityType: SeoEntityType.CATEGORY,
     entityId: data.category.id,
     path: buildCategoryPath(countrySlug, [data.category.slug]),
-    fallbackTitle: data.category.name,
-    fallbackDescription: data.category.shortDescription ?? undefined,
+    fallbackTitle: heading,
+    preferredTitle: heading,
+    preferredDescription: buildCountryCategoryDescription({
+      countryName: data.country.name,
+      categoryName: data.category.name,
+      programNames: data.programs.map((p) => p.name),
+    }),
+    forceNoIndex: !isIndexableCountryCategory(data.programs.length),
   });
 }
 
@@ -245,12 +260,20 @@ export default async function CountryPathPage({ params }: Props) {
   }
 
   const data = await loadCategoryPageData(countrySlug, path);
-  if (!data) notFound();
+  // Aktif programı olmayan kategori sayfası "boş" bir 200 yerine 404 döner (soft 404 önlenir).
+  if (!data || data.programs.length === 0) notFound();
+
+  const categoryHeading = buildCountryCategoryHeading(data.country.name, data.category.name);
+  const categoryIntro = buildCountryCategoryIntro({
+    countryName: data.country.name,
+    categoryName: data.category.name,
+    programCount: data.programs.length,
+  });
 
   const breadcrumbItems = [
     { label: "Anasayfa", href: "/" },
     { label: data.country.name, href: `/${countrySlug}` },
-    { label: data.category.name },
+    { label: categoryHeading },
   ];
 
   const breadcrumbJsonLd = buildBreadcrumbJsonLd(
@@ -270,30 +293,32 @@ export default async function CountryPathPage({ params }: Props) {
       <Breadcrumb items={breadcrumbItems} />
 
       <h1 className="text-2xl font-semibold text-slate-900 md:text-3xl">
-        {data.category.name}
+        {categoryHeading}
       </h1>
       {data.category.shortDescription && (
         <p className="mt-3 text-slate-600">{data.category.shortDescription}</p>
       )}
+      <p className="mt-3 max-w-3xl text-slate-600">{categoryIntro}</p>
 
-      {data.programs.length > 0 ? (
-        <div className="mt-10 grid gap-3 sm:grid-cols-2">
-          {data.programs.map((p) => (
-            <ServiceCard
-              key={p.id}
-              name={p.name}
-              slug={p.slug}
-              countrySlug={countrySlug}
-              shortDescription={p.shortDescription}
-              processingTime={p.processingTime}
-            />
-          ))}
-        </div>
-      ) : (
-        <p className="mt-10 text-sm text-slate-500">
-          Bu kategoride {data.country.name} için henüz program eklenmemiş.
-        </p>
-      )}
+      <div className="mt-10 grid gap-3 sm:grid-cols-2">
+        {data.programs.map((p) => (
+          <ServiceCard
+            key={p.id}
+            name={p.name}
+            slug={p.slug}
+            countrySlug={countrySlug}
+            shortDescription={p.shortDescription}
+            processingTime={p.processingTime}
+          />
+        ))}
+      </div>
+
+      <p className="mt-8 text-sm text-slate-600">
+        {data.country.name} için diğer vize, oturum ve göçmenlik başlıkları:{" "}
+        <Link href={`/${countrySlug}`} className="font-medium text-csg-blue hover:underline">
+          {data.country.name} vize ve göçmenlik rehberi
+        </Link>
+      </p>
 
       <div className="mt-12">
         <ContactCTA settings={settings} context={data.category.name} />

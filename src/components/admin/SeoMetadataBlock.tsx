@@ -35,10 +35,11 @@ export function SeoMetadataBlock({ seo }: { seo?: SeoMetadataValues | null }) {
         hint="Önerilen uzunluk: 150-160 karakter."
       />
       <AdminField
-        label="Canonical URL"
+        label="Canonical yolu (opsiyonel)"
         name="seoCanonicalUrl"
         value={seo?.canonicalUrl}
-        placeholder="https://csglobal.com/almanya/turistik-vize"
+        placeholder="/almanya/turistik-vize"
+        hint="Genelde boş bırakın: sayfanın kendi adresi otomatik kullanılır. Yalnızca bu sayfa başka bir sayfanın kopyasıysa, asıl sayfanın yolunu yazın."
       />
       <AdminField
         label="OG görsel URL"

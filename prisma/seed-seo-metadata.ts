@@ -4,8 +4,12 @@ import { Pool } from "pg";
 import { PrismaClient, SeoEntityType } from "../src/generated/prisma/client";
 import { resolvePgConnectionString } from "../src/lib/pg-connection";
 import { buildToolPath, siteTools, TOOLS_LIST_PATH } from "../src/lib/tools";
+import {
+  SITE_PAGE_SLUG_TO_SEO_KEY,
+  STATIC_PAGE_SEO,
+  getToolPageSeo,
+} from "../src/lib/static-page-seo";
 
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://csglobal.com").replace(/\/$/, "");
 const SITE_NAME = "CSGLOBAL";
 const META_DESC_MAX = 160;
 const DEFAULT_OG_IMAGE =
@@ -18,9 +22,6 @@ function truncate(text: string | null | undefined, max = META_DESC_MAX): string 
   return `${normalized.slice(0, max - 1).trimEnd()}…`;
 }
 
-function canonicalPath(path: string) {
-  return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
-}
 
 async function upsertSitePageSeoByEntityId(
   prisma: PrismaClient,
@@ -29,7 +30,6 @@ async function upsertSitePageSeoByEntityId(
   metaTitle: string,
   metaDescription: string | null,
 ) {
-  const canonicalUrl = canonicalPath(path);
 
   await prisma.seoMetadata.upsert({
     where: {
@@ -43,7 +43,6 @@ async function upsertSitePageSeoByEntityId(
       entityId,
       metaTitle,
       metaDescription,
-      canonicalUrl,
       ogTitle: metaTitle,
       ogDescription: metaDescription,
       ogImage: DEFAULT_OG_IMAGE,
@@ -51,7 +50,6 @@ async function upsertSitePageSeoByEntityId(
     update: {
       metaTitle,
       metaDescription,
-      canonicalUrl,
       ogTitle: metaTitle,
       ogDescription: metaDescription,
       ogImage: DEFAULT_OG_IMAGE,
@@ -126,10 +124,8 @@ async function main() {
   });
 
   for (const program of programs) {
-    const path = `/${program.country.slug}/${program.slug}`;
     const metaTitle = `${program.name} | ${program.country.name} | ${SITE_NAME}`;
     const metaDescription = truncate(program.excerpt ?? program.shortDescription);
-    const canonicalUrl = canonicalPath(path);
 
     await prisma.seoMetadata.upsert({
       where: {
@@ -143,14 +139,12 @@ async function main() {
         entityId: program.id,
         metaTitle,
         metaDescription,
-        canonicalUrl,
         ogTitle: metaTitle,
         ogDescription: metaDescription,
       },
       update: {
         metaTitle,
         metaDescription,
-        canonicalUrl,
         ogTitle: metaTitle,
         ogDescription: metaDescription,
       },
@@ -166,7 +160,6 @@ async function main() {
   for (const country of countries) {
     const metaTitle = `${country.name} Vize ve Göçmenlik | ${SITE_NAME}`;
     const metaDescription = truncate(country.shortDescription);
-    const canonicalUrl = canonicalPath(`/${country.slug}`);
 
     await prisma.seoMetadata.upsert({
       where: {
@@ -180,14 +173,12 @@ async function main() {
         entityId: country.id,
         metaTitle,
         metaDescription,
-        canonicalUrl,
         ogTitle: metaTitle,
         ogDescription: metaDescription,
       },
       update: {
         metaTitle,
         metaDescription,
-        canonicalUrl,
         ogTitle: metaTitle,
         ogDescription: metaDescription,
       },
@@ -240,9 +231,7 @@ async function main() {
   });
 
   for (const consulate of consulates) {
-    const path = `/${consulate.country.slug}/konsolosluklar/${consulate.slug}`;
     const metaTitle = `${consulate.name} | ${SITE_NAME}`;
-    const canonicalUrl = canonicalPath(path);
 
     await prisma.seoMetadata.upsert({
       where: {
@@ -256,14 +245,12 @@ async function main() {
         entityId: consulate.id,
         metaTitle,
         metaDescription: `${consulate.name} konsolosluk bilgileri ve başvuru rehberi.`,
-        canonicalUrl,
         ogTitle: metaTitle,
         ogDescription: `${consulate.name} konsolosluk bilgileri ve başvuru rehberi.`,
       },
       update: {
         metaTitle,
         metaDescription: `${consulate.name} konsolosluk bilgileri ve başvuru rehberi.`,
-        canonicalUrl,
         ogTitle: metaTitle,
         ogDescription: `${consulate.name} konsolosluk bilgileri ve başvuru rehberi.`,
       },
@@ -295,7 +282,6 @@ async function main() {
     const metaDescription = truncate(
       categoryPage.excerpt ?? categoryPage.shortDescription,
     );
-    const canonicalUrl = canonicalPath(path);
 
     await prisma.seoMetadata.upsert({
       where: {
@@ -309,14 +295,12 @@ async function main() {
         entityId: categoryPage.id,
         metaTitle,
         metaDescription,
-        canonicalUrl,
         ogTitle: metaTitle,
         ogDescription: metaDescription,
       },
       update: {
         metaTitle,
         metaDescription,
-        canonicalUrl,
         ogTitle: metaTitle,
         ogDescription: metaDescription,
       },
@@ -329,30 +313,12 @@ async function main() {
     select: { id: true, slug: true, title: true, content: true },
   });
 
-  const staticDescriptions: Record<string, string> = {
-    home: "CSGLOBAL vize ve göçmenlik danışmanlığı. Uzman ekibimizle vize süreçlerinizi yönetin.",
-    hakkimizda: "CSGLOBAL vize ve göçmenlik danışmanlığı hakkında bilgi edinin.",
-    iletisim:
-      "Vize ve göçmenlik danışmanlığı için telefon, WhatsApp veya e-posta ile CSGLOBAL uzman ekibine ulaşın.",
-    "vize-danismanlik":
-      "CSGLOBAL vize ve göçmenlik programları kapsanan ülkeler.",
-    ulkeler: "CSGLOBAL vize ve göçmenlik programları kapsanan ülkeler.",
-    hizmetlerimiz:
-      "CSGLOBAL vize, oturum ve göçmenlik programları. Tüm ülkelerdeki programları tek listede inceleyin.",
-    bloglar: "Vize, oturum ve göçmenlik süreçlerine dair blog yazıları.",
-    araclar: "Vize ve göçmenlik süreçleriniz için hesaplama ve bilgi araçları.",
-  };
-
   for (const page of sitePages) {
-    const path =
-      page.slug === "home"
-        ? "/"
-        : page.slug === "rehberlerimiz"
-          ? null
-          : `/${page.slug}`;
-    const metaTitle = `${page.title} | ${SITE_NAME}`;
+    const staticSeoKey = SITE_PAGE_SLUG_TO_SEO_KEY[page.slug];
+    const staticSeo = staticSeoKey ? STATIC_PAGE_SEO[staticSeoKey] : undefined;
+    const metaTitle = `${staticSeo?.title ?? page.title} | ${SITE_NAME}`;
     const metaDescription = truncate(
-      staticDescriptions[page.slug] ?? page.content?.replace(/<[^>]+>/g, " "),
+      staticSeo?.description ?? page.content?.replace(/<[^>]+>/g, " "),
     );
 
     await prisma.seoMetadata.upsert({
@@ -367,14 +333,12 @@ async function main() {
         entityId: page.id,
         metaTitle,
         metaDescription,
-        canonicalUrl: path ? canonicalPath(path) : null,
         ogTitle: metaTitle,
         ogDescription: metaDescription,
       },
       update: {
         metaTitle,
         metaDescription,
-        canonicalUrl: path ? canonicalPath(path) : null,
         ogTitle: metaTitle,
         ogDescription: metaDescription,
       },
@@ -386,15 +350,16 @@ async function main() {
     prisma,
     "araclar",
     TOOLS_LIST_PATH,
-    `Araçlar | ${SITE_NAME}`,
-    truncate("Vize ve göçmenlik süreçleriniz için hesaplama ve bilgi araçları."),
+    `${STATIC_PAGE_SEO.araclar.title} | ${SITE_NAME}`,
+    truncate(STATIC_PAGE_SEO.araclar.description),
   );
   toolPageCount++;
 
   for (const tool of siteTools) {
     const path = buildToolPath(tool.slug);
-    const metaTitle = `${tool.name} | ${SITE_NAME}`;
-    const metaDescription = truncate(tool.description);
+    const toolSeo = getToolPageSeo(tool.slug);
+    const metaTitle = `${toolSeo?.title ?? tool.name} | ${SITE_NAME}`;
+    const metaDescription = truncate(toolSeo?.description ?? tool.description);
 
     await upsertSitePageSeoByEntityId(
       prisma,

@@ -5,14 +5,15 @@ import { buildEntityMetadata, buildBreadcrumbJsonLd, siteUrl } from "@/lib/servi
 import { TAHDIT_KODLARI_PATH, tahditKodlariMeta } from "@/lib/tahdit-kodlari";
 import { TOOLS_LIST_PATH } from "@/lib/tools";
 import { SeoEntityType } from "@/generated/prisma/client";
+import { STATIC_PAGE_SEO } from "@/lib/static-page-seo";
 
 export async function generateMetadata() {
   return buildEntityMetadata({
     entityType: SeoEntityType.SITE_PAGE,
     entityId: "araclar-tahdit-kodlari",
     path: TAHDIT_KODLARI_PATH,
-    fallbackTitle: tahditKodlariMeta.seoTitle,
-    fallbackDescription: tahditKodlariMeta.seoDescription,
+    fallbackTitle: STATIC_PAGE_SEO["araclar-tahdit-kodlari"].title,
+    fallbackDescription: STATIC_PAGE_SEO["araclar-tahdit-kodlari"].description,
   });
 }
 

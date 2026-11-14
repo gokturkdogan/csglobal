@@ -19,7 +19,6 @@ import {
 import { oturmaIzniCategoryTranslations } from "./data/fc-translations/oturma-izni-translations";
 import { serializeForeignConsultancyTranslations } from "../src/lib/i18n/foreign-consultancy/translations";
 
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://csglobal.com").replace(/\/$/, "");
 
 type CategoryPageSeed =
   | typeof oturmaIzniCategoryPageSeed
@@ -91,7 +90,6 @@ async function upsertCategoryPage(
     },
   });
 
-  const canonicalUrl = `${SITE_URL}/yabanci-danismanlik/${slug}`;
 
   await prisma.seoMetadata.upsert({
     where: {
@@ -105,14 +103,12 @@ async function upsertCategoryPage(
       entityId: page.id,
       metaTitle: seo.metaTitle,
       metaDescription: seo.metaDescription,
-      canonicalUrl,
       ogTitle: seo.metaTitle,
       ogDescription: seo.metaDescription,
     },
     update: {
       metaTitle: seo.metaTitle,
       metaDescription: seo.metaDescription,
-      canonicalUrl,
       ogTitle: seo.metaTitle,
       ogDescription: seo.metaDescription,
     },

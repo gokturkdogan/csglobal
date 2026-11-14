@@ -8,14 +8,15 @@ import { listImmigrationOfficeCitiesPublic } from "@/lib/repositories/immigratio
 import { buildEntityMetadata, buildBreadcrumbJsonLd, siteUrl } from "@/lib/services/seo.service";
 import { TOOLS_LIST_PATH } from "@/lib/tools";
 import { SeoEntityType } from "@/generated/prisma/client";
+import { STATIC_PAGE_SEO } from "@/lib/static-page-seo";
 
 export async function generateMetadata() {
   return buildEntityMetadata({
     entityType: SeoEntityType.SITE_PAGE,
     entityId: "araclar-goc-idaresi-bul",
     path: IMMIGRATION_OFFICE_TOOL_PATH,
-    fallbackTitle: immigrationOfficeToolMeta.seoTitle,
-    fallbackDescription: immigrationOfficeToolMeta.seoDescription,
+    fallbackTitle: STATIC_PAGE_SEO["araclar-goc-idaresi-bul"].title,
+    fallbackDescription: STATIC_PAGE_SEO["araclar-goc-idaresi-bul"].description,
   });
 }
 

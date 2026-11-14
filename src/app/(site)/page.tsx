@@ -24,30 +24,23 @@ import {
 } from "@/lib/services/seo.service";
 import { findSitePageBySlug } from "@/lib/repositories/site.repository";
 import { SeoEntityType } from "@/generated/prisma/client";
+import { STATIC_PAGE_SEO } from "@/lib/static-page-seo";
 
 export async function generateMetadata() {
   const settings = await getSiteSettings();
   const content = buildHomepageContent(settings);
   const page = await findSitePageBySlug("home");
 
-  if (!page) {
-    return buildEntityMetadata({
-      entityType: SeoEntityType.SITE_PAGE,
-      entityId: "home",
-      path: "/",
-      fallbackTitle:
-        content.seoTitle || `${settings.siteName} | Vize ve Göçmenlik Danışmanlığı`,
-      fallbackDescription: content.seoDescription || settings.siteDescription,
-    });
-  }
-
+  // Anasayfa editöründeki "Meta title / description" alanları (homeSeoTitle / homeSeoDescription)
+  // seo_metadata kaydından önceliklidir; boşsa STATIC_PAGE_SEO.home kullanılır.
   return buildEntityMetadata({
     entityType: SeoEntityType.SITE_PAGE,
-    entityId: page.id,
+    entityId: page?.id ?? "home",
     path: "/",
-    fallbackTitle:
-      content.seoTitle || page.title || `${settings.siteName} | Vize ve Göçmenlik Danışmanlığı`,
-    fallbackDescription: content.seoDescription || settings.siteDescription,
+    fallbackTitle: STATIC_PAGE_SEO.home.title,
+    fallbackDescription: STATIC_PAGE_SEO.home.description,
+    preferredTitle: content.seoTitle,
+    preferredDescription: content.seoDescription,
   });
 }
 

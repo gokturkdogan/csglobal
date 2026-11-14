@@ -2,7 +2,8 @@
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
-import { buildConsulatePath, buildVisaProgramPath } from "@/lib/paths";
+import { buildCategoryPath, buildConsulatePath, buildVisaProgramPath } from "@/lib/paths";
+import { isIndexableCountryCategory } from "@/lib/country-page/category-seo";
 import { buildSiteAssetPath } from "@/lib/site-asset";
 import {
   COUNTRY_PANEL_CONSULATES_SLUG,
@@ -30,6 +31,11 @@ export function CountryCategoryPanel({
   const toggle = (slug: string) => {
     setOpenSlug((current) => (current === slug ? null : slug));
   };
+
+  // Aynı slug'lı bir program varsa /{ülke}/{slug} programa çözülür; kategori sayfasına link verilmez.
+  const programSlugs = new Set(
+    (categories ?? []).flatMap((category) => (category.programs ?? []).map((p) => p.slug)),
+  );
 
   const hasConsulates = consulates.length > 0;
   const hasDocuments = documents.length > 0;
@@ -84,6 +90,17 @@ export function CountryCategoryPanel({
                       </Link>
                     </li>
                   ))}
+                  {isIndexableCountryCategory(itemCount) && !programSlugs.has(category.slug) && (
+                    <li>
+                      <Link
+                        href={buildCategoryPath(countrySlug, [category.slug])}
+                        className="flex items-center justify-between gap-1.5 rounded-md px-2 py-2 text-xs font-semibold text-csg-blue transition hover:bg-csg-blue/[0.04]"
+                      >
+                        <span>Tüm {category.name.toLocaleLowerCase("tr-TR")}</span>
+                        <ArrowIcon />
+                      </Link>
+                    </li>
+                  )}
                 </ul>
               )}
             </PanelRow>
@@ -211,11 +228,13 @@ function PanelRow({
         </span>
       </button>
 
-      {isOpen && (
-        <div className="border-t border-slate-100/80 bg-white px-2 pb-2 pt-0.5">
-          {children}
-        </div>
-      )}
+      {/* Kapalıyken de HTML'de kalır (hidden): arama motorları paneldeki linkleri görebilsin. */}
+      <div
+        hidden={!isOpen}
+        className="border-t border-slate-100/80 bg-white px-2 pb-2 pt-0.5"
+      >
+        {children}
+      </div>
     </div>
   );
 }

@@ -6,14 +6,15 @@ import {
 import { TOOLS_LIST_PATH } from "@/lib/tools";
 import { buildEntityMetadata, buildBreadcrumbJsonLd, siteUrl } from "@/lib/services/seo.service";
 import { SeoEntityType } from "@/generated/prisma/client";
+import { STATIC_PAGE_SEO } from "@/lib/static-page-seo";
 
 export async function generateMetadata() {
   return buildEntityMetadata({
     entityType: SeoEntityType.SITE_PAGE,
     entityId: "araclar-ikamet-vize-ret",
     path: REJECTION_GUIDE_PATH,
-    fallbackTitle: rejectionGuideMeta.title,
-    fallbackDescription: rejectionGuideMeta.description,
+    fallbackTitle: STATIC_PAGE_SEO["araclar-ikamet-vize-ret"].title,
+    fallbackDescription: STATIC_PAGE_SEO["araclar-ikamet-vize-ret"].description,
   });
 }
 
