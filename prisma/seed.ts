@@ -121,14 +121,16 @@ async function main() {
   });
 
   await prisma.sitePage.upsert({
-    where: { slug: "ulkeler" },
+    where: { slug: "vize-danismanlik" },
     create: {
-      slug: "ulkeler",
-      title: "Tüm Ülkeler",
+      slug: "vize-danismanlik",
+      title: "Vize danışmanlık",
       content: "CSGLOBAL vize ve göçmenlik programları kapsanan ülkeler.",
       isActive: true,
     },
-    update: {},
+    update: {
+      title: "Vize danışmanlık",
+    },
   });
 
   await prisma.sitePage.upsert({

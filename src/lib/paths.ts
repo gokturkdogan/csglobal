@@ -1,3 +1,8 @@
+/** Ülke listesi (Vize danışmanlık); eski URL: /ulkeler */
+export const VIZE_CONSULTANCY_LIST_PATH = "/vize-danismanlik";
+export const VIZE_CONSULTANCY_LIST_SITE_PAGE_SLUG = "vize-danismanlik";
+export const LEGACY_COUNTRIES_LIST_PATH = "/ulkeler";
+
 export function buildBlogPath(slug: string) {
   return `/bloglar/${slug}`;
 }

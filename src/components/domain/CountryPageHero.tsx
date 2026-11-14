@@ -2,6 +2,7 @@ import Link from "next/link";
 import { FlagImage } from "@/components/ui/FlagImage";
 import { SiteImage } from "@/components/ui/SiteImage";
 import { resolveCountryPageHeroImage } from "@/lib/country-item-image";
+import { VIZE_CONSULTANCY_LIST_PATH } from "@/lib/paths";
 
 type CountryPageHeroProps = {
   name: string;
@@ -60,8 +61,8 @@ export function CountryPageHero({
             </li>
             <li className="text-slate-500">/</li>
             <li>
-              <Link href="/ulkeler" className="cursor-pointer hover:text-white transition-colors">
-                Ülkeler
+              <Link href={VIZE_CONSULTANCY_LIST_PATH} className="cursor-pointer hover:text-white transition-colors">
+                Vize danışmanlık
               </Link>
             </li>
             <li className="text-slate-500">/</li>

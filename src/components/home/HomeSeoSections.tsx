@@ -6,6 +6,7 @@ import { SiteImage } from "@/components/ui/SiteImage";
 import { HomeEditableField, HomeEditableSeoBlockImage } from "@/components/admin/homepage/HomeEditableField";
 import { useHomepageEdit } from "@/components/admin/homepage/HomepageEditContext";
 import { EditableText } from "@/components/admin/homepage/EditableText";
+import { VIZE_CONSULTANCY_LIST_PATH } from "@/lib/paths";
 
 export function HomeSeoIntro({ content }: { content: HomepageContent }) {
   const edit = useHomepageEdit();
@@ -39,7 +40,7 @@ export function HomeSeoIntro({ content }: { content: HomepageContent }) {
             )}
           </div>
           <Link
-            href="/ulkeler"
+            href={VIZE_CONSULTANCY_LIST_PATH}
             className="mt-8 inline-flex text-sm font-semibold text-csg-blue hover:underline"
           >
             Tüm ülke ve programları inceleyin →

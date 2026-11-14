@@ -27,7 +27,7 @@ export function CountriesPageHero({ countryCount }: { countryCount: number }) {
             Vize ve göçmenlik rehberi
           </p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white md:text-4xl lg:text-5xl">
-            Ülkeler
+            Vize danışmanlık
           </h1>
           <p className="mt-4 text-base leading-relaxed text-slate-200 md:text-lg">
             Ülke seçerek vize türleri, gerekli evraklar, ücretler ve süreç bilgilerine ulaşın.

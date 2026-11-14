@@ -10,6 +10,8 @@ import { FaqAccordion } from "@/components/domain/FaqAccordion";
 import { CountryPageHero } from "@/components/domain/CountryPageHero";
 import { CountryCategoryPanel } from "@/components/country/CountryCategoryPanel";
 import { CountryInterleavedDetailContent } from "@/components/domain/CountryInterleavedDetailContent";
+import { CountryDetailPopularCountries } from "@/components/country/CountryDetailPopularCountries";
+import type { CountryDetailPopularItem } from "@/lib/country-detail-popular";
 
 export type CountryDetailViewModel = {
   id: string;
@@ -43,6 +45,7 @@ type Props = {
   categories: CountryCategoryPanelItem[];
   consulates?: CountryConsulatePanelItem[];
   documents?: CountryDocumentPanelItem[];
+  popularCountries?: CountryDetailPopularItem[];
 };
 
 function SectionHeading({
@@ -74,6 +77,7 @@ export function CountryDetailPage({
   categories = [],
   consulates = [],
   documents = [],
+  popularCountries = [],
 }: Props) {
   const paragraphs = buildCountryDetailParagraphs(country);
   const stats = buildCountryQuickStats({
@@ -194,6 +198,8 @@ export function CountryDetailPage({
                 subtitle="Online başvuru veya belge yükleme yok. WhatsApp veya telefon ile doğrudan uzman ekibimize ulaşın."
                 variant="country"
               />
+
+              <CountryDetailPopularCountries countries={popularCountries} />
             </div>
           </div>
         </div>

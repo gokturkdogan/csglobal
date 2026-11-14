@@ -47,6 +47,12 @@ import {
   parseCountryDetailSectionsJson,
 } from "@/lib/country-detail";
 import {
+  normalizeCountryDetailPopularCountrySlugs,
+  parseCountryDetailPopularCountrySlugs,
+  serializeCountryDetailPopularCountrySlugs,
+} from "@/lib/country-detail-popular";
+import { findActiveCountries } from "@/lib/repositories/country.repository";
+import {
   serializeAboutPageEditable,
   textToParagraphs,
   type AboutPageEditable,
@@ -181,6 +187,71 @@ const homepageKeys = [
   "homeFaqSubtitle",
   "homeFaqJson",
 ] as const;
+
+const fixedAboutKeys = [
+  "fixedAboutTitle",
+  "fixedAboutText",
+  "fixedAboutImage",
+  "fixedAboutLinkedInUrl",
+] as const;
+
+export async function saveFixedAboutAction(formData: FormData): Promise<AdminActionResult> {
+  await requireAdmin();
+
+  try {
+    const entries = fixedAboutKeys
+      .map((key) => {
+        let value = (formData.get(key) as string | null) ?? "";
+        if (key === "fixedAboutLinkedInUrl") {
+          value = normalizeLinkUrl(value.trim()) ?? "";
+        }
+        return { key, value };
+      })
+      .filter((entry): entry is { key: typeof fixedAboutKeys[number]; value: string } => true);
+
+    await upsertSiteSettingsBatch(entries);
+    revalidatePath("/", "layout");
+    revalidatePath("/admin/sabit-hakkimda");
+
+    return adminSuccess("Sabit hakkımda alanı kaydedildi.");
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Sabit hakkımda alanı kaydedilemedi. Lütfen tekrar deneyin."),
+    );
+  }
+}
+
+export async function saveFeaturedCountriesAction(
+  formData: FormData,
+): Promise<AdminActionResult> {
+  await requireAdmin();
+
+  try {
+    const raw = formData.get("countryDetailPopularCountrySlugsJson") as string | null;
+    const parsed = parseCountryDetailPopularCountrySlugs(raw);
+    const countries = await findActiveCountries();
+    const catalog = countries.map((country) => ({
+      name: country.name,
+      slug: country.slug,
+      flag: country.flag,
+    }));
+    const normalized = normalizeCountryDetailPopularCountrySlugs(parsed, catalog);
+    const value = serializeCountryDetailPopularCountrySlugs(normalized);
+
+    await upsertSiteSettingsBatch([{ key: "countryDetailPopularCountrySlugsJson", value }]);
+
+    for (const country of countries) {
+      revalidatePath(`/${country.slug}`);
+    }
+    revalidatePath("/admin/one-cikan-ulkeler");
+
+    return adminSuccess("Öne çıkan ülkeler kaydedildi.");
+  } catch (error) {
+    return adminFailure(
+      adminErrorMessage(error, "Öne çıkan ülkeler kaydedilemedi. Lütfen tekrar deneyin."),
+    );
+  }
+}
 
 export async function updateHomepageAction(formData: FormData): Promise<AdminActionResult> {
   await requireAdmin();

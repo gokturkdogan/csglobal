@@ -7,6 +7,7 @@ import { resolvePopularCountries } from "@/lib/homepage";
 import { HomeEditableField } from "@/components/admin/homepage/HomeEditableField";
 import { HomeEditablePopularCountries } from "@/components/admin/homepage/HomeEditablePopularCountries";
 import { useHomepageEdit } from "@/components/admin/homepage/HomepageEditContext";
+import { VIZE_CONSULTANCY_LIST_PATH } from "@/lib/paths";
 
 export function HomeCountriesSection({
   content,
@@ -35,7 +36,7 @@ export function HomeCountriesSection({
             <span className="text-sm font-medium text-slate-400">Tüm ülkeler</span>
           ) : (
             <Link
-              href="/ulkeler"
+              href={VIZE_CONSULTANCY_LIST_PATH}
               className="cursor-pointer text-sm font-medium text-csg-blue hover:underline"
             >
               Tüm ülkeler

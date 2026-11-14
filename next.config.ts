@@ -36,6 +36,11 @@ const nextConfig: NextConfig = {
         destination: "/araclar/tahdit-kodlari",
         permanent: true,
       },
+      {
+        source: "/ulkeler",
+        destination: "/vize-danismanlik",
+        permanent: true,
+      },
     ];
   },
   async headers() {

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { CountryGrid } from "@/components/domain/CountryCard";
 import type { HomepageContent, HomePopularCountry } from "@/lib/homepage";
 import { resolvePopularCountries } from "@/lib/homepage";
+import { VIZE_CONSULTANCY_LIST_PATH } from "@/lib/paths";
 
 export function HomeCountriesSectionView({
   content,
@@ -22,7 +23,7 @@ export function HomeCountriesSectionView({
             {content.countriesTitle}
           </h2>
           <Link
-            href="/ulkeler"
+            href={VIZE_CONSULTANCY_LIST_PATH}
             className="cursor-pointer text-sm font-medium text-csg-blue hover:underline"
           >
             Tüm ülkeler

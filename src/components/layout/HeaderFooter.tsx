@@ -5,14 +5,17 @@ import { siteImages } from "@/lib/media";
 import { SiteImage } from "@/components/ui/SiteImage";
 import { WhatsAppIcon, whatsappButtonClass } from "@/components/ui/WhatsAppIcon";
 import { LegalDisclaimer } from "@/components/layout/LegalDisclaimer";
+import { FixedAboutSection } from "@/components/layout/FixedAboutSection";
+import { GeneralInfoNotice } from "@/components/layout/GeneralInfoNotice";
+import { VIZE_CONSULTANCY_LIST_PATH } from "@/lib/paths";
+import type { FixedAboutContent } from "@/lib/fixed-about";
 
 const navItems = [
-  { href: "/ulkeler", label: "Ülkeler" },
-  { href: "/hizmetlerimiz", label: "Vize Programları" },
   { href: "/yabanci-danismanlik", label: "Yabancı Danışmanlık" },
+  { href: VIZE_CONSULTANCY_LIST_PATH, label: "Vize danışmanlık" },
+  { href: "/hakkimizda", label: "Hakkımızda" },
   { href: "/bloglar", label: "Bloglar" },
   { href: "/araclar", label: "Araçlar" },
-  { href: "/hakkimizda", label: "Hakkımızda" },
   { href: "/iletisim", label: "İletişim" },
 ];
 
@@ -100,7 +103,10 @@ export function Footer({
   siteName,
   contactPhone,
   contactEmail,
-}: Pick<SiteSettingsMap, "siteName" | "contactPhone" | "contactEmail">) {
+  fixedAbout,
+}: Pick<SiteSettingsMap, "siteName" | "contactPhone" | "contactEmail"> & {
+  fixedAbout: FixedAboutContent;
+}) {
   return (
     <footer className="border-t border-slate-200 bg-slate-50">
       <div className="site-container grid gap-10 py-14 md:grid-cols-3">
@@ -113,7 +119,11 @@ export function Footer({
         <div>
           <p className="text-sm font-semibold text-slate-900">Bağlantılar</p>
           <ul className="mt-3 space-y-2 text-sm text-slate-600">
-            <li><Link href="/ulkeler" className="cursor-pointer hover:text-csg-blue">Ülkeler</Link></li>
+            <li>
+              <Link href={VIZE_CONSULTANCY_LIST_PATH} className="cursor-pointer hover:text-csg-blue">
+                Vize danışmanlık
+              </Link>
+            </li>
             <li><Link href="/hizmetlerimiz" className="cursor-pointer hover:text-csg-blue">Vize Programları</Link></li>
             <li><Link href="/yabanci-danismanlik" className="cursor-pointer hover:text-csg-blue">Yabancı Danışmanlık</Link></li>
             <li><Link href="/araclar" className="cursor-pointer hover:text-csg-blue">Araçlar</Link></li>
@@ -140,6 +150,8 @@ export function Footer({
           </ul>
         </div>
       </div>
+      <FixedAboutSection content={fixedAbout} />
+      <GeneralInfoNotice />
       <LegalDisclaimer />
       <div className="border-t border-slate-200 bg-slate-50 py-6 text-center text-xs text-slate-500">
         © {new Date().getFullYear()} {siteName}

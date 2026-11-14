@@ -1,6 +1,7 @@
 import { Header, Footer } from "@/components/layout/HeaderFooter";
 import { FloatingPhone, FloatingWhatsApp } from "@/components/domain/ContactCTA";
 import { getSiteSettings } from "@/lib/settings";
+import { resolveFixedAbout } from "@/lib/fixed-about";
 
 export const revalidate = 60;
 
@@ -20,6 +21,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         siteName={settings.siteName}
         contactPhone={settings.contactPhone}
         contactEmail={settings.contactEmail}
+        fixedAbout={resolveFixedAbout(settings)}
       />
       <FloatingPhone settings={settings} />
       <FloatingWhatsApp settings={settings} />

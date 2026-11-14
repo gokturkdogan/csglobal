@@ -10,8 +10,8 @@ import { resolvePgConnectionString } from "../src/lib/pg-connection";
 
 const PAGES = [
   {
-    slug: "ulkeler",
-    title: "Tüm Ülkeler",
+    slug: "vize-danismanlik",
+    title: "Vize danışmanlık",
     content: "CSGLOBAL vize ve göçmenlik programları kapsanan ülkeler.",
   },
   {

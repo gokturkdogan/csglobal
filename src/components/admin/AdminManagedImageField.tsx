@@ -10,7 +10,7 @@ export type ManagedImageSlot = {
   cropHint: string;
 };
 
-type PreviewVariant = "hero" | "card" | "square";
+type PreviewVariant = "hero" | "card" | "square" | "portrait";
 
 export function AdminManagedImageField({
   name,
@@ -37,7 +37,9 @@ export function AdminManagedImageField({
       ? "relative mt-2 h-[12rem] overflow-hidden rounded-xl border border-slate-200 bg-slate-50 sm:h-[13rem] md:h-[15rem]"
       : previewVariant === "square"
         ? "relative mt-2 aspect-square max-w-[12rem] overflow-hidden rounded-xl border border-slate-200 bg-slate-50"
-        : "relative mt-2 aspect-[4/3] overflow-hidden rounded-xl border border-slate-200 bg-slate-50";
+        : previewVariant === "portrait"
+          ? "relative mt-2 aspect-[3/4] max-w-[12rem] overflow-hidden rounded-xl border border-slate-200 bg-slate-50"
+          : "relative mt-2 aspect-[4/3] overflow-hidden rounded-xl border border-slate-200 bg-slate-50";
 
   return (
     <div className="block">

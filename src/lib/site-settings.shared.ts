@@ -9,6 +9,11 @@ export type SiteSettingsMap = {
   contactHeroImage: string;
   contactMapEmbedUrl: string;
   aboutPageJson: string;
+  /** Footer üstü sabit hakkımda alanı */
+  fixedAboutTitle: string;
+  fixedAboutText: string;
+  fixedAboutImage: string;
+  fixedAboutLinkedInUrl: string;
   guidesListPageJson: string;
   facebookUrl: string;
   instagramUrl: string;
@@ -22,6 +27,8 @@ export type SiteSettingsMap = {
   homeHeroCtaSecondary: string;
   homeHeroQuickLinksJson: string;
   homePopularCountrySlugsJson: string;
+  /** Ülke detay altı popüler ülkeler: 5 + 1 yedek slug dizisi (JSON). */
+  countryDetailPopularCountrySlugsJson: string;
   homeAboutTitle: string;
   homeAboutText: string;
   homeAboutImage: string;
@@ -64,6 +71,11 @@ export const defaultSiteSettings: SiteSettingsMap = {
   contactHeroImage: "",
   contactMapEmbedUrl: "",
   aboutPageJson: "",
+  fixedAboutTitle: "İsmail Yılmaz",
+  fixedAboutText:
+    "Çankaya Üniversitesi İktisadi ve İdari Bilimler Fakültesi'nde %100 İngilizce eğitim alarak lisans eğitimini %75 burs ile tamamlamıştır. Hâlihazırda kurucusu olduğu Çankaya Danışmanlık ve Global Consultancy Solutions bünyesinde alanında uzman ekibiyle birlikte faaliyet göstermektedir. Türkiye'de yaşamak isteyen yabancıların oturma ve çalışma izni başvuru süreçlerini vb. aynı zamanda Türk vatandaşlarının yurt dışı vize başvuru süreçlerini profesyonel bir biçimde yönetmektedir.",
+  fixedAboutImage: "",
+  fixedAboutLinkedInUrl: "",
   guidesListPageJson: "",
   facebookUrl: "",
   instagramUrl: "",
@@ -77,6 +89,7 @@ export const defaultSiteSettings: SiteSettingsMap = {
   homeHeroCtaSecondary: "",
   homeHeroQuickLinksJson: "",
   homePopularCountrySlugsJson: "",
+  countryDetailPopularCountrySlugsJson: "",
   homeAboutTitle: "",
   homeAboutText: "",
   homeAboutImage: "",

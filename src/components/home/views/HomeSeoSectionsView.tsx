@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { HomepageContent } from "@/lib/homepage";
 import { SiteImage } from "@/components/ui/SiteImage";
+import { VIZE_CONSULTANCY_LIST_PATH } from "@/lib/paths";
 
 export function HomeSeoIntroView({ content }: { content: HomepageContent }) {
   return (
@@ -16,7 +17,7 @@ export function HomeSeoIntroView({ content }: { content: HomepageContent }) {
             ))}
           </div>
           <Link
-            href="/ulkeler"
+            href={VIZE_CONSULTANCY_LIST_PATH}
             className="mt-8 inline-flex text-sm font-semibold text-csg-blue hover:underline"
           >
             Tüm ülke ve programları inceleyin →

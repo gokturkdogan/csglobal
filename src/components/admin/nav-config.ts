@@ -25,6 +25,7 @@ export const adminNav: AdminNavItem[] = [
   { href: "/admin", label: "Panel", icon: "dashboard", exact: true },
   { href: "/admin/homepage", label: "Anasayfa", icon: "home" },
   { href: "/admin/countries", label: "Ülkeler", icon: "globe" },
+  { href: "/admin/one-cikan-ulkeler", label: "Öne çıkan ülkeler", icon: "globe" },
   // Geçici: menüde gizli (sayfalar erişilebilir)
   // { href: "/admin/eagvs-country-sync", label: "EAGVS Ülke Senkron", icon: "globe" },
   // { href: "/admin/eagvs-country-batch", label: "EAGVS Ülke Detay Sync", icon: "globe" },
@@ -40,6 +41,7 @@ export const adminNav: AdminNavItem[] = [
   { href: "/admin/bloglarimiz", label: "Bloglarımız", icon: "guides" },
   { href: "/admin/dokumanlar", label: "Dökümanlar", icon: "documents" },
   { href: "/admin/hakkimizda", label: "Hakkımızda", icon: "about" },
+  { href: "/admin/sabit-hakkimda", label: "Sabit hakkımda", icon: "about" },
   { href: "/admin/iletisim", label: "İletişim", icon: "contact" },
   { href: "/admin/settings", label: "Ayarlar", icon: "settings" },
 ];

@@ -1,4 +1,5 @@
 import { siteImages } from "@/lib/media";
+import { VIZE_CONSULTANCY_LIST_PATH } from "@/lib/paths";
 import type { SiteSettingsMap } from "@/lib/site-settings.shared";
 import { normalizeLinkUrl } from "@/lib/rich-text";
 
@@ -147,7 +148,7 @@ const defaultSeoBlocks: HomeSeoBlock[] = [
     content:
       "Turistik, ticari, transit ve aile ziyareti vizeleri için ülkeye özel evrak listeleri, konsolosluk ücretleri ve ortalama sonuçlanma süreleri. Almanya, Fransa, İtalya ve tüm Schengen bölgesi için güncel bilgiler.",
     image: siteImages.travel,
-    linkHref: "/ulkeler",
+    linkHref: VIZE_CONSULTANCY_LIST_PATH,
     linkLabel: "Vize programlarını incele",
   },
   {
@@ -155,7 +156,7 @@ const defaultSeoBlocks: HomeSeoBlock[] = [
     content:
       "Uzun süreli oturum, aile birleşimi, öğrenci oturumu, mavi kart ve nitelikli çalışan programları. Her ülkenin farklı kategori yapısı dinamik olarak yönetilir; boş veya kapalı kategoriler sitede gösterilmez.",
     image: siteImages.office,
-    linkHref: "/ulkeler",
+    linkHref: VIZE_CONSULTANCY_LIST_PATH,
     linkLabel: "Oturum ve çalışma izinleri",
   },
   {
@@ -172,22 +173,22 @@ const defaultServiceAreas: HomeServiceArea[] = [
   {
     title: "Vizeler",
     description: "Turistik, ticari, transit ve özel amaçlı kısa süreli vizeler.",
-    href: "/ulkeler",
+    href: VIZE_CONSULTANCY_LIST_PATH,
   },
   {
     title: "Oturma izni",
     description: "Aile birleşimi, öğrenci oturumu ve uzun süreli ikamet.",
-    href: "/ulkeler",
+    href: VIZE_CONSULTANCY_LIST_PATH,
   },
   {
     title: "Çalışma izni",
     description: "Mavi kart, nitelikli çalışan ve iş arama izinleri.",
-    href: "/ulkeler",
+    href: VIZE_CONSULTANCY_LIST_PATH,
   },
   {
     title: "Vatandaşlık",
     description: "Vatandaşlık başvurusu ve çifte vatandaşlık süreçleri.",
-    href: "/ulkeler",
+    href: VIZE_CONSULTANCY_LIST_PATH,
   },
 ];
 

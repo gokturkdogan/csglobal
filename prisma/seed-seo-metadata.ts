@@ -334,6 +334,8 @@ async function main() {
     hakkimizda: "CSGLOBAL vize ve göçmenlik danışmanlığı hakkında bilgi edinin.",
     iletisim:
       "Vize ve göçmenlik danışmanlığı için telefon, WhatsApp veya e-posta ile CSGLOBAL uzman ekibine ulaşın.",
+    "vize-danismanlik":
+      "CSGLOBAL vize ve göçmenlik programları kapsanan ülkeler.",
     ulkeler: "CSGLOBAL vize ve göçmenlik programları kapsanan ülkeler.",
     hizmetlerimiz:
       "CSGLOBAL vize, oturum ve göçmenlik programları. Tüm ülkelerdeki programları tek listede inceleyin.",

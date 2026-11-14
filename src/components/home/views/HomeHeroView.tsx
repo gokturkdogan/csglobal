@@ -3,6 +3,7 @@ import type { HomepageContent, HomeCountryOption } from "@/lib/homepage";
 import { resolveHeroQuickLinks } from "@/lib/homepage";
 import { FlagImage } from "@/components/ui/FlagImage";
 import { SiteImage } from "@/components/ui/SiteImage";
+import { VIZE_CONSULTANCY_LIST_PATH } from "@/lib/paths";
 
 export function HomeHeroView({
   content,
@@ -45,7 +46,7 @@ export function HomeHeroView({
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
-              href="/ulkeler"
+              href={VIZE_CONSULTANCY_LIST_PATH}
               className="rounded-md cursor-pointer bg-csg-red px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-csg-red/20 transition hover:bg-csg-red-dark"
             >
               {content.heroCtaPrimary}

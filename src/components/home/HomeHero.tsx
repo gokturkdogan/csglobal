@@ -8,6 +8,7 @@ import { SiteImage } from "@/components/ui/SiteImage";
 import { HomeEditableField, HomeEditableImage } from "@/components/admin/homepage/HomeEditableField";
 import { HomeEditableCountryBadges } from "@/components/admin/homepage/HomeEditableCountryBadges";
 import { useHomepageEdit } from "@/components/admin/homepage/HomepageEditContext";
+import { VIZE_CONSULTANCY_LIST_PATH } from "@/lib/paths";
 
 export function HomeHero({
   content,
@@ -91,7 +92,7 @@ export function HomeHero({
             ) : (
               <>
                 <Link
-                  href="/ulkeler"
+                  href={VIZE_CONSULTANCY_LIST_PATH}
                   className="rounded-md cursor-pointer bg-csg-red px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-csg-red/20 transition hover:bg-csg-red-dark"
                 >
                   {content.heroCtaPrimary}

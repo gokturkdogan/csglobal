@@ -4,6 +4,8 @@ import { findCountryPageBySlug } from "@/lib/repositories/country.repository";
 import { loadCountryCategoryPanelData } from "@/lib/country-page/load-category-panel";
 import { buildEntityMetadata, buildBreadcrumbJsonLd, buildFaqJsonLd, siteUrl } from "@/lib/services/seo.service";
 import { getSiteSettings } from "@/lib/settings";
+import { pickCountryDetailPopularCountries } from "@/lib/country-detail-popular";
+import { findActiveCountries } from "@/lib/repositories/country.repository";
 import { SeoEntityType } from "@/generated/prisma/client";
 
 type Props = { params: Promise<{ countrySlug: string }> };
@@ -27,7 +29,15 @@ export default async function CountryPage({ params }: Props) {
   const country = await findCountryPageBySlug(countrySlug);
   if (!country) notFound();
 
-  const settings = await getSiteSettings();
+  const [settings, countryCatalog] = await Promise.all([
+    getSiteSettings(),
+    findActiveCountries(),
+  ]);
+  const popularCountries = pickCountryDetailPopularCountries(
+    countryCatalog,
+    settings.countryDetailPopularCountrySlugsJson,
+    countrySlug,
+  );
   const { panelCategories, consulates, documents } = await loadCountryCategoryPanelData(
     country.id,
     countrySlug,
@@ -86,6 +96,7 @@ export default async function CountryPage({ params }: Props) {
         categories={panelCategories}
         consulates={consulates}
         documents={documents}
+        popularCountries={popularCountries}
       />
     </>
   );
